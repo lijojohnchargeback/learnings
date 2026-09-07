@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Message queues vs pub/sub vs streaming: SQS, SNS, Kafka, RabbitMQ, Google Pub/Sub, Azure Service Bus, Event Hubs, Redis Streams, NATS, and Kinesis for Node.js backends.">
+    <title>Message Queues - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>📬 Message Queues</h2>
+            <p>Queues, Pub/Sub &amp; Streams</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">🏠 What is a Message Queue?</a>
+                <a href="#why" class="sidebar-link">⚡ Why We Need Queues</a>
+                <a href="#models" class="sidebar-link">🧭 Queue vs Pub/Sub vs Stream</a>
+                <a href="#compare" class="sidebar-link">📊 Quick Comparison</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Core Systems</div>
+            <div class="sidebar-links">
+                <a href="#sqs" class="sidebar-link">🟧 Amazon SQS</a>
+                <a href="#sns" class="sidebar-link">📣 Amazon SNS</a>
+                <a href="#pubsub" class="sidebar-link">☁️ Google Pub/Sub</a>
+                <a href="#kafka" class="sidebar-link">🪵 Apache Kafka</a>
+                <a href="#rabbitmq" class="sidebar-link">🐰 RabbitMQ</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Other Platforms</div>
+            <div class="sidebar-links">
+                <a href="#azure" class="sidebar-link">🔷 Azure Service Bus</a>
+                <a href="#event-hubs" class="sidebar-link">📡 Event Hubs &amp; Kinesis</a>
+                <a href="#others" class="sidebar-link">⚡ Redis, NATS, ActiveMQ</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Reliability</div>
+            <div class="sidebar-links">
+                <a href="#delivery" class="sidebar-link">🎯 Delivery Guarantees</a>
+                <a href="#idempotency" class="sidebar-link">🔁 Idempotency</a>
+                <a href="#ordering" class="sidebar-link">📑 Ordering &amp; Scaling</a>
+                <a href="#dlq" class="sidebar-link">☠️ DLQ, Retry, Delay</a>
+                <a href="#persistence" class="sidebar-link">💾 Persistence &amp; Size</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Architecture</div>
+            <div class="sidebar-links">
+                <a href="#choose" class="sidebar-link">🌳 What Should You Choose?</a>
+                <a href="#eda" class="sidebar-link">🧩 Event-Driven Design</a>
+                <a href="#nodejs" class="sidebar-link">🟢 Node.js vs Event Loop</a>
+                <a href="#takeaway" class="sidebar-link">📌 Mental Models</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <style>
+                .illustration {
+                    text-align: center;
+                    margin: 2.5rem 0;
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                    border-radius: 20px;
+                    border: 1px solid #e2e8f0;
+                }
+                .illustration img {
+                    width: 100%;
+                    max-width: 100%;
+                    height: auto;
+                    display: block;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+                }
+                .illustration-caption {
+                    margin-top: 0.85rem;
+                    font-size: 0.9rem;
+                    color: #64748b;
+                    font-weight: 500;
+                }
+                .grid-2, .grid-3 {
+                    display: grid;
+                    gap: 1.25rem;
+                    margin: 1.75rem 0;
+                }
+                .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+                .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+                .feature-card {
+                    background: #fff;
+                    padding: 1.5rem 1.6rem;
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+                    border-top: 4px solid #0d9488;
+                }
+                .feature-card h4 { margin-top: 0; }
+                .card-blue { border-top-color: #3b82f6; }
+                .card-green { border-top-color: #10b981; }
+                .card-purple { border-top-color: #8b5cf6; }
+                .card-orange { border-top-color: #f59e0b; }
+                .card-teal { border-top-color: #14b8a6; }
+                .card-pink { border-top-color: #ec4899; }
+                .card-red { border-top-color: #ef4444; }
+                .stat-row {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .stat-card {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.25rem 1.4rem;
+                }
+                .stat-card .num {
+                    font-size: 1.2rem;
+                    font-weight: 800;
+                    color: #0d9488;
+                    letter-spacing: -0.03em;
+                    line-height: 1.2;
+                }
+                .stat-card .label {
+                    margin-top: 0.4rem;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: #334155;
+                }
+                .stat-card p {
+                    margin: 0.45rem 0 0;
+                    color: #64748b;
+                    font-size: 0.88rem;
+                }
+                .wrong-box {
+                    background: #fef2f2;
+                    border: 1px solid #fecaca;
+                    color: #991b1b;
+                    border-radius: 12px;
+                    padding: 0.9rem 1.1rem;
+                    font-size: 0.9rem;
+                    margin: 1rem 0;
+                }
+                .right-box {
+                    background: #ecfdf5;
+                    border: 1px solid #a7f3d0;
+                    color: #065f46;
+                    border-radius: 12px;
+                    padding: 0.9rem 1.1rem;
+                    font-size: 0.9rem;
+                    margin: 1rem 0;
+                }
+                .remember-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .remember-card {
+                    background: #0f172a;
+                    color: #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.35rem 1.4rem;
+                }
+                .remember-card h4 {
+                    color: #5eead4;
+                    margin: 0 0 0.55rem;
+                }
+                .remember-card p { margin: 0; color: #cbd5e1; font-size: 0.92rem; }
+                .hop-list {
+                    counter-reset: hop;
+                    list-style: none;
+                    padding: 0;
+                    margin: 1.5rem 0 0;
+                }
+                .hop-list li {
+                    counter-increment: hop;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.15rem 1.25rem 1.15rem 4.1rem;
+                    margin: 0.85rem 0;
+                    position: relative;
+                }
+                .hop-list li::before {
+                    content: counter(hop);
+                    position: absolute;
+                    left: 1rem;
+                    top: 1.15rem;
+                    width: 2rem;
+                    height: 2rem;
+                    border-radius: 999px;
+                    background: #ccfbf1;
+                    color: #0f766e;
+                    font-weight: 800;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                }
+                .compare-split {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1.25rem;
+                    margin: 1.5rem 0;
+                }
+            </style>
+
+            <header>
+                <h1>📬 Message Queues Complete Guide</h1>
+                <p>Queues, pub/sub, and event streams — from a Node.js / backend architecture view</p>
+            </header>
+
+            <section id="intro">
+                <h2>🏠 What is a Message Queue?</h2>
+                <p>A <span class="highlight">message queue</span> lets one application send work or data to another <strong>without both sides being online and talking at the same time</strong>. The broker sits in the middle. The producer can finish. The consumer can process later.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-hero.png" alt="Three messaging models side by side: a queue that gives a job to one worker, pub/sub that fans an event out to many subscribers, and a Kafka-style event stream that keeps an ordered log">
+                    <div class="illustration-caption">SQS, Kafka, and RabbitMQ are not the same kind of “message queue.” Some are work queues, some are pub/sub, and Kafka is a distributed event log.</div>
+                </div>
+
+                <p>Basic hop:</p>
+                <div class="diagram-box">Producer
+   |
+   |  message
+   v
++----------------+
+| Message System |
++----------------+
+   |
+   |  message
+   v
+Consumer</div>
+
+                <p>In a typical order flow, the message system is what keeps services from calling each other directly:</p>
+                <div class="diagram-box">Order Service
+     |
+     |  "Order #123 created"
+     v
+   Queue
+     |
+     +------> Email Service
+     |
+     +------> Payment Service
+     |
+     +------> Inventory Service</div>
+
+                <div class="info-box premium">
+                    <h3>The sentence to remember</h3>
+                    <p>Do not classify everything as “a message queue.” Classify it as a <strong>queue</strong>, a <strong>pub/sub system</strong>, or an <strong>event stream / log</strong>. They overlap, but the core mental models are different.</p>
+                </div>
+            </section>
+
+            <section id="why">
+                <h2>⚡ Why We Need Queues</h2>
+                <p>Without a queue, the Order API waits on every downstream service. If Email is down, the whole request can fail or become slow.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-why-queue.png" alt="Left: Order API calling Payment, Email, Inventory, and Shipping directly so a down Email API fails the request. Right: Order API writes to a queue and workers process later">
+                    <div class="illustration-caption">The API returns quickly. Workers do the slow or unreliable work later. That is the whole point of a work queue.</div>
+                </div>
+
+                <div class="compare-split">
+                    <div class="wrong-box">
+                        <strong>Synchronous chain</strong><br>
+                        User → Order API → Payment → Email → Inventory → Shipping. One slow or down hop hurts the user request.
+                    </div>
+                    <div class="right-box">
+                        <strong>Queued work</strong><br>
+                        User → Order API → Queue → Email / Payment / Inventory workers. The API acknowledges the order. Workers catch up.
+                    </div>
+                </div>
+
+                <p>A queue also absorbs <strong>backpressure</strong>. If producers write 10,000 messages/sec and consumers handle 2,000/sec, the backlog grows instead of melting the API. That lag is expected. You scale workers, not the request path.</p>
+            </section>
+
+            <section id="models">
+                <h2>🧭 Queue vs Pub/Sub vs Streaming</h2>
+                <p>This is the most important distinction. People mix these three together:</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-three-models.png" alt="Three columns: a work queue with competing consumers, a pub/sub topic that copies events to many subscribers, and a streaming log where consumers keep their own offsets">
+                    <div class="illustration-caption">Queue = one competing worker gets the job. Pub/Sub = every subscription gets a copy. Stream = the event stays in a log and each consumer reads at its own offset.</div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="feature-card card-teal">
+                        <h4>Queue</h4>
+                        <p>A message is generally processed by <strong>one competing worker</strong>. Use for background jobs, emails, image resizing, order processing.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Pub/Sub</h4>
+                        <p>Multiple independent subscribers each receive the event. Use for notifications, microservice fan-out, “tell everyone interested.”</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Streaming / Log</h4>
+                        <p>Consumers keep their own position in an append-only log. Replay is a first-class feature. Kafka is the classic example.</p>
+                    </div>
+                </div>
+
+                <h3>The “delete message” difference</h3>
+                <div class="compare-split">
+                    <div class="feature-card card-blue">
+                        <h4>Traditional queue</h4>
+                        <p>Consumer processes → ACK → message is removed. Examples: SQS, RabbitMQ, Azure Service Bus.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Kafka-style log</h4>
+                        <p>Consumer A can be at offset 10 while Consumer B is at offset 5. The record stays until retention expires. Processing does not delete it.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="compare">
+                <h2>📊 Quick Comparison</h2>
+                <p>The systems we will compare: Amazon SQS, SNS, EventBridge, Google Cloud Pub/Sub, Apache Kafka, RabbitMQ, Azure Service Bus, Azure Event Hubs, Redis Streams, NATS / JetStream, ActiveMQ, and Amazon Kinesis.</p>
+
+                <table>
+                    <tr>
+                        <th>System</th>
+                        <th>Main model</th>
+                        <th>Best for</th>
+                    </tr>
+                    <tr>
+                        <td><strong>SQS</strong></td>
+                        <td>Queue</td>
+                        <td>Background jobs / work queues</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SNS</strong></td>
+                        <td>Pub/Sub</td>
+                        <td>Fan-out notifications</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SNS + SQS</strong></td>
+                        <td>Pub/Sub + queues</td>
+                        <td>Reliable fan-out</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Google Pub/Sub</strong></td>
+                        <td>Pub/Sub</td>
+                        <td>Cloud event messaging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kafka</strong></td>
+                        <td>Distributed log / streaming</td>
+                        <td>High-volume events &amp; streams</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RabbitMQ</strong></td>
+                        <td>Message broker</td>
+                        <td>Complex routing / work queues</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Azure Service Bus</strong></td>
+                        <td>Queue + Pub/Sub</td>
+                        <td>Enterprise messaging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Azure Event Hubs</strong></td>
+                        <td>Event streaming</td>
+                        <td>Large event ingestion</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Redis Streams</strong></td>
+                        <td>Stream</td>
+                        <td>Lightweight streaming</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NATS JetStream</strong></td>
+                        <td>Messaging + streaming</td>
+                        <td>Very fast distributed messaging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ActiveMQ</strong></td>
+                        <td>Message broker</td>
+                        <td>Traditional enterprise messaging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kinesis</strong></td>
+                        <td>Event streaming</td>
+                        <td>AWS streaming / data pipelines</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="sqs">
+                <h2>🟧 Amazon SQS</h2>
+                <p>Amazon SQS (Simple Queue Service) is primarily a <span class="highlight">queue</span>. A producer sends a message. A consumer receives it. After successful processing, the consumer deletes it.</p>
+
+                <div class="diagram-box">Order Service
+      |
+      |  OrderCreated
+      v
+    SQS
+      |
+      v
+ Email Worker</div>
+
+                <h3>Visibility timeout</h3>
+                <p>This is the most important SQS idea. When a worker receives a message, SQS <strong>temporarily hides</strong> it. If the worker crashes before deleting the message, the timeout expires and the message becomes visible again for another worker.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-sqs-visibility.png" alt="SQS visibility timeout: Worker A receives Order 123 and crashes, the hidden message becomes visible again, then Worker B processes and deletes it">
+                    <div class="illustration-caption">Visibility timeout is failure recovery. Hidden while a worker is busy. Visible again if that worker dies.</div>
+                </div>
+
+                <h3>Standard vs FIFO</h3>
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Standard</h4>
+                        <p>Optimized for high throughput. Design consumers to tolerate <strong>duplicate delivery</strong>. The consumer should be idempotent.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>FIFO</h4>
+                        <p>First In, First Out. Stronger ordering and deduplication within a message group. Use when order of related messages matters.</p>
+                    </div>
+                </div>
+
+                <h3>SQS is not a broadcast system</h3>
+                <p>If three competing consumers listen to one SQS queue, a given message is generally taken by <strong>one</strong> of them. That is a work queue, not fan-out.</p>
+                <div class="diagram-box">           SQS
+            |
+       message X
+            |
+      +-----+-----+
+      |     |     |
+      A     B     C
+
+Only one gets X</div>
+            </section>
+
+            <section id="sns">
+                <h2>📣 Amazon SNS</h2>
+                <p>SNS (Simple Notification Service) is primarily <span class="highlight">publish/subscribe</span>. One publish can reach many subscribers. That is fan-out.</p>
+
+                <div class="diagram-box">Publisher
+    |
+    v
+   SNS
+    |
+    +----> Subscriber A
+    |
+    +----> Subscriber B
+    |
+    +----> Subscriber C</div>
+
+                <h3>SNS + SQS is the common AWS pattern</h3>
+                <p>SNS alone can push to HTTP, email, Lambda, and more. For reliable independent processing, subscribe <strong>one SQS queue per service</strong> to the topic.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-sns-sqs.png" alt="Order Service publishes OrderCreated to SNS, which fans out to Email, Inventory, and Analytics SQS queues, each with its own worker">
+                    <div class="illustration-caption">One OrderCreated event becomes three independent queues. Email can be slow without blocking inventory.</div>
+                </div>
+
+                <p>Amazon EventBridge sits nearby: it is an event bus with rules, schema, and SaaS integrations. Think “routed events across an account,” not “a simple work queue.”</p>
+            </section>
+
+            <section id="pubsub">
+                <h2>☁️ Google Cloud Pub/Sub</h2>
+                <p>Google Cloud Pub/Sub is a managed publish/subscribe system. Publishers write to a <strong>topic</strong>. Each <strong>subscription</strong> is an independent consumption path.</p>
+
+                <div class="diagram-box">Publisher
+    |
+    v
+ Topic  (orders)
+    |
+    +------ email-subscription -----> Email consumer
+    |
+    +------ inventory-subscription -> Inventory consumer
+    |
+    +------ analytics-subscription -> Analytics consumer</div>
+
+                <div class="compare-split">
+                    <div class="feature-card card-orange">
+                        <h4>SQS</h4>
+                        <p>One queue. Competing workers. One worker gets a given message.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Pub/Sub</h4>
+                        <p>One topic. Many subscriptions. Each subscription can receive its own copy.</p>
+                    </div>
+                </div>
+
+                <p>Ordering can be enabled for use cases that need it. Treat it as configured, not as a free global guarantee.</p>
+            </section>
+
+            <section id="kafka">
+                <h2>🪵 Apache Kafka</h2>
+                <p>Kafka is <strong>not</strong> a traditional message queue. It is a <span class="highlight">distributed append-only event log / streaming platform</span>.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-kafka.png" alt="Kafka topic split into partitions with offsets, plus two consumer groups independently reading the same topic">
+                    <div class="illustration-caption">Kafka does not think “I delivered this, therefore delete it.” It thinks “this event exists at offset X.”</div>
+                </div>
+
+                <h3>Retention, not delete-on-ack</h3>
+                <p>A traditional queue removes a message after ACK. Kafka keeps records according to retention. Consumers can go back and reread old events. That is why analytics, search, fraud, and a data warehouse can all consume the same <code>UserClickedProduct</code> stream independently.</p>
+
+                <h3>Partitions</h3>
+                <p>A topic is split into partitions. Each partition is an ordered log. More partitions generally allow more parallelism inside one consumer group.</p>
+                <div class="diagram-box">orders topic
+ |
+ +-- Partition 0  →  Consumer C0
+ +-- Partition 1  →  Consumer C1
+ +-- Partition 2  →  Consumer C2
+ +-- Partition 3  →  Consumer C3</div>
+
+                <h3>Consumer groups</h3>
+                <p>Inside a group, partitions are distributed so each partition is assigned to <strong>one consumer at a time</strong>. Another group can independently read the same topic. That is how Kafka can act like both a work queue (one group) and pub/sub (many groups).</p>
+
+                <div class="info-box">
+                    <h3>Interview point: ordering</h3>
+                    <p>Kafka guarantees order <strong>within a partition</strong>, not a global order across the whole topic. Put related events (same order id, same user id) in the same partition key if their sequence must stay intact.</p>
+                </div>
+
+                <h3>Scaling is different</h3>
+                <p>4 partitions + 4 consumers can map 1:1. 4 partitions + 10 consumers means some consumers sit idle. You scale a Kafka consumer group by adding partitions first, then consumers — not by blindly adding processes.</p>
+            </section>
+
+            <section id="rabbitmq">
+                <h2>🐰 RabbitMQ</h2>
+                <p>RabbitMQ is a traditional <span class="highlight">message broker</span>. Producers usually publish to an <strong>exchange</strong>, not directly to a queue. The exchange routes.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-rabbitmq.png" alt="Producer publishing to a RabbitMQ exchange that routes into Email, Order, and Broadcast queues using Direct, Topic, Fanout, and Headers">
+                    <div class="illustration-caption">SQS is producer → queue → consumer. RabbitMQ is producer → exchange → routing → queues.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Direct</h4>
+                        <p>Route by exact routing key. <code>email</code> goes to the email queue.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Topic</h4>
+                        <p>Pattern routing: <code>order.created</code>, <code>order.*</code>, <code>payment.completed</code>.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Fanout</h4>
+                        <p>Broadcast to every bound queue. Ignore the routing key.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Headers</h4>
+                        <p>Route on message headers instead of a routing key.</p>
+                    </div>
+                </div>
+
+                <h3>RabbitMQ vs Kafka</h3>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>RabbitMQ</th>
+                        <th>Kafka</th>
+                    </tr>
+                    <tr>
+                        <td>Primary model</td>
+                        <td>Message broker</td>
+                        <td>Distributed event log</td>
+                    </tr>
+                    <tr>
+                        <td>Routing</td>
+                        <td>Very powerful</td>
+                        <td>Topic / partition based</td>
+                    </tr>
+                    <tr>
+                        <td>Message lifetime</td>
+                        <td>After consumption / ACK</td>
+                        <td>Retention based</td>
+                    </tr>
+                    <tr>
+                        <td>Replay</td>
+                        <td>Limited / not the primary design</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Ordering</td>
+                        <td>Queue / order semantics</td>
+                        <td>Partition ordering</td>
+                    </tr>
+                    <tr>
+                        <td>Huge streaming workloads</td>
+                        <td>Less ideal</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Complex routing</td>
+                        <td>Excellent</td>
+                        <td>Less flexible</td>
+                    </tr>
+                    <tr>
+                        <td>Work queues</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="azure">
+                <h2>🔷 Azure Service Bus</h2>
+                <p>Azure Service Bus is Microsoft’s enterprise messaging service. It supports both models:</p>
+                <ul>
+                    <li><strong>Queues</strong> — competing consumers, one consumer gets a message</li>
+                    <li><strong>Topics + subscriptions</strong> — pub/sub, each subscription is an independent path</li>
+                </ul>
+                <p>FIFO-style ordering is available through <strong>sessions</strong>. Dead-lettering is a first-class feature. If you are already in Azure and need enterprise queues plus topics, this is the default pick — not Event Hubs.</p>
+            </section>
+
+            <section id="event-hubs">
+                <h2>📡 Azure Event Hubs &amp; Amazon Kinesis</h2>
+                <p>These are closer to <strong>Kafka</strong> than to RabbitMQ. They ingest high-volume streams: IoT, logs, telemetry, clickstreams.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Azure Event Hubs</h4>
+                        <p>High-volume event ingestion. Partitioned. Often the front door into stream processing, analytics, and storage.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Amazon Kinesis</h4>
+                        <p>AWS streaming platform. Think “Kinesis ≈ AWS stream,” not “Kinesis ≈ SQS.” Use for data pipelines, not simple background jobs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="others">
+                <h2>⚡ Redis Streams, NATS, ActiveMQ</h2>
+                <div class="grid-3">
+                    <div class="feature-card card-red">
+                        <h4>Redis Streams</h4>
+                        <p>A log/stream abstraction with consumer groups. Useful when Redis is already in the stack and you need lightweight streaming — not a replacement for Kafka at huge volume.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>NATS / JetStream</h4>
+                        <p>Lightweight, low-latency messaging. Core NATS is pub/sub. JetStream adds persistence and streaming. Popular in fast distributed systems.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>ActiveMQ</h4>
+                        <p>Traditional enterprise broker (often JMS / Java). Queues and topics. More common in older enterprise architectures than in new cloud-native Node.js stacks.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="delivery">
+                <h2>🎯 Delivery Guarantees</h2>
+                <p>Most brokers need an ACK: “I successfully processed this.” If the worker crashes before ACK, the message can become available again.</p>
+
+                <div class="grid-3">
+                    <div class="feature-card card-orange">
+                        <h4>At-most-once</h4>
+                        <p>Deliver, then forget. A crash can lose the message. You prioritize avoiding duplicates.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>At-least-once</h4>
+                        <p>The common default. A crash before ACK can redeliver. Your app should be idempotent.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Exactly-once</h4>
+                        <p>Be careful with the phrase. Broker “exactly-once” is not the same as exactly-once <em>effect</em> when you charge a card or send an email.</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>Exactly-once processing is hard</h3>
+                    <p>Even if the broker is sophisticated, an external side effect (payment, SMS, inventory decrement) can still run twice. Design the effect to be safe under retry, not just the delivery.</p>
+                </div>
+            </section>
+
+            <section id="idempotency">
+                <h2>🔁 Idempotency</h2>
+                <p>If <code>Charge $100</code> is delivered twice, a naive consumer charges twice. A safe consumer keys on something unique — usually <code>order_id</code> or a message id — and skips work already done.</p>
+
+                <div class="compare-split">
+                    <div class="wrong-box">
+                        <strong>Bad</strong><br>
+                        message received → charge customer. Twice means two charges.
+                    </div>
+                    <div class="right-box">
+                        <strong>Better</strong><br>
+                        Look up <code>order_id = 123</code>. Already processed? Ignore. Otherwise process and record the id in the same transaction when you can.
+                    </div>
+                </div>
+
+                <p>SQS Standard, Kafka at-least-once, and most cloud queues assume you will do this. Treat idempotent consumers as the default, not an optimization.</p>
+            </section>
+
+            <section id="ordering">
+                <h2>📑 Ordering &amp; Scaling</h2>
+                <table>
+                    <tr>
+                        <th>System</th>
+                        <th>Ordering</th>
+                    </tr>
+                    <tr>
+                        <td>SQS Standard</td>
+                        <td>Not strict</td>
+                    </tr>
+                    <tr>
+                        <td>SQS FIFO</td>
+                        <td>Ordered within FIFO / message-group semantics</td>
+                    </tr>
+                    <tr>
+                        <td>RabbitMQ</td>
+                        <td>Queue order semantics; concurrency can change observed processing order</td>
+                    </tr>
+                    <tr>
+                        <td>Kafka</td>
+                        <td>Ordered within a partition</td>
+                    </tr>
+                    <tr>
+                        <td>Google Pub/Sub</td>
+                        <td>Ordering can be enabled for appropriate use cases</td>
+                    </tr>
+                    <tr>
+                        <td>Azure Service Bus</td>
+                        <td>FIFO-style via sessions</td>
+                    </tr>
+                    <tr>
+                        <td>Redis Streams</td>
+                        <td>Stream entry order</td>
+                    </tr>
+                </table>
+
+                <h3>Horizontal scaling on a queue</h3>
+                <p>Add workers. Messages spread across them. That is competing consumers.</p>
+                <div class="diagram-box">Message 1 ---> Worker 1
+Message 2 ---> Worker 2
+Message 3 ---> Worker 3
+Message 4 ---> Worker 1</div>
+
+                <h3>Backpressure</h3>
+                <p>When producers outrun consumers, the queue holds the difference. That backlog is <strong>consumer lag</strong>. A queue is a shock absorber, not a proof that you are keeping up. Watch depth / lag and scale workers or slow producers.</p>
+            </section>
+
+            <section id="dlq">
+                <h2>☠️ Dead Letter Queue, Retry, Delay</h2>
+                <p>A poison message that always fails should not block the queue forever. After a retry budget, move it to a <span class="highlight">dead letter queue</span> so you can inspect it.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-dlq.png" alt="Worker failing three times with exponential backoff, then the message moving to a dead letter queue, plus an idempotency check on order id">
+                    <div class="illustration-caption">Retry with backoff. Isolate poison messages. Never charge twice just because the broker retried.</div>
+                </div>
+
+                <ul class="hop-list">
+                    <li><strong>Retry</strong> — attempt 1, 2, 3. Prefer exponential backoff (1s, 2s, 4s, 8s) over a tight loop.</li>
+                    <li><strong>DLQ</strong> — after the budget, isolate the message. SQS, RabbitMQ ecosystems, Service Bus, and others all support a dead-letter pattern; details differ.</li>
+                    <li><strong>Delay</strong> — some work should wait: reminder in 30 minutes, retry payment in 5, expire a reservation in 15. Platforms expose delay / scheduled messages differently.</li>
+                </ul>
+            </section>
+
+            <section id="persistence">
+                <h2>💾 Persistence, Size, Managed vs Self-managed</h2>
+                <p>Brokers are not object storage. Do not put a 10 GB video on the queue. Put the file in S3 / GCS / Azure Blob and send metadata plus the object key.</p>
+
+                <div class="diagram-box">{
+  "event": "VideoUploaded",
+  "objectKey": "videos/abc.mp4"
+}</div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Durable</h4>
+                        <p>If the broker crashes, the message should survive. Cloud-managed systems store durably by default according to their SLAs. Kafka writes to disk across brokers. RabbitMQ can use durable queues/messages. Redis Streams depend on Redis persistence settings.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Managed vs self-managed</h4>
+                        <p><strong>Managed:</strong> SQS, Pub/Sub, Service Bus, EventBridge, MSK, Confluent Cloud. <strong>Self-managed:</strong> Kafka, RabbitMQ, NATS, ActiveMQ on your machines. More control, more operational work.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="choose">
+                <h2>🌳 What Should You Choose?</h2>
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-decision.png" alt="Decision tree: background work to SQS or RabbitMQ, fan-out to SNS or Pub/Sub, event history to Kafka, plus five one-line mental models">
+                    <div class="illustration-caption">Start from the job, not from the brand name. Background work, fan-out, and event history lead to different systems.</div>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat-card">
+                        <div class="num">Use SQS</div>
+                        <div class="label">Background jobs on AWS</div>
+                        <p>Emails, image resize, reports, order workers. Node.js API → SQS → worker.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Use RabbitMQ</div>
+                        <div class="label">Complex routing</div>
+                        <p>Exchanges, topic patterns, work queues when you need broker-side routing.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Use Kafka</div>
+                        <div class="label">Events + history + replay</div>
+                        <p>High volume, many independent consumers, stream processing, analytics.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Use Pub/Sub</div>
+                        <div class="label">GCP-native fan-out</div>
+                        <p>Topics and subscriptions when you already live on Google Cloud.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Use Service Bus</div>
+                        <div class="label">Azure enterprise messaging</div>
+                        <p>Queues plus topics/subscriptions in the Microsoft ecosystem.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Use Event Hubs / Kinesis</div>
+                        <div class="label">Massive ingestion</div>
+                        <p>IoT, logs, telemetry, clickstreams — not a simple job queue.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="eda">
+                <h2>🧩 Event-Driven Architecture</h2>
+                <p>Instead of Order Service calling Payment, Inventory, and Email over HTTP, publish <code>OrderCreated</code> once. Each service consumes independently. That reduces direct coupling.</p>
+
+                <div class="diagram-box">             Order Service
+                  |
+                  |  OrderCreated
+                  v
+             Message System
+                  |
+        +---------+---------+
+        |         |         |
+        v         v         v
+     Payment   Inventory   Email</div>
+
+                <h3>Request/response vs messaging</h3>
+                <div class="compare-split">
+                    <div class="feature-card card-blue">
+                        <h4>Synchronous HTTP</h4>
+                        <p>Client waits for the server. Use when the user needs the answer now: login, checkout confirmation, a read.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Asynchronous messaging</h4>
+                        <p>API writes a message and returns. The worker finishes later. Use when the work is slow, bursty, or belongs to another team.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nodejs">
+                <h2>🟢 Node.js vs the Event Loop Queue</h2>
+                <p>Because this site also covers Node.js internals: <strong>the broker is not the event loop</strong>. Confusing them is a common learning mistake.</p>
+
+                <div class="illustration">
+                    <img src="/images/message-queue/mq-nodejs.png" alt="Top: event loop, microtask queue, timers, and libuv inside one Node.js process. Bottom: a Node.js API talking over the network to SQS, Kafka, or RabbitMQ and separate worker processes">
+                    <div class="illustration-caption">Microtask queue and timer queue live inside one process. SQS / Kafka / RabbitMQ live between applications.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Inside the runtime</h4>
+                        <p>Event loop, microtask queue, timers, I/O callbacks, libuv thread pool. This schedules JavaScript in <em>one</em> Node.js process.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Between applications</h4>
+                        <p>Node.js API → network → broker → other Node.js workers, containers, or Kubernetes pods. This is distributed messaging.</p>
+                    </div>
+                </div>
+
+                <p>A typical Node.js setup: the API publishes and returns. Workers are separate processes. You scale workers horizontally. You do not try to “queue work” by stuffing the event loop.</p>
+
+                <div class="diagram-box">                     COMPUTER
+                         |
+              CPU / cores / OS threads
+                         |
+                   Node.js process
+                   (event loop + libuv)
+                         |
+                   Load balancer
+                         |
+                   Node.js application
+                         |
+                   Message broker
+                         |
+              Worker  ·  Worker  ·  Worker</div>
+            </section>
+
+            <section id="takeaway">
+                <h2>📌 Mental Models</h2>
+                <div class="remember-grid">
+                    <div class="remember-card">
+                        <h4>SQS</h4>
+                        <p>“Give this job to one worker.” Queue → worker.</p>
+                    </div>
+                    <div class="remember-card">
+                        <h4>SNS</h4>
+                        <p>“Tell everyone interested.” Topic → many subscribers.</p>
+                    </div>
+                    <div class="remember-card">
+                        <h4>Google Pub/Sub</h4>
+                        <p>“Publish an event, let subscriptions consume it.” Topic → subscriptions.</p>
+                    </div>
+                    <div class="remember-card">
+                        <h4>RabbitMQ</h4>
+                        <p>“Route messages intelligently to queues.” Producer → exchange → queues.</p>
+                    </div>
+                    <div class="remember-card">
+                        <h4>Kafka</h4>
+                        <p>“Keep an ordered stream that many consumers can independently read.” Topic / partitions → consumer groups.</p>
+                    </div>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Capability</th>
+                        <th>SQS</th>
+                        <th>RabbitMQ</th>
+                        <th>Pub/Sub</th>
+                        <th>Kafka</th>
+                        <th>Service Bus</th>
+                        <th>Event Hubs</th>
+                    </tr>
+                    <tr>
+                        <td>Simple queue</td>
+                        <td>Excellent</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                        <td>Good</td>
+                        <td>Excellent</td>
+                        <td>Limited</td>
+                    </tr>
+                    <tr>
+                        <td>Pub/Sub</td>
+                        <td>Limited</td>
+                        <td>Excellent</td>
+                        <td>Excellent</td>
+                        <td>Excellent</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                    </tr>
+                    <tr>
+                        <td>Complex routing</td>
+                        <td>Limited</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                        <td>Fair</td>
+                        <td>Strong</td>
+                        <td>Limited</td>
+                    </tr>
+                    <tr>
+                        <td>Replay / history</td>
+                        <td>Weak</td>
+                        <td>Limited</td>
+                        <td>Strong</td>
+                        <td>Excellent</td>
+                        <td>Limited</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Event streaming</td>
+                        <td>Weak</td>
+                        <td>Limited</td>
+                        <td>Strong</td>
+                        <td>Excellent</td>
+                        <td>Limited</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>High throughput</td>
+                        <td>Strong</td>
+                        <td>Good</td>
+                        <td>Excellent</td>
+                        <td>Excellent</td>
+                        <td>Good</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Ordering</td>
+                        <td>FIFO option</td>
+                        <td>Queue semantics</td>
+                        <td>Configurable</td>
+                        <td>Partition</td>
+                        <td>Sessions</td>
+                        <td>Partition</td>
+                    </tr>
+                </table>
+
+                <div class="info-box premium">
+                    <h3>The most important takeaway</h3>
+                    <p><strong>SQS and RabbitMQ are primarily about distributing work. Kafka is primarily about storing and distributing an event stream. Pub/Sub is primarily about publishing events to independent subscriptions.</strong></p>
+                    <p>For a typical Node.js microservice: start with a queue (SQS / RabbitMQ / Service Bus). For event-driven fan-out with history, use Kafka or Pub/Sub. For millions of telemetry events, use a streaming platform (Kafka, Kinesis, Event Hubs, Pub/Sub).</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

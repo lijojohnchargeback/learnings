@@ -1,0 +1,256 @@
+.blog-post-page {
+    min-height: 100vh;
+    background: #ffffff;
+    padding-bottom: 120px;
+}
+
+/* ===== POST HEADER VISUAL ===== */
+.post-header-visual {
+    position: relative;
+    height: 600px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: #111827;
+}
+
+.post-header-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+}
+
+.post-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(17, 24, 39, 0.9) 100%);
+}
+
+.post-header-container {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 24px 80px;
+}
+
+.post-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    margin-bottom: 40px;
+    transition: color 0.2s;
+}
+
+.post-back-btn:hover {
+    color: #ffffff;
+}
+
+.post-category-badges {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.post-tag-badge {
+    background: #4f46e5;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.post-main-title {
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 40px;
+}
+
+.post-author-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.author-img {
+    width: 48px;
+    height: 48px;
+    background: #ffffff;
+    color: #111827;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.author-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.author-name {
+    font-size: 16px;
+    font-weight: 750;
+    color: #ffffff;
+}
+
+.post-status {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+}
+
+.post-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ===== POST CONTENT ===== */
+.post-content-container {
+    max-width: 900px;
+    margin: 80px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 60px;
+    position: relative;
+}
+
+.post-sidebar-actions {
+    position: sticky;
+    top: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: fit-content;
+}
+
+.side-action-btn {
+    width: 50px;
+    height: 50px;
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.side-action-btn:hover {
+    color: #4f46e5;
+    border-color: #eef2ff;
+    background: #f9fafb;
+    transform: scale(1.05);
+}
+
+.post-body-wrapper {
+    flex: 1;
+}
+
+.post-rich-content {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #374151;
+}
+
+.post-rich-content h2 {
+    font-size: 32px;
+    font-weight: 850;
+    color: #111827;
+    margin: 60px 0 24px;
+    letter-spacing: -0.02em;
+}
+
+.post-rich-content p {
+    margin-bottom: 24px;
+}
+
+.post-rich-content pre {
+    background: #111827;
+    padding: 24px;
+    border-radius: 16px;
+    margin: 32px 0;
+    overflow-x: auto;
+}
+
+.post-rich-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: #f8fafc;
+}
+
+.post-footer-minimal {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.post-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.footer-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .post-sidebar-actions {
+        display: none;
+    }
+
+    .post-main-title {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .post-header-visual {
+        height: 500px;
+    }
+
+    .post-author-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+    }
+}

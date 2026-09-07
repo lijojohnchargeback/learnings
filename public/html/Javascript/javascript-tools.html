@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Development Tools - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🛠️ JS Tools</h2>
+            <p>Development Tools</p>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Code Quality</div>
+                <ul>
+                    <li><a href="#linting">🧹 Linting & Formatting</a></li>
+                    <li><a href="#security">🔒 Security Tools</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Build & Bundle</div>
+                <ul>
+                    <li><a href="#build">🏗️ Build Tools</a></li>
+                    <li><a href="#compilers">🔁 Transpilers</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Testing</div>
+                <ul>
+                    <li><a href="#testing">🔬 Testing Frameworks</a></li>
+                    <li><a href="#coverage">🧪 Code Coverage</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Packages & Tasks</div>
+                <ul>
+                    <li><a href="#package">📦 Package Managers</a></li>
+                    <li><a href="#task-runners">⚙️ Task Runners</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Development</div>
+                <ul>
+                    <li><a href="#misc">🎯 Dev Tools</a></li>
+                    <li><a href="#framework">🚀 Framework Tools</a></li>
+                    <li><a href="#recommended">🌟 Recommended Setups</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Built-in Methods</div>
+                <ul>
+                    <li><a href="#math-methods">📐 Math Methods</a></li>
+                    <li><a href="#number-methods">🔢 Number Methods</a></li>
+                    <li><a href="#date-methods">📅 Date Methods</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🛠️ JavaScript Development Tools</h1>
+                <p>Essential Tools for Modern JavaScript Development</p>
+            </header>
+
+        <section id="linting">
+            <h2>🧹 Code Quality & Linting</h2>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>1. ESLint</h4>
+                    <p><strong>Purpose:</strong> Finds and fixes problems in JavaScript code</p>
+                    <p><strong>Why Use:</strong></p>
+                    <ul>
+                        <li>✅ Catch bugs before runtime</li>
+                        <li>✅ Enforce coding standards</li>
+                        <li>✅ Integrates with editors</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install -g eslint
+
+<span class="comment"># Initialize</span>
+eslint --init
+
+<span class="comment"># Run linting</span>
+npm run lint
+
+<span class="comment"># Auto-fix issues</span>
+npm run lint:fix
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>2. Prettier</h4>
+                    <p><strong>Purpose:</strong> Opinionated code formatter</p>
+                    <p><strong>Why Use:</strong></p>
+                    <ul>
+                        <li>✅ Consistent code style</li>
+                        <li>✅ No style debates in team</li>
+                        <li>✅ Works with ESLint</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install --save-dev prettier
+
+<span class="comment"># Format all files</span>
+npx prettier --write .
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>3. Stylelint</h4>
+                    <p><strong>Purpose:</strong> Linter for CSS/SCSS</p>
+                    <p><strong>When to Use:</strong> Projects with custom styles</p>
+                </div>
+            </div>
+
+            <h3>Real-World Setup</h3>
+            <div class="info-box">
+                <p><strong>Typical Project Setup:</strong></p>
+                <ol>
+                    <li>ESLint for JavaScript linting</li>
+                    <li>Prettier for code formatting</li>
+                    <li>Configure editor (VS Code) to auto-format on save</li>
+                    <li>Add pre-commit hooks to enforce standards</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="build">
+            <h2>🏗️ Build Tools & Bundlers</h2>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>4. Webpack</h4>
+                    <p><strong>Purpose:</strong> Module bundler for JavaScript applications</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>📦 Bundles JS, CSS, images</li>
+                        <li>🔄 Code splitting</li>
+                        <li>⚡ Hot Module Replacement (HMR)</li>
+                        <li>🔌 Extensive plugin ecosystem</li>
+                    </ul>
+                    <p><strong>When to Use:</strong> Complex applications, legacy projects</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>5. Vite</h4>
+                    <p><strong>Purpose:</strong> Next-generation frontend tooling</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>⚡ Lightning-fast dev server</li>
+                        <li>🚀 Instant server start</li>
+                        <li>🔥 Hot Module Replacement</li>
+                        <li>📦 Optimized builds</li>
+                    </ul>
+                    <p><strong>When to Use:</strong> Modern React/Vue/Svelte projects</p>
+                    <div class="code-block"><span class="comment"># Create new project</span>
+npm create vite@latest my-app
+
+<span class="comment"># Start dev server</span>
+npm run dev
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>6. Parcel</h4>
+                    <p><strong>Purpose:</strong> Zero-config bundler</p>
+                    <p><strong>When to Use:</strong> Quick prototypes, simple projects</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>7. Rollup</h4>
+                    <p><strong>Purpose:</strong> Module bundler for libraries</p>
+                    <p><strong>When to Use:</strong> Building JavaScript libraries</p>
+                </div>
+            </div>
+
+            <h3>Choosing a Build Tool</h3>
+            <div class="info-box">
+                <ul>
+                    <li>🚀 <strong>New projects:</strong> Use Vite (fastest, modern)</li>
+                    <li>⚛️ <strong>React apps:</strong> Create React App or Vite</li>
+                    <li>📚 <strong>Libraries:</strong> Rollup</li>
+                    <li>🏢 <strong>Enterprise apps:</strong> Webpack (most configurable)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="compilers">
+            <h2>🔁 Transpilers & Compilers</h2>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>8. Babel</h4>
+                    <p><strong>Purpose:</strong> JavaScript compiler</p>
+                    <p><strong>What it Does:</strong></p>
+                    <ul>
+                        <li>Converts ES6+ to ES5</li>
+                        <li>Supports JSX (React)</li>
+                        <li>Plugin system for features</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install --save-dev @babel/core @babel/preset-env
+
+<span class="comment"># .babelrc configuration</span>
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>9. TypeScript</h4>
+                    <p><strong>Purpose:</strong> JavaScript with static typing</p>
+                    <p><strong>Benefits:</strong></p>
+                    <ul>
+                        <li>✅ Catch errors at compile time</li>
+                        <li>✅ Better IDE support</li>
+                        <li>✅ Self-documenting code</li>
+                        <li>✅ Large-scale app development</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install -g typescript
+
+<span class="comment"># Initialize</span>
+tsc --init
+
+<span class="comment"># Compile</span>
+tsc
+</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testing">
+            <h2>🔬 Testing Frameworks</h2>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>11. Jest</h4>
+                    <p><strong>Purpose:</strong> JavaScript testing framework</p>
+                    <p><strong>Best For:</strong> Unit testing, React applications</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Zero config</li>
+                        <li>Snapshot testing</li>
+                        <li>Built-in code coverage</li>
+                        <li>Mocking support</li>
+                    </ul>
+                    <div class="code-block"><span class="comment">// Example test</span>
+test('adds 1 + 2 to equal 3', () => {
+  expect(1 + 2).toBe(3);
+});
+
+test('array contains item', () => {
+  const arr = ['apple', 'banana'];
+  expect(arr).toContain('apple');
+});
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>12. Mocha + Chai</h4>
+                    <p><strong>Purpose:</strong> Test runner + assertion library</p>
+                    <p><strong>Best For:</strong> Node.js applications</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>13. Vitest</h4>
+                    <p><strong>Purpose:</strong> Vite-native testing framework</p>
+                    <p><strong>Best For:</strong> Projects using Vite</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>14. Cypress</h4>
+                    <p><strong>Purpose:</strong> End-to-end testing</p>
+                    <p><strong>Best For:</strong> Testing entire user flows</p>
+                    <div class="code-block"><span class="comment">// Cypress example</span>
+describe('Login Test', () => {
+  it('logs in successfully', () => {
+    cy.visit('/login');
+    cy.get('#email').type('user@example.com');
+    cy.get('#password').type('password123');
+    cy.get('button').click();
+    cy.url().should('include', '/dashboard');
+  });
+});
+</div>
+                </div>
+            </div>
+
+            <h3>Testing Strategy</h3>
+            <div class="info-box">
+                <p><strong>Recommended Approach:</strong></p>
+                <ol>
+                    <li><strong>Unit Tests:</strong> Jest (70% of tests)</li>
+                    <li><strong>Integration Tests:</strong> Jest with React Testing Library (20%)</li>
+                    <li><strong>E2E Tests:</strong> Cypress (10%)</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="package">
+            <h2>📦 Package Managers</h2>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>20. npm</h4>
+                    <p><strong>Default Node.js package manager</strong></p>
+                    <div class="code-block"><span class="comment"># Install dependencies</span>
+npm install
+
+<span class="comment"># Add package</span>
+npm install packagename
+
+<span class="comment"># Dev dependency</span>
+npm install --save-dev packagename
+
+<span class="comment"># Global install</span>
+npm install -g packagename
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>21. yarn</h4>
+                    <p><strong>Faster alternative to npm</strong></p>
+                    <p><strong>Advantages:</strong></p>
+                    <ul>
+                        <li>Faster installs</li>
+                        <li>Lockfile for consistency</li>
+                        <li>Workspaces support</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install</span>
+yarn install
+
+<span class="comment"># Add package</span>
+yarn add packagename
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>22. pnpm</h4>
+                    <p><strong>Efficient disk space usage</strong></p>
+                    <p><strong>Benefits:</strong></p>
+                    <ul>
+                        <li>Saves disk space</li>
+                        <li>Faster than npm/yarn</li>
+                        <li>Strict node_modules</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="misc">
+            <h2>🎯 Additional Tools</h2>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>10. dotenv</h4>
+                    <p><strong>Purpose:</strong> Load environment variables</p>
+                    <div class="code-block"><span class="comment"># .env file</span>
+DATABASE_URL=postgresql://localhost
+API_KEY=your-api-key-here
+
+<span class="comment">// app.js</span>
+require('dotenv').config();
+console.log(process.env.API_KEY);
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>15. npm scripts</h4>
+                    <p><strong>Purpose:</strong> Task automation</p>
+                    <div class="code-block"><span class="comment">// package.json</span>
+{
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  }
+}
+</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>16. Gulp</h4>
+                    <p><strong>Purpose:</strong> Task runner</p>
+                    <p><strong>When to Use:</strong> Automate repetitive tasks</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>17. HMR (Hot Module Replacement)</h4>
+                    <p><strong>Purpose:</strong> Live reload during development</p>
+                    <p><strong>Provided by:</strong> Webpack, Vite</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>18. Source Maps</h4>
+                    <p><strong>Purpose:</strong> Debug minified code</p>
+                    <p><strong>What it Does:</strong> Maps compiled code back to original source</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>19. Istanbul (nyc)</h4>
+                    <p><strong>Purpose:</strong> Code coverage reporting</p>
+                    <div class="code-block"><span class="comment"># Run tests with coverage</span>
+npm test -- --coverage
+
+<span class="comment"># Shows which code is tested</span>
+</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="recommended">
+            <h2>🌟 Recommended Setup for New Project</h2>
+
+            <h3>Small Project (Landing Page, Portfolio)</h3>
+            <div class="code-block">✅ ESLint + Prettier (code quality)
+✅ Vite (dev server + build)
+✅ npm (package manager)
+</div>
+
+            <h3>Medium Project (Web App)</h3>
+            <div class="code-block">✅ ESLint + Prettier
+✅ Vite or Create React App
+✅ Jest (testing)
+✅ dotenv (environment variables)
+✅ npm or yarn
+</div>
+
+            <h3>Large Project (Enterprise)</h3>
+            <div class="code-block">✅ ESLint + Prettier + Stylelint
+✅ Webpack (customizable build)
+✅ TypeScript (type safety)
+✅ Jest + Cypress (testing)
+✅ dotenv
+✅ Babel (browser support)
+✅ pnpm (efficient package management)
+✅ Continuous Integration (CI/CD)
+</div>
+
+            <div class="info-box">
+                <p><strong>💡 Pro Tips:</strong></p>
+                <ul>
+                    <li>Start simple, add tools as needed</li>
+                    <li>Configure editor for auto-format on save</li>
+                    <li>Use Git hooks (husky) to enforce quality</li>
+                    <li>Document tool choices in README</li>
+                    <li>Keep dependencies updated</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security">
+            <h2>🔒 Security Tools</h2>
+
+            <p>Keep your JavaScript applications secure by scanning for vulnerabilities.</p>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Snyk</h4>
+                    <p><strong>Purpose:</strong> Find and fix vulnerabilities in dependencies</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Scans npm packages for known vulnerabilities</li>
+                        <li>Provides fix recommendations</li>
+                        <li>Integrates with CI/CD</li>
+                        <li>Free for open-source projects</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install globally</span>
+npm install -g snyk
+
+<span class="comment"># Authenticate</span>
+snyk auth
+
+<span class="comment"># Test for vulnerabilities</span>
+snyk test
+
+<span class="comment"># Monitor project</span>
+snyk monitor</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>npm audit</h4>
+                    <p><strong>Purpose:</strong> Built-in npm security scanning</p>
+                    <div class="code-block"><span class="comment"># Check for vulnerabilities</span>
+npm audit
+
+<span class="comment"># Fix vulnerabilities automatically</span>
+npm audit fix
+
+<span class="comment"># Force fix (may break things)</span>
+npm audit fix --force</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>OWASP Dependency-Check</h4>
+                    <p><strong>Purpose:</strong> Detect publicly known vulnerabilities</p>
+                    <p><strong>When to Use:</strong> Enterprise security requirements</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>SonarQube</h4>
+                    <p><strong>Purpose:</strong> Code quality and security platform</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Detects bugs and vulnerabilities</li>
+                        <li>Code smell detection</li>
+                        <li>Technical debt tracking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Security Best Practices:</strong></p>
+                <ul>
+                    <li>Regularly update dependencies</li>
+                    <li>Run security audits before deployment</li>
+                    <li>Use environment variables for sensitive data</li>
+                    <li>Enable dependabot or renovate bot</li>
+                    <li>Review package permissions</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="coverage">
+            <h2>🧪 Code Coverage Tools</h2>
+
+            <p><span class="highlight">Code coverage</span> measures how much of your code is executed during testing.</p>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Istanbul / nyc</h4>
+                    <p><strong>Purpose:</strong> JavaScript code coverage tool</p>
+                    <p><strong>Works with:</strong> Jest, Mocha, Jasmine</p>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install --save-dev nyc
+
+<span class="comment"># Run tests with coverage</span>
+nyc npm test
+
+<span class="comment"># Generate HTML report</span>
+nyc --reporter=html npm test</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Jest Coverage</h4>
+                    <p><strong>Purpose:</strong> Built-in coverage in Jest</p>
+                    <div class="code-block"><span class="comment"># Run with coverage</span>
+npm test -- --coverage
+
+<span class="comment"># package.json</span>
+{
+  <span class="string">"scripts"</span>: {
+    <span class="string">"test"</span>: <span class="string">"jest"</span>,
+    <span class="string">"test:coverage"</span>: <span class="string">"jest --coverage"</span>
+  }
+}</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Codecov</h4>
+                    <p><strong>Purpose:</strong> Hosted coverage reports</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Visual coverage reports</li>
+                        <li>GitHub integration</li>
+                        <li>Pull request comments</li>
+                        <li>Coverage badges</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Coveralls</h4>
+                    <p><strong>Purpose:</strong> Coverage tracking service</p>
+                    <p><strong>Similar to:</strong> Codecov</p>
+                </div>
+            </div>
+
+            <h3>Understanding Coverage Metrics</h3>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Description</th>
+                    <th>Goal</th>
+                </tr>
+                <tr>
+                    <td><strong>Statement Coverage</strong></td>
+                    <td>% of statements executed</td>
+                    <td>80-90%</td>
+                </tr>
+                <tr>
+                    <td><strong>Branch Coverage</strong></td>
+                    <td>% of branches (if/else) executed</td>
+                    <td>75-85%</td>
+                </tr>
+                <tr>
+                    <td><strong>Function Coverage</strong></td>
+                    <td>% of functions called</td>
+                    <td>80-90%</td>
+                </tr>
+                <tr>
+                    <td><strong>Line Coverage</strong></td>
+                    <td>% of lines executed</td>
+                    <td>80-90%</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <p><strong>💡 Coverage Tips:</strong></p>
+                <ul>
+                    <li>✅ Aim for 80% coverage as a baseline</li>
+                    <li>✅ 100% coverage doesn't guarantee bug-free code</li>
+                    <li>✅ Focus on testing critical paths</li>
+                    <li>✅ Use coverage to find untested code</li>
+                    <li>⚠️ Don't sacrifice test quality for coverage numbers</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="task-runners">
+            <h2>⚙️ Task Runners</h2>
+
+            <p><span class="highlight">Task runners</span> automate repetitive development tasks.</p>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>npm scripts</h4>
+                    <p><strong>Purpose:</strong> Built-in task runner in package.json</p>
+                    <p><strong>Advantages:</strong></p>
+                    <ul>
+                        <li>No additional tool needed</li>
+                        <li>Simple and straightforward</li>
+                        <li>Most common approach</li>
+                    </ul>
+                    <div class="code-block"><span class="comment">// package.json</span>
+{
+  <span class="string">"scripts"</span>: {
+    <span class="string">"start"</span>: <span class="string">"node server.js"</span>,
+    <span class="string">"dev"</span>: <span class="string">"nodemon server.js"</span>,
+    <span class="string">"build"</span>: <span class="string">"webpack --mode production"</span>,
+    <span class="string">"test"</span>: <span class="string">"jest"</span>,
+    <span class="string">"test:watch"</span>: <span class="string">"jest --watch"</span>,
+    <span class="string">"lint"</span>: <span class="string">"eslint ."</span>,
+    <span class="string">"lint:fix"</span>: <span class="string">"eslint . --fix"</span>,
+    <span class="string">"format"</span>: <span class="string">"prettier --write ."</span>,
+    <span class="string">"clean"</span>: <span class="string">"rm -rf dist"</span>,
+    <span class="string">"prebuild"</span>: <span class="string">"npm run clean"</span>
+  }
+}
+
+<span class="comment"># Run scripts</span>
+npm run dev
+npm run build
+npm test</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Gulp</h4>
+                    <p><strong>Purpose:</strong> Streaming task runner</p>
+                    <p><strong>When to Use:</strong> Complex build pipelines</p>
+                    <div class="code-block"><span class="comment">// gulpfile.js</span>
+<span class="keyword">const</span> gulp = <span class="keyword">require</span>(<span class="string">'gulp'</span>);
+<span class="keyword">const</span> sass = <span class="keyword">require</span>(<span class="string">'gulp-sass'</span>);
+<span class="keyword">const</span> concat = <span class="keyword">require</span>(<span class="string">'gulp-concat'</span>);
+
+gulp.task(<span class="string">'styles'</span>, () => {
+  <span class="keyword">return</span> gulp.src(<span class="string">'src/*.scss'</span>)
+    .pipe(sass())
+    .pipe(gulp.dest(<span class="string">'dist/css'</span>));
+});
+
+gulp.task(<span class="string">'watch'</span>, () => {
+  gulp.watch(<span class="string">'src/*.scss'</span>, gulp.series(<span class="string">'styles'</span>));
+});</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Grunt</h4>
+                    <p><strong>Purpose:</strong> Task runner (older than Gulp)</p>
+                    <p><strong>Status:</strong> Less popular now, mostly legacy</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Make (Makefile)</h4>
+                    <p><strong>Purpose:</strong> Cross-language build tool</p>
+                    <p><strong>When to Use:</strong> Multi-language projects</p>
+                    <div class="code-block"><span class="comment"># Makefile</span>
+.PHONY: install build test
+
+install:
+	npm install
+
+build:
+	npm run build
+
+test:
+	npm test
+
+clean:
+	rm -rf dist node_modules</div>
+                </div>
+            </div>
+
+            <h3>Choosing a Task Runner</h3>
+            <div class="info-box">
+                <ul>
+                    <li>🥇 <strong>First choice:</strong> npm scripts (simplest)</li>
+                    <li>🏗️ <strong>Complex tasks:</strong> Gulp (streaming)</li>
+                    <li>🔧 <strong>Multi-language:</strong> Make or Invoke</li>
+                    <li>🚫 <strong>Avoid:</strong> Grunt (outdated)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="framework">
+            <h2>🚀 Framework-Specific Tools</h2>
+
+            <h3>React Tools</h3>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Create React App (CRA)</h4>
+                    <p><strong>Purpose:</strong> Official React boilerplate</p>
+                    <div class="code-block"><span class="comment"># Create new app</span>
+npx create-react-app my-app
+cd my-app
+npm start</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>React DevTools</h4>
+                    <p><strong>Purpose:</strong> Browser extension for debugging React</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Component tree inspector</li>
+                        <li>Props and state viewer</li>
+                        <li>Performance profiler</li>
+                    </ul>
+                </div>
+
+                <div class="tool-card">
+                    <h4>React Testing Library</h4>
+                    <p><strong>Purpose:</strong> Testing React components</p>
+                    <div class="code-block"><span class="keyword">import</span> { render, screen } <span class="keyword">from</span> <span class="string">'@testing-library/react'</span>;
+
+test(<span class="string">'renders button'</span>, () => {
+  render(&lt;Button /&gt;);
+  <span class="keyword">const</span> button = screen.getByText(<span class="string">/click me/i</span>);
+  expect(button).toBeInTheDocument();
+});</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>ESLint Plugin React</h4>
+                    <p><strong>Purpose:</strong> React-specific linting rules</p>
+                    <div class="code-block">npm install --save-dev eslint-plugin-react</div>
+                </div>
+            </div>
+
+            <h3>Vue Tools</h3>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Vue CLI</h4>
+                    <p><strong>Purpose:</strong> Official Vue project scaffolding</p>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install -g @vue/cli
+
+<span class="comment"># Create project</span>
+vue create my-project</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Vue DevTools</h4>
+                    <p><strong>Purpose:</strong> Browser extension for Vue debugging</p>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Vite (for Vue)</h4>
+                    <p><strong>Purpose:</strong> Fast build tool (recommended)</p>
+                    <div class="code-block">npm create vite@latest my-vue-app -- --template vue</div>
+                </div>
+            </div>
+
+            <h3>Angular Tools</h3>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Angular CLI</h4>
+                    <p><strong>Purpose:</strong> Official Angular tooling</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Project scaffolding</li>
+                        <li>Built-in Webpack config</li>
+                        <li>TypeScript support</li>
+                        <li>Code generation</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install -g @angular/cli
+
+<span class="comment"># Create project</span>
+ng new my-app
+
+<span class="comment"># Generate component</span>
+ng generate component my-component</div>
+                </div>
+            </div>
+
+            <h3>Node.js/Backend Tools</h3>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Nodemon</h4>
+                    <p><strong>Purpose:</strong> Auto-restart Node.js on file changes</p>
+                    <div class="code-block"><span class="comment"># Install</span>
+npm install --save-dev nodemon
+
+<span class="comment"># package.json</span>
+{
+  <span class="string">"scripts"</span>: {
+    <span class="string">"dev"</span>: <span class="string">"nodemon server.js"</span>
+  }
+}</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>PM2</h4>
+                    <p><strong>Purpose:</strong> Production process manager</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Auto-restart on crash</li>
+                        <li>Load balancing</li>
+                        <li>Monitoring</li>
+                        <li>Log management</li>
+                    </ul>
+                    <div class="code-block"><span class="comment"># Install globally</span>
+npm install -g pm2
+
+<span class="comment"># Start app</span>
+pm2 start server.js
+
+<span class="comment"># Monitor</span>
+pm2 monit</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Express Generator</h4>
+                    <p><strong>Purpose:</strong> Scaffold Express.js applications</p>
+                    <div class="code-block">npx express-generator my-app</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison">
+            <h2>📊 Tool Comparison Tables</h2>
+
+            <h3>Build Tools Comparison</h3>
+            <table>
+                <tr>
+                    <th>Tool</th>
+                    <th>Speed</th>
+                    <th>Complexity</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td><strong>Vite</strong></td>
+                    <td>⚡⚡⚡⚡⚡</td>
+                    <td>Low</td>
+                    <td>Modern apps, development</td>
+                </tr>
+                <tr>
+                    <td><strong>Webpack</strong></td>
+                    <td>⚡⚡⚡</td>
+                    <td>High</td>
+                    <td>Complex apps, full control</td>
+                </tr>
+                <tr>
+                    <td><strong>Parcel</strong></td>
+                    <td>⚡⚡⚡⚡</td>
+                    <td>Very Low</td>
+                    <td>Quick projects, prototypes</td>
+                </tr>
+                <tr>
+                    <td><strong>Rollup</strong></td>
+                    <td>⚡⚡⚡⚡</td>
+                    <td>Medium</td>
+                    <td>Libraries, tree-shaking</td>
+                </tr>
+            </table>
+
+            <h3>Testing Frameworks Comparison</h3>
+            <table>
+                <tr>
+                    <th>Framework</th>
+                    <th>Setup</th>
+                    <th>Speed</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td><strong>Jest</strong></td>
+                    <td>Zero-config</td>
+                    <td>Fast</td>
+                    <td>React, unit tests</td>
+                </tr>
+                <tr>
+                    <td><strong>Vitest</strong></td>
+                    <td>Minimal</td>
+                    <td>Fastest</td>
+                    <td>Vite projects</td>
+                </tr>
+                <tr>
+                    <td><strong>Mocha + Chai</strong></td>
+                    <td>Manual</td>
+                    <td>Fast</td>
+                    <td>Node.js, flexibility</td>
+                </tr>
+                <tr>
+                    <td><strong>Cypress</strong></td>
+                    <td>Moderate</td>
+                    <td>Slower</td>
+                    <td>E2E tests</td>
+                </tr>
+            </table>
+
+            <h3>Package Managers Comparison</h3>
+            <table>
+                <tr>
+                    <th>Manager</th>
+                    <th>Speed</th>
+                    <th>Disk Usage</th>
+                    <th>Market Share</th>
+                </tr>
+                <tr>
+                    <td><strong>npm</strong></td>
+                    <td>Medium</td>
+                    <td>High</td>
+                    <td>Most Popular</td>
+                </tr>
+                <tr>
+                    <td><strong>yarn</strong></td>
+                    <td>Fast</td>
+                    <td>High</td>
+                    <td>Popular</td>
+                </tr>
+                <tr>
+                    <td><strong>pnpm</strong></td>
+                    <td>Fastest</td>
+                    <td>Lowest</td>
+                    <td>Growing</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="math-methods">
+            <h2>📐 JavaScript Math Methods</h2>
+            
+            <p>The <span class="highlight">Math</span> object provides mathematical constants and functions. All properties and methods of Math are static.</p>
+
+            <h3>Common Math Methods</h3>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Math.abs(x)</h4>
+                    <p><strong>Purpose:</strong> Returns the absolute value of x (never negative)</p>
+                    <div class="code-block">Math.abs(7.25);    <span class="comment">// 7.25</span>
+Math.abs(-7.25);   <span class="comment">// 7.25</span>
+Math.abs(null);    <span class="comment">// 0</span>
+Math.abs("Hello"); <span class="comment">// NaN</span>
+Math.abs(2-3);     <span class="comment">// 1</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.ceil(x)</h4>
+                    <p><strong>Purpose:</strong> Rounds x upwards to nearest integer</p>
+                    <div class="code-block">Math.ceil(0.60);  <span class="comment">// 1</span>
+Math.ceil(0.40);  <span class="comment">// 1</span>
+Math.ceil(5);     <span class="comment">// 5</span>
+Math.ceil(5.1);   <span class="comment">// 6</span>
+Math.ceil(-5.1);  <span class="comment">// -5</span>
+Math.ceil(-5.9);  <span class="comment">// -5</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.floor(x)</h4>
+                    <p><strong>Purpose:</strong> Rounds x downwards to nearest integer</p>
+                    <div class="code-block">Math.floor(0.60);  <span class="comment">// 0</span>
+Math.floor(0.40);  <span class="comment">// 0</span>
+Math.floor(5);     <span class="comment">// 5</span>
+Math.floor(5.9);   <span class="comment">// 5</span>
+Math.floor(-5.1);  <span class="comment">// -6</span>
+Math.floor(-5.9);  <span class="comment">// -6</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.round(x)</h4>
+                    <p><strong>Purpose:</strong> Rounds x to nearest integer</p>
+                    <div class="code-block">Math.round(2.60);   <span class="comment">// 3</span>
+Math.round(2.50);   <span class="comment">// 3</span>
+Math.round(2.49);   <span class="comment">// 2</span>
+Math.round(-2.60);  <span class="comment">// -3</span>
+Math.round(-2.50);  <span class="comment">// -2</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.max()</h4>
+                    <p><strong>Purpose:</strong> Returns the highest value</p>
+                    <div class="code-block">Math.max(5, 10);           <span class="comment">// 10</span>
+Math.max(0, 150, 30, 20);  <span class="comment">// 150</span>
+Math.max(-5, 10);          <span class="comment">// 10</span>
+Math.max(-5, -10);         <span class="comment">// -5</span>
+Math.max(1.5, 2.5);        <span class="comment">// 2.5</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.min()</h4>
+                    <p><strong>Purpose:</strong> Returns the lowest value</p>
+                    <div class="code-block">Math.min(5, 10);           <span class="comment">// 5</span>
+Math.min(0, 150, 30, 20);  <span class="comment">// 0</span>
+Math.min(-5, 10);          <span class="comment">// -5</span>
+Math.min(-5, -10);         <span class="comment">// -10</span>
+Math.min(1.5, 2.5);        <span class="comment">// 1.5</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.pow(x, y)</h4>
+                    <p><strong>Purpose:</strong> Returns x to the power of y</p>
+                    <div class="code-block">Math.pow(0, 1);   <span class="comment">// 0</span>
+Math.pow(1, 1);   <span class="comment">// 1</span>
+Math.pow(1, 10);  <span class="comment">// 1</span>
+Math.pow(3, 3);   <span class="comment">// 27</span>
+Math.pow(-3, 3);  <span class="comment">// -27</span>
+Math.pow(2, 4);   <span class="comment">// 16 (2² = 4)</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.sqrt(x)</h4>
+                    <p><strong>Purpose:</strong> Returns the square root of x</p>
+                    <div class="code-block">Math.sqrt(0);    <span class="comment">// 0</span>
+Math.sqrt(1);    <span class="comment">// 1</span>
+Math.sqrt(9);    <span class="comment">// 3</span>
+Math.sqrt(64);   <span class="comment">// 8</span>
+Math.sqrt(-9);   <span class="comment">// NaN</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.random()</h4>
+                    <p><strong>Purpose:</strong> Returns random number between 0 and 1</p>
+                    <div class="code-block"><span class="comment">// Random number 0-10</span>
+<span class="keyword">let</span> x = Math.random() * 10;
+
+<span class="comment">// Random whole number 1-10</span>
+<span class="keyword">let</span> y = Math.floor(Math.random() * 10) + 1;
+
+<span class="comment">// Random number in range</span>
+<span class="keyword">function</span> randomRange(min, max) {
+  <span class="keyword">return</span> Math.floor(Math.random() * (max - min + 1)) + min;
+}</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.trunc(x)</h4>
+                    <p><strong>Purpose:</strong> Returns integer part (removes decimal)</p>
+                    <div class="code-block">Math.trunc(4.9);   <span class="comment">// 4</span>
+Math.trunc(4.1);   <span class="comment">// 4</span>
+Math.trunc(-4.9);  <span class="comment">// -4</span>
+Math.trunc(-4.1);  <span class="comment">// -4</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Math.sign(x)</h4>
+                    <p><strong>Purpose:</strong> Returns sign of a number</p>
+                    <div class="code-block">Math.sign(5);     <span class="comment">// 1 (positive)</span>
+Math.sign(-5);    <span class="comment">// -1 (negative)</span>
+Math.sign(0);     <span class="comment">// 0 (zero)</span>
+Math.sign(-0);    <span class="comment">// -0</span></div>
+                </div>
+            </div>
+
+            <h3>Math Constants</h3>
+            <table>
+                <tr>
+                    <th>Constant</th>
+                    <th>Description</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td><strong>Math.PI</strong></td>
+                    <td>Pi (π)</td>
+                    <td>3.14159...</td>
+                </tr>
+                <tr>
+                    <td><strong>Math.E</strong></td>
+                    <td>Euler's number</td>
+                    <td>2.718...</td>
+                </tr>
+                <tr>
+                    <td><strong>Math.LN2</strong></td>
+                    <td>Natural log of 2</td>
+                    <td>0.693...</td>
+                </tr>
+                <tr>
+                    <td><strong>Math.SQRT2</strong></td>
+                    <td>Square root of 2</td>
+                    <td>1.414...</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <p><strong>💡 Quick Reference:</strong></p>
+                <ul>
+                    <li><strong>Rounding:</strong> Use <code>Math.round()</code>, <code>Math.ceil()</code>, or <code>Math.floor()</code></li>
+                    <li><strong>Random numbers:</strong> <code>Math.random()</code> combined with <code>Math.floor()</code></li>
+                    <li><strong>Min/Max:</strong> Find smallest/largest with <code>Math.min()</code> and <code>Math.max()</code></li>
+                    <li><strong>Power/Root:</strong> <code>Math.pow(x, y)</code> or <code>x ** y</code> for power, <code>Math.sqrt()</code> for square root</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="number-methods">
+            <h2>🔢 JavaScript Number Methods</h2>
+            
+            <p>The <span class="highlight">Number</span> object wraps primitive number values and provides useful methods and properties.</p>
+
+            <h3>Number Validation Methods</h3>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Number.isFinite()</h4>
+                    <p><strong>Purpose:</strong> Checks if value is a finite number</p>
+                    <div class="code-block">Number.isFinite(123);       <span class="comment">// true</span>
+Number.isFinite("123");     <span class="comment">// false (string)</span>
+Number.isFinite(Infinity);  <span class="comment">// false</span>
+Number.isFinite(1.2);       <span class="comment">// true</span>
+Number.isFinite(NaN);       <span class="comment">// false</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Number.isInteger()</h4>
+                    <p><strong>Purpose:</strong> Checks if value is an integer</p>
+                    <div class="code-block">Number.isInteger(123);     <span class="comment">// true</span>
+Number.isInteger(-123);    <span class="comment">// true</span>
+Number.isInteger('123');   <span class="comment">// false</span>
+Number.isInteger(4-2);     <span class="comment">// true (= 2)</span>
+Number.isInteger(4/2);     <span class="comment">// true (= 2)</span>
+Number.isInteger(5/2);     <span class="comment">// false (= 2.5)</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Number.isNaN()</h4>
+                    <p><strong>Purpose:</strong> Checks if value is NaN</p>
+                    <div class="code-block">Number.isNaN(NaN);          <span class="comment">// true</span>
+Number.isNaN("Hello");      <span class="comment">// false</span>
+Number.isNaN(undefined);    <span class="comment">// false</span>
+Number.isNaN(123);          <span class="comment">// false</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Number.isSafeInteger()</h4>
+                    <p><strong>Purpose:</strong> Checks if value is safe integer</p>
+                    <div class="code-block">Number.isSafeInteger(123);        <span class="comment">// true</span>
+Number.isSafeInteger(1.5);        <span class="comment">// false</span>
+Number.isSafeInteger(9007199254740992); <span class="comment">// false</span></div>
+                </div>
+            </div>
+
+            <h3>Number Conversion Methods</h3>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>parseInt()</h4>
+                    <p><strong>Purpose:</strong> Parses string and returns whole number</p>
+                    <div class="code-block">parseInt("10");         <span class="comment">// 10</span>
+parseInt("10.5");       <span class="comment">// 10</span>
+parseInt("10 years");   <span class="comment">// 10</span>
+parseInt("years 10");   <span class="comment">// NaN</span>
+parseInt("10", 2);      <span class="comment">// 2 (binary)</span>
+parseInt("10", 16);     <span class="comment">// 16 (hex)</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>parseFloat()</h4>
+                    <p><strong>Purpose:</strong> Parses string and returns decimal number</p>
+                    <div class="code-block">parseFloat("10");        <span class="comment">// 10</span>
+parseFloat("10.5");      <span class="comment">// 10.5</span>
+parseFloat("10.5.2");    <span class="comment">// 10.5</span>
+parseFloat("10 20");     <span class="comment">// 10</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>toString()</h4>
+                    <p><strong>Purpose:</strong> Converts number to string</p>
+                    <div class="code-block"><span class="keyword">let</span> num = 123;
+num.toString();      <span class="comment">// "123"</span>
+num.toString(2);     <span class="comment">// "1111011" (binary)</span>
+num.toString(16);    <span class="comment">// "7b" (hex)</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>toFixed(x)</h4>
+                    <p><strong>Purpose:</strong> Formats number with x decimal places</p>
+                    <div class="code-block"><span class="keyword">let</span> num = 5.56789;
+num.toFixed(0);      <span class="comment">// "6"</span>
+num.toFixed(2);      <span class="comment">// "5.57"</span>
+num.toFixed(4);      <span class="comment">// "5.5679"</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>toPrecision(x)</h4>
+                    <p><strong>Purpose:</strong> Formats number to x total digits</p>
+                    <div class="code-block"><span class="keyword">let</span> num = 5.56789;
+num.toPrecision(2);  <span class="comment">// "5.6"</span>
+num.toPrecision(4);  <span class="comment">// "5.568"</span>
+num.toPrecision(6);  <span class="comment">// "5.56789"</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>toExponential(x)</h4>
+                    <p><strong>Purpose:</strong> Converts to exponential notation</p>
+                    <div class="code-block"><span class="keyword">let</span> num = 123456;
+num.toExponential(2);  <span class="comment">// "1.23e+5"</span>
+num.toExponential(4);  <span class="comment">// "1.2346e+5"</span></div>
+                </div>
+            </div>
+
+            <h3>Number Properties</h3>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Description</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td><strong>Number.MAX_VALUE</strong></td>
+                    <td>Largest possible number</td>
+                    <td>1.7976931348623157e+308</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.MIN_VALUE</strong></td>
+                    <td>Smallest possible positive number</td>
+                    <td>5e-324</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.MAX_SAFE_INTEGER</strong></td>
+                    <td>Largest safe integer</td>
+                    <td>9007199254740991</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.MIN_SAFE_INTEGER</strong></td>
+                    <td>Smallest safe integer</td>
+                    <td>-9007199254740991</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.POSITIVE_INFINITY</strong></td>
+                    <td>Represents positive infinity</td>
+                    <td>Infinity</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.NEGATIVE_INFINITY</strong></td>
+                    <td>Represents negative infinity</td>
+                    <td>-Infinity</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.NaN</strong></td>
+                    <td>Represents "Not-a-Number"</td>
+                    <td>NaN</td>
+                </tr>
+                <tr>
+                    <td><strong>Number.EPSILON</strong></td>
+                    <td>Smallest interval between numbers</td>
+                    <td>2.220446049250313e-16</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <p><strong>💡 Best Practices:</strong></p>
+                <ul>
+                    <li>Use <code>Number.isNaN()</code> instead of <code>isNaN()</code> for accurate NaN checks</li>
+                    <li>Use <code>toFixed()</code> for displaying prices and currency</li>
+                    <li>Always specify radix parameter in <code>parseInt()</code> to avoid unexpected results</li>
+                    <li>Check <code>Number.isSafeInteger()</code> when working with large integers</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="date-methods">
+            <h2>📅 JavaScript Date Methods</h2>
+            
+            <p>The <span class="highlight">Date</span> object is used to work with dates and times in JavaScript.</p>
+
+            <h3>Creating Dates</h3>
+            <div class="code-block"><span class="comment">// Current date and time</span>
+<span class="keyword">let</span> now = <span class="keyword">new</span> Date();
+
+<span class="comment">// Specific date (year, month, day, hours, minutes, seconds)</span>
+<span class="keyword">let</span> date1 = <span class="keyword">new</span> Date(2024, 0, 15);  <span class="comment">// Month is 0-indexed (0 = Jan)</span>
+<span class="keyword">let</span> date2 = <span class="keyword">new</span> Date(2024, 0, 15, 10, 30, 0);
+
+<span class="comment">// From string</span>
+<span class="keyword">let</span> date3 = <span class="keyword">new</span> Date("2024-01-15");
+<span class="keyword">let</span> date4 = <span class="keyword">new</span> Date("January 15, 2024");
+
+<span class="comment">// From milliseconds (since Jan 1, 1970)</span>
+<span class="keyword">let</span> date5 = <span class="keyword">new</span> Date(1705276800000);</div>
+
+            <h3>Get Date Methods</h3>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Basic Get Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.getFullYear();    <span class="comment">// 2024</span>
+date.getMonth();       <span class="comment">// 0-11 (0 = Jan)</span>
+date.getDate();        <span class="comment">// 1-31 (day of month)</span>
+date.getDay();         <span class="comment">// 0-6 (0 = Sunday)</span>
+date.getHours();       <span class="comment">// 0-23</span>
+date.getMinutes();     <span class="comment">// 0-59</span>
+date.getSeconds();     <span class="comment">// 0-59</span>
+date.getMilliseconds(); <span class="comment">// 0-999</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>UTC Get Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.getUTCFullYear();
+date.getUTCMonth();
+date.getUTCDate();
+date.getUTCDay();
+date.getUTCHours();
+date.getUTCMinutes();
+date.getUTCSeconds();</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>getTime()</h4>
+                    <p><strong>Purpose:</strong> Returns milliseconds since Jan 1, 1970</p>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+date.getTime();  <span class="comment">// 1705276800000</span>
+
+<span class="comment">// Same as:</span>
+Date.now();  <span class="comment">// Current timestamp</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>getTimezoneOffset()</h4>
+                    <p><strong>Purpose:</strong> Returns time difference from UTC (in minutes)</p>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+date.getTimezoneOffset();  <span class="comment">// -300 (5 hours)</span></div>
+                </div>
+            </div>
+
+            <h3>Set Date Methods</h3>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>Basic Set Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.setFullYear(2025);
+date.setMonth(11);        <span class="comment">// December</span>
+date.setDate(25);         <span class="comment">// 25th day</span>
+date.setHours(10);
+date.setMinutes(30);
+date.setSeconds(0);
+date.setMilliseconds(0);</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>UTC Set Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.setUTCFullYear(2025);
+date.setUTCMonth(0);
+date.setUTCDate(1);
+date.setUTCHours(0);
+date.setUTCMinutes(0);
+date.setUTCSeconds(0);</div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>setTime()</h4>
+                    <p><strong>Purpose:</strong> Sets date from milliseconds</p>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+date.setTime(1705276800000);
+
+<span class="comment">// Add 1 day (86400000 ms)</span>
+date.setTime(date.getTime() + 86400000);</div>
+                </div>
+            </div>
+
+            <h3>Date Formatting Methods</h3>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>toString Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.toString();
+<span class="comment">// "Sun Dec 31 2025 10:30:00 GMT+0000"</span>
+
+date.toDateString();
+<span class="comment">// "Sun Dec 31 2025"</span>
+
+date.toTimeString();
+<span class="comment">// "10:30:00 GMT+0000"</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>Locale Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.toLocaleDateString();
+<span class="comment">// "12/31/2025" (US)</span>
+
+date.toLocaleTimeString();
+<span class="comment">// "10:30:00 AM"</span>
+
+date.toLocaleString();
+<span class="comment">// "12/31/2025, 10:30:00 AM"</span></div>
+                </div>
+
+                <div class="tool-card">
+                    <h4>ISO & UTC Methods</h4>
+                    <div class="code-block"><span class="keyword">let</span> date = <span class="keyword">new</span> Date();
+
+date.toISOString();
+<span class="comment">// "2025-12-31T10:30:00.000Z"</span>
+
+date.toUTCString();
+<span class="comment">// "Sun, 31 Dec 2025 10:30:00 GMT"</span>
+
+date.toJSON();
+<span class="comment">// "2025-12-31T10:30:00.000Z"</span></div>
+                </div>
+            </div>
+
+            <h3>Date Calculations</h3>
+            <div class="code-block"><span class="comment">// Get current timestamp</span>
+<span class="keyword">let</span> now = Date.now();  <span class="comment">// Static method</span>
+
+<span class="comment">// Calculate difference between dates</span>
+<span class="keyword">let</span> date1 = <span class="keyword">new</span> Date("2024-01-01");
+<span class="keyword">let</span> date2 = <span class="keyword">new</span> Date("2024-12-31");
+<span class="keyword">let</span> diff = date2 - date1;  <span class="comment">// Milliseconds</span>
+<span class="keyword">let</span> days = diff / (1000 * 60 * 60 * 24);  <span class="comment">// Convert to days</span>
+
+<span class="comment">// Add days to a date</span>
+<span class="keyword">let</span> today = <span class="keyword">new</span> Date();
+<span class="keyword">let</span> tomorrow = <span class="keyword">new</span> Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+<span class="comment">// Add months</span>
+<span class="keyword">let</span> nextMonth = <span class="keyword">new</span> Date(today);
+nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+<span class="comment">// Compare dates</span>
+<span class="keyword">if</span> (date1 > date2) {
+  console.log("date1 is later");
+}
+
+<span class="comment">// Parse date string</span>
+<span class="keyword">let</span> ms = Date.parse("2024-01-15");  <span class="comment">// Returns milliseconds</span></div>
+
+            <h3>Common Date Patterns</h3>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Method</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>Get current date</strong></td>
+                    <td>new Date()</td>
+                    <td><code>let now = new Date();</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Get timestamp</strong></td>
+                    <td>Date.now()</td>
+                    <td><code>let ts = Date.now();</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Format date</strong></td>
+                    <td>toLocaleDateString()</td>
+                    <td><code>date.toLocaleDateString()</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Get year</strong></td>
+                    <td>getFullYear()</td>
+                    <td><code>date.getFullYear()</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Get month name</strong></td>
+                    <td>toLocaleString()</td>
+                    <td><code>date.toLocaleString('en', {month: 'long'})</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Check if valid date</strong></td>
+                    <td>isNaN()</td>
+                    <td><code>!isNaN(date.getTime())</code></td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Common Date Pitfalls:</strong></p>
+                <ul>
+                    <li><strong>Months are 0-indexed:</strong> January = 0, December = 11</li>
+                    <li><strong>Days are 1-indexed:</strong> 1st = 1, 31st = 31</li>
+                    <li><strong>Week days are 0-indexed:</strong> Sunday = 0, Saturday = 6</li>
+                    <li><strong>Date constructor:</strong> <code>new Date(2024, 0)</code> creates Jan 1, not Feb 1</li>
+                    <li><strong>Timezone issues:</strong> Be aware of local vs UTC methods</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <p><strong>💡 Pro Tips:</strong></p>
+                <ul>
+                    <li>Use <code>Date.now()</code> instead of <code>new Date().getTime()</code> for timestamps</li>
+                    <li>For complex date manipulation, consider libraries like <strong>date-fns</strong> or <strong>Day.js</strong></li>
+                    <li>Always validate date inputs from users</li>
+                    <li>Use ISO format (YYYY-MM-DD) for consistent date strings</li>
+                    <li>Store dates in UTC, display in local timezone</li>
+                </ul>
+            </div>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking on a link (mobile only)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside (mobile only)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>
+

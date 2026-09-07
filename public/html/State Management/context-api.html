@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context API - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔗 Context API</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Foundations</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">What is Context?</a>
+                <a href="#create" class="sidebar-link">createContext</a>
+                <a href="#provider" class="sidebar-link">Provider</a>
+                <a href="#usecontext" class="sidebar-link">useContext</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🏗️ Patterns</div>
+            <div class="sidebar-links">
+                <a href="#custom-hook" class="sidebar-link">Custom Hook</a>
+                <a href="#reducer" class="sidebar-link">Context + useReducer</a>
+                <a href="#split" class="sidebar-link">Splitting Contexts</a>
+                <a href="#examples" class="sidebar-link">Theme & Auth</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚡ Production</div>
+            <div class="sidebar-links">
+                <a href="#performance" class="sidebar-link">Re-renders</a>
+                <a href="#when" class="sidebar-link">When to Use</a>
+                <a href="#vs-redux" class="sidebar-link">vs Redux</a>
+                <a href="#pitfalls" class="sidebar-link">Pitfalls</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🔗 Context API</h1>
+            <p>React’s built-in way to share state without prop drilling — Provider, useContext, reducers, and performance.</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 What is Context?</h2>
+            <p>The <span class="highlight">Context API</span> lets a parent provide a value that any descendant can read, no matter how deep the tree is. It solves <strong>prop drilling</strong>: passing the same prop through components that do not use it.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/prop-drilling-vs-context.png" alt="Prop drilling through nested components versus Context broadcasting a value">
+                <div class="illustration-caption">Left: every layer forwards theme. Right: Provider broadcasts; only the toggle needs to subscribe.</div>
+            </div>
+
+            <div class="diagram-box">Prop drilling                 Context broadcast
+
+App { theme }                  ThemeProvider  value={theme}
+ └── Layout { theme }              └── Layout
+      └── Header { theme }              └── Header
+           └── Toggle                   └── Toggle  ← useContext()</div>
+
+            <div class="code-block">// Prop drilling — ThemeToggle never uses theme, it only forwards it
+&lt;App theme={theme}&gt;
+  &lt;Layout theme={theme}&gt;
+    &lt;Header theme={theme}&gt;
+      &lt;ThemeToggle theme={theme} /&gt;
+    &lt;/Header&gt;
+  &lt;/Layout&gt;
+&lt;/App&gt;
+
+// Context — any child can read theme without a chain of props
+&lt;ThemeContext.Provider value={theme}&gt;
+  &lt;Layout&gt;
+    &lt;Header&gt;
+      &lt;ThemeToggle /&gt;
+    &lt;/Header&gt;
+  &lt;/Layout&gt;
+&lt;/ThemeContext.Provider&gt;</div>
+
+            <div class="info-box">
+                <h3>Mental model</h3>
+                <p>Context is a <strong>broadcast</strong>. The Provider is the radio tower. <code>useContext</code> is the radio. When the tower changes frequency (value), every radio listening to that station re-renders.</p>
+            </div>
+        </section>
+
+        <section id="create">
+            <h2>🏭 createContext</h2>
+            <p>Call <code>createContext(defaultValue)</code> once at module scope. The default is used only if a component reads context <em>without</em> a matching Provider above it.</p>
+
+            <div class="code-block">import { createContext } from 'react';
+
+export const ThemeContext = createContext('light'); // default
+export const AuthContext = createContext(null);</div>
+
+            <div class="warning-box">
+                <strong>⚠️</strong> Create the context object outside components. Creating it inside a render produces a new identity every time and breaks consumers.
+            </div>
+        </section>
+
+        <section id="provider">
+            <h2>📡 Provider</h2>
+            <p><code>Context.Provider</code> wraps a subtree and sets the current value. Nested providers override outer ones for that subtree.</p>
+
+            <div class="code-block">function App() {
+  const [theme, setTheme] = useState('light');
+
+  const value = { theme, setTheme };
+
+  return (
+    &lt;ThemeContext.Provider value={value}&gt;
+      &lt;Dashboard /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}</div>
+
+            <p>If <code>value</code> is a new object every render (like <code>{ theme, setTheme }</code> created inline), every consumer re-renders even when <code>theme</code> did not change. Memoize the value when it is an object.</p>
+
+            <div class="code-block">const value = useMemo(
+  () =&gt; ({ theme, setTheme }),
+  [theme]
+);</div>
+        </section>
+
+        <section id="usecontext">
+            <h2>🪝 useContext</h2>
+            <p><code>useContext(SomeContext)</code> returns the nearest Provider’s <code>value</code>. The component re-renders whenever that value’s reference (or primitive) changes.</p>
+
+            <div class="code-block">import { useContext } from 'react';
+import { ThemeContext } from './theme-context';
+
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return (
+    &lt;button onClick={() =&gt; setTheme(theme === 'light' ? 'dark' : 'light')}&gt;
+      Mode: {theme}
+    &lt;/button&gt;
+  );
+}</div>
+
+            <h3>Legacy: Context.Consumer</h3>
+            <p>Before hooks, you used a render-prop Consumer. Prefer <code>useContext</code> in function components.</p>
+
+            <div class="code-block">&lt;ThemeContext.Consumer&gt;
+  {({ theme }) =&gt; &lt;span&gt;{theme}&lt;/span&gt;}
+&lt;/ThemeContext.Consumer&gt;</div>
+        </section>
+
+        <section id="custom-hook">
+            <h2>🎁 Custom Hook Wrapper</h2>
+            <p>Always wrap <code>useContext</code> in a hook that throws if the Provider is missing. That turns a silent <code>null</code> bug into a clear error.</p>
+
+            <div class="code-block">import { createContext, useContext } from 'react';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children, value }) {
+  return (
+    &lt;AuthContext.Provider value={value}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used inside AuthProvider');
+  }
+  return ctx;
+}</div>
+        </section>
+
+        <section id="reducer">
+            <h2>🔁 Context + useReducer</h2>
+            <p>For shared state with many update kinds (add, remove, hydrate), pair Context with <code>useReducer</code>. This is a mini Redux: dispatch goes in, new state comes out, UI reads state from context.</p>
+
+            <div class="code-block">const CartContext = createContext(null);
+
+function cartReducer(state, action) {
+  switch (action.type) {
+    case 'add':
+      return { ...state, items: [...state.items, action.item] };
+    case 'clear':
+      return { ...state, items: [] };
+    default:
+      return state;
+  }
+}
+
+export function CartProvider({ children }) {
+  const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const value = useMemo(() =&gt; ({ state, dispatch }), [state]);
+
+  return (
+    &lt;CartContext.Provider value={value}&gt;
+      {children}
+    &lt;/CartContext.Provider&gt;
+  );
+}
+
+export function useCart() {
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error('useCart must be used inside CartProvider');
+  return ctx;
+}
+
+// usage
+const { state, dispatch } = useCart();
+dispatch({ type: 'add', item: { id: 1, name: 'Book' } });</div>
+
+            <div class="tip-box">
+                <strong>💡</strong> Split <code>state</code> and <code>dispatch</code> into two contexts if many children only dispatch. Dispatch is a stable function; they will not re-render when state changes.
+            </div>
+        </section>
+
+        <section id="split">
+            <h2>✂️ Splitting Contexts</h2>
+            <p>One fat context (user + theme + cart + notifications) means a cart change re-renders the theme toggle. Split by <strong>how often they change</strong> and <strong>who needs them</strong>.</p>
+
+            <div class="diagram-box">❌ One fat context
+ThemeProvider value={{ theme, user, cart }}
+   └── ThemeToggle  re-renders when cart changes
+
+✅ Split by change rate
+ThemeProvider  value={theme}     ← rare
+AuthProvider   value={user}      ← rare
+CartProvider   value={cart}      ← frequent</div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>Slow-changing</h4>
+                    <p>Theme, locale, feature flags — one Context is fine. Few updates, many readers.</p>
+                </div>
+                <div class="comparison-item">
+                    <h4>Fast-changing</h4>
+                    <p>Cart line items, live search results — isolate them, or use Redux/RTK with selectors.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="examples">
+            <h2>🎨 Theme &amp; Auth Examples</h2>
+
+            <h3>Theme</h3>
+            <div class="code-block">function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(
+    () =&gt; localStorage.getItem('theme') || 'light'
+  );
+
+  useEffect(() =&gt; {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const value = useMemo(() =&gt; ({ theme, setTheme }), [theme]);
+
+  return (
+    &lt;ThemeContext.Provider value={value}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+}</div>
+
+            <h3>Auth (read-only user + login/logout)</h3>
+            <div class="code-block">function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [status, setStatus] = useState('idle'); // idle | loading | ready
+
+  const login = async (credentials) =&gt; {
+    setStatus('loading');
+    const next = await api.login(credentials);
+    setUser(next);
+    setStatus('ready');
+  };
+
+  const logout = () =&gt; {
+    setUser(null);
+    setStatus('idle');
+  };
+
+  const value = useMemo(
+    () =&gt; ({ user, status, login, logout }),
+    [user, status]
+  );
+
+  return (
+    &lt;AuthContext.Provider value={value}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}</div>
+        </section>
+
+        <section id="performance">
+            <h2>⚡ Re-renders &amp; Performance</h2>
+            <p>Context has no selector. If the Provider value is a new object, <strong>all</strong> consumers update. That is the main reason large apps move hot data to Redux or a dedicated store.</p>
+
+            <ul>
+                <li>Memoize object/array values with <code>useMemo</code>.</li>
+                <li>Keep functions stable with <code>useCallback</code> (or get them from <code>useReducer</code> dispatch).</li>
+                <li>Split state vs dispatch contexts.</li>
+                <li>Do not put high-frequency values (mouse position, keystrokes) in Context.</li>
+                <li>Wrap heavy children in <code>React.memo</code> only after splitting context — memo does not skip context updates in the memoized component itself.</li>
+            </ul>
+
+            <div class="info-box premium">
+                <h3>React 19 note</h3>
+                <p><code>use(Context)</code> can read context in more places (including some async patterns). The Provider/re-render model is the same: changing the provided value still notifies readers.</p>
+            </div>
+        </section>
+
+        <section id="when">
+            <h2>🎯 When Context is Enough</h2>
+            <ul>
+                <li>Dependency injection: theme, i18n, a design-system config</li>
+                <li>Auth session that changes rarely</li>
+                <li>Small apps or a small island of shared state</li>
+                <li>You already have Redux for domain data and only need Context for UI chrome</li>
+            </ul>
+            <p>When many independent fields update often, and different screens need different slices, go to <a href="/learn/redux">Redux</a> / <a href="/learn/redux-toolkit">Redux Toolkit</a>.</p>
+        </section>
+
+        <section id="vs-redux">
+            <h2>🟣 Context vs Redux</h2>
+            <table>
+                <tr><th></th><th>Context</th><th>Redux / RTK</th></tr>
+                <tr>
+                    <td><strong>Subscription</strong></td>
+                    <td>Whole value</td>
+                    <td>Selectors (fine-grained)</td>
+                </tr>
+                <tr>
+                    <td><strong>Middleware</strong></td>
+                    <td>None</td>
+                    <td>Logging, thunks, saga, persist</td>
+                </tr>
+                <tr>
+                    <td><strong>DevTools</strong></td>
+                    <td>React tree only</td>
+                    <td>Action history, time travel</td>
+                </tr>
+                <tr>
+                    <td><strong>Boilerplate</strong></td>
+                    <td>Low</td>
+                    <td>Low with Toolkit</td>
+                </tr>
+                <tr>
+                    <td><strong>Same app?</strong></td>
+                    <td colspan="2">Yes. Context for theme; Redux for cart and entities.</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="pitfalls">
+            <h2>🚫 Pitfalls</h2>
+            <ul>
+                <li><strong>Default value hiding a missing Provider</strong> — you think data is live; it is the fallback.</li>
+                <li><strong>Storing server lists in Context</strong> — no cache, no deduping; use RTK Query or similar.</li>
+                <li><strong>Inline <code>value={{ x }}</code></strong> — new object every render.</li>
+                <li><strong>Using Context as an event bus</strong> — dispatch a reducer or a store instead of stuffing callbacks for everything.</li>
+            </ul>
+
+            <div class="tip-box">
+                <strong>Next:</strong> <a href="/learn/redux">Redux</a> explains the store model Context is mimicking. Then <a href="/learn/redux-toolkit">Redux Toolkit</a> is the practical implementation.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

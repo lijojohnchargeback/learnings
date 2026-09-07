@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How JavaScript really runs: the engine, heap, call stack, execution context, event loop, queues, scope, this, and garbage collection — with diagrams.">
+    <title>How JavaScript Works - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>⚙️ JS Internals</h2>
+            <p>How JavaScript Works</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start Here</div>
+            <div class="sidebar-links">
+                <a href="#big-picture" class="sidebar-link">🗺️ The Big Picture</a>
+                <a href="#single-thread" class="sidebar-link">🧵 One Thread</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">The Engine</div>
+            <div class="sidebar-links">
+                <a href="#engine" class="sidebar-link">🏭 JS Engine</a>
+                <a href="#heap-stack" class="sidebar-link">🧠 Heap vs Stack</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Execution</div>
+            <div class="sidebar-links">
+                <a href="#execution" class="sidebar-link">📚 Execution Context</a>
+                <a href="#callstack" class="sidebar-link">📚 Call Stack</a>
+                <a href="#this-binding" class="sidebar-link">🎯 this Binding</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Async Runtime</div>
+            <div class="sidebar-links">
+                <a href="#event-loop" class="sidebar-link">🔁 Event Loop</a>
+                <a href="#web-apis" class="sidebar-link">🌐 Web APIs</a>
+                <a href="#queues" class="sidebar-link">📬 Macro vs Micro</a>
+                <a href="#promises-async" class="sidebar-link">⏳ Promises &amp; await</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Variables &amp; Scope</div>
+            <div class="sidebar-links">
+                <a href="#hoisting" class="sidebar-link">⬆️ Hoisting</a>
+                <a href="#tdz" class="sidebar-link">⏳ Temporal Dead Zone</a>
+                <a href="#scope" class="sidebar-link">🔍 Scope Chain</a>
+                <a href="#closures" class="sidebar-link">🎁 Closures</a>
+                <a href="#window" class="sidebar-link">🌐 Global Object</a>
+                <a href="#comparison" class="sidebar-link">⚖️ var vs let vs const</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Memory &amp; Practice</div>
+            <div class="sidebar-links">
+                <a href="#gc" class="sidebar-link">♻️ Garbage Collection</a>
+                <a href="#together" class="sidebar-link">🧩 Put It Together</a>
+                <a href="#remember" class="sidebar-link">📌 How to Remember</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <style>
+                .illustration {
+                    text-align: center;
+                    margin: 2.5rem 0;
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                    border-radius: 20px;
+                    border: 1px solid #e2e8f0;
+                }
+                .illustration img {
+                    width: 100%;
+                    max-width: 100%;
+                    height: auto;
+                    display: block;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+                }
+                .illustration-caption {
+                    margin-top: 0.85rem;
+                    font-size: 0.9rem;
+                    color: #64748b;
+                    font-weight: 500;
+                }
+                .illustration-title {
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-weight: 800;
+                    font-size: 1.05rem;
+                    color: #0f172a;
+                    margin-bottom: 1.25rem;
+                    letter-spacing: -0.02em;
+                }
+                .diagram-box {
+                    background: #0f172a;
+                    color: #cbd5e1;
+                    border-radius: 16px;
+                    padding: 1.5rem 1.75rem;
+                    margin: 1.75rem 0;
+                    font-family: 'Fira Code', ui-monospace, monospace;
+                    font-size: 0.82rem;
+                    line-height: 1.65;
+                    white-space: pre;
+                    overflow-x: auto;
+                    border: 1px solid #1e293b;
+                }
+                .grid-2, .grid-3, .grid-4 {
+                    display: grid;
+                    gap: 1.25rem;
+                    margin: 1.75rem 0;
+                }
+                .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+                .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+                .grid-4 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+                .feature-card {
+                    background: #fff;
+                    padding: 1.5rem 1.6rem;
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+                    border-top: 4px solid #6366f1;
+                }
+                .feature-card h4 { margin-top: 0; }
+                .card-blue { border-top-color: #3b82f6; }
+                .card-green { border-top-color: #10b981; }
+                .card-purple { border-top-color: #8b5cf6; }
+                .card-orange { border-top-color: #f59e0b; }
+                .card-teal { border-top-color: #14b8a6; }
+                .card-pink { border-top-color: #ec4899; }
+                .card-red { border-top-color: #ef4444; }
+                .exec-pipe {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.45rem;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 1.75rem 0;
+                    padding: 1.25rem 1rem;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 20px;
+                }
+                .exec-step {
+                    background: #0f172a;
+                    color: #e2e8f0;
+                    border-radius: 12px;
+                    padding: 0.7rem 0.85rem;
+                    min-width: 108px;
+                    text-align: center;
+                    font-size: 0.78rem;
+                    font-weight: 700;
+                    line-height: 1.35;
+                }
+                .exec-step small {
+                    display: block;
+                    font-size: 0.68rem;
+                    font-weight: 600;
+                    color: #94a3b8;
+                    margin-top: 0.2rem;
+                }
+                .exec-step.sw { background: #4f46e5; }
+                .exec-step.os { background: #0d9488; }
+                .exec-step.hw { background: #d97706; }
+                .exec-step.cpu { background: #dc2626; }
+                .exec-step.pink { background: #db2777; }
+                .exec-arrow {
+                    color: #94a3b8;
+                    font-weight: 800;
+                    font-size: 1.1rem;
+                }
+                .hop-list {
+                    counter-reset: hop;
+                    list-style: none;
+                    padding: 0;
+                    margin: 1.5rem 0 0;
+                }
+                .hop-list li {
+                    counter-increment: hop;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.15rem 1.25rem 1.15rem 4.1rem;
+                    margin: 0.85rem 0;
+                    position: relative;
+                }
+                .hop-list li::before {
+                    content: counter(hop);
+                    position: absolute;
+                    left: 1rem;
+                    top: 1.15rem;
+                    width: 2rem;
+                    height: 2rem;
+                    border-radius: 999px;
+                    background: #eef2ff;
+                    color: #4f46e5;
+                    font-weight: 800;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                }
+                .hop-list strong { color: #0f172a; }
+                .stack-viz {
+                    display: flex;
+                    justify-content: center;
+                    gap: 2rem;
+                    flex-wrap: wrap;
+                    margin: 1.5rem 0;
+                }
+                .stack-col {
+                    min-width: 240px;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1rem 1.1rem 1.2rem;
+                }
+                .stack-col h4 {
+                    margin: 0 0 0.85rem;
+                    font-size: 0.95rem;
+                    text-align: center;
+                }
+                .stack-item {
+                    background: #fff7ed;
+                    border: 1px solid #fdba74;
+                    color: #9a3412;
+                    border-radius: 10px;
+                    padding: 0.65rem 0.85rem;
+                    margin: 0.4rem 0;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                    text-align: center;
+                }
+                .stack-item.global {
+                    background: #eef2ff;
+                    border-color: #a5b4fc;
+                    color: #3730a3;
+                }
+                .stack-item.empty {
+                    background: #f8fafc;
+                    border-style: dashed;
+                    border-color: #cbd5e1;
+                    color: #94a3b8;
+                    font-weight: 600;
+                }
+                .stack-item.active {
+                    background: #4f46e5;
+                    border-color: #4f46e5;
+                    color: #fff;
+                    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+                }
+                .phase-row {
+                    display: grid;
+                    grid-template-columns: 1fr auto 1fr;
+                    gap: 1rem;
+                    align-items: stretch;
+                    margin: 1.5rem 0;
+                }
+                .phase-box {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.25rem;
+                }
+                .phase-box h4 { margin-top: 0; }
+                .phase-arrow {
+                    display: flex;
+                    align-items: center;
+                    font-size: 1.6rem;
+                    color: #6366f1;
+                    font-weight: 800;
+                }
+                .memory-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.6rem;
+                }
+                .memory-cell {
+                    background: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 10px;
+                    padding: 0.7rem;
+                    font-size: 0.82rem;
+                }
+                .memory-cell .value {
+                    margin-top: 0.35rem;
+                    font-family: 'Fira Code', monospace;
+                    font-weight: 700;
+                    color: #4f46e5;
+                }
+                .memory-cell .value.filled {
+                    color: #047857;
+                }
+                .loop-cycle {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                    gap: 0.75rem;
+                    margin: 1.75rem 0;
+                }
+                .loop-step {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.1rem 1rem;
+                    text-align: center;
+                }
+                .loop-step .num {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 999px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 800;
+                    color: #fff;
+                    margin-bottom: 0.55rem;
+                    font-size: 0.85rem;
+                }
+                .loop-step p { margin: 0.4rem 0 0; font-size: 0.85rem; color: #64748b; }
+                .n1 { background: #4f46e5; }
+                .n2 { background: #db2777; }
+                .n3 { background: #2563eb; }
+                .n4 { background: #0d9488; }
+                .queue-row {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .queue-card {
+                    border-radius: 16px;
+                    padding: 1.25rem 1.4rem;
+                    border: 1px solid #e2e8f0;
+                    background: #fff;
+                }
+                .queue-chip {
+                    display: inline-block;
+                    border-radius: 999px;
+                    padding: 0.25rem 0.7rem;
+                    font-size: 0.72rem;
+                    font-weight: 800;
+                    letter-spacing: 0.04em;
+                    text-transform: uppercase;
+                    margin-bottom: 0.6rem;
+                }
+                .chip-micro { background: #fce7f3; color: #9d174d; }
+                .chip-macro { background: #dbeafe; color: #1e40af; }
+                .scope-nest {
+                    border: 2px solid #6366f1;
+                    border-radius: 18px;
+                    padding: 1.1rem;
+                    background: #eef2ff;
+                }
+                .scope-nest .mid {
+                    border: 2px solid #7c3aed;
+                    border-radius: 14px;
+                    padding: 1rem;
+                    background: #f5f3ff;
+                    margin-top: 0.75rem;
+                }
+                .scope-nest .inner {
+                    border: 2px solid #db2777;
+                    border-radius: 12px;
+                    padding: 0.9rem;
+                    background: #fdf2f8;
+                    margin-top: 0.75rem;
+                }
+                .scope-label {
+                    display: inline-block;
+                    color: #fff;
+                    border-radius: 999px;
+                    padding: 0.2rem 0.7rem;
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    margin-bottom: 0.4rem;
+                }
+                .timeline {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                    gap: 0.75rem;
+                    margin: 1.5rem 0;
+                }
+                .timeline-item {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 14px;
+                    padding: 1rem;
+                    text-align: center;
+                }
+                .timeline-dot {
+                    width: 14px;
+                    height: 14px;
+                    border-radius: 50%;
+                    margin: 0 auto 0.6rem;
+                    background: #94a3b8;
+                }
+                .remember-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .remember-card {
+                    background: #0f172a;
+                    color: #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.25rem 1.4rem;
+                }
+                .remember-card strong {
+                    display: block;
+                    color: #a5b4fc;
+                    font-size: 0.85rem;
+                    letter-spacing: 0.08em;
+                    margin-bottom: 0.35rem;
+                }
+                .remember-card p { color: #cbd5e1; margin: 0; }
+                .stat-row {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .stat-card {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.25rem 1.4rem;
+                }
+                .stat-card .num {
+                    font-size: 1.7rem;
+                    font-weight: 800;
+                    color: #4f46e5;
+                    letter-spacing: -0.03em;
+                    line-height: 1.15;
+                    overflow-wrap: anywhere;
+                }
+                .stat-card .label {
+                    margin-top: 0.4rem;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: #334155;
+                }
+                .stat-card p {
+                    margin: 0.45rem 0 0;
+                    color: #64748b;
+                    font-size: 0.88rem;
+                }
+                .wrong-box {
+                    background: #fef2f2;
+                    border: 1px solid #fecaca;
+                    color: #991b1b;
+                    border-radius: 12px;
+                    padding: 0.9rem 1.1rem;
+                    font-size: 0.9rem;
+                    margin: 1rem 0;
+                }
+                .right-box {
+                    background: #ecfdf5;
+                    border: 1px solid #a7f3d0;
+                    color: #065f46;
+                    border-radius: 12px;
+                    padding: 0.9rem 1.1rem;
+                    font-size: 0.9rem;
+                    margin: 1rem 0;
+                }
+                .compare-split {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                @media (max-width: 900px) {
+                    .grid-2, .grid-3, .grid-4, .remember-grid, .stat-row,
+                    .phase-row, .queue-row, .loop-cycle, .timeline, .compare-split {
+                        grid-template-columns: 1fr;
+                    }
+                    .phase-arrow { display: none; }
+                    .diagram-box { font-size: 0.72rem; }
+                    .exec-step { min-width: 46%; }
+                    .exec-arrow { display: none; }
+                }
+            </style>
+
+            <header>
+                <h1>⚙️ How JavaScript Works</h1>
+                <p>The engine, the heap, the call stack, and the event loop — what actually happens when your code runs.</p>
+            </header>
+
+            <section id="big-picture">
+                <h2>🗺️ The Big Picture</h2>
+                <p>JavaScript does not “just run.” A <strong>runtime</strong> — the browser, or Node.js — hosts an <strong>engine</strong> that executes your code, plus extra machinery for timers, the DOM, the network, and a scheduler called the <strong>event loop</strong>.</p>
+
+                <div class="stat-row">
+                    <div class="stat-card">
+                        <div class="num">Engine</div>
+                        <div class="label">Runs your JavaScript</div>
+                        <p>Parses source, allocates memory, and executes line by line. V8 in Chrome/Node, SpiderMonkey in Firefox, JavaScriptCore in Safari.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Runtime</div>
+                        <div class="label">Gives JS a world</div>
+                        <p>Web APIs (<code>setTimeout</code>, DOM, <code>fetch</code>) or Node APIs (<code>fs</code>, <code>http</code>). The engine alone cannot talk to the network or the page.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">Event loop</div>
+                        <div class="label">Decides what runs next</div>
+                        <p>When the call stack is empty, it pulls the next job from a queue. That is how async work comes back.</p>
+                    </div>
+                </div>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-runtime-architecture.png" alt="JavaScript runtime: engine with call stack and heap, Web APIs, queues, and the event loop connecting them">
+                    <div class="illustration-caption">Engine on the left. Host APIs on the right. Queues at the bottom. The event loop is the traffic cop between them.</div>
+                </div>
+
+                <div class="diagram-box">  YOUR CODE
+      │
+      ▼
+ ┌────────── JS ENGINE ──────────┐     ┌──── HOST / RUNTIME ────┐
+ │  Memory Heap   Call Stack     │     │  DOM · timers · fetch  │
+ │  (objects)     (frames)       │     │  Node: fs · http · ... │
+ └──────────────┬────────────────┘     └───────────┬────────────┘
+                │                                  │
+                │         EVENT LOOP               │ done? enqueue
+                │    ┌───────────────┐             │
+                │    │ Microtasks    │◄────────────┘
+                │    │ Macrotasks    │
+                └────┤  “stack empty │
+                     │   then next”  │
+                     └───────────────┘</div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Synchronous work</h4>
+                        <p>Lives on the <strong>call stack</strong>. A function runs to completion. Nothing else in your JavaScript can interleave until it returns.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Asynchronous work</h4>
+                        <p>Is handed to a <strong>host API</strong>. When that work finishes, a callback is queued. The event loop only runs it after the stack is clear.</p>
+                    </div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>The rule this whole page uses</h3>
+                    <p>JavaScript is <strong>single-threaded for your code</strong>. One call stack. One thing executing at a time. Concurrency comes from the runtime (queues + host APIs), not from two JS functions running in parallel on the same stack.</p>
+                </div>
+            </section>
+
+            <section id="single-thread">
+                <h2>🧵 One Thread</h2>
+                <p>People say “JavaScript is single-threaded.” That means: <strong>your JavaScript</strong> shares one call stack. It does <em>not</em> mean the browser or Node process has only one OS thread.</p>
+
+                <div class="exec-pipe" aria-label="What is single-threaded">
+                    <div class="exec-step sw">Your JS<small>one stack</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step os">Host APIs<small>may use threads</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step hw">Callback queued<small>not running yet</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step pink">Event loop<small>back to JS</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step cpu">Stack again<small>still one at a time</small></div>
+                </div>
+
+                <div class="wrong-box"><strong>Wrong:</strong> <code>setTimeout</code> or <code>fetch</code> creates a second JavaScript thread that runs beside your code.</div>
+                <div class="right-box"><strong>Right:</strong> the host does the waiting. When it is done, a function is scheduled. Your JS still runs one function at a time.</div>
+
+                <h3>Why this design exists</h3>
+                <ul>
+                    <li>The browser UI and the DOM are shared. Two JS threads mutating the same page would need locks everywhere.</li>
+                    <li>A long synchronous loop still <strong>blocks rendering and input</strong> — because it never empties the stack, so the event loop cannot run.</li>
+                    <li>True parallelism in JS is opt-in: <code>Worker</code> in the browser, <code>worker_threads</code> in Node. Those are <em>other</em> JS engines with their own stacks.</li>
+                </ul>
+
+                <div class="code-block"><span class="comment">// This freezes the page. The stack never empties.</span>
+<span class="keyword">const</span> start = Date.now();
+<span class="keyword">while</span> (Date.now() - start &lt; <span class="number">5000</span>) {
+    <span class="comment">// busy-wait for 5 seconds</span>
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"UI was frozen the whole time"</span>);
+</div>
+            </section>
+
+            <section id="engine">
+                <h2>🏭 The JavaScript Engine</h2>
+                <p>An engine turns source text into something a CPU can run. Chrome and Node.js use <strong>V8</strong>. You do not need every V8 name, but the pipeline is the mental model:</p>
+
+                <div class="exec-pipe" aria-label="Engine pipeline">
+                    <div class="exec-step hw">Source<small>.js text</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step sw">Parse<small>tokens + AST</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step os">Interpret<small>bytecode</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step pink">Profile<small>hot functions</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step cpu">JIT compile<small>machine code</small></div>
+                </div>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-engine-pipeline.png" alt="Pipeline from source code through parser, AST, interpreter, profiler, and JIT compiler">
+                    <div class="illustration-caption">Cold code is interpreted. Functions that run a lot get optimized. If assumptions break, the engine deoptimizes and falls back.</div>
+                </div>
+
+                <ol class="hop-list">
+                    <li><strong>Lexing / parsing.</strong> The source is split into tokens, then built into an <strong>Abstract Syntax Tree</strong> (AST) — a tree of “this is a function, this is an if, this is a call.”</li>
+                    <li><strong>Interpretation.</strong> V8’s Ignition walks the AST and produces <strong>bytecode</strong>. That starts running quickly. You do not wait for a full compile of the whole file.</li>
+                    <li><strong>Profiling.</strong> While bytecode runs, the engine watches which functions are “hot” (called often, or sit in a tight loop).</li>
+                    <li><strong>JIT (TurboFan).</strong> Hot functions are compiled to optimized machine code. Types seen so far are assumed to stay stable.</li>
+                    <li><strong>Deoptimization.</strong> If a function suddenly gets a different type, the optimized version is thrown away and bytecode takes over again.</li>
+                </ol>
+
+                <div class="grid-3">
+                    <div class="feature-card card-blue">
+                        <h4>Why this is fast</h4>
+                        <p>Most of a program is not hot. Interpret first, optimize later. You get startup speed <em>and</em> peak speed.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Why types matter</h4>
+                        <p>Hidden classes and inline caches assume <code>obj.x</code> stays the same shape. Mixing types in a hot path can make the JIT give up.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>What you write still wins</h4>
+                        <p>Readable, predictable code is easier to optimize than clever type-switching. Write for humans; the engine will follow.</p>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="comment">// Friendly to the JIT: same shape, same types</span>
+<span class="keyword">function</span> <span class="function">area</span>(w, h) {
+    <span class="keyword">return</span> w * h;
+}
+<span class="function">area</span>(<span class="number">10</span>, <span class="number">20</span>);
+<span class="function">area</span>(<span class="number">3</span>, <span class="number">4</span>);
+
+<span class="comment">// Harder: the engine must handle numbers AND strings</span>
+<span class="function">area</span>(<span class="string">"10"</span>, <span class="string">"20"</span>);
+</div>
+            </section>
+
+            <section id="heap-stack">
+                <h2>🧠 Heap vs Call Stack</h2>
+                <p>The engine keeps two kinds of memory. Mixing them up is the source of most “how does this even work?” moments.</p>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-call-stack-heap.png" alt="Call stack of function frames next to a heap of objects">
+                    <div class="illustration-caption">The stack is a tower of frames. The heap is a warehouse of objects. A frame holds references; the objects live on the heap.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Call stack</h4>
+                        <p>Structured, fast, LIFO. Each function call pushes a <strong>frame</strong>: parameters, local bindings, and where to resume. When the function returns, the frame is popped and those locals are gone.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Memory heap</h4>
+                        <p>Unstructured pool for <strong>objects, arrays, functions, closures</strong>. Size is not known in advance. Values here live until nothing references them, then garbage collection can reclaim them.</p>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">greet</span>(name) {
+    <span class="keyword">const</span> message = { text: <span class="string">"Hi "</span> + name }; <span class="comment">// object → heap</span>
+    <span class="keyword">return</span> message.text;                     <span class="comment">// primitive copy on return</span>
+}
+
+<span class="function">greet</span>(<span class="string">"Ada"</span>);
+<span class="comment">// Stack: [GEC] → [greet] → pop greet
+// Heap:  { text: "Hi Ada" } until nothing points at it</span>
+</div>
+
+                <div class="info-box">
+                    <p><strong>Primitives vs references.</strong> Numbers, strings, booleans, <code>null</code>, <code>undefined</code>, and symbols behave as values. Objects and functions are references into the heap. That is why two variables can share one object, and why mutating an object inside a function is visible outside.</p>
+                </div>
+            </section>
+
+            <section id="execution">
+                <h2>📚 Execution Context</h2>
+                <p><span class="highlight">An execution context is the environment</span> where a piece of JavaScript is evaluated. The engine creates one for the whole program (the <strong>Global Execution Context</strong>) and a new one for <strong>every function call</strong>.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Memory component</h4>
+                        <p>Also called the variable environment. Stores bindings: variables, function declarations, and arguments as key → value.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Code component</h4>
+                        <p>The thread of execution. Runs the body line by line: assigns values, calls functions, evaluates expressions.</p>
+                    </div>
+                </div>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-execution-context.png" alt="Two-phase execution context: memory creation then code execution">
+                    <div class="illustration-caption">Phase 1 allocates bindings. Phase 2 fills them in. That split is why hoisting exists.</div>
+                </div>
+
+                <h3>Two-phase process</h3>
+                <div class="phase-row">
+                    <div class="phase-box">
+                        <h4>Phase 1 — Memory creation</h4>
+                        <div class="memory-grid">
+                            <div class="memory-cell"><strong>var n</strong><div class="value">undefined</div></div>
+                            <div class="memory-cell"><strong>function square</strong><div class="value">{…code…}</div></div>
+                            <div class="memory-cell"><strong>var square1</strong><div class="value">undefined</div></div>
+                            <div class="memory-cell"><strong>var square2</strong><div class="value">undefined</div></div>
+                        </div>
+                    </div>
+                    <div class="phase-arrow">→</div>
+                    <div class="phase-box">
+                        <h4>Phase 2 — Code execution</h4>
+                        <div class="memory-grid">
+                            <div class="memory-cell"><strong>var n</strong><div class="value filled">2</div></div>
+                            <div class="memory-cell"><strong>function square</strong><div class="value">{…code…}</div></div>
+                            <div class="memory-cell"><strong>var square1</strong><div class="value filled">4</div></div>
+                            <div class="memory-cell"><strong>var square2</strong><div class="value filled">9</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>The example those boxes describe</h3>
+                <div class="code-block"><span class="keyword">var</span> n = <span class="number">2</span>;
+
+<span class="keyword">function</span> <span class="function">square</span>(num) {
+    <span class="keyword">var</span> answer = num * num;
+    <span class="keyword">return</span> answer;
+}
+
+<span class="keyword">var</span> square1 = <span class="function">square</span>(<span class="number">2</span>);
+<span class="keyword">var</span> square2 = <span class="function">square</span>(<span class="number">3</span>);
+</div>
+
+                <ol class="hop-list">
+                    <li><strong>Global context is created.</strong> <code>n</code>, <code>square1</code>, <code>square2</code> are <code>undefined</code>. <code>square</code> already holds the whole function.</li>
+                    <li><strong>Line <code>n = 2</code> runs.</strong> The binding is updated. No function has been called yet.</li>
+                    <li><strong><code>square(2)</code> creates a child context.</strong> Memory: <code>num</code> and <code>answer</code> start as <code>undefined</code>. Then <code>num = 2</code>, <code>answer = 4</code>, <code>return 4</code>. That context is destroyed. <code>square1</code> becomes <code>4</code>.</li>
+                    <li><strong><code>square(3)</code> repeats the same story</strong> with a fresh context. Contexts do not reuse each other’s locals.</li>
+                </ol>
+
+                <h3>What lives inside a context</h3>
+                <div class="diagram-box">Execution Context
+├── Variable Environment   bindings created by var / function
+├── Lexical Environment    bindings created by let / const / parameters
+├── Scope Chain            outer environments this context can see
+└── this binding           who "this" points at for this call</div>
+
+                <div class="code-block"><span class="comment">// Checkout: each call gets its own context</span>
+<span class="keyword">function</span> <span class="function">calculateTotal</span>(price, quantity) {
+    <span class="keyword">var</span> subtotal = price * quantity;
+    <span class="keyword">var</span> tax = subtotal * <span class="number">0.08</span>;
+    <span class="keyword">return</span> subtotal + tax;
+}
+
+<span class="keyword">var</span> orderTotal = <span class="function">calculateTotal</span>(<span class="number">29.99</span>, <span class="number">2</span>);
+<span class="comment">// New context → locals → return 64.778 → context gone → orderTotal set</span>
+</div>
+            </section>
+
+            <section id="callstack">
+                <h2>📚 Call Stack</h2>
+                <p><span class="highlight">The call stack is the order of execution contexts.</span> It is LIFO: last in, first out. The frame on top is the only one running.</p>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">first</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"first start"</span>);
+    <span class="function">second</span>();
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"first end"</span>);
+}
+<span class="keyword">function</span> <span class="function">second</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"second start"</span>);
+    <span class="function">third</span>();
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"second end"</span>);
+}
+<span class="keyword">function</span> <span class="function">third</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"third"</span>);
+}
+<span class="function">first</span>();
+</div>
+
+                <div class="stack-viz">
+                    <div class="stack-col">
+                        <h4>1. Program starts</h4>
+                        <div class="stack-item empty">—</div>
+                        <div class="stack-item empty">—</div>
+                        <div class="stack-item global">🌍 Global</div>
+                    </div>
+                    <div class="stack-col">
+                        <h4>2. first()</h4>
+                        <div class="stack-item empty">—</div>
+                        <div class="stack-item">first()</div>
+                        <div class="stack-item global">🌍 Global</div>
+                    </div>
+                    <div class="stack-col">
+                        <h4>3. Deepest</h4>
+                        <div class="stack-item active">third() ← running</div>
+                        <div class="stack-item">second()</div>
+                        <div class="stack-item">first()</div>
+                        <div class="stack-item global">🌍 Global</div>
+                    </div>
+                    <div class="stack-col">
+                        <h4>4. Unwind</h4>
+                        <div class="stack-item empty">third popped</div>
+                        <div class="stack-item empty">second popped</div>
+                        <div class="stack-item empty">first popped</div>
+                        <div class="stack-item global">🌍 Global</div>
+                    </div>
+                </div>
+
+                <div class="diagram-box">Step 1  [ Global ]
+Step 2  [ Global ] [ first ]
+Step 3  [ Global ] [ first ] [ second ]
+Step 4  [ Global ] [ first ] [ second ] [ third ]   ← runs, then pops
+Step 5  [ Global ] [ first ] [ second ]
+Step 6  [ Global ] [ first ]
+Step 7  [ Global ]
+Step 8  []   program finished</div>
+
+                <div class="warning-box">
+                    <strong>Stack overflow</strong> happens when frames are pushed faster than they are popped — usually infinite recursion with no base case.
+                    <div class="code-block"><span class="keyword">function</span> <span class="function">recursive</span>() {
+    <span class="function">recursive</span>(); <span class="comment">// no base case</span>
+}
+<span class="comment">// recursive();  // RangeError: Maximum call stack size exceeded</span>
+</div>
+                </div>
+
+                <p>A stack overflow is not “the heap is full.” It is “too many frames.” A memory leak is the opposite problem: heap objects that are never released because something still references them.</p>
+            </section>
+
+            <section id="this-binding">
+                <h2>🎯 How <code>this</code> Is Decided</h2>
+                <p><code>this</code> is not the function. It is a binding set <strong>for that call</strong>, stored on the execution context. The same function can see a different <code>this</code> every time you invoke it.</p>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-this-binding.png" alt="Four ways this is bound: default, implicit, explicit, and new">
+                    <div class="illustration-caption">Look at the call site, not the function body. That is where this is chosen.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>1. Default</h4>
+                        <p>A bare call: <code>fn()</code>. In sloppy mode <code>this</code> is the global object. In <code>"use strict"</code> it is <code>undefined</code>.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>2. Implicit</h4>
+                        <p>The object before the dot: <code>user.greet()</code> binds <code>this</code> to <code>user</code>. Detach the method and you lose that object.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>3. Explicit</h4>
+                        <p><code>fn.call(obj)</code>, <code>fn.apply(obj, args)</code>, <code>fn.bind(obj)</code> force the binding. <code>bind</code> returns a new function.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>4. <code>new</code></h4>
+                        <p><code>new User()</code> creates an object, binds <code>this</code> to it, and returns it (unless the constructor returns another object).</p>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="keyword">const</span> user = {
+    name: <span class="string">"Ada"</span>,
+    <span class="function">greet</span>() { <span class="keyword">return</span> <span class="string">"Hi "</span> + <span class="keyword">this</span>.name; }
+};
+
+<span class="function">console</span>.<span class="function">log</span>(user.<span class="function">greet</span>());      <span class="comment">// "Hi Ada"  — implicit</span>
+<span class="keyword">const</span> detached = user.greet;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">detached</span>());        <span class="comment">// undefined / window.name</span>
+<span class="function">console</span>.<span class="function">log</span>(detached.<span class="function">call</span>(user)); <span class="comment">// "Hi Ada"  — explicit</span>
+
+<span class="keyword">const</span> bound = user.greet.<span class="function">bind</span>(user);
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">bound</span>());           <span class="comment">// "Hi Ada"  — locked in</span>
+</div>
+
+                <div class="info-box">
+                    <p><strong>Arrow functions do not get their own <code>this</code>.</strong> They close over the <code>this</code> of the surrounding scope. That is why they are the default inside React handlers and <code>setTimeout</code> callbacks — they keep the outer object instead of becoming <code>window</code>.</p>
+                </div>
+            </section>
+
+            <section id="event-loop">
+                <h2>🔁 The Event Loop</h2>
+                <p>The engine only runs whatever is on the call stack. The <strong>event loop</strong> is the runtime’s scheduler: when the stack is empty, it asks “is there work waiting?” and moves the next job onto the stack.</p>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-event-loop-cycle.png" alt="Event loop cycle: empty stack, drain microtasks, take one macrotask, maybe render">
+                    <div class="illustration-caption">Empty the stack. Drain every microtask. Take one macrotask. The browser may paint. Repeat.</div>
+                </div>
+
+                <div class="loop-cycle">
+                    <div class="loop-step">
+                        <div class="num n1">1</div>
+                        <strong>Run JS</strong>
+                        <p>Execute until the call stack is empty. No event loop work happens while a function is still running.</p>
+                    </div>
+                    <div class="loop-step">
+                        <div class="num n2">2</div>
+                        <strong>Microtasks</strong>
+                        <p>Drain the <em>entire</em> microtask queue: Promise jobs, <code>queueMicrotask</code>, MutationObserver.</p>
+                    </div>
+                    <div class="loop-step">
+                        <div class="num n3">3</div>
+                        <strong>One macrotask</strong>
+                        <p>Take a single callback: timer, I/O, UI event, <code>setImmediate</code> (Node).</p>
+                    </div>
+                    <div class="loop-step">
+                        <div class="num n4">4</div>
+                        <strong>Maybe render</strong>
+                        <p>The browser may paint, then the loop starts over. A busy stack delays paint.</p>
+                    </div>
+                </div>
+
+                <div class="diagram-box">while (runtime is alive) {
+    run everything on the call stack
+    while (microtaskQueue is not empty) {
+        run next microtask          // Promises always cut in line
+    }
+    if (browser wants to paint) render()
+    run next macrotask              // one timer / I/O / click
+}</div>
+
+                <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="string">"A"</span>);
+
+<span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"B timeout"</span>), <span class="number">0</span>);
+
+<span class="function">Promise</span>.<span class="function">resolve</span>().<span class="function">then</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"C promise"</span>));
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"D"</span>);
+
+<span class="comment">// A
+// D
+// C promise     ← microtask, before any timer
+// B timeout     ← macrotask, even with 0ms</span>
+</div>
+
+                <p>Walk it: <code>A</code> and <code>D</code> are synchronous, so they print first. <code>setTimeout(..., 0)</code> is not “run now” — it is “hand this to the timer API, then queue a macrotask.” The promise job is a microtask, so it runs as soon as the stack clears, <em>before</em> the timer.</p>
+            </section>
+
+            <section id="web-apis">
+                <h2>🌐 Web APIs (and Node APIs)</h2>
+                <p>The engine cannot wait on the network or the clock by itself. The <strong>host</strong> provides APIs. Those APIs may use OS threads, thread pools, or the operating system’s I/O. When they finish, they only <em>enqueue</em> a function. They do not jump onto your stack.</p>
+
+                <div class="grid-3">
+                    <div class="feature-card card-blue">
+                        <h4>Timers</h4>
+                        <p><code>setTimeout</code>, <code>setInterval</code>. The delay is a <em>minimum</em>. The callback still waits for an empty stack and its turn in the macrotask queue.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Network</h4>
+                        <p><code>fetch</code>, XHR, WebSockets. The socket work happens outside JS. Your <code>.then</code> is a microtask after the response is ready.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>DOM &amp; events</h4>
+                        <p>Clicks, input, <code>addEventListener</code>. The browser notices the event, then queues a task that calls your listener.</p>
+                    </div>
+                </div>
+
+                <div class="exec-pipe" aria-label="setTimeout path">
+                    <div class="exec-step sw">JS calls<small>setTimeout</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step os">Timer API<small>waits 1s</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step hw">Callback Queue<small>macrotask</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step pink">Event loop<small>stack empty?</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step cpu">Callback runs<small>on the stack</small></div>
+                </div>
+
+                <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="string">"1 start"</span>);
+
+<span class="function">setTimeout</span>(() => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"3 timer done"</span>);
+}, <span class="number">1000</span>);
+
+<span class="function">fetch</span>(<span class="string">"/api/cart"</span>).<span class="function">then</span>(r => r.<span class="function">json</span>()).<span class="function">then</span>(data => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"4 data"</span>, data);
+});
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"2 still sync"</span>);
+</div>
+            </section>
+
+            <section id="queues">
+                <h2>📬 Macrotasks vs Microtasks</h2>
+                <p>Two waiting rooms. Same event loop. Very different priority.</p>
+
+                <div class="queue-row">
+                    <div class="queue-card">
+                        <span class="queue-chip chip-micro">Microtask queue</span>
+                        <h4>Runs to completion after the stack</h4>
+                        <ul>
+                            <li><code>promise.then / catch / finally</code></li>
+                            <li><code>queueMicrotask()</code></li>
+                            <li><code>MutationObserver</code></li>
+                            <li>async function resumes after <code>await</code></li>
+                        </ul>
+                        <p>If a microtask queues another microtask, that one also runs <em>before</em> the next macrotask. A tight microtask loop can starve rendering.</p>
+                    </div>
+                    <div class="queue-card">
+                        <span class="queue-chip chip-macro">Macrotask / callback queue</span>
+                        <h4>One task per loop turn</h4>
+                        <ul>
+                            <li><code>setTimeout</code> / <code>setInterval</code></li>
+                            <li>UI events (click, keydown)</li>
+                            <li>I/O completion callbacks</li>
+                            <li><code>setImmediate</code> (Node), <code>MessageChannel</code></li>
+                        </ul>
+                        <p>After each macrotask, microtasks are drained again. That is why a promise scheduled inside a timeout still beats the next timeout.</p>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"macro 1"</span>), <span class="number">0</span>);
+
+<span class="function">Promise</span>.<span class="function">resolve</span>()
+    .<span class="function">then</span>(() => {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"micro 1"</span>);
+        <span class="keyword">return</span> <span class="function">Promise</span>.<span class="function">resolve</span>();
+    })
+    .<span class="function">then</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"micro 2"</span>));
+
+<span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"macro 2"</span>), <span class="number">0</span>);
+
+<span class="comment">// micro 1
+// micro 2
+// macro 1
+// macro 2</span>
+</div>
+
+                <div class="warning-box">
+                    <p><strong>Interview trap:</strong> <code>setTimeout(fn, 0)</code> is not “next line.” It is “soonest macrotask.” Anything in the microtask queue still goes first. Nested <code>await</code>s are also microtasks.</p>
+                </div>
+            </section>
+
+            <section id="promises-async">
+                <h2>⏳ Promises and <code>async</code> / <code>await</code></h2>
+                <p><code>async/await</code> is syntax. Under the hood it is still promises, and promise reactions are still microtasks.</p>
+
+                <div class="compare-split">
+                    <div>
+                        <h4>What you write</h4>
+                        <div class="code-block"><span class="keyword">async function</span> <span class="function">loadUser</span>(id) {
+    <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`/users/${id}`</span>);
+    <span class="keyword">const</span> user = <span class="keyword">await</span> res.<span class="function">json</span>();
+    <span class="keyword">return</span> user.name;
+}
+</div>
+                    </div>
+                    <div>
+                        <h4>What the engine roughly does</h4>
+                        <div class="code-block"><span class="keyword">function</span> <span class="function">loadUser</span>(id) {
+    <span class="keyword">return</span> <span class="function">fetch</span>(<span class="string">`/users/${id}`</span>)
+        .<span class="function">then</span>(res => res.<span class="function">json</span>())
+        .<span class="function">then</span>(user => user.name);
+}
+</div>
+                    </div>
+                </div>
+
+                <ol class="hop-list">
+                    <li><strong><code>async</code> functions always return a Promise.</strong> Even <code>return 5</code> becomes <code>Promise.resolve(5)</code>.</li>
+                    <li><strong><code>await</code> pauses only this function.</strong> The rest of the program keeps going. The paused function is resumed as a microtask when the awaited promise settles.</li>
+                    <li><strong>Rejection becomes <code>throw</code>.</strong> <code>try/catch</code> around <code>await</code> is the same idea as <code>.catch()</code>.</li>
+                    <li><strong>It is still not a thread.</strong> While you <code>await fetch</code>, other JS can run. While you compute a huge loop after the data arrives, nothing else can.</li>
+                </ol>
+
+                <div class="code-block"><span class="keyword">async function</span> <span class="function">demo</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"2 inside async before await"</span>);
+    <span class="keyword">await</span> <span class="keyword">null</span>; <span class="comment">// same as Promise.resolve()</span>
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"4 resumed as a microtask"</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"1 sync"</span>);
+<span class="function">demo</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"3 sync after calling demo"</span>);
+
+<span class="comment">// 1 sync
+// 2 inside async before await
+// 3 sync after calling demo
+// 4 resumed as a microtask</span>
+</div>
+            </section>
+
+            <section id="hoisting">
+                <h2>⬆️ Hoisting</h2>
+                <p><span class="highlight">Hoisting</span> is not the engine physically moving your lines. It is the <strong>memory creation phase</strong>: declarations are registered before any code runs.</p>
+
+                <div class="phase-row">
+                    <div class="phase-box">
+                        <h4>What you wrote</h4>
+                        <div class="memory-cell" style="margin-bottom:0.5rem;">console.log(x);</div>
+                        <div class="memory-cell" style="margin-bottom:0.5rem;">var x = 5;</div>
+                        <div class="memory-cell" style="margin-bottom:0.5rem;">greet();</div>
+                        <div class="memory-cell">function greet() {…}</div>
+                    </div>
+                    <div class="phase-arrow">↑</div>
+                    <div class="phase-box">
+                        <h4>What phase 1 already did</h4>
+                        <div class="memory-cell" style="margin-bottom:0.5rem;"><strong>var x</strong> = undefined</div>
+                        <div class="memory-cell" style="margin-bottom:0.5rem;"><strong>function greet</strong> = full function</div>
+                        <div class="memory-cell" style="margin-bottom:0.5rem;">then console.log(x) → undefined</div>
+                        <div class="memory-cell">then greet() works · then x = 5</div>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(x); <span class="comment">// undefined — the binding exists</span>
+<span class="keyword">var</span> x = <span class="number">5</span>;
+<span class="function">console</span>.<span class="function">log</span>(x); <span class="comment">// 5</span>
+
+<span class="function">greet</span>(); <span class="comment">// "Hello" — function declarations are fully hoisted</span>
+<span class="keyword">function</span> <span class="function">greet</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Hello"</span>);
+}
+
+<span class="comment">// sayHi(); // TypeError: sayHi is not a function</span>
+<span class="keyword">var</span> sayHi = <span class="keyword">function</span>() { <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Hi"</span>); };
+
+<span class="comment">// greetArrow(); // ReferenceError (TDZ) or not a function</span>
+<span class="keyword">const</span> greetArrow = () => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Hello Arrow"</span>);
+</div>
+
+                <table>
+                    <tr>
+                        <th>Kind</th>
+                        <th>Hoisted?</th>
+                        <th>Usable before the line?</th>
+                    </tr>
+                    <tr>
+                        <td><code>function</code> declaration</td>
+                        <td>Yes — whole function</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><code>var</code></td>
+                        <td>Yes — value <code>undefined</code></td>
+                        <td>Yes, but you get <code>undefined</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>let</code> / <code>const</code></td>
+                        <td>Binding is created, not initialized</td>
+                        <td>No — Temporal Dead Zone</td>
+                    </tr>
+                    <tr>
+                        <td>Function expression / arrow</td>
+                        <td>Follows the variable (<code>var</code>/<code>let</code>/<code>const</code>)</td>
+                        <td>No (not a function yet, or TDZ)</td>
+                    </tr>
+                    <tr>
+                        <td><code>class</code></td>
+                        <td>Like <code>let</code></td>
+                        <td>No — TDZ</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="tdz">
+                <h2>⏳ Temporal Dead Zone</h2>
+                <p>The <span class="highlight">Temporal Dead Zone</span> is the stretch of time from entering a scope until a <code>let</code> / <code>const</code> / <code>class</code> binding is initialized. The name exists in memory. Using it throws.</p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background:#ef4444;"></div>
+                        <strong>Scope entered</strong>
+                        <p>Binding exists. Access is a <code>ReferenceError</code>.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background:#f59e0b;"></div>
+                        <strong>Still in the TDZ</strong>
+                        <p>Even <code>typeof x</code> throws for <code>let</code> / <code>const</code>.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background:#ec4899;"></div>
+                        <strong>Initializer runs</strong>
+                        <p><code>let x = 10</code> — TDZ ends.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background:#10b981;"></div>
+                        <strong>Safe to use</strong>
+                        <p><code>x</code> is 10. Reads and writes are normal.</p>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="string">"before"</span>);
+<span class="comment">// console.log(x); // ReferenceError: Cannot access 'x' before initialization</span>
+<span class="keyword">let</span> x = <span class="number">10</span>;
+<span class="function">console</span>.<span class="function">log</span>(x); <span class="comment">// 10</span>
+
+<span class="comment">// var has no TDZ</span>
+<span class="function">console</span>.<span class="function">log</span>(a); <span class="comment">// undefined</span>
+<span class="keyword">var</span> a = <span class="number">5</span>;
+</div>
+
+                <div class="info-box">
+                    <p><strong>Why TDZ exists.</strong> It makes <code>const</code> honest (no half-created constant), and it catches “I used this before I meant to” instead of silently handing you <code>undefined</code>. That silent <code>undefined</code> from <code>var</code> is a classic bug source.</p>
+                </div>
+            </section>
+
+            <section id="scope">
+                <h2>🔍 Scope and the Scope Chain</h2>
+                <p><span class="highlight">Scope</span> is which bindings a line of code is allowed to see. Lookup walks <strong>outward</strong>: local → outer function → … → global. It never walks inward.</p>
+
+                <div class="illustration">
+                    <img src="/images/javascript/js-scope-chain.png" alt="Nested global, function, and block scopes with lookup walking outward">
+                    <div class="illustration-caption">Inner scopes can read outer bindings. Outer scopes cannot see names declared inside.</div>
+                </div>
+
+                <div class="scope-nest">
+                    <span class="scope-label" style="background:#4f46e5;">Global scope</span>
+                    <p style="margin:0.4rem 0 0;"><code>const taxRate = 0.08;</code> — visible everywhere below</p>
+                    <div class="mid">
+                        <span class="scope-label" style="background:#7c3aed;">Function scope</span>
+                        <p style="margin:0.4rem 0 0;"><code>function checkout(cart) { const fee = 2; }</code></p>
+                        <p style="margin:0.35rem 0 0; font-size:0.9rem;">Can read <code>taxRate</code> + <code>cart</code> + <code>fee</code></p>
+                        <div class="inner">
+                            <span class="scope-label" style="background:#db2777;">Block scope</span>
+                            <p style="margin:0.4rem 0 0;"><code>if (vip) { let discount = 0.2; }</code></p>
+                            <p style="margin:0.35rem 0 0; font-size:0.9rem;">Can read all of the above + <code>discount</code>. <code>discount</code> is invisible outside the <code>if</code>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Three scopes you will use</h3>
+                <div class="code-block"><span class="keyword">const</span> globalVar = <span class="string">"everywhere"</span>;
+
+<span class="keyword">function</span> <span class="function">test</span>() {
+    <span class="keyword">const</span> functionVar = <span class="string">"only in test"</span>;
+    <span class="keyword">if</span> (<span class="keyword">true</span>) {
+        <span class="keyword">let</span> blockVar = <span class="string">"only in this block"</span>;
+        <span class="function">console</span>.<span class="function">log</span>(globalVar, functionVar, blockVar);
+    }
+    <span class="comment">// console.log(blockVar); // ReferenceError</span>
+}
+
+<span class="comment">// var ignores block scope — it leaks to the function</span>
+<span class="keyword">if</span> (<span class="keyword">true</span>) {
+    <span class="keyword">var</span> leaked = <span class="string">"I escape the if"</span>;
+}
+<span class="function">console</span>.<span class="function">log</span>(leaked); <span class="comment">// works — and that is the problem</span>
+</div>
+
+                <div class="code-block"><span class="keyword">let</span> cartTotal = <span class="number">0</span>;
+
+<span class="keyword">function</span> <span class="function">addToCart</span>(price) {
+    <span class="keyword">const</span> tax = price * <span class="number">0.08</span>;
+    <span class="keyword">const</span> itemTotal = price + tax;
+    cartTotal += itemTotal;
+    <span class="keyword">return</span> itemTotal;
+}
+
+<span class="keyword">function</span> <span class="function">displayCart</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Cart Total: $${cartTotal.toFixed(2)}`</span>);
+    <span class="comment">// tax and itemTotal are not in this scope</span>
+}
+
+<span class="function">addToCart</span>(<span class="number">29.99</span>);
+<span class="function">addToCart</span>(<span class="number">15.50</span>);
+<span class="function">displayCart</span>();
+</div>
+            </section>
+
+            <section id="closures">
+                <h2>🎁 Closures</h2>
+                <p>A <strong>closure</strong> is a function plus the lexical environment it was created in. When a function is born inside another function, it keeps a live reference to those outer bindings — even after the outer function has returned and its stack frame is gone.</p>
+
+                <div class="diagram-box">function makeCounter() {
+    let count = 0;          ← lives on the HEAP (closed over)
+    return function next() {
+        count += 1;         ← still sees the same count
+        return count;
+    };
+}
+
+makeCounter() returns
+    next  ──scope chain──►  { count: 0 }   (not popped with the stack)</div>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">makeCounter</span>() {
+    <span class="keyword">let</span> count = <span class="number">0</span>;
+    <span class="keyword">return function</span> <span class="function">next</span>() {
+        count += <span class="number">1</span>;
+        <span class="keyword">return</span> count;
+    };
+}
+
+<span class="keyword">const</span> a = <span class="function">makeCounter</span>();
+<span class="keyword">const</span> b = <span class="function">makeCounter</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">a</span>(), <span class="function">a</span>()); <span class="comment">// 1 2</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">b</span>());      <span class="comment">// 1  — separate heap environment</span>
+</div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-purple">
+                        <h4>Why the heap matters</h4>
+                        <p>If <code>count</code> lived only on the stack, it would vanish when <code>makeCounter</code> returned. Because <code>next</code> still references it, the engine keeps that environment on the heap.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Where you already use this</h4>
+                        <p>React state setters, module-level caches, partial application, and “private” variables in factories are all closures. They are not a special syntax — they are scope that outlived its stack frame.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="window">
+                <h2>🌐 The Global Object</h2>
+                <p>In a browser the global object is <code>window</code> (also reachable as <code>globalThis</code>). In Node it is <code>global</code> / <code>globalThis</code>. It is created with the Global Execution Context.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4><code>var</code> and function declarations</h4>
+                        <p>Become properties of the global object in browsers. <code>window.foo</code> and <code>foo</code> are the same binding.</p>
+                    </div>
+                    <div class="feature-card card-pink">
+                        <h4><code>let</code> / <code>const</code> / <code>class</code></h4>
+                        <p>Are global <em>bindings</em>, but they do <strong>not</strong> become <code>window</code> properties. That is why they do not collide with <code>window.name</code> the same way.</p>
+                    </div>
+                </div>
+
+                <div class="code-block"><span class="keyword">var</span> a = <span class="number">10</span>;
+<span class="keyword">function</span> <span class="function">addNumber</span>() {
+    <span class="keyword">var</span> x = <span class="number">10</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">window</span>.a); <span class="comment">// 10</span>
+<span class="function">console</span>.<span class="function">log</span>(a);          <span class="comment">// 10 — same binding</span>
+<span class="function">addNumber</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">window</span>.x); <span class="comment">// undefined — x was function-local</span>
+
+<span class="keyword">let</span> globalLet = <span class="string">"not on window"</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">window</span>.globalLet); <span class="comment">// undefined</span>
+<span class="function">console</span>.<span class="function">log</span>(globalLet);        <span class="comment">// works — still a global binding</span>
+</div>
+
+                <div class="code-block"><span class="comment">// Host APIs also live here — these are window methods</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">window</span>.innerWidth);
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">window</span>.location.href);
+<span class="keyword">window</span>.<span class="function">setTimeout</span>(() => {}, <span class="number">0</span>);
+
+<span class="comment">// Prefer globalThis when code might run in the browser AND Node</span>
+<span class="function">console</span>.<span class="function">log</span>(globalThis === <span class="keyword">window</span>); <span class="comment">// true in a browser page</span>
+</div>
+
+                <div class="warning-box">
+                    <p><strong>Do not pollute the global object.</strong> A stray <code>var</code> or an implicit global (<code>oops = 1</code> without a declaration, in sloppy mode) becomes a property everyone can clash with. Modules, <code>const</code>/<code>let</code>, and wrapping code in functions keep bindings private.</p>
+                </div>
+            </section>
+
+            <section id="comparison">
+                <h2>⚖️ var vs let vs const</h2>
+                <p>These three keywords are three different rules for <strong>when a binding exists, where it is visible, and whether you may reassign it</strong>.</p>
+
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>var</th>
+                        <th>let</th>
+                        <th>const</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Scope</strong></td>
+                        <td>Function</td>
+                        <td>Block</td>
+                        <td>Block</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hoisting</strong></td>
+                        <td>Yes → <code>undefined</code></td>
+                        <td>Binding only (TDZ)</td>
+                        <td>Binding only (TDZ)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Redeclare</strong></td>
+                        <td>Allowed</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reassign</strong></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>No (the binding)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>On <code>window</code></strong></td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Initializer</strong></td>
+                        <td>Optional</td>
+                        <td>Optional</td>
+                        <td>Required</td>
+                    </tr>
+                </table>
+
+                <div class="illustration">
+                    <div class="illustration-title">Which one should you type?</div>
+                    <div class="grid-2">
+                        <div class="feature-card card-green">
+                            <h4>Will the binding be reassigned?</h4>
+                            <p><strong>No → <code>const</code>.</strong> URLs, config, functions, and object/array <em>references</em> you will mutate in place.</p>
+                        </div>
+                        <div class="feature-card card-orange">
+                            <h4>Does the value need to change?</h4>
+                            <p><strong>Yes → <code>let</code>.</strong> Loop counters, accumulators, values you pick in an if/else.</p>
+                        </div>
+                    </div>
+                    <div class="wrong-box" style="margin-top:0;"><strong>Avoid <code>var</code></strong> unless you are reading or patching pre-ES6 code. It leaks out of blocks and has no TDZ.</div>
+                </div>
+
+                <h3>The loop bug that made <code>let</code> famous</h3>
+                <div class="code-block"><span class="comment">// One shared var binding for the whole function</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) {
+    <span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(i), <span class="number">0</span>);
+}
+<span class="comment">// 3, 3, 3  — the timer runs after the loop; i is already 3</span>
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) {
+    <span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(i), <span class="number">0</span>);
+}
+<span class="comment">// 0, 1, 2  — each iteration has its own block-scoped i</span>
+</div>
+
+                <div class="code-block"><span class="keyword">const</span> API_URL = <span class="string">"https://api.example.com"</span>;
+<span class="keyword">const</span> items = [];
+<span class="keyword">let</span> total = <span class="number">0</span>;
+
+items.<span class="function">push</span>({ name: <span class="string">"Book"</span>, price: <span class="number">29.99</span> }); <span class="comment">// allowed — same array</span>
+<span class="comment">// items = [];  // TypeError — cannot rebind const</span>
+
+items.<span class="function">forEach</span>(item => { total += item.price; });
+</div>
+            </section>
+
+            <section id="gc">
+                <h2>♻️ Garbage Collection</h2>
+                <p>You do not <code>free()</code> memory in JavaScript. The engine’s <strong>garbage collector</strong> finds heap values that are no longer reachable from the roots (the stack, globals, and closures still in use) and reclaims them.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Mark and sweep</h4>
+                        <p>Start from roots. Mark everything you can reach. Sweep the rest. This is the core idea in modern engines (with generations and incremental marking so pauses stay short).</p>
+                    </div>
+                    <div class="feature-card card-red">
+                        <h4>What a leak looks like</h4>
+                        <p>A forgotten global, a detached DOM node still referenced, a closure that captured a huge array, or an event listener you never removed. Reachable = not collected.</p>
+                    </div>
+                </div>
+
+                <div class="diagram-box">Roots:  Global object · current stack frames · open closures
+          │
+          ▼ mark
+   objects you can still walk to   →  keep
+   objects with no path from roots →  sweep (memory reused)</div>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">leakyHandler</span>() {
+    <span class="keyword">const</span> huge = <span class="keyword">new</span> <span class="function">Array</span>(<span class="number">1e6</span>).<span class="function">fill</span>(<span class="string">"x"</span>);
+    <span class="keyword">window</span>.<span class="function">addEventListener</span>(<span class="string">"resize"</span>, () => {
+        <span class="function">console</span>.<span class="function">log</span>(huge.length); <span class="comment">// closure keeps huge alive</span>
+    });
+}
+
+<span class="keyword">function</span> <span class="function">cleanHandler</span>() {
+    <span class="keyword">const</span> onResize = () => <span class="function">console</span>.<span class="function">log</span>(<span class="keyword">window</span>.innerWidth);
+    <span class="keyword">window</span>.<span class="function">addEventListener</span>(<span class="string">"resize"</span>, onResize);
+    <span class="keyword">return</span> () => <span class="keyword">window</span>.<span class="function">removeEventListener</span>(<span class="string">"resize"</span>, onResize);
+}
+</div>
+
+                <div class="info-box">
+                    <p><strong>Rule of thumb:</strong> if you still have a reference, the collector cannot help you. Drop the reference (or remove the listener) when you are done. Closures are useful — they are also the most common way a large object stays reachable by accident.</p>
+                </div>
+            </section>
+
+            <section id="together">
+                <h2>🧩 Put It Together</h2>
+                <p>One program, every piece of this page in motion. Read it as a timeline, not as magic.</p>
+
+                <div class="code-block"><span class="keyword">console</span>.<span class="function">log</span>(<span class="string">"1 sync start"</span>);
+
+<span class="keyword">function</span> <span class="function">double</span>(n) {
+    <span class="keyword">return</span> n * <span class="number">2</span>;
+}
+
+<span class="keyword">const</span> result = <span class="function">double</span>(<span class="number">21</span>);
+
+<span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"4 timeout"</span>, result), <span class="number">0</span>);
+
+<span class="function">Promise</span>.<span class="function">resolve</span>(result).<span class="function">then</span>(value => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"3 microtask"</span>, value);
+});
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"2 sync end"</span>);
+</div>
+
+                <ol class="hop-list">
+                    <li><strong>Engine starts.</strong> Parse → AST → bytecode. A Global Execution Context is pushed onto the call stack. Memory phase registers <code>double</code> (full function) and <code>result</code> (TDZ until its line).</li>
+                    <li><strong>Sync work.</strong> <code>"1 sync start"</code> prints. <code>double(21)</code> pushes a new context, returns <code>42</code>, pops. <code>result</code> is assigned. <code>setTimeout</code> hands a callback to the timer API. The promise schedules a microtask. <code>"2 sync end"</code> prints. Stack is empty.</li>
+                    <li><strong>Microtasks first.</strong> The event loop drains the promise job: <code>"3 microtask" 42</code>.</li>
+                    <li><strong>Then one macrotask.</strong> The timer callback runs: <code>"4 timeout" 42</code>. <code>result</code> is still visible because the callback closed over the global binding.</li>
+                    <li><strong>Heap cleanup.</strong> When nothing references leftover objects, mark-and-sweep can reclaim them. The global bindings stay until the page unloads.</li>
+                </ol>
+
+                <div class="diagram-box">Call stack     [ GEC ] → [ double ] → [ GEC ] → empty
+Web APIs       timer holds fn until 0ms elapses
+Microtasks     [ then → log 3 ]
+Macrotasks     [ timeout → log 4 ]
+Event loop     empty stack → drain micro → one macro → maybe paint</div>
+            </section>
+
+            <section id="remember">
+                <h2>📌 How to Remember</h2>
+                <p>If you can tell this story out loud, you understand how JavaScript works.</p>
+
+                <div class="remember-grid">
+                    <div class="remember-card">
+                        <strong>ENGINE</strong>
+                        <p>Parse into an AST, interpret bytecode, optimize hot functions. Memory heap holds objects. The call stack holds frames.</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>CONTEXT</strong>
+                        <p>Every program and every call gets an execution context: bindings, scope chain, and <code>this</code>. Two phases: allocate, then run.</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>STACK</strong>
+                        <p>LIFO. One JS function at a time. When it returns, its frame is gone. Overflow = too many frames, not a full heap.</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>EVENT LOOP</strong>
+                        <p>Stack empty → drain every microtask → take one macrotask → maybe render. Promises beat timers. Async is not a second thread.</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>SCOPE</strong>
+                        <p>Lookup walks outward. Closures keep outer bindings on the heap. <code>let</code>/<code>const</code> are blocked and have a TDZ. Prefer <code>const</code>.</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>THIS</strong>
+                        <p>Decided by the call site: default, dot, call/apply/bind, or <code>new</code>. Arrows inherit <code>this</code>. They do not get their own.</p>
+                    </div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>One sentence</h3>
+                    <p>JavaScript runs one stack frame at a time; the engine stores objects on the heap; the host waits on I/O; the event loop only feeds the stack when it is empty — microtasks first.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 1024 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(e.target) &&
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-link');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            sections.forEach(section => {
+                if (window.pageYOffset >= section.offsetTop - 100) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>

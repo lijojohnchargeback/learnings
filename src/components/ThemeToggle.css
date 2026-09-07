@@ -1,0 +1,59 @@
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.theme-toggle:hover::before {
+    opacity: 1;
+}
+
+.theme-toggle:hover {
+    color: white;
+    border-color: transparent;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px var(--shadow-colored);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-icon {
+    animation: iconAppear 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes iconAppear {
+    0% {
+        opacity: 0;
+        transform: rotate(-90deg) scale(0.5);
+    }
+    50% {
+        transform: rotate(20deg) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+}

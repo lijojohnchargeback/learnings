@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redux Toolkit - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧰 Redux Toolkit</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Core</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Why Toolkit?</a>
+                <a href="#store" class="sidebar-link">configureStore</a>
+                <a href="#slice" class="sidebar-link">createSlice</a>
+                <a href="#immer" class="sidebar-link">Immer</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🌐 Async</div>
+            <div class="sidebar-links">
+                <a href="#thunk" class="sidebar-link">createAsyncThunk</a>
+                <a href="#extra" class="sidebar-link">extraReducers</a>
+                <a href="#rtk-query" class="sidebar-link">RTK Query</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🏗️ Scale</div>
+            <div class="sidebar-links">
+                <a href="#entity" class="sidebar-link">Entity Adapter</a>
+                <a href="#selectors" class="sidebar-link">Selectors</a>
+                <a href="#migrate" class="sidebar-link">Migrate from Classic</a>
+                <a href="#practices" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧰 Redux Toolkit</h1>
+            <p>The official way to write Redux: slices, Immer, thunks, DevTools, and RTK Query — less boilerplate, same model.</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Why Toolkit?</h2>
+            <p><span class="highlight">Redux Toolkit (RTK)</span> is the standard for new Redux apps. Classic Redux made you hand-write action types, action creators, immutable updates, and store enhancers. Toolkit wraps that into a few functions without changing the three principles.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/redux-toolkit-toolbox.png" alt="Redux Toolkit toolbox: createSlice, configureStore, and RTK Query">
+                <div class="illustration-caption">createSlice writes reducer + actions. configureStore wires DevTools. RTK Query caches server data.</div>
+            </div>
+
+            <table>
+                <tr><th>Classic pain</th><th>Toolkit answer</th></tr>
+                <tr>
+                    <td>Action type strings + creators + switch</td>
+                    <td><code>createSlice</code> generates all three</td>
+                </tr>
+                <tr>
+                    <td>Spread nested state by hand</td>
+                    <td>Immer: write “mutating” syntax safely</td>
+                </tr>
+                <tr>
+                    <td>Wire DevTools + thunk yourself</td>
+                    <td><code>configureStore</code> does it by default</td>
+                </tr>
+                <tr>
+                    <td>Hand-rolled fetch cache</td>
+                    <td>RTK Query endpoints, cache, and hooks</td>
+                </tr>
+            </table>
+
+            <div class="code-block">npm install @reduxjs/toolkit react-redux</div>
+        </section>
+
+        <section id="store">
+            <h2>🏪 configureStore</h2>
+            <div class="code-block">import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './features/counter/counterSlice';
+import cartReducer from './features/cart/cartSlice';
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    cart: cartReducer
+  }
+  // middleware: thunk + immutability + serializable checks
+  // devTools: enabled in development
+});</div>
+
+            <p>Add saga or extra middleware with the callback form:</p>
+            <div class="code-block">middleware: (getDefaultMiddleware) =&gt;
+  getDefaultMiddleware().concat(sagaMiddleware, listenerMiddleware.middleware)</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Serializable check:</strong> By default RTK warns if you put non-JSON values in state or actions. That is intentional. If you must store a class instance, you are probably fighting Redux — keep it in a ref or Context instead.
+            </div>
+        </section>
+
+        <section id="slice">
+            <h2>🍰 createSlice</h2>
+            <p>A slice is a reducer plus the actions for one feature. Name the slice after the state key.</p>
+
+            <div class="code-block">import { createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment(state) {
+      state.value += 1; // Immer
+    },
+    addBy(state, action) {
+      state.value += action.payload;
+    },
+    reset: () =&gt; ({ value: 0 })
+  }
+});
+
+export const { increment, addBy, reset } = counterSlice.actions;
+export default counterSlice.reducer;
+
+// generated action: { type: 'counter/increment' }
+// generated action: { type: 'counter/addBy', payload: 5 }</div>
+
+            <h3>Use in a component</h3>
+            <div class="code-block">import { useSelector, useDispatch } from 'react-redux';
+import { increment, addBy } from './counterSlice';
+
+function Counter() {
+  const value = useSelector((state) =&gt; state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;{value}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch(increment())}&gt;+1&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch(addBy(5))}&gt;+5&lt;/button&gt;
+    &lt;/&gt;
+  );
+}</div>
+        </section>
+
+        <section id="immer">
+            <h2>🧊 Immer Inside Slices</h2>
+            <p>Inside <code>createSlice</code> reducers you may mutate a draft. Immer produces the next immutable state. Nested updates become readable.</p>
+
+            <div class="code-block">reducers: {
+  toggleTodo(state, action) {
+    const todo = state.items.find((t) =&gt; t.id === action.payload);
+    if (todo) todo.done = !todo.done;
+  },
+  removeTodo(state, action) {
+    state.items = state.items.filter((t) =&gt; t.id !== action.payload);
+  }
+}</div>
+
+            <div class="info-box">
+                <strong>Outside slices</strong> (selectors, tests, extra helpers) you still treat state as immutable. Do not mutate <code>store.getState()</code>.
+            </div>
+        </section>
+
+        <section id="thunk">
+            <h2>⏳ createAsyncThunk</h2>
+            <p>Describes an async call and auto-dispatches lifecycle actions: <code>pending</code>, <code>fulfilled</code>, <code>rejected</code>.</p>
+
+            <div class="code-block">import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+export const fetchUser = createAsyncThunk(
+  'user/fetch',
+  async (userId, { rejectWithValue }) =&gt; {
+    const res = await fetch(`/api/users/${userId}`);
+    if (!res.ok) return rejectWithValue(await res.text());
+    return res.json();
+  }
+);
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState: { data: null, status: 'idle', error: null },
+  reducers: {},
+  extraReducers: (builder) =&gt; {
+    builder
+      .addCase(fetchUser.pending, (state) =&gt; {
+        state.status = 'loading';
+      })
+      .addCase(fetchUser.fulfilled, (state, action) =&gt; {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state, action) =&gt; {
+        state.status = 'failed';
+        state.error = action.payload || action.error.message;
+      });
+  }
+});
+
+// component
+dispatch(fetchUser('42'));</div>
+
+            <p>The thunk receives <code>thunkAPI</code>: <code>dispatch</code>, <code>getState</code>, <code>rejectWithValue</code>, <code>signal</code> (AbortController). Abort happens if you use the returned promise’s <code>.abort()</code> or when the component unmounts with RTK’s hooks in some setups.</p>
+        </section>
+
+        <section id="extra">
+            <h2>➕ extraReducers</h2>
+            <p>Use <code>extraReducers</code> for actions defined outside the slice (thunks, another slice’s actions). Prefer the <strong>builder callback</strong> (TypeScript-friendly) over the map object notation.</p>
+
+            <div class="code-block">extraReducers: (builder) =&gt; {
+  builder.addCase(logout.fulfilled, () =&gt; initialState);
+  builder.addMatcher(
+    (action) =&gt; action.type.endsWith('/rejected'),
+    (state, action) =&gt; {
+      state.lastError = action.error.message;
+    }
+  );
+}</div>
+        </section>
+
+        <section id="rtk-query">
+            <h2>📡 RTK Query</h2>
+            <p>RTK Query is a cache for server state: endpoints, auto-generated hooks, deduped requests, and cache lifetimes. It is usually better than hand-written thunks for CRUD APIs.</p>
+
+            <div class="diagram-box">Component
+  useGetUserQuery('42')
+        │
+        ▼
+   RTK Query cache  ── providesTags: User/42
+        │
+        ├── HIT  → return cached data
+        └── MISS → fetchBaseQuery → /api/users/42
+                      │
+useUpdateUserMutation ── invalidatesTags: User/42
+                      │
+                      ▼
+                 refetch getUser</div>
+
+            <div class="code-block">import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  tagTypes: ['User', 'Post'],
+  endpoints: (build) =&gt; ({
+    getUser: build.query({
+      query: (id) =&gt; `users/${id}`,
+      providesTags: (result, err, id) =&gt; [{ type: 'User', id }]
+    }),
+    updateUser: build.mutation({
+      query: ({ id, ...body }) =&gt; ({
+        url: `users/${id}`,
+        method: 'PATCH',
+        body
+      }),
+      invalidatesTags: (result, err, { id }) =&gt; [{ type: 'User', id }]
+    })
+  })
+});
+
+export const { useGetUserQuery, useUpdateUserMutation } = api;
+
+// store
+configureStore({
+  reducer: {
+    [api.reducerPath]: api.reducer
+  },
+  middleware: (gDM) =&gt; gDM().concat(api.middleware)
+});
+
+// component
+const { data, isLoading, error } = useGetUserQuery('42');</div>
+
+            <div class="tip-box">
+                <strong>💡 Tags:</strong> <code>providesTags</code> / <code>invalidatesTags</code> refetch related queries after a mutation. That replaces a lot of manual “reload the list” thunks.
+            </div>
+        </section>
+
+        <section id="entity">
+            <h2>📇 createEntityAdapter</h2>
+            <p>Normalized lists: <code>{ ids: [], entities: { [id]: item } }</code>. Fast lookup, no duplicate rows, reusable CRUD reducers.</p>
+
+            <div class="code-block">import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+
+const todosAdapter = createEntityAdapter({
+  selectId: (todo) =&gt; todo.id,
+  sortComparer: (a, b) =&gt; a.text.localeCompare(b.text)
+});
+
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: todosAdapter.getInitialState(),
+  reducers: {
+    todoAdded: todosAdapter.addOne,
+    todosReceived: todosAdapter.setAll,
+    todoRemoved: todosAdapter.removeOne
+  }
+});
+
+export const {
+  selectAll: selectAllTodos,
+  selectById: selectTodoById
+} = todosAdapter.getSelectors((state) =&gt; state.todos);</div>
+        </section>
+
+        <section id="selectors">
+            <h2>🎯 Selectors in RTK</h2>
+            <div class="code-block">import { createSelector } from '@reduxjs/toolkit';
+
+const selectCart = (state) =&gt; state.cart;
+
+export const selectItemCount = createSelector(
+  [selectCart],
+  (cart) =&gt; cart.items.reduce((n, i) =&gt; n + i.qty, 0)
+);
+
+export const selectTotal = createSelector(
+  [selectCart],
+  (cart) =&gt; cart.items.reduce((n, i) =&gt; n + i.qty * i.price, 0)
+);</div>
+            <p>Memoized selectors keep components from recalculating when unrelated store keys change — as long as the selected inputs are stable.</p>
+        </section>
+
+        <section id="migrate">
+            <h2>🚚 Migrate from Classic Redux</h2>
+            <ol>
+                <li>Install <code>@reduxjs/toolkit</code>. Replace <code>createStore</code> with <code>configureStore</code>.</li>
+                <li>Move one feature at a time into <code>createSlice</code>. Keep old reducers in the same <code>reducer</code> map.</li>
+                <li>Replace hand-written thunks with <code>createAsyncThunk</code> or RTK Query.</li>
+                <li>Delete duplicate action type files once slices own those actions.</li>
+                <li>Keep <a href="/learn/redux-saga">Saga</a> if you still need it — run saga middleware next to the defaults.</li>
+            </ol>
+        </section>
+
+        <section id="practices">
+            <h2>✅ Best Practices</h2>
+            <ul>
+                <li>One slice per feature, not one giant <code>appSlice</code>.</li>
+                <li>Keep UI-only flags (modal open) in component state unless many distant trees need them.</li>
+                <li>Put server lists in RTK Query, not a manual <code>items</code> array you refetch by hand.</li>
+                <li>Export action creators and selectors from the slice file; components should not string-match types.</li>
+                <li>Use TypeScript <code>RootState</code> and <code>AppDispatch</code> inferred from the store for typed hooks.</li>
+            </ul>
+
+            <div class="code-block">// app/hooks.js
+import { useDispatch, useSelector } from 'react-redux';
+
+export const useAppDispatch = () =&gt; useDispatch();
+export const useAppSelector = useSelector;</div>
+
+            <div class="info-box premium">
+                <h3>Where Saga still fits</h3>
+                <p>Toolkit does not replace saga. Use thunks/RTK Query for typical HTTP. Add saga when you need cancellation graphs, websocket loops, or multi-step transactions that are painful as nested thunks. See <a href="/learn/redux-saga">Redux Saga</a>.</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>Related:</strong> <a href="/learn/state-management-overview">Overview</a> · <a href="/learn/redux">Classic Redux</a> · <a href="/learn/context-api">Context API</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents & Multi-Agent Systems — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🤝 AI Agents</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#loops" class="sidebar-link">Agent Loops</a>
+                <a href="#planning" class="sidebar-link">Planning</a>
+                <a href="#tools" class="sidebar-link">Tools</a>
+                <a href="#memory" class="sidebar-link">Memory</a>
+                <a href="#state" class="sidebar-link">State</a>
+                <a href="#langgraph" class="sidebar-link">LangGraph</a>
+                <a href="#langchain" class="sidebar-link">LangChain</a>
+                <a href="#crewai" class="sidebar-link">CrewAI</a>
+                <a href="#openai-agents" class="sidebar-link">OpenAI Agents</a>
+                <a href="#adk" class="sidebar-link">Google ADK</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🤝 6. AI Agents & Multi-Agent Systems</h1>
+            <p>Step 6 of 12 — An agent is an LLM in a loop with tools, state, and a stop condition — not a personality.</p>
+        </header>
+
+        <section id="overview">
+            <h2>When to use an agent</h2>
+            <p>Use an agent when the task needs <span class="highlight">multiple steps, unknown tool order, or branching</span>. Do not use an agent for a single RAG call or a form fill. Agents multiply cost, latency, and failure modes. Production agents need timeouts, max steps, human-in-the-loop for side effects, and full traces.</p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Loop</td><td>You can write observe → think → act → observe without a framework</td></tr>
+                <tr><td>2</td><td>Planning</td><td>You know plan-then-act vs ReAct vs graph routing</td></tr>
+                <tr><td>3</td><td>Tools</td><td>Every tool has a schema, timeout, and idempotency story</td></tr>
+                <tr><td>4</td><td>Memory</td><td>You split working memory vs long-term vs RAG</td></tr>
+                <tr><td>5</td><td>State</td><td>You persist thread state so a crash can resume</td></tr>
+                <tr><td>6</td><td>Frameworks</td><td>You pick one graph-style runtime and ignore the rest until you need them</td></tr>
+            </table>
+        </section>
+
+        <section id="loops">
+            <h2>Agent loops</h2>
+            <p>The minimal loop: model chooses a tool or a final answer; you execute the tool; you append the result; repeat until done or <code>max_steps</code>.</p>
+            <div class="code-block">def run_agent(user: str, tools: dict, max_steps: int = 8) -> str:
+    messages = [{"role": "user", "content": user}]
+    for _ in range(max_steps):
+        msg = llm_with_tools(messages, tools)
+        if msg.tool_calls:
+            messages.append(msg)
+            for call in msg.tool_calls:
+                result = tools[call.name](**call.args)
+                messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
+            continue
+        return msg.content
+    return "Stopped: max steps reached."</div>
+            <div class="warning-box">
+                <strong>Always cap steps, tokens, and wall-clock time.</strong> Infinite loops are a billing incident.
+            </div>
+        </section>
+
+        <section id="planning">
+            <h2>Planning</h2>
+            <table>
+                <tr><th>Style</th><th>How</th><th>Risk</th></tr>
+                <tr><td>ReAct</td><td>Interleave thought + tool in one model</td><td>Verbose; can wander</td></tr>
+                <tr><td>Plan-and-execute</td><td>Write a plan, then run steps</td><td>Stale plans when the world changes</td></tr>
+                <tr><td>Router / graph</td><td>Deterministic nodes + LLM only at decision points</td><td>More code, much more control</td></tr>
+            </table>
+            <p>Production systems trend toward <strong>graphs</strong>: you own the edges (auth, retries, approvals); the LLM fills slots, not the whole control plane.</p>
+        </section>
+
+        <section id="tools">
+            <h2>Tools</h2>
+            <p>Tools are functions with JSON schemas. Treat them like public APIs: validate args, least privilege, no raw SQL from the model, confirm before emails/payments/deletes.</p>
+            <div class="code-block">TOOLS = [{
+  "type": "function",
+  "function": {
+    "name": "search_docs",
+    "description": "Search internal docs. Read-only.",
+    "parameters": {
+      "type": "object",
+      "properties": {"query": {"type": "string"}},
+      "required": ["query"]
+    }
+  }
+}]</div>
+        </section>
+
+        <section id="memory">
+            <h2>Memory</h2>
+            <ul>
+                <li><strong>Working:</strong> the current messages / scratchpad (fits in context)</li>
+                <li><strong>Episodic:</strong> summaries of past threads</li>
+                <li><strong>Semantic:</strong> RAG over facts, tickets, code</li>
+                <li><strong>Profile:</strong> user prefs stored in a DB, not hoped-for in the prompt</li>
+            </ul>
+            <p>Do not "let the agent remember" by stuffing unbounded history. Summarize, retrieve, and store structured facts.</p>
+        </section>
+
+        <section id="state">
+            <h2>State</h2>
+            <p>Durable state is a checkpoint: thread id, node, tool results, pending approval. If the process dies mid-tool, you must not double-charge a customer. Use idempotency keys on side-effecting tools.</p>
+        </section>
+
+        <section id="langgraph">
+            <h2>LangGraph</h2>
+            <p>Graph runtime from the LangChain team: nodes, edges, conditional routing, persistence. Good when you want explicit control flow (support bot: retrieve → generate → grade → retry) instead of a free-form ReAct soup.</p>
+            <div class="info-box">
+                <strong>Learn:</strong> StateGraph, reducers, checkpointers, human-in-the-loop interrupts.
+            </div>
+        </section>
+
+        <section id="langchain">
+            <h2>LangChain</h2>
+            <p>Ecosystem of model/tool/document loaders. Useful for prototyping. In production, keep the surface small: you own prompts, retrieval, and tracing. Avoid mega-chains you cannot debug.</p>
+        </section>
+
+        <section id="crewai">
+            <h2>CrewAI</h2>
+            <p>Role-based multi-agent: researcher, writer, reviewer. Fine for content workflows with a human editor. Risky for ops: more agents = more latency and contradictory tools. If you use it, pin tasks, share one retrieval layer, and log every agent’s output.</p>
+        </section>
+
+        <section id="openai-agents">
+            <h2>OpenAI Agents</h2>
+            <p>OpenAI’s agents SDK: handoffs, tools, tracing, guardrails, close to their API. Good if you are already on that stack. Same rules apply: schemas, max turns, approvals.</p>
+        </section>
+
+        <section id="adk">
+            <h2>Google ADK</h2>
+            <p>Google Agent Development Kit — agents, tools, and orchestration aimed at Gemini / Vertex. Use when your enterprise is already on GCP. Compare on tracing, eval, and how tools map to IAM — not on demo videos.</p>
+            <div class="info-box">
+                <strong>Multi-agent rule:</strong> Prefer a supervisor that routes to specialists over a debating committee. Specialists should not all have write access to production.
+            </div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can implement a tool loop with max steps without a framework</li>
+                <li>You can draw a graph for a real workflow (retrieve, act, approve, reply)</li>
+                <li>You persist state and never fire a payment tool twice by accident</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> MCP, Tools & AI Automation — standard tool protocols and workflow products around the agent.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Functions & Modules - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">⚡ Functions & Modules</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 Functions</div>
+            <div class="sidebar-links">
+                <a href="#functions" class="sidebar-link">Defining Functions</a>
+                <a href="#parameters" class="sidebar-link">Parameters</a>
+                <a href="#lambda" class="sidebar-link">Lambda Functions</a>
+                <a href="#decorators" class="sidebar-link">Decorators</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📦 Modules</div>
+            <div class="sidebar-links">
+                <a href="#modules" class="sidebar-link">Importing Modules</a>
+                <a href="#packages" class="sidebar-link">Packages</a>
+                <a href="#stdlib" class="sidebar-link">Standard Library</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🛡️ Error Handling</div>
+            <div class="sidebar-links">
+                <a href="#exceptions" class="sidebar-link">Exceptions</a>
+                <a href="#context-managers" class="sidebar-link">Context Managers</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>⚡ Python Functions & Modules</h1>
+            <p>Functions, decorators, modules, packages, and error handling</p>
+        </header>
+
+        <section id="functions">
+            <h2>🔧 Defining Functions</h2>
+            <div class="code-block">def greet(name):
+    """Return a greeting message."""
+    return f"Hello, {name}!"
+
+result = greet("Alice")  # "Hello, Alice!"
+
+# Type hints (recommended for backend code)
+def add(a: int, b: int) -> int:
+    return a + b
+
+# Docstrings
+def calculate_area(width: float, height: float) -> float:
+  """
+  Calculate rectangle area.
+
+  Args:
+      width: Rectangle width
+      height: Rectangle height
+
+  Returns:
+      Area of the rectangle
+  """
+    return width * height</div>
+        </section>
+
+        <section id="parameters">
+            <h2>📥 Parameters</h2>
+            <div class="code-block"># Default parameters
+def connect(host="localhost", port=5432):
+    return f"{host}:{port}"
+
+connect()                  # "localhost:5432"
+connect("db.example.com")  # "db.example.com:5432"
+
+# Keyword arguments
+connect(port=3306, host="mysql.local")
+
+# *args — variable positional arguments
+def sum_all(*args):
+    return sum(args)
+sum_all(1, 2, 3, 4)  # 10
+
+# **kwargs — variable keyword arguments
+def build_config(**kwargs):
+    return kwargs
+build_config(debug=True, port=8000)
+# {"debug": True, "port": 8000}
+
+# Unpacking
+def greet(first, last):
+    return f"{first} {last}"
+greet(**{"first": "John", "last": "Doe"})</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Mutable Default Trap:</strong> Never use mutable defaults like <code>def fn(items=[])</code>. Use <code>def fn(items=None): items = items or []</code> instead.
+            </div>
+        </section>
+
+        <section id="lambda">
+            <h2>🔹 Lambda Functions</h2>
+            <div class="code-block"># Anonymous one-liner functions
+square = lambda x: x ** 2
+square(5)  # 25
+
+# Common with sorted, map, filter
+users = [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}]
+sorted(users, key=lambda u: u["age"])
+
+numbers = [1, 2, 3, 4, 5]
+list(map(lambda x: x * 2, numbers))     # [2, 4, 6, 8, 10]
+list(filter(lambda x: x % 2 == 0, numbers))  # [2, 4]</div>
+        </section>
+
+        <section id="decorators">
+            <h2>🎨 Decorators</h2>
+            <p>Functions that modify or enhance other functions. Widely used in web frameworks.</p>
+
+            <div class="code-block">import functools
+import time
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.time() - start:.4f}s")
+        return result
+    return wrapper
+
+@timer
+def fetch_data():
+    time.sleep(1)
+    return {"data": "result"}
+
+# Decorator with arguments
+def repeat(times):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for _ in range(times):
+                result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+@repeat(3)
+def say_hello():
+    print("Hello!")</div>
+
+            <div class="info-box">
+                <strong>💡 Framework usage:</strong> Flask uses <code>@app.route()</code>, FastAPI uses <code>@app.get()</code> — both are decorators.
+            </div>
+        </section>
+
+        <section id="modules">
+            <h2>📦 Importing Modules</h2>
+            <div class="code-block"># Different import styles
+import os
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import List, Dict, Optional
+
+# Aliasing
+import numpy as np  # common convention
+
+# Relative imports (within packages)
+from .models import User
+from ..utils import helpers
+
+# Check module search path
+import sys
+print(sys.path)</div>
+        </section>
+
+        <section id="packages">
+            <h2>📁 Packages & Project Structure</h2>
+            <div class="code-block">my_project/
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── user.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   └── api.py
+│   └── services/
+│       ├── __init__.py
+│       └── auth.py
+├── tests/
+│   └── test_api.py
+├── requirements.txt
+├── .env
+└── README.md</div>
+
+            <div class="code-block"># __init__.py can expose public API
+from .models.user import User
+from .services.auth import authenticate
+
+__all__ = ["User", "authenticate"]</div>
+        </section>
+
+        <section id="stdlib">
+            <h2>📚 Essential Standard Library Modules</h2>
+            <table>
+                <tr><th>Module</th><th>Purpose</th></tr>
+                <tr><td><code>os / pathlib</code></td><td>File system operations</td></tr>
+                <tr><td><code>json</code></td><td>JSON encoding/decoding</td></tr>
+                <tr><td><code>datetime</code></td><td>Date and time handling</td></tr>
+                <tr><td><code>re</code></td><td>Regular expressions</td></tr>
+                <tr><td><code>logging</code></td><td>Application logging</td></tr>
+                <tr><td><code>urllib / http</code></td><td>HTTP client utilities</td></tr>
+                <tr><td><code>subprocess</code></td><td>Run shell commands</td></tr>
+                <tr><td><code>itertools</code></td><td>Iterator tools</td></tr>
+                <tr><td><code>functools</code></td><td>Higher-order functions</td></tr>
+                <tr><td><code>dataclasses</code></td><td>Data class boilerplate</td></tr>
+                <tr><td><code>typing</code></td><td>Type hints</td></tr>
+                <tr><td><code>asyncio</code></td><td>Async I/O</td></tr>
+            </table>
+        </section>
+
+        <section id="exceptions">
+            <h2>🛡️ Exception Handling</h2>
+            <div class="code-block">try:
+    response = requests.get(url, timeout=5)
+    response.raise_for_status()
+    data = response.json()
+except requests.Timeout:
+    print("Request timed out")
+except requests.HTTPError as e:
+    print(f"HTTP error: {e.response.status_code}")
+except json.JSONDecodeError:
+    print("Invalid JSON response")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+    raise  # Re-raise after logging
+else:
+    print("Request succeeded")
+finally:
+    print("Cleanup always runs")
+
+# Custom exceptions
+class ValidationError(Exception):
+    def __init__(self, field, message):
+        self.field = field
+        self.message = message
+        super().__init__(f"{field}: {message}")</div>
+        </section>
+
+        <section id="context-managers">
+            <h2>🔒 Context Managers</h2>
+            <div class="code-block"># File handling
+with open("data.json", "r") as f:
+    data = json.load(f)
+# File automatically closed
+
+# Custom context manager
+from contextlib import contextmanager
+
+@contextmanager
+def database_connection(url):
+    conn = create_connection(url)
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+with database_connection(DATABASE_URL) as db:
+    db.execute("SELECT * FROM users")</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

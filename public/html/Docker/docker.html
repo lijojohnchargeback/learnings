@@ -1,0 +1,2330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🐳 Docker Guide</h2>
+            <p>Containerization</p>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">🏠 Introduction</a>
+                <a href="#installation" class="sidebar-link">⚙️ Installation</a>
+                <a href="#docker-vs-vm" class="sidebar-link">🆚 Docker vs VMs</a>
+                <a href="#containers" class="sidebar-link">📦 Containers & Images</a>
+                <a href="#lifecycle" class="sidebar-link">🔄 Container Lifecycle</a>
+                <a href="#layers" class="sidebar-link">🎂 Image Layers</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Configuration</div>
+            <div class="sidebar-links">
+                <a href="#dockerfile" class="sidebar-link">📄 Dockerfile</a>
+                <a href="#dockerfile-instructions" class="sidebar-link">📋 Dockerfile Reference</a>
+                <a href="#dockerignore" class="sidebar-link">🚫 .dockerignore</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Data & Storage</div>
+            <div class="sidebar-links">
+                <a href="#volumes" class="sidebar-link">💾 Volumes</a>
+                <a href="#bind-mounts" class="sidebar-link">📁 Bind Mounts</a>
+                <a href="#environment" class="sidebar-link">🔐 Environment Variables</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Advanced Topics</div>
+            <div class="sidebar-links">
+                <a href="#networking" class="sidebar-link">🌐 Networking</a>
+                <a href="#compose" class="sidebar-link">🎼 Docker Compose</a>
+                <a href="#healthchecks" class="sidebar-link">💓 Health Checks</a>
+                <a href="#kubernetes" class="sidebar-link">☸️ Kubernetes Intro</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Reference</div>
+            <div class="sidebar-links">
+                <a href="#commands" class="sidebar-link">⌨️ Commands</a>
+                <a href="#troubleshooting" class="sidebar-link">🔍 Troubleshooting</a>
+                <a href="#cicd" class="sidebar-link">🔄 CI/CD Pipeline</a>
+                <a href="#deployment" class="sidebar-link">🚀 Deployment</a>
+                <a href="#best-practices" class="sidebar-link">✨ Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🐳 Docker Complete Guide</h1>
+                <p>Containerization & Application Deployment</p>
+            </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to Docker</h2>
+            
+            <p><span class="highlight">Docker</span> is a container technology that packages code and dependencies together, making applications portable across any operating system.</p>
+
+            <div class="info-box">
+                <h3>What Problem Does Docker Solve?</h3>
+                <ul>
+                    <li>🔧 <strong>Environment Inconsistency:</strong> "It works on my machine" problem</li>
+                    <li>🔧 <strong>Version Conflicts:</strong> Dev uses Node 14, production uses Node 16</li>
+                    <li>🔧 <strong>Complex Setup:</strong> Different team members have different environments</li>
+                    <li>🔧 <strong>Deployment Issues:</strong> Manual configuration on servers</li>
+                </ul>
+            </div>
+
+            <h3>Docker Components</h3>
+            <ul>
+                <li>🐳 <strong>Docker Engine:</strong> Core runtime that runs containers</li>
+                <li>🐳 <strong>Docker Desktop:</strong> GUI application for managing Docker</li>
+                <li>🐳 <strong>Docker CLI:</strong> Command-line interface to control Docker</li>
+                <li>🐳 <strong>Docker Hub:</strong> Cloud registry to share Docker images</li>
+                <li>🐳 <strong>Docker Compose:</strong> Tool for multi-container applications</li>
+            </ul>
+
+            <h3>Key Benefits</h3>
+            <div class="info-box">
+                <ul>
+                    <li>✅ <strong>Portability:</strong> Run anywhere - dev, staging, production</li>
+                    <li>✅ <strong>Isolation:</strong> Each container is isolated from others</li>
+                    <li>✅ <strong>Lightweight:</strong> Faster than virtual machines</li>
+                    <li>✅ <strong>Scalability:</strong> Easy to scale up or down</li>
+                    <li>✅ <strong>Consistency:</strong> Same environment everywhere</li>
+                </ul>
+            </div>
+
+            <h3>Docker Architecture (Client-Server Model)</h3>
+            <p>Docker uses a <span class="highlight">client-server architecture</span>. You interact with the Docker CLI (client), which sends commands to the Docker Daemon (server) that actually builds, runs, and manages containers.</p>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Role</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Docker Client</strong></td>
+                    <td>User interface</td>
+                    <td><code>docker</code> CLI commands you type in terminal</td>
+                </tr>
+                <tr>
+                    <td><strong>Docker Daemon</strong></td>
+                    <td>Background service</td>
+                    <td>Listens for API requests, manages images, containers, networks, volumes</td>
+                </tr>
+                <tr>
+                    <td><strong>REST API</strong></td>
+                    <td>Communication layer</td>
+                    <td>Interface between client and daemon</td>
+                </tr>
+                <tr>
+                    <td><strong>Container Runtime</strong></td>
+                    <td>Execution engine</td>
+                    <td><code>containerd</code> + <code>runc</code> — actually runs containers using Linux namespaces & cgroups</td>
+                </tr>
+                <tr>
+                    <td><strong>Registry</strong></td>
+                    <td>Image storage</td>
+                    <td>Docker Hub, AWS ECR, or private registries</td>
+                </tr>
+            </table>
+
+            <div class="info-box premium">
+                <h3>How Containers Work Under the Hood</h3>
+                <p>Containers are <strong>not mini virtual machines</strong>. They share the host OS kernel and use:</p>
+                <ul>
+                    <li><strong>Namespaces</strong> — isolate process IDs, network, filesystem, users</li>
+                    <li><strong>Cgroups</strong> — limit CPU, memory, and I/O per container</li>
+                    <li><strong>Union File Systems</strong> — layer images on top of each other (overlay2)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="installation">
+            <h2>⚙️ Installing Docker</h2>
+
+            <h3>Windows</h3>
+            <ol>
+                <li>Download <strong>Docker Desktop</strong> from <a href="https://www.docker.com/products/docker-desktop/">docker.com</a></li>
+                <li>Enable WSL 2 backend (recommended) during installation</li>
+                <li>Restart your computer if prompted</li>
+                <li>Verify: <code>docker --version</code> and <code>docker run hello-world</code></li>
+            </ol>
+
+            <h3>macOS</h3>
+            <ol>
+                <li>Download Docker Desktop for Mac (Apple Silicon or Intel)</li>
+                <li>Drag Docker to Applications folder and launch</li>
+                <li>Grant permissions when prompted</li>
+                <li>Verify with <code>docker run hello-world</code></li>
+            </ol>
+
+            <h3>Linux (Ubuntu/Debian)</h3>
+            <div class="code-block"><span class="comment"># Remove old versions</span>
+sudo apt-get remove docker docker-engine docker.io containerd runc
+
+<span class="comment"># Install prerequisites</span>
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg lsb-release -y
+
+<span class="comment"># Add Docker's official GPG key</span>
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+<span class="comment"># Set up repository</span>
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+<span class="comment"># Install Docker Engine</span>
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+<span class="comment"># Add user to docker group (no sudo needed)</span>
+sudo usermod -aG docker $USER
+newgrp docker
+
+<span class="comment"># Verify installation</span>
+docker --version
+docker compose version
+docker run hello-world</div>
+
+            <h3>Post-Installation Checklist</h3>
+            <table>
+                <tr>
+                    <th>Check</th>
+                    <th>Command</th>
+                    <th>Expected Result</th>
+                </tr>
+                <tr>
+                    <td>Docker version</td>
+                    <td><code>docker --version</code></td>
+                    <td>Docker version 24.x or higher</td>
+                </tr>
+                <tr>
+                    <td>Daemon running</td>
+                    <td><code>docker info</code></td>
+                    <td>Server section shows running status</td>
+                </tr>
+                <tr>
+                    <td>Pull image</td>
+                    <td><code>docker pull nginx</code></td>
+                    <td>Image downloads successfully</td>
+                </tr>
+                <tr>
+                    <td>Run container</td>
+                    <td><code>docker run --rm hello-world</code></td>
+                    <td>"Hello from Docker!" message</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <p><strong>Windows tip:</strong> If you get permission errors, ensure WSL 2 is enabled and Docker Desktop is running. Use <code>host.docker.internal</code> to reach services on your host machine from inside a container.</p>
+            </div>
+        </section>
+
+        <section id="docker-vs-vm">
+            <h2>🆚 Docker vs Virtual Machines</h2>
+
+            <p>Understanding the difference between containers and VMs is fundamental to choosing the right deployment strategy.</p>
+
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Virtual Machine</th>
+                    <th>Docker Container</th>
+                </tr>
+                <tr>
+                    <td><strong>OS</strong></td>
+                    <td>Full guest OS per VM (GBs)</td>
+                    <td>Shares host OS kernel</td>
+                </tr>
+                <tr>
+                    <td><strong>Startup Time</strong></td>
+                    <td>Minutes</td>
+                    <td>Seconds (often &lt; 1s)</td>
+                </tr>
+                <tr>
+                    <td><strong>Size</strong></td>
+                    <td>GBs (10-20GB+ per VM)</td>
+                    <td>MBs (10-500MB typical)</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>Hypervisor overhead</td>
+                    <td>Near-native performance</td>
+                </tr>
+                <tr>
+                    <td><strong>Isolation</strong></td>
+                    <td>Strong (hardware-level)</td>
+                    <td>Process-level (good for most apps)</td>
+                </tr>
+                <tr>
+                    <td><strong>Density</strong></td>
+                    <td>10-20 VMs per host</td>
+                    <td>100+ containers per host</td>
+                </tr>
+                <tr>
+                    <td><strong>Best For</strong></td>
+                    <td>Legacy apps, different OS types, strict isolation</td>
+                    <td>Microservices, CI/CD, cloud-native apps</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h3>When to Use What?</h3>
+                <ul>
+                    <li>🐳 <strong>Use Docker</strong> for application packaging, microservices, dev environments, CI/CD pipelines</li>
+                    <li>🖥️ <strong>Use VMs</strong> when you need a full OS, run Windows on Linux host, or meet strict compliance isolation</li>
+                    <li>☁️ <strong>Use both</strong> in production — VMs host Docker, containers run inside them (common in AWS ECS, EKS)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="containers">
+            <h2>📦 Containers & Images</h2>
+
+            <h3>What is a Container?</h3>
+            <p>A <span class="highlight">container</span> is a running instance of an image. It's like a lightweight, isolated environment that runs your application.</p>
+
+            <h3>What is an Image?</h3>
+            <p>An <span class="highlight">image</span> is a blueprint/template that contains your application code, dependencies, and configuration.</p>
+
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Image</th>
+                    <th>Container</th>
+                </tr>
+                <tr>
+                    <td><strong>Nature</strong></td>
+                    <td>Template/Blueprint</td>
+                    <td>Running instance</td>
+                </tr>
+                <tr>
+                    <td><strong>State</strong></td>
+                    <td>Static</td>
+                    <td>Dynamic</td>
+                </tr>
+                <tr>
+                    <td><strong>Analogy</strong></td>
+                    <td>Class</td>
+                    <td>Object</td>
+                </tr>
+                <tr>
+                    <td><strong>Multiple</strong></td>
+                    <td>One image</td>
+                    <td>Many containers from one image</td>
+                </tr>
+            </table>
+
+            <h3>Image Types</h3>
+            <ul>
+                <li>📦 <strong>Official Images:</strong> Node, MongoDB, Redis, MySQL (from Docker Hub)</li>
+                <li>📦 <strong>Custom Images:</strong> Your application with its dependencies</li>
+                <li>📦 <strong>Base Images:</strong> Minimal OS layers — <code>alpine</code>, <code>debian</code>, <code>ubuntu</code></li>
+                <li>📦 <strong>Multi-stage Images:</strong> Build in one stage, copy artifacts to a smaller final image</li>
+            </ul>
+
+            <h3>Essential docker run Flags</h3>
+            <table>
+                <tr>
+                    <th>Flag</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><code>-d</code></td>
+                    <td>Detached mode (background)</td>
+                    <td><code>docker run -d nginx</code></td>
+                </tr>
+                <tr>
+                    <td><code>-p host:container</code></td>
+                    <td>Port mapping</td>
+                    <td><code>docker run -p 8080:80 nginx</code></td>
+                </tr>
+                <tr>
+                    <td><code>-v</code></td>
+                    <td>Mount volume or bind mount</td>
+                    <td><code>docker run -v data:/data mongo</code></td>
+                </tr>
+                <tr>
+                    <td><code>-e</code></td>
+                    <td>Set environment variable</td>
+                    <td><code>docker run -e NODE_ENV=production app</code></td>
+                </tr>
+                <tr>
+                    <td><code>--name</code></td>
+                    <td>Assign container name</td>
+                    <td><code>docker run --name my-db mongo</code></td>
+                </tr>
+                <tr>
+                    <td><code>--rm</code></td>
+                    <td>Auto-remove when stopped</td>
+                    <td><code>docker run --rm alpine echo hi</code></td>
+                </tr>
+                <tr>
+                    <td><code>--network</code></td>
+                    <td>Connect to network</td>
+                    <td><code>docker run --network my-net app</code></td>
+                </tr>
+                <tr>
+                    <td><code>--restart</code></td>
+                    <td>Restart policy</td>
+                    <td><code>docker run --restart unless-stopped app</code></td>
+                </tr>
+                <tr>
+                    <td><code>-it</code></td>
+                    <td>Interactive terminal</td>
+                    <td><code>docker run -it ubuntu bash</code></td>
+                </tr>
+                <tr>
+                    <td><code>--env-file</code></td>
+                    <td>Load env vars from file</td>
+                    <td><code>docker run --env-file .env app</code></td>
+                </tr>
+            </table>
+
+            <h3>Container Management Commands</h3>
+            <div class="code-block"><span class="comment"># Run container from image</span>
+docker run -d -p 3000:80 --name myapp --rm nginx
+
+<span class="comment"># Flags explained:</span>
+<span class="comment"># -d         = detached mode (runs in background)</span>
+<span class="comment"># -p 3000:80 = port mapping (local:container)</span>
+<span class="comment"># --name     = give container a name</span>
+<span class="comment"># --rm       = auto-remove when stopped</span>
+
+<span class="comment"># List running containers</span>
+docker ps
+
+<span class="comment"># List all containers (including stopped)</span>
+docker ps -a
+
+<span class="comment"># Stop container</span>
+docker stop myapp
+
+<span class="comment"># Start stopped container</span>
+docker start myapp
+
+<span class="comment"># Restart container</span>
+docker restart myapp
+
+<span class="comment"># View logs</span>
+docker logs myapp
+
+<span class="comment"># Remove container</span>
+docker rm myapp
+
+<span class="comment"># Remove all stopped containers</span>
+docker container prune</div>
+
+            <h3>Image Management Commands</h3>
+            <div class="code-block"><span class="comment"># Build image from Dockerfile</span>
+docker build -t myapp:1.0.0 .
+
+<span class="comment"># List all images</span>
+docker images
+
+<span class="comment"># Remove image</span>
+docker rmi image_id
+
+<span class="comment"># Remove all unused images</span>
+docker image prune
+
+<span class="comment"># Inspect image details</span>
+docker image inspect image_id
+
+<span class="comment"># Tag image</span>
+docker tag myapp:latest myapp:1.0.0</div>
+        </section>
+
+        <section id="lifecycle">
+            <h2>🔄 Container Lifecycle</h2>
+
+            <p>Every container goes through a defined lifecycle. Understanding these states helps with debugging and orchestration.</p>
+
+            <table>
+                <tr>
+                    <th>State</th>
+                    <th>Description</th>
+                    <th>Command to Reach</th>
+                </tr>
+                <tr>
+                    <td><strong>Created</strong></td>
+                    <td>Container exists but hasn't started</td>
+                    <td><code>docker create image</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Running</strong></td>
+                    <td>Container is actively executing</td>
+                    <td><code>docker start</code> or <code>docker run</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Paused</strong></td>
+                    <td>Processes frozen (rarely used)</td>
+                    <td><code>docker pause &lt;name&gt;</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Stopped (Exited)</strong></td>
+                    <td>Container finished or was stopped</td>
+                    <td><code>docker stop &lt;name&gt;</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Removed</strong></td>
+                    <td>Container deleted permanently</td>
+                    <td><code>docker rm &lt;name&gt;</code></td>
+                </tr>
+            </table>
+
+            <h3>Restart Policies</h3>
+            <p>Control what happens when a container exits or Docker daemon restarts:</p>
+            <table>
+                <tr>
+                    <th>Policy</th>
+                    <th>Behavior</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><code>no</code></td>
+                    <td>Never restart (default)</td>
+                    <td>One-off tasks, batch jobs</td>
+                </tr>
+                <tr>
+                    <td><code>on-failure</code></td>
+                    <td>Restart only on non-zero exit code</td>
+                    <td>Apps that may crash temporarily</td>
+                </tr>
+                <tr>
+                    <td><code>always</code></td>
+                    <td>Always restart, even after manual stop</td>
+                    <td>Critical services (use carefully)</td>
+                </tr>
+                <tr>
+                    <td><code>unless-stopped</code></td>
+                    <td>Restart unless manually stopped</td>
+                    <td><strong>Most common for production</strong></td>
+                </tr>
+            </table>
+
+            <div class="code-block"><span class="comment"># Production database — restart unless manually stopped</span>
+docker run -d \\
+  --name mongodb \\
+  --restart unless-stopped \\
+  -v mongodb_data:/data/db \\
+  -p 27017:27017 \\
+  mongo:7
+
+<span class="comment"># Check container status and exit code</span>
+docker ps -a
+docker inspect mongodb --format='{{.State.Status}} {{.State.ExitCode}}'
+
+<span class="comment"># View why a container stopped</span>
+docker logs mongodb
+docker inspect mongodb --format='{{.State.Error}}'</div>
+
+        <section id="dockerfile">
+            <h2>📄 Dockerfile</h2>
+
+            <p>A <span class="highlight">Dockerfile</span> is a text file with instructions to build a Docker image.</p>
+
+            <h3>Basic Dockerfile Structure</h3>
+            <div class="code-block"><span class="comment"># Start from base image</span>
+<span class="keyword">FROM</span> node:20
+
+<span class="comment"># Set working directory</span>
+<span class="keyword">WORKDIR</span> /app
+
+<span class="comment"># Copy package.json first (for better caching)</span>
+<span class="keyword">COPY</span> package.json .
+
+<span class="comment"># Install dependencies</span>
+<span class="keyword">RUN</span> npm install
+
+<span class="comment"># Copy rest of application code</span>
+<span class="keyword">COPY</span> . .
+
+<span class="comment"># Expose port</span>
+<span class="keyword">EXPOSE</span> 8000
+
+<span class="comment"># Command to run app</span>
+<span class="keyword">CMD</span> [<span class="string">"node"</span>, <span class="string">"index.js"</span>]</div>
+
+            <h3>React Application Dockerfile</h3>
+            <div class="code-block"><span class="keyword">FROM</span> node:20
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package.json .
+<span class="keyword">RUN</span> npm install
+<span class="keyword">COPY</span> . .
+<span class="keyword">EXPOSE</span> 3000
+<span class="keyword">CMD</span> [<span class="string">"npm"</span>, <span class="string">"start"</span>]</div>
+
+            <h3>Docker Layer Caching</h3>
+            <p>Docker builds images in <span class="highlight">layers</span>. Each instruction creates a new layer.</p>
+
+            <div class="info-box">
+                <h4>Why Layer Order Matters:</h4>
+                <ul>
+                    <li>✅ Copy <code>package.json</code> first, then <code>npm install</code></li>
+                    <li>✅ Copy application code last</li>
+                    <li>✅ If code changes but dependencies don't, Docker reuses cached layers</li>
+                    <li>✅ Faster builds!</li>
+                </ul>
+            </div>
+
+            <h3>.dockerignore File</h3>
+            <p>Prevent unnecessary files from being copied into the image</p>
+            <div class="code-block">node_modules
+.git
+.env
+*.log
+.DS_Store
+README.md</div>
+
+            <h3>Production Node.js Dockerfile (Multi-Stage)</h3>
+            <div class="code-block"><span class="comment"># Stage 1: Build</span>
+<span class="keyword">FROM</span> node:20-alpine AS builder
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package*.json ./
+<span class="keyword">RUN</span> npm ci
+<span class="keyword">COPY</span> . .
+<span class="keyword">RUN</span> npm run build
+
+<span class="comment"># Stage 2: Production</span>
+<span class="keyword">FROM</span> node:20-alpine
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">RUN</span> addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+<span class="keyword">COPY</span> --from=builder /app/dist ./dist
+<span class="keyword">COPY</span> --from=builder /app/package*.json ./
+<span class="keyword">RUN</span> npm ci --only=production && npm cache clean --force
+<span class="keyword">USER</span> nodejs
+<span class="keyword">EXPOSE</span> 3000
+<span class="keyword">HEALTHCHECK</span> --interval=30s --timeout=3s CMD wget -qO- http://localhost:3000/health || exit 1
+<span class="keyword">CMD</span> [<span class="string">"node"</span>, <span class="string">"dist/index.js"</span>]</div>
+
+            <h3>Python Flask Dockerfile</h3>
+            <div class="code-block"><span class="keyword">FROM</span> python:3.12-slim
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> requirements.txt .
+<span class="keyword">RUN</span> pip install --no-cache-dir -r requirements.txt
+<span class="keyword">COPY</span> . .
+<span class="keyword">EXPOSE</span> 5000
+<span class="keyword">CMD</span> [<span class="string">"gunicorn"</span>, <span class="string">"--bind"</span>, <span class="string">"0.0.0.0:5000"</span>, <span class="string">"app:app"</span>]</div>
+
+            <h3>Nginx Static Site Dockerfile</h3>
+            <div class="code-block"><span class="comment"># Build React app</span>
+<span class="keyword">FROM</span> node:20-alpine AS build
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package*.json ./
+<span class="keyword">RUN</span> npm ci
+<span class="keyword">COPY</span> . .
+<span class="keyword">RUN</span> npm run build
+
+<span class="comment"># Serve with Nginx</span>
+<span class="keyword">FROM</span> nginx:alpine
+<span class="keyword">COPY</span> --from=build /app/dist /usr/share/nginx/html
+<span class="keyword">COPY</span> nginx.conf /etc/nginx/conf.d/default.conf
+<span class="keyword">EXPOSE</span> 80
+<span class="keyword">CMD</span> [<span class="string">"nginx"</span>, <span class="string">"-g"</span>, <span class="string">"daemon off;"</span>]</div>
+
+            <h3>CMD vs ENTRYPOINT</h3>
+            <table>
+                <tr>
+                    <th>Instruction</th>
+                    <th>Purpose</th>
+                    <th>Can Override?</th>
+                </tr>
+                <tr>
+                    <td><code>CMD</code></td>
+                    <td>Default command to run</td>
+                    <td>Yes — replaced by <code>docker run</code> args</td>
+                </tr>
+                <tr>
+                    <td><code>ENTRYPOINT</code></td>
+                    <td>Main executable (container's purpose)</td>
+                    <td>No — args append to it</td>
+                </tr>
+            </table>
+            <div class="code-block"><span class="comment"># ENTRYPOINT + CMD pattern (flexible CLI tools)</span>
+<span class="keyword">ENTRYPOINT</span> [<span class="string">"python"</span>, <span class="string">"app.py"</span>]
+<span class="keyword">CMD</span> [<span class="string">"--port"</span>, <span class="string">"8000"</span>]
+
+<span class="comment"># docker run myapp --port 9000  →  python app.py --port 9000</span></div>
+        </section>
+
+        <section id="dockerfile-instructions">
+            <h2>📋 Dockerfile Instructions Reference</h2>
+
+            <p>Complete reference of every Dockerfile instruction and when to use it.</p>
+
+            <table>
+                <tr>
+                    <th>Instruction</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><code>FROM</code></td>
+                    <td>Base image (required, must be first)</td>
+                    <td><code>FROM node:20-alpine</code></td>
+                </tr>
+                <tr>
+                    <td><code>WORKDIR</code></td>
+                    <td>Set working directory inside container</td>
+                    <td><code>WORKDIR /app</code></td>
+                </tr>
+                <tr>
+                    <td><code>COPY</code></td>
+                    <td>Copy files from host to image</td>
+                    <td><code>COPY package.json .</code></td>
+                </tr>
+                <tr>
+                    <td><code>ADD</code></td>
+                    <td>Like COPY + can extract tar archives</td>
+                    <td><code>ADD app.tar.gz /app</code> (prefer COPY)</td>
+                </tr>
+                <tr>
+                    <td><code>RUN</code></td>
+                    <td>Execute command during build (creates layer)</td>
+                    <td><code>RUN npm install</code></td>
+                </tr>
+                <tr>
+                    <td><code>CMD</code></td>
+                    <td>Default command when container starts</td>
+                    <td><code>CMD ["node", "index.js"]</code></td>
+                </tr>
+                <tr>
+                    <td><code>ENTRYPOINT</code></td>
+                    <td>Main executable (not overridden easily)</td>
+                    <td><code>ENTRYPOINT ["python", "app.py"]</code></td>
+                </tr>
+                <tr>
+                    <td><code>EXPOSE</code></td>
+                    <td>Document which port the app listens on</td>
+                    <td><code>EXPOSE 3000</code></td>
+                </tr>
+                <tr>
+                    <td><code>ENV</code></td>
+                    <td>Set environment variable in image</td>
+                    <td><code>ENV NODE_ENV=production</code></td>
+                </tr>
+                <tr>
+                    <td><code>ARG</code></td>
+                    <td>Build-time variable (not in final image)</td>
+                    <td><code>ARG VERSION=1.0</code></td>
+                </tr>
+                <tr>
+                    <td><code>VOLUME</code></td>
+                    <td>Declare mount point for persistent data</td>
+                    <td><code>VOLUME /data</code></td>
+                </tr>
+                <tr>
+                    <td><code>USER</code></td>
+                    <td>Run subsequent commands as non-root user</td>
+                    <td><code>USER nodejs</code></td>
+                </tr>
+                <tr>
+                    <td><code>HEALTHCHECK</code></td>
+                    <td>Define how to test if container is healthy</td>
+                    <td><code>HEALTHCHECK CMD curl -f http://localhost/ || exit 1</code></td>
+                </tr>
+                <tr>
+                    <td><code>ONBUILD</code></td>
+                    <td>Trigger when image is used as base</td>
+                    <td><code>ONBUILD COPY . .</code></td>
+                </tr>
+                <tr>
+                    <td><code>LABEL</code></td>
+                    <td>Add metadata to image</td>
+                    <td><code>LABEL version="1.0" maintainer="you@email.com"</code></td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <p><strong>Best practice:</strong> Use exec form <code>CMD ["node", "app.js"]</code> instead of shell form <code>CMD node app.js</code>. Exec form runs PID 1 directly, allowing proper signal handling (SIGTERM for graceful shutdown).</p>
+            </div>
+
+        <section id="volumes">
+            <h2>💾 Volumes & Data Management</h2>
+
+            <h3>Types of Data in Containers</h3>
+            <ul>
+                <li>📝 <strong>Application Code:</strong> Read-only (rebuild image to change)</li>
+                <li>📝 <strong>Temporary Data:</strong> Deleted when container stops</li>
+                <li>📝 <strong>Permanent Data:</strong> Needs to persist (databases, uploads)</li>
+            </ul>
+
+            <h3>1. Named Volumes</h3>
+            <p>Managed by Docker, best for persistent data</p>
+            <div class="code-block"><span class="comment"># Create and use named volume</span>
+docker run -d \\
+  -p 27017:27017 \\
+  -v mongodb_data:/data/db \\
+  --name mongodb \\
+  mongo
+
+<span class="comment"># List volumes</span>
+docker volume ls
+
+<span class="comment"># Remove volume</span>
+docker volume rm mongodb_data</div>
+
+            <h3>2. Bind Mounts</h3>
+            <p>Map host machine folder to container folder</p>
+            <div class="code-block"><span class="comment"># Windows</span>
+docker run -d -p 3000:80 \\
+  -v <span class="string">"%cd%"</span>/src:/app/src \\
+  --name react-app \\
+  myapp
+
+<span class="comment"># Linux/Mac</span>
+docker run -d -p 3000:80 \\
+  -v $(pwd)/src:/app/src \\
+  --name react-app \\
+  myapp</div>
+
+            <h3>3. Read-Only Volumes</h3>
+            <div class="code-block"><span class="comment"># Make volume read-only with :ro</span>
+docker run -d \\
+  -v <span class="string">"$(pwd)"</span>:/app:ro \\
+  -v /app/node_modules \\
+  --name myapp \\
+  myimage</div>
+
+            <h3>Environment Variables</h3>
+            <div class="code-block"><span class="comment"># Method 1: In Dockerfile</span>
+<span class="keyword">ENV</span> PORT=80
+<span class="keyword">EXPOSE</span> $PORT
+
+<span class="comment"># Method 2: Command line</span>
+docker run -e PORT=8000 -e NODE_ENV=production myapp
+
+<span class="comment"># Method 3: Environment file</span>
+docker run --env-file ./.env myapp</div>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Security:</strong> Never commit <code>.env</code> files with sensitive data to version control!</p>
+            </div>
+        </section>
+
+        <section id="networking">
+            <h2>🌐 Docker Networking</h2>
+
+            <h3>Network Scenarios</h3>
+            <ul>
+                <li>🌍 <strong>Container → Internet:</strong> Works by default</li>
+                <li>💻 <strong>Container → Host Machine:</strong> Use <code>host.docker.internal</code></li>
+                <li>🐳 <strong>Container → Container:</strong> Use Docker networks</li>
+            </ul>
+
+            <h3>Network Drivers</h3>
+            <table>
+                <tr>
+                    <th>Driver</th>
+                    <th>Scope</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><code>bridge</code></td>
+                    <td>Single host (default)</td>
+                    <td>Containers on same machine communicating</td>
+                </tr>
+                <tr>
+                    <td><code>host</code></td>
+                    <td>Single host</td>
+                    <td>Container uses host's network directly (no isolation)</td>
+                </tr>
+                <tr>
+                    <td><code>none</code></td>
+                    <td>Single host</td>
+                    <td>Disable networking entirely</td>
+                </tr>
+                <tr>
+                    <td><code>overlay</code></td>
+                    <td>Multi-host (Swarm)</td>
+                    <td>Containers across multiple Docker hosts</td>
+                </tr>
+                <tr>
+                    <td><code>macvlan</code></td>
+                    <td>Single host</td>
+                    <td>Assign MAC address, appear as physical device</td>
+                </tr>
+            </table>
+
+            <h3>DNS Resolution in Docker Networks</h3>
+            <p>Containers on the same user-defined network can reach each other by <strong>container name</strong> as hostname. Docker's embedded DNS server resolves names automatically.</p>
+            <div class="code-block"><span class="comment"># backend can connect to mongodb using hostname "mongodb"</span>
+MONGO_URL=mongodb://mongodb:27017/mydb
+
+<span class="comment"># Inspect network and connected containers</span>
+docker network inspect my-network
+
+<span class="comment"># List all networks</span>
+docker network ls
+
+<span class="comment"># Connect running container to network</span>
+docker network connect my-network existing-container
+
+<span class="comment"># Disconnect container from network</span>
+docker network disconnect my-network existing-container</div>
+
+            <h3>Creating Docker Networks</h3>
+            <div class="code-block"><span class="comment"># Create network</span>
+docker network create my-network
+
+<span class="comment"># Run containers on same network</span>
+docker run -d \\
+  --name mongodb \\
+  --network my-network \\
+  mongo
+
+docker run -d \\
+  --name backend \\
+  --network my-network \\
+  -e MONGO_URL=mongodb://mongodb:27017/mydb \\
+  backend-image
+
+<span class="comment"># Containers can communicate using container names as hostnames</span></div>
+
+            <h3>Real-World Example: MERN Stack</h3>
+            <div class="code-block"><span class="comment"># 1. Create network</span>
+docker network create mern-network
+
+<span class="comment"># 2. Start MongoDB</span>
+docker run -d \\
+  --name mongodb \\
+  --network mern-network \\
+  -v mongodb_data:/data/db \\
+  mongo
+
+<span class="comment"># 3. Start Backend (Node.js)</span>
+docker run -d \\
+  --name backend \\
+  --network mern-network \\
+  -p 8000:8000 \\
+  -e MONGO_URL=mongodb://mongodb:27017 \\
+  backend-image
+
+<span class="comment"># 4. Start Frontend (React)</span>
+docker run -d \\
+  --name frontend \\
+  -p 3000:3000 \\
+  frontend-image</div>
+        </section>
+
+        <section id="compose">
+            <h2>🎼 Docker Compose</h2>
+
+            <p><span class="highlight">Docker Compose</span> is a tool for defining and running multi-container Docker applications using a YAML file.</p>
+
+            <h3>Benefits of Docker Compose</h3>
+            <div class="info-box">
+                <ul>
+                    <li>✅ Define all services in one file</li>
+                    <li>✅ Start all containers with one command</li>
+                    <li>✅ Automatic network creation</li>
+                    <li>✅ Easy to share with team</li>
+                </ul>
+            </div>
+
+            <h3>docker-compose.yml Example</h3>
+            <div class="code-block"><span class="keyword">version</span>: <span class="string">"3.8"</span>
+
+<span class="keyword">services</span>:
+  <span class="keyword">mongodb</span>:
+    <span class="keyword">image</span>: mongo
+    <span class="keyword">ports</span>:
+      - <span class="string">"27017:27017"</span>
+    <span class="keyword">volumes</span>:
+      - mongodb_data:/data/db
+
+  <span class="keyword">backend</span>:
+    <span class="keyword">build</span>: ./backend
+    <span class="keyword">ports</span>:
+      - <span class="string">"8000:8000"</span>
+    <span class="keyword">env_file</span>:
+      - ./.env
+    <span class="keyword">volumes</span>:
+      - ./backend:/app
+      - /app/node_modules
+    <span class="keyword">depends_on</span>:
+      - mongodb
+
+  <span class="keyword">frontend</span>:
+    <span class="keyword">build</span>: ./frontend
+    <span class="keyword">ports</span>:
+      - <span class="string">"3000:3000"</span>
+    <span class="keyword">volumes</span>:
+      - ./frontend/src:/app/src
+    <span class="keyword">stdin_open</span>: <span class="keyword">true</span>
+    <span class="keyword">tty</span>: <span class="keyword">true</span>
+    <span class="keyword">depends_on</span>:
+      - backend
+
+<span class="keyword">volumes</span>:
+  mongodb_data:</div>
+
+            <h3>Docker Compose Commands</h3>
+            <div class="code-block"><span class="comment"># Start all services</span>
+docker-compose up
+
+<span class="comment"># Start in detached mode</span>
+docker-compose up -d
+
+<span class="comment"># Rebuild images and start</span>
+docker-compose up --build
+
+<span class="comment"># Stop all services</span>
+docker-compose down
+
+<span class="comment"># Stop and remove volumes</span>
+docker-compose down -v
+
+<span class="comment"># View logs</span>
+docker-compose logs
+
+<span class="comment"># View specific service logs</span>
+docker-compose logs backend</div>
+
+            <h3>Advanced Compose Features</h3>
+            <div class="code-block"><span class="keyword">services</span>:
+  <span class="keyword">backend</span>:
+    <span class="keyword">build</span>: ./backend
+    <span class="keyword">restart</span>: unless-stopped
+    <span class="keyword">healthcheck</span>:
+      <span class="keyword">test</span>: [<span class="string">"CMD"</span>, <span class="string">"curl"</span>, <span class="string">"-f"</span>, <span class="string">"http://localhost:8000/health"</span>]
+      <span class="keyword">interval</span>: 30s
+      <span class="keyword">timeout</span>: 10s
+      <span class="keyword">retries</span>: 3
+      <span class="keyword">start_period</span>: 40s
+    <span class="keyword">depends_on</span>:
+      <span class="keyword">mongodb</span>:
+        <span class="keyword">condition</span>: service_healthy
+    <span class="keyword">deploy</span>:
+      <span class="keyword">resources</span>:
+        <span class="keyword">limits</span>:
+          <span class="keyword">cpus</span>: <span class="string">'0.5'</span>
+          <span class="keyword">memory</span>: 512M
+
+  <span class="keyword">mongodb</span>:
+    <span class="keyword">image</span>: mongo:7
+    <span class="keyword">healthcheck</span>:
+      <span class="keyword">test</span>: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      <span class="keyword">interval</span>: 10s
+      <span class="keyword">timeout</span>: 5s
+      <span class="keyword">retries</span>: 5
+
+  <span class="keyword">debug-tools</span>:
+    <span class="keyword">image</span>: nicolaka/netshoot
+    <span class="keyword">profiles</span>: [debug]  <span class="comment"># Only starts with: docker compose --profile debug up</span>
+    <span class="keyword">network_mode</span>: service:backend</div>
+
+            <h3>docker-compose.override.yml</h3>
+            <p>Docker Compose automatically merges <code>docker-compose.yml</code> with <code>docker-compose.override.yml</code> if present. Use this for dev-specific settings without changing production config.</p>
+            <div class="code-block"><span class="comment"># docker-compose.override.yml (auto-loaded in dev)</span>
+<span class="keyword">services</span>:
+  <span class="keyword">backend</span>:
+    <span class="keyword">volumes</span>:
+      - ./backend:/app
+      - /app/node_modules
+    <span class="keyword">environment</span>:
+      - NODE_ENV=development
+    <span class="keyword">command</span>: npm run dev</div>
+        </section>
+
+        <section id="healthchecks">
+            <h2>💓 Health Checks & Monitoring</h2>
+
+            <p>Health checks tell Docker (and orchestrators like Kubernetes) whether your container is actually working, not just running.</p>
+
+            <h3>HEALTHCHECK in Dockerfile</h3>
+            <div class="code-block"><span class="keyword">HEALTHCHECK</span> --interval=30s --timeout=5s --start-period=10s --retries=3 \\
+  CMD curl -f http://localhost:3000/health || exit 1
+
+<span class="comment"># Options:</span>
+<span class="comment"># --interval   How often to run check (default: 30s)</span>
+<span class="comment"># --timeout    Max time for check to complete (default: 30s)</span>
+<span class="comment"># --start-period Grace period on startup (default: 0s)</span>
+<span class="comment"># --retries    Consecutive failures before unhealthy (default: 3)</span></div>
+
+            <h3>Health Check Status</h3>
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><code>starting</code></td>
+                    <td>Within start-period, not yet evaluated</td>
+                </tr>
+                <tr>
+                    <td><code>healthy</code></td>
+                    <td>Check passed</td>
+                </tr>
+                <tr>
+                    <td><code>unhealthy</code></td>
+                    <td>Check failed retries times</td>
+                </tr>
+            </table>
+
+            <div class="code-block"><span class="comment"># View health status</span>
+docker ps
+docker inspect --format='{{.State.Health.Status}}' myapp
+
+<span class="comment"># View health check log history</span>
+docker inspect --format='{{json .State.Health}}' myapp | jq
+
+<span class="comment"># Monitor all running containers in real-time</span>
+docker stats
+
+<span class="comment"># Monitor with custom format</span>
+docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"</div>
+
+            <h3>Simple Health Endpoint (Node.js)</h3>
+            <div class="code-block"><span class="comment">// Add to your Express app</span>
+app.get(<span class="string">'/health'</span>, (req, res) => {
+  res.status(200).json({
+    status: <span class="string">'ok'</span>,
+    uptime: process.uptime(),
+    timestamp: Date.now()
+  });
+});</div>
+
+        <section id="commands">
+            <h2>⌨️ Essential Docker Commands</h2>
+
+            <h3>Container Commands</h3>
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>docker ps</code></td>
+                    <td>List running containers</td>
+                </tr>
+                <tr>
+                    <td><code>docker ps -a</code></td>
+                    <td>List all containers</td>
+                </tr>
+                <tr>
+                    <td><code>docker stop &lt;name&gt;</code></td>
+                    <td>Stop running container</td>
+                </tr>
+                <tr>
+                    <td><code>docker start &lt;name&gt;</code></td>
+                    <td>Start stopped container</td>
+                </tr>
+                <tr>
+                    <td><code>docker restart &lt;name&gt;</code></td>
+                    <td>Restart container</td>
+                </tr>
+                <tr>
+                    <td><code>docker rm &lt;name&gt;</code></td>
+                    <td>Remove container</td>
+                </tr>
+                <tr>
+                    <td><code>docker rm -f &lt;name&gt;</code></td>
+                    <td>Force remove running container</td>
+                </tr>
+                <tr>
+                    <td><code>docker exec -it &lt;name&gt; /bin/sh</code></td>
+                    <td>Enter container shell</td>
+                </tr>
+            </table>
+
+            <h3>Image Commands</h3>
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>docker build -t name .</code></td>
+                    <td>Build image from Dockerfile</td>
+                </tr>
+                <tr>
+                    <td><code>docker images</code></td>
+                    <td>List all images</td>
+                </tr>
+                <tr>
+                    <td><code>docker rmi &lt;image&gt;</code></td>
+                    <td>Remove image</td>
+                </tr>
+                <tr>
+                    <td><code>docker pull &lt;image&gt;</code></td>
+                    <td>Download image from Docker Hub</td>
+                </tr>
+                <tr>
+                    <td><code>docker push &lt;image&gt;</code></td>
+                    <td>Upload image to Docker Hub</td>
+                </tr>
+            </table>
+
+            <h3>System Commands</h3>
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>docker version</code></td>
+                    <td>Show Docker version</td>
+                </tr>
+                <tr>
+                    <td><code>docker stats</code></td>
+                    <td>Show resource usage statistics</td>
+                </tr>
+                <tr>
+                    <td><code>docker system prune</code></td>
+                    <td>Remove unused data</td>
+                </tr>
+                <tr>
+                    <td><code>docker logout</code></td>
+                    <td>Logout from Docker Hub</td>
+                </tr>
+                <tr>
+                    <td><code>docker login</code></td>
+                    <td>Login to Docker Hub</td>
+                </tr>
+            </table>
+
+            <h3>Volume Commands</h3>
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>docker volume ls</code></td>
+                    <td>List all volumes</td>
+                </tr>
+                <tr>
+                    <td><code>docker volume create &lt;name&gt;</code></td>
+                    <td>Create named volume</td>
+                </tr>
+                <tr>
+                    <td><code>docker volume inspect &lt;name&gt;</code></td>
+                    <td>View volume details</td>
+                </tr>
+                <tr>
+                    <td><code>docker volume rm &lt;name&gt;</code></td>
+                    <td>Remove volume</td>
+                </tr>
+                <tr>
+                    <td><code>docker volume prune</code></td>
+                    <td>Remove unused volumes</td>
+                </tr>
+            </table>
+
+            <h3>Network Commands</h3>
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>docker network ls</code></td>
+                    <td>List all networks</td>
+                </tr>
+                <tr>
+                    <td><code>docker network create &lt;name&gt;</code></td>
+                    <td>Create network</td>
+                </tr>
+                <tr>
+                    <td><code>docker network inspect &lt;name&gt;</code></td>
+                    <td>View network details</td>
+                </tr>
+                <tr>
+                    <td><code>docker network connect &lt;net&gt; &lt;container&gt;</code></td>
+                    <td>Connect container to network</td>
+                </tr>
+                <tr>
+                    <td><code>docker network rm &lt;name&gt;</code></td>
+                    <td>Remove network</td>
+                </tr>
+            </table>
+
+            <h3>Real-World Workflow Example</h3>
+            <div class="code-block"><span class="comment"># 1. Create Dockerfile for React app</span>
+FROM node:20
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD [<span class="string">"npm"</span>, <span class="string">"start"</span>]
+
+<span class="comment"># 2. Build image</span>
+docker build -t myreactapp .
+
+<span class="comment"># 3. Run container with live reload</span>
+docker run -d \\
+  -p 3000:3000 \\
+  -v <span class="string">"$(pwd)/src"</span>:/app/src \\
+  -e CHOKIDAR_USEPOLLING=true \\
+  --name react-app \\
+  myreactapp
+
+<span class="comment"># 4. View logs</span>
+docker logs -f react-app
+
+<span class="comment"># 5. Stop and remove</span>
+docker stop react-app
+docker rm react-app</div>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>🔍 Troubleshooting & Debugging</h2>
+
+            <h3>Common Problems & Solutions</h3>
+            <table>
+                <tr>
+                    <th>Problem</th>
+                    <th>Cause</th>
+                    <th>Solution</th>
+                </tr>
+                <tr>
+                    <td>Port already in use</td>
+                    <td>Another process using the port</td>
+                    <td><code>docker ps</code> or change port mapping <code>-p 3001:3000</code></td>
+                </tr>
+                <tr>
+                    <td>Cannot connect to Docker daemon</td>
+                    <td>Docker Desktop not running</td>
+                    <td>Start Docker Desktop / <code>sudo systemctl start docker</code></td>
+                </tr>
+                <tr>
+                    <td>Permission denied</td>
+                    <td>User not in docker group</td>
+                    <td><code>sudo usermod -aG docker $USER</code> then re-login</td>
+                </tr>
+                <tr>
+                    <td>Image build fails at COPY</td>
+                    <td>File not in build context</td>
+                    <td>Check <code>.dockerignore</code> and file paths</td>
+                </tr>
+                <tr>
+                    <td>Container exits immediately</td>
+                    <td>CMD fails or no foreground process</td>
+                    <td><code>docker logs &lt;container&gt;</code> to see error</td>
+                </tr>
+                <tr>
+                    <td>Out of disk space</td>
+                    <td>Too many unused images/containers</td>
+                    <td><code>docker system prune -a</code></td>
+                </tr>
+                <tr>
+                    <td>node_modules conflict</td>
+                    <td>Host OS vs container OS mismatch</td>
+                    <td>Use anonymous volume: <code>-v /app/node_modules</code></td>
+                </tr>
+                <tr>
+                    <td>Can't reach host from container</td>
+                    <td>localhost refers to container itself</td>
+                    <td>Use <code>host.docker.internal</code> (Mac/Win)</td>
+                </tr>
+            </table>
+
+            <h3>Debugging Commands</h3>
+            <div class="code-block"><span class="comment"># Enter running container shell</span>
+docker exec -it myapp /bin/sh
+docker exec -it myapp bash  <span class="comment"># if bash available</span>
+
+<span class="comment"># Run one-off command in container</span>
+docker exec myapp ls -la /app
+docker exec myapp cat /etc/hosts
+
+<span class="comment"># Override entrypoint for debugging</span>
+docker run -it --entrypoint /bin/sh myimage
+
+<span class="comment"># View full container config</span>
+docker inspect myapp
+
+<span class="comment"># Follow logs in real-time</span>
+docker logs -f --tail 100 myapp
+
+<span class="comment"># Copy file from container to host</span>
+docker cp myapp:/app/logs/error.log ./error.log
+
+<span class="comment"># Copy file from host to container</span>
+docker cp ./config.json myapp:/app/config.json
+
+<span class="comment"># Check disk usage by Docker</span>
+docker system df
+
+<span class="comment"># See events as they happen</span>
+docker events</div>
+
+            <h3>Build Debugging</h3>
+            <div class="code-block"><span class="comment"># Build with verbose output</span>
+docker build --progress=plain --no-cache -t myapp .
+
+<span class="comment"># Build up to a specific stage (multi-stage)</span>
+docker build --target builder -t myapp:debug .
+
+<span class="comment"># Run intermediate build stage for inspection</span>
+docker run -it myapp:debug /bin/sh</div>
+        </section>
+
+        <section id="cicd">
+            <h2>🔄 CI/CD with Docker</h2>
+
+            <p>Automate building, testing, and pushing Docker images using CI/CD pipelines.</p>
+
+            <h3>GitHub Actions — Build & Push to Docker Hub</h3>
+            <div class="code-block"><span class="comment"># .github/workflows/docker.yml</span>
+<span class="keyword">name</span>: Docker CI/CD
+
+<span class="keyword">on</span>:
+  <span class="keyword">push</span>:
+    <span class="keyword">branches</span>: [main]
+    <span class="keyword">tags</span>: [<span class="string">'v*'</span>]
+
+<span class="keyword">jobs</span>:
+  <span class="keyword">build-and-push</span>:
+    <span class="keyword">runs-on</span>: ubuntu-latest
+    <span class="keyword">steps</span>:
+      - <span class="keyword">uses</span>: actions/checkout@v4
+
+      - <span class="keyword">name</span>: Set up Docker Buildx
+        <span class="keyword">uses</span>: docker/setup-buildx-action@v3
+
+      - <span class="keyword">name</span>: Login to Docker Hub
+        <span class="keyword">uses</span>: docker/login-action@v3
+        <span class="keyword">with</span>:
+          <span class="keyword">username</span>: ${{ secrets.DOCKERHUB_USERNAME }}
+          <span class="keyword">password</span>: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - <span class="keyword">name</span>: Build and push
+        <span class="keyword">uses</span>: docker/build-push-action@v5
+        <span class="keyword">with</span>:
+          <span class="keyword">context</span>: .
+          <span class="keyword">push</span>: true
+          <span class="keyword">tags</span>: |
+            username/myapp:latest
+            username/myapp:${{ github.sha }}
+          <span class="keyword">cache-from</span>: type=gha
+          <span class="keyword">cache-to</span>: type=gha,mode=max</div>
+
+            <h3>CI/CD Pipeline Stages</h3>
+            <table>
+                <tr>
+                    <th>Stage</th>
+                    <th>Action</th>
+                    <th>Tool</th>
+                </tr>
+                <tr>
+                    <td><strong>Build</strong></td>
+                    <td>Build Docker image from Dockerfile</td>
+                    <td><code>docker build</code>, Buildx</td>
+                </tr>
+                <tr>
+                    <td><strong>Test</strong></td>
+                    <td>Run tests inside container</td>
+                    <td><code>docker run myapp npm test</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Scan</strong></td>
+                    <td>Check for vulnerabilities</td>
+                    <td>Trivy, Snyk, Docker Scout</td>
+                </tr>
+                <tr>
+                    <td><strong>Push</strong></td>
+                    <td>Upload to registry</td>
+                    <td><code>docker push</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Deploy</strong></td>
+                    <td>Pull and run on server</td>
+                    <td>SSH, ECS, Kubernetes</td>
+                </tr>
+            </table>
+
+            <h3>Image Tagging Strategy</h3>
+            <div class="code-block"><span class="comment"># Semantic versioning</span>
+myapp:1.0.0          <span class="comment"># Specific release</span>
+myapp:1.0            <span class="comment"># Minor version (auto-updates patches)</span>
+myapp:1              <span class="comment"># Major version</span>
+myapp:latest         <span class="comment"># Most recent (dev only!)</span>
+
+<span class="comment"># Git-based tagging</span>
+myapp:abc123f        <span class="comment"># Git commit SHA</span>
+myapp:main-abc123f   <span class="comment"># Branch + SHA</span>
+myapp:v1.2.3         <span class="comment"># Git tag</span></div>
+
+            <h3>Scanning Images for Vulnerabilities</h3>
+            <div class="code-block"><span class="comment"># Using Trivy (free, open-source)</span>
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
+  aquasec/trivy image myapp:latest
+
+<span class="comment"># Using Docker Scout (built into Docker Desktop)</span>
+docker scout cves myapp:latest
+docker scout recommendations myapp:latest</div>
+
+        <section id="layers">
+            <h2>🎂 Image Layers & Caching</h2>
+
+            <p>Docker images are built in <span class="highlight">layers</span>. Each instruction in a Dockerfile creates a new layer.</p>
+
+            <h3>How Layer Caching Works</h3>
+            <div class="info-box">
+                <p><strong>Key Concept:</strong> Docker caches each layer and reuses it if nothing has changed</p>
+                <ul>
+                    <li>✅ If a layer hasn't changed, Docker uses the cached version</li>
+                    <li>✅ Once a layer changes, all subsequent layers are rebuilt</li>
+                    <li>✅ This makes builds much faster!</li>
+                </ul>
+            </div>
+
+            <h3>Optimal Layer Order</h3>
+            <div class="code-block"><span class="comment"># ❌ BAD - Code changes rebuild everything</span>
+<span class="keyword">FROM</span> node:20
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> . .                    <span class="comment"># Copies everything first</span>
+<span class="keyword">RUN</span> npm install            <span class="comment"># Installs dependencies</span>
+<span class="keyword">CMD</span> [<span class="string">"npm"</span>, <span class="string">"start"</span>]
+
+<span class="comment"># ✅ GOOD - Dependencies cached separately</span>
+<span class="keyword">FROM</span> node:20
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package.json .        <span class="comment"># Copy package.json first</span>
+<span class="keyword">RUN</span> npm install            <span class="comment"># Cache this layer</span>
+<span class="keyword">COPY</span> . .                   <span class="comment"># Copy rest of code</span>
+<span class="keyword">CMD</span> [<span class="string">"npm"</span>, <span class="string">"start"</span>]</div>
+
+            <h3>Layer Commands</h3>
+            <div class="code-block"><span class="comment"># View image layers</span>
+docker image inspect image_id
+
+<span class="comment"># View layer history</span>
+docker history image_id
+
+<span class="comment"># Remove all unused images (free up space)</span>
+docker image prune
+
+<span class="comment"># Remove all images not used by containers</span>
+docker image prune -a</div>
+
+            <h3>Understanding Image Size</h3>
+            <div class="info-box">
+                <p><strong>Each Docker image includes:</strong></p>
+                <ul>
+                    <li>🔹 Base OS layer (Linux)</li>
+                    <li>🔹 Application runtime (Node, Python, etc.)</li>
+                    <li>🔹 Dependencies</li>
+                    <li>🔹 Your application code</li>
+                    <li>🔹 Configuration files</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Important:</strong> If a container is running or stopped, you cannot delete its image. Remove the container first!</p>
+            </div>
+        </section>
+
+        <section id="dockerignore">
+            <h2>🚫 .dockerignore File</h2>
+
+            <p>The <span class="highlight">.dockerignore</span> file tells Docker which files and directories to exclude when copying files.</p>
+
+            <h3>Why Use .dockerignore?</h3>
+            <ul>
+                <li>✅ Reduces image size</li>
+                <li>✅ Faster builds (less data to copy)</li>
+                <li>✅ Prevents sensitive data from being included</li>
+                <li>✅ Improves security</li>
+            </ul>
+
+            <h3>Common .dockerignore Content</h3>
+            <div class="code-block"><span class="comment"># Dependencies</span>
+node_modules
+npm-debug.log
+
+<span class="comment"># Git</span>
+.git
+.gitignore
+
+<span class="comment"># Environment files (security!)</span>
+.env
+.env.local
+.env.production
+
+<span class="comment"># Logs</span>
+*.log
+logs
+
+<span class="comment"># Documentation</span>
+README.md
+*.md
+docs
+
+<span class="comment"># IDE</span>
+.vscode
+.idea
+*.swp
+.DS_Store
+
+<span class="comment"># Test files</span>
+__tests__
+*.test.js
+coverage
+
+<span class="comment"># Docker files</span>
+Dockerfile
+docker-compose.yml
+
+<span class="comment"># Build artifacts</span>
+dist
+build
+*.zip</div>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Security Warning:</strong> Always add <code>.env</code> files to .dockerignore to prevent exposing sensitive credentials!</p>
+            </div>
+        </section>
+
+        <section id="bind-mounts">
+            <h2>📁 Bind Mounts Deep Dive</h2>
+
+            <p><span class="highlight">Bind mounts</span> map a folder on your host machine directly to a folder in the container.</p>
+
+            <h3>Volumes vs Bind Mounts</h3>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Named Volumes</th>
+                    <th>Bind Mounts</th>
+                </tr>
+                <tr>
+                    <td><strong>Management</strong></td>
+                    <td>Managed by Docker</td>
+                    <td>Managed by you</td>
+                </tr>
+                <tr>
+                    <td><strong>Location</strong></td>
+                    <td>Unknown (Docker decides)</td>
+                    <td>You specify exact path</td>
+                </tr>
+                <tr>
+                    <td><strong>Best For</strong></td>
+                    <td>Persistent data (databases)</td>
+                    <td>Live code updates (development)</td>
+                </tr>
+                <tr>
+                    <td><strong>Syntax</strong></td>
+                    <td><code>volume_name:/container/path</code></td>
+                    <td><code>/host/path:/container/path</code></td>
+                </tr>
+            </table>
+
+            <h3>Bind Mount Examples</h3>
+            <div class="code-block"><span class="comment"># Linux/Mac - Current directory</span>
+docker run -d \\
+  -v $(pwd):/app \\
+  -p 3000:3000 \\
+  myapp
+
+<span class="comment"># Windows - Current directory</span>
+docker run -d \\
+  -v <span class="string">"%cd%"</span>:/app \\
+  -p 3000:3000 \\
+  myapp
+
+<span class="comment"># Absolute path (Windows)</span>
+docker run -d \\
+  -v D:\\project\\myapp:/app \\
+  -p 3000:3000 \\
+  myapp</div>
+
+            <h3>Excluding node_modules</h3>
+            <p>Common problem: Host's node_modules conflict with container's</p>
+            <div class="code-block"><span class="comment"># Solution: Anonymous volume for node_modules</span>
+docker run -d \\
+  -v <span class="string">"$(pwd)"</span>:/app \\
+  -v /app/node_modules \\
+  -p 3000:3000 \\
+  myapp
+
+<span class="comment"># This tells Docker:</span>
+<span class="comment"># - Map current directory to /app</span>
+<span class="comment"># - BUT keep /app/node_modules from the container</span></div>
+
+            <h3>Read-Only Bind Mounts</h3>
+            <p>Prevent container from modifying host files</p>
+            <div class="code-block"><span class="comment"># Make bind mount read-only with :ro</span>
+docker run -d \\
+  -v <span class="string">"$(pwd)"</span>:/app:ro \\
+  -v /app/node_modules \\
+  -v /app/logs \\
+  -p 3000:3000 \\
+  myapp
+
+<span class="comment"># Container can:</span>
+<span class="comment"># - Read from /app (read-only)</span>
+<span class="comment"># - Write to /app/node_modules (writable anonymous volume)</span>
+<span class="comment"># - Write to /app/logs (writable anonymous volume)</span></div>
+
+            <h3>Live Reload Configuration</h3>
+            <div class="code-block"><span class="comment"># React app with hot reload</span>
+docker run -d \\
+  -e CHOKIDAR_USEPOLLING=true \\
+  -v <span class="string">"$(pwd)/src"</span>:/app/src \\
+  -p 3000:3000 \\
+  --name react-app \\
+  myreactapp
+
+<span class="comment"># Node app with nodemon</span>
+docker run -d \\
+  -v <span class="string">"$(pwd)"</span>:/app \\
+  -v /app/node_modules \\
+  -p 8000:8000 \\
+  --name backend \\
+  mybackend</div>
+        </section>
+
+        <section id="environment">
+            <h2>🔐 Environment Variables & Arguments</h2>
+
+            <h3>Three Ways to Set Environment Variables</h3>
+
+            <h4>1. In Dockerfile (Build-time)</h4>
+            <div class="code-block"><span class="keyword">FROM</span> node:20
+<span class="keyword">WORKDIR</span> /app
+
+<span class="comment"># Set environment variable</span>
+<span class="keyword">ENV</span> PORT=80
+<span class="keyword">ENV</span> NODE_ENV=production
+
+<span class="comment"># Use in EXPOSE</span>
+<span class="keyword">EXPOSE</span> $PORT
+
+<span class="keyword">COPY</span> . .
+<span class="keyword">CMD</span> [<span class="string">"node"</span>, <span class="string">"server.js"</span>]</div>
+
+            <h4>2. Command Line (Runtime)</h4>
+            <div class="code-block"><span class="comment"># Single variable</span>
+docker run -e PORT=8000 -e NODE_ENV=production myapp
+
+<span class="comment"># Short form</span>
+docker run --env PORT=8000 myapp
+
+<span class="comment"># Multiple variables</span>
+docker run \\
+  -e PORT=8000 \\
+  -e NODE_ENV=production \\
+  -e DB_HOST=mongodb \\
+  -e DB_PORT=27017 \\
+  myapp</div>
+
+            <h4>3. Environment File (Recommended for Production)</h4>
+            <div class="code-block"><span class="comment"># Create .env file</span>
+PORT=8000
+NODE_ENV=production
+DB_HOST=mongodb
+DB_PORT=27017
+DB_NAME=mydb
+JWT_SECRET=your-secret-key
+
+<span class="comment"># Use with Docker</span>
+docker run --env-file ./.env myapp</div>
+
+            <div class="warning-box">
+                <p><strong>🔒 Security Best Practices:</strong></p>
+                <ul>
+                    <li>❌ Never commit <code>.env</code> files with sensitive data to Git</li>
+                    <li>✅ Add <code>.env</code> to <code>.gitignore</code></li>
+                    <li>✅ Use <code>.env.example</code> with placeholder values</li>
+                    <li>✅ Store production secrets in secure vaults (AWS Secrets Manager, Azure Key Vault)</li>
+                </ul>
+            </div>
+
+            <h3>Build Arguments (ARG)</h3>
+            <p>Variables available only during image build</p>
+            <div class="code-block"><span class="comment"># Dockerfile</span>
+<span class="keyword">FROM</span> node:20
+
+<span class="comment"># Define build argument</span>
+<span class="keyword">ARG</span> NODE_VERSION=20
+
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package.json .
+<span class="keyword">RUN</span> npm install
+<span class="keyword">COPY</span> . .
+<span class="keyword">CMD</span> [<span class="string">"node"</span>, <span class="string">"index.js"</span>]
+
+<span class="comment"># Build with custom argument</span>
+docker build --build-arg NODE_VERSION=18 -t myapp .</div>
+
+            <h3>.env.example Template</h3>
+            <div class="code-block"><span class="comment"># Database</span>
+DB_HOST=localhost
+DB_PORT=27017
+DB_NAME=mydb
+DB_USER=username
+DB_PASSWORD=changeme
+
+<span class="comment"># Application</span>
+PORT=8000
+NODE_ENV=development
+
+<span class="comment"># Authentication</span>
+JWT_SECRET=your-secret-key-here
+SESSION_SECRET=another-secret-key
+
+<span class="comment"># External APIs</span>
+API_KEY=your-api-key
+API_SECRET=your-api-secret</div>
+        </section>
+
+        <section id="kubernetes">
+            <h2>☸️ Introduction to Kubernetes</h2>
+
+            <p><span class="highlight">Kubernetes (K8s)</span> is an open-source system for automating deployment, scaling, and management of containerized applications.</p>
+
+            <h3>Problems Kubernetes Solves</h3>
+            <div class="info-box">
+                <ul>
+                    <li>🔧 <strong>Container Crashes:</strong> Automatically restart failed containers</li>
+                    <li>🔧 <strong>Traffic Distribution:</strong> Load balance across multiple containers</li>
+                    <li>🔧 <strong>Auto-Scaling:</strong> Scale up/down based on traffic</li>
+                    <li>🔧 <strong>Self-Healing:</strong> Replace unhealthy containers</li>
+                    <li>🔧 <strong>Rolling Updates:</strong> Deploy new versions without downtime</li>
+                </ul>
+            </div>
+
+            <h3>Kubernetes Architecture</h3>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Cluster</strong></td>
+                    <td>Set of nodes that run containerized applications</td>
+                </tr>
+                <tr>
+                    <td><strong>Master Node</strong></td>
+                    <td>Controls the cluster (orchestration)</td>
+                </tr>
+                <tr>
+                    <td><strong>Worker Nodes</strong></td>
+                    <td>Run your containerized applications</td>
+                </tr>
+                <tr>
+                    <td><strong>Pod</strong></td>
+                    <td>Smallest deployable unit (contains 1+ containers)</td>
+                </tr>
+                <tr>
+                    <td><strong>Service</strong></td>
+                    <td>Exposes pods to network traffic</td>
+                </tr>
+                <tr>
+                    <td><strong>Deployment</strong></td>
+                    <td>Manages desired state of pods</td>
+                </tr>
+            </table>
+
+            <h3>Docker vs Kubernetes</h3>
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Docker</th>
+                    <th>Kubernetes</th>
+                </tr>
+                <tr>
+                    <td><strong>Purpose</strong></td>
+                    <td>Containerization platform</td>
+                    <td>Container orchestration</td>
+                </tr>
+                <tr>
+                    <td><strong>Scaling</strong></td>
+                    <td>Manual</td>
+                    <td>Automatic</td>
+                </tr>
+                <tr>
+                    <td><strong>Load Balancing</strong></td>
+                    <td>Manual setup</td>
+                    <td>Built-in</td>
+                </tr>
+                <tr>
+                    <td><strong>Self-Healing</strong></td>
+                    <td>No</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Best For</strong></td>
+                    <td>Development, small deployments</td>
+                    <td>Production, large-scale apps</td>
+                </tr>
+            </table>
+
+            <h3>When to Use Kubernetes</h3>
+            <ul>
+                <li>✅ Large-scale applications</li>
+                <li>✅ High-traffic websites</li>
+                <li>✅ Microservices architecture</li>
+                <li>✅ Need auto-scaling</li>
+                <li>✅ Complex deployment requirements</li>
+            </ul>
+
+            <h3>Kubernetes Alternatives</h3>
+            <ul>
+                <li>🔹 <strong>Docker Swarm:</strong> Docker's built-in orchestration</li>
+                <li>🔹 <strong>Amazon ECS:</strong> AWS container orchestration</li>
+                <li>🔹 <strong>AWS Fargate:</strong> Serverless containers</li>
+                <li>🔹 <strong>Google Cloud Run:</strong> Serverless container platform</li>
+            </ul>
+
+            <h3>Basic Kubernetes Commands</h3>
+            <div class="code-block"><span class="comment"># Deploy application</span>
+kubectl apply -f deployment.yaml
+
+<span class="comment"># View running pods</span>
+kubectl get pods
+
+<span class="comment"># View services</span>
+kubectl get services
+
+<span class="comment"># View logs</span>
+kubectl logs &lt;pod-name&gt;
+
+<span class="comment"># Scale deployment</span>
+kubectl scale deployment myapp --replicas=5
+
+<span class="comment"># Port forward to local machine</span>
+kubectl port-forward pod/myapp 8080:80</div>
+
+            <h3>Sample deployment.yaml</h3>
+            <div class="code-block"><span class="keyword">apiVersion</span>: apps/v1
+<span class="keyword">kind</span>: Deployment
+<span class="keyword">metadata</span>:
+  <span class="keyword">name</span>: myapp
+<span class="keyword">spec</span>:
+  <span class="keyword">replicas</span>: 3
+  <span class="keyword">selector</span>:
+    <span class="keyword">matchLabels</span>:
+      <span class="keyword">app</span>: myapp
+  <span class="keyword">template</span>:
+    <span class="keyword">metadata</span>:
+      <span class="keyword">labels</span>:
+        <span class="keyword">app</span>: myapp
+    <span class="keyword">spec</span>:
+      <span class="keyword">containers</span>:
+      - <span class="keyword">name</span>: myapp
+        <span class="keyword">image</span>: username/myapp:1.0.0
+        <span class="keyword">ports</span>:
+        - <span class="keyword">containerPort</span>: 3000
+        <span class="keyword">resources</span>:
+          <span class="keyword">limits</span>:
+            <span class="keyword">memory</span>: <span class="string">"256Mi"</span>
+            <span class="keyword">cpu</span>: <span class="string">"500m"</span></div>
+        </section>
+
+        <section id="deployment">
+            <h2>🚀 Docker Deployment</h2>
+
+            <h3>Deployment Options</h3>
+            <table>
+                <tr>
+                    <th>Platform</th>
+                    <th>Description</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td><strong>AWS EC2</strong></td>
+                    <td>Virtual servers, full control</td>
+                    <td>Custom configurations</td>
+                </tr>
+                <tr>
+                    <td><strong>AWS ECS</strong></td>
+                    <td>Container orchestration service</td>
+                    <td>AWS-native apps</td>
+                </tr>
+                <tr>
+                    <td><strong>AWS Fargate</strong></td>
+                    <td>Serverless containers</td>
+                    <td>No server management</td>
+                </tr>
+                <tr>
+                    <td><strong>Docker Hub</strong></td>
+                    <td>Image registry</td>
+                    <td>Sharing images</td>
+                </tr>
+                <tr>
+                    <td><strong>Azure Container</strong></td>
+                    <td>Microsoft container service</td>
+                    <td>Azure ecosystem</td>
+                </tr>
+                <tr>
+                    <td><strong>Google Cloud Run</strong></td>
+                    <td>Serverless containers</td>
+                    <td>Simple deployments</td>
+                </tr>
+            </table>
+
+            <h3>Installing Docker on AWS EC2</h3>
+            <div class="code-block"><span class="comment"># Update system packages</span>
+sudo yum update -y
+
+<span class="comment"># Install Docker</span>
+sudo yum -y install docker
+
+<span class="comment"># Start Docker service</span>
+sudo service docker start
+
+<span class="comment"># Add ec2-user to docker group</span>
+sudo usermod -a -G docker ec2-user
+
+<span class="comment"># Log out and back in, then enable Docker on boot</span>
+sudo systemctl enable docker
+
+<span class="comment"># Verify installation</span>
+docker version</div>
+
+            <h3>Deploying to Docker Hub</h3>
+            <div class="code-block"><span class="comment"># 1. Create repository on hub.docker.com</span>
+
+<span class="comment"># 2. Login to Docker Hub</span>
+docker login
+
+<span class="comment"># 3. Tag your image</span>
+docker tag myapp:latest username/myapp:1.0.0
+
+<span class="comment"># 4. Push to Docker Hub</span>
+docker push username/myapp:1.0.0
+
+<span class="comment"># 5. Pull from Docker Hub (on any machine)</span>
+docker pull username/myapp:1.0.0
+
+<span class="comment"># 6. Run the pulled image</span>
+docker run -d -p 80:80 username/myapp:1.0.0</div>
+
+            <h3>Sharing Docker Images</h3>
+            <div class="info-box">
+                <p><strong>Two methods to share Docker applications:</strong></p>
+                <ul>
+                    <li>📄 <strong>Share Dockerfile:</strong> Others build image locally</li>
+                    <li>📦 <strong>Share Image:</strong> Push to Docker Hub or private registry</li>
+                </ul>
+            </div>
+
+            <h3>Private Docker Registry</h3>
+            <ul>
+                <li>🔹 <strong>AWS ECR:</strong> Amazon Elastic Container Registry</li>
+                <li>🔹 <strong>Azure ACR:</strong> Azure Container Registry</li>
+                <li>🔹 <strong>Google GCR:</strong> Google Container Registry</li>
+                <li>🔹 <strong>Docker Hub Private:</strong> Private repositories on Docker Hub</li>
+                <li>🔹 <strong>Self-Hosted:</strong> Run your own registry</li>
+            </ul>
+
+            <h3>Deploy to AWS EC2 (Full Workflow)</h3>
+            <div class="code-block"><span class="comment"># On your local machine — build and push</span>
+docker build -t username/myapp:1.0.0 .
+docker push username/myapp:1.0.0
+
+<span class="comment"># SSH into EC2 instance</span>
+ssh -i mykey.pem ec2-user@&lt;ec2-ip&gt;
+
+<span class="comment"># On EC2 — pull and run</span>
+docker pull username/myapp:1.0.0
+docker run -d \\
+  --name myapp \\
+  --restart unless-stopped \\
+  -p 80:3000 \\
+  -e NODE_ENV=production \\
+  --env-file /home/ec2-user/.env \\
+  username/myapp:1.0.0
+
+<span class="comment"># Verify it's running</span>
+docker ps
+curl http://localhost</div>
+
+            <h3>AWS ECR Push Workflow</h3>
+            <div class="code-block"><span class="comment"># Authenticate Docker to ECR</span>
+aws ecr get-login-password --region us-east-1 | \\
+  docker login --username AWS --password-stdin &lt;account-id&gt;.dkr.ecr.us-east-1.amazonaws.com
+
+<span class="comment"># Tag image for ECR</span>
+docker tag myapp:latest &lt;account-id&gt;.dkr.ecr.us-east-1.amazonaws.com/myapp:latest
+
+<span class="comment"># Push to ECR</span>
+docker push &lt;account-id&gt;.dkr.ecr.us-east-1.amazonaws.com/myapp:latest</div>
+        </section>
+
+        <section id="best-practices">
+            <h2>✨ Docker Best Practices</h2>
+
+            <h3>Dockerfile Best Practices</h3>
+            <div class="info-box">
+                <h4>1. Use Official Base Images</h4>
+                <div class="code-block"><span class="comment"># ✅ GOOD</span>
+<span class="keyword">FROM</span> node:20-alpine
+
+<span class="comment"># ❌ BAD - Use tagged versions</span>
+<span class="keyword">FROM</span> node:latest</div>
+
+                <h4>2. Optimize Layer Order</h4>
+                <div class="code-block"><span class="comment"># ✅ GOOD - Copy package.json first</span>
+<span class="keyword">COPY</span> package.json .
+<span class="keyword">RUN</span> npm install
+<span class="keyword">COPY</span> . .
+
+<span class="comment"># ❌ BAD - Installs deps on every code change</span>
+<span class="keyword">COPY</span> . .
+<span class="keyword">RUN</span> npm install</div>
+
+                <h4>3. Use .dockerignore</h4>
+                <p>Exclude unnecessary files (node_modules, .git, logs)</p>
+
+                <h4>4. Multi-Stage Builds</h4>
+                <div class="code-block"><span class="comment"># Build stage</span>
+<span class="keyword">FROM</span> node:20 AS build
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package.json .
+<span class="keyword">RUN</span> npm install
+<span class="keyword">COPY</span> . .
+<span class="keyword">RUN</span> npm run build
+
+<span class="comment"># Production stage</span>
+<span class="keyword">FROM</span> node:20-alpine
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> --from=build /app/dist ./dist
+<span class="keyword">COPY</span> package.json .
+<span class="keyword">RUN</span> npm install --production
+<span class="keyword">CMD</span> [<span class="string">"node"</span>, <span class="string">"dist/index.js"</span>]</div>
+
+                <h4>5. Minimize Layers</h4>
+                <div class="code-block"><span class="comment"># ✅ GOOD - Combine RUN commands</span>
+<span class="keyword">RUN</span> apt-get update && \\
+    apt-get install -y curl vim && \\
+    apt-get clean
+
+<span class="comment"># ❌ BAD - Creates 3 layers</span>
+<span class="keyword">RUN</span> apt-get update
+<span class="keyword">RUN</span> apt-get install -y curl vim
+<span class="keyword">RUN</span> apt-get clean</div>
+            </div>
+
+            <h3>Security Best Practices</h3>
+            <ul>
+                <li>🔒 Never store secrets in images</li>
+                <li>🔒 Use environment variables for sensitive data</li>
+                <li>🔒 Run containers as non-root user</li>
+                <li>🔒 Keep images updated (security patches)</li>
+                <li>🔒 Scan images for vulnerabilities</li>
+                <li>🔒 Use private registries for production images</li>
+            </ul>
+
+            <h3>Running as Non-Root User</h3>
+            <div class="code-block"><span class="comment"># Create user in Dockerfile</span>
+<span class="keyword">FROM</span> node:20-alpine
+<span class="keyword">RUN</span> addgroup -g 1001 -S appgroup && \\
+    adduser -S appuser -u 1001 -G appgroup
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> --chown=appuser:appgroup . .
+<span class="keyword">USER</span> appuser
+<span class="keyword">CMD</span> [<span class="string">"node"</span>, <span class="string">"index.js"</span>]
+
+<span class="comment"># Or run as specific user at runtime</span>
+docker run --user 1001:1001 myapp</div>
+
+            <h3>Performance Best Practices</h3>
+            <ul>
+                <li>⚡ Use Alpine Linux base images (smaller)</li>
+                <li>⚡ Leverage build cache effectively</li>
+                <li>⚡ Remove unnecessary files in same layer</li>
+                <li>⚡ Use multi-stage builds</li>
+                <li>⚡ Limit container resources (CPU, memory)</li>
+            </ul>
+
+            <h3>Development Best Practices</h3>
+            <ul>
+                <li>💡 Use Docker Compose for multi-container apps</li>
+                <li>💡 Use bind mounts for live code updates</li>
+                <li>💡 Tag images with meaningful versions</li>
+                <li>💡 Document your Docker setup (README)</li>
+                <li>💡 Use .env files (don't commit them!)</li>
+                <li>💡 Test containers before pushing to production</li>
+            </ul>
+
+            <h3>Container Naming Convention</h3>
+            <div class="code-block"><span class="comment"># Good naming practices</span>
+docker run --name frontend-prod myapp
+docker run --name backend-staging mybackend
+docker run --name mongodb-dev mongo
+
+<span class="comment"># Image tagging</span>
+docker build -t myapp:1.0.0 .
+docker build -t myapp:latest .
+docker build -t myapp:dev .</div>
+
+            <h3>Resource Management</h3>
+            <div class="code-block"><span class="comment"># Limit CPU and memory</span>
+docker run -d \\
+  --cpus=<span class="string">"1.5"</span> \\
+  --memory=<span class="string">"512m"</span> \\
+  --name myapp \\
+  myimage
+
+<span class="comment"># View resource usage</span>
+docker stats
+
+<span class="comment"># Clean up unused resources</span>
+docker system prune -a</div>
+
+            <div class="warning-box">
+                <h4>Common Pitfalls to Avoid:</h4>
+                <ul>
+                    <li>❌ Using <code>:latest</code> tag in production</li>
+                    <li>❌ Not using .dockerignore</li>
+                    <li>❌ Storing secrets in images</li>
+                    <li>❌ Running containers as root</li>
+                    <li>❌ Not cleaning up old images/containers</li>
+                    <li>❌ Copying entire project including node_modules</li>
+                </ul>
+            </div>
+
+            <h3>Production Readiness Checklist</h3>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Checklist Item</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td><strong>Image</strong></td>
+                    <td>Uses specific version tag (not :latest)</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Image</strong></td>
+                    <td>Multi-stage build for smaller size</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Image</strong></td>
+                    <td>Scanned for vulnerabilities (Trivy/Scout)</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Security</strong></td>
+                    <td>Runs as non-root user</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Security</strong></td>
+                    <td>No secrets in image or Dockerfile</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Security</strong></td>
+                    <td>.env in .dockerignore</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Runtime</strong></td>
+                    <td>Health check configured</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Runtime</strong></td>
+                    <td>Restart policy set (unless-stopped)</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Runtime</strong></td>
+                    <td>Resource limits set (CPU/memory)</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Data</strong></td>
+                    <td>Persistent data in named volumes</td>
+                    <td>☐</td>
+                </tr>
+                <tr>
+                    <td><strong>Logging</strong></td>
+                    <td>Logs go to stdout/stderr (not files)</td>
+                    <td>☐</td>
+                </tr>
+            </table>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking on a link (mobile only)
+        document.querySelectorAll('.sidebar-link, .sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside (mobile only)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link, .sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>
+

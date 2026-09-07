@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Environment & Tooling - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🛠️ Environment & Tooling</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📦 Package Management</div>
+            <div class="sidebar-links">
+                <a href="#pip" class="sidebar-link">pip & requirements.txt</a>
+                <a href="#venv" class="sidebar-link">Virtual Environments</a>
+                <a href="#poetry" class="sidebar-link">Poetry & pyproject.toml</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📁 Project Structure</div>
+            <div class="sidebar-links">
+                <a href="#structure" class="sidebar-link">Project Layout</a>
+                <a href="#env-vars" class="sidebar-link">Environment Variables</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔍 Code Quality</div>
+            <div class="sidebar-links">
+                <a href="#linting" class="sidebar-link">Linting & Formatting</a>
+                <a href="#type-checking" class="sidebar-link">Type Checking</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🚀 Deployment</div>
+            <div class="sidebar-links">
+                <a href="#docker" class="sidebar-link">Docker</a>
+                <a href="#production" class="sidebar-link">Production Tips</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🛠️ Python Environment & Tooling</h1>
+            <p>Package management, project structure, code quality, and deployment</p>
+        </header>
+
+        <section id="pip">
+            <h2>📦 pip & requirements.txt</h2>
+            <div class="code-block"># Install a package
+pip install fastapi uvicorn sqlalchemy
+
+# Install specific version
+pip install "django>=4.2,<5.0"
+
+# Install from requirements file
+pip install -r requirements.txt
+
+# Generate requirements file
+pip freeze > requirements.txt
+
+# Example requirements.txt
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+sqlalchemy==2.0.25
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
+pydantic[email]==2.5.3
+alembic==1.13.1
+pytest==7.4.4
+httpx==0.26.0</div>
+        </section>
+
+        <section id="venv">
+            <h2>🔒 Virtual Environments</h2>
+            <div class="code-block"># Create venv
+python -m venv venv
+
+# Activate
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Deactivate
+deactivate
+
+# Verify you're in venv
+which python   # Should point to venv/bin/python
+pip list       # Shows only venv packages</div>
+
+            <div class="info-box">
+                <strong>💡 Always use venv:</strong> Never install project dependencies globally. Each project gets its own isolated environment.
+            </div>
+        </section>
+
+        <section id="poetry">
+            <h2>📜 Poetry & pyproject.toml</h2>
+            <div class="code-block"># Install Poetry
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Create new project
+poetry new my-api
+cd my-api
+
+# Add dependencies
+poetry add fastapi uvicorn sqlalchemy
+poetry add --group dev pytest black ruff mypy
+
+# Install all dependencies
+poetry install
+
+# Run commands in venv
+poetry run uvicorn app.main:app --reload
+poetry run pytest</div>
+
+            <div class="code-block"># pyproject.toml
+[tool.poetry]
+name = "my-api"
+version = "0.1.0"
+description = "My FastAPI backend"
+python = "^3.11"
+
+[tool.poetry.dependencies]
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0"}
+sqlalchemy = "^2.0.25"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+black = "^24.1.0"
+ruff = "^0.1.14"
+mypy = "^1.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"</div>
+        </section>
+
+        <section id="structure">
+            <h2>📁 Project Structure</h2>
+            <div class="code-block">my_api/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI app entry point
+│   ├── config.py            # Settings & configuration
+│   ├── dependencies.py      # Shared dependencies
+│   ├── models/              # SQLAlchemy models
+│   │   ├── __init__.py
+│   │   └── user.py
+│   ├── schemas/             # Pydantic schemas (DTOs)
+│   │   ├── __init__.py
+│   │   └── user.py
+│   ├── routers/             # API route handlers
+│   │   ├── __init__.py
+│   │   ├── users.py
+│   │   └── auth.py
+│   ├── services/            # Business logic
+│   │   ├── __init__.py
+│   │   └── user_service.py
+│   └── db/
+│       ├── __init__.py
+│       ├── database.py      # DB connection setup
+│       └── repositories/    # Data access layer
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py          # Pytest fixtures
+│   └── test_users.py
+├── alembic/                 # Database migrations
+├── .env                     # Environment variables (gitignored)
+├── .env.example             # Template for .env
+├── .gitignore
+├── pyproject.toml
+├── Dockerfile
+└── README.md</div>
+        </section>
+
+        <section id="env-vars">
+            <h2>🔐 Environment Variables</h2>
+            <div class="code-block"># .env (never commit this!)
+DATABASE_URL=postgresql://user:pass@localhost:5432/mydb
+SECRET_KEY=super-secret-key-change-in-production
+DEBUG=true
+ALLOWED_ORIGINS=http://localhost:3000
+
+# .env.example (commit this as template)
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+SECRET_KEY=change-me
+DEBUG=false
+ALLOWED_ORIGINS=http://localhost:3000</div>
+
+            <div class="code-block"># config.py — using pydantic-settings
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    database_url: str
+    secret_key: str
+    debug: bool = False
+    allowed_origins: list[str] = ["http://localhost:3000"]
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()</div>
+        </section>
+
+        <section id="linting">
+            <h2>🔍 Linting & Formatting</h2>
+            <table>
+                <tr><th>Tool</th><th>Purpose</th><th>Command</th></tr>
+                <tr><td><strong>Black</strong></td><td>Code formatter</td><td><code>black .</code></td></tr>
+                <tr><td><strong>Ruff</strong></td><td>Fast linter (replaces flake8, isort)</td><td><code>ruff check .</code></td></tr>
+                <tr><td><strong>isort</strong></td><td>Import sorting</td><td><code>isort .</code></td></tr>
+                <tr><td><strong>pre-commit</strong></td><td>Git hooks for quality checks</td><td><code>pre-commit run --all</code></td></tr>
+            </table>
+
+            <div class="code-block"># .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.1.0
+    hooks:
+      - id: black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
+    hooks:
+      - id: ruff
+        args: [--fix]</div>
+        </section>
+
+        <section id="type-checking">
+            <h2>✅ Type Checking with mypy</h2>
+            <div class="code-block"># Run type checker
+mypy app/
+
+# pyproject.toml config
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+
+# Example typed code
+def get_user_by_id(user_id: int) -> User | None:
+    return db.query(User).filter(User.id == user_id).first()</div>
+        </section>
+
+        <section id="docker">
+            <h2>🐳 Docker</h2>
+            <div class="code-block"># Dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies first (layer caching)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]</div>
+
+            <div class="code-block"># docker-compose.yml
+version: "3.8"
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/mydb
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:</div>
+        </section>
+
+        <section id="production">
+            <h2>🚀 Production Tips</h2>
+            <ul>
+                <li>Use <strong>Gunicorn + Uvicorn workers</strong> for production ASGI: <code>gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker</code></li>
+                <li>Never run with <code>--reload</code> in production</li>
+                <li>Set <code>DEBUG=false</code> and use strong <code>SECRET_KEY</code></li>
+                <li>Use a reverse proxy (Nginx) in front of your app</li>
+                <li>Enable HTTPS with Let's Encrypt</li>
+                <li>Set up structured logging (not print statements)</li>
+                <li>Use health check endpoints: <code>GET /health</code></li>
+                <li>Configure connection pooling for databases</li>
+                <li>Use environment-specific config files</li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

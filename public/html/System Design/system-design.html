@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete System Design Guide - architecture, performance, scalability, reliability, CAP, and interview case studies">
+    <meta name="keywords" content="System Design, Scalability, Load Balancing, Caching, CAP Theorem, Distributed Systems">
+    <title>System Design - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</div>
+
+    <div class="page-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">📚 Navigation</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">📚 Introduction</div>
+                <div class="sidebar-links">
+                    <a href="#intro" class="sidebar-link">What is System Design?</a>
+                    <a href="#objectives" class="sidebar-link">Key Objectives</a>
+                    <a href="#components" class="sidebar-link">System Components</a>
+                    <a href="#estimates" class="sidebar-link">Back-of-envelope Estimates</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">⚡ Performance</div>
+                <div class="sidebar-links">
+                    <a href="#performance" class="sidebar-link">Overview</a>
+                    <a href="#network-latency" class="sidebar-link">Network Latency</a>
+                    <a href="#memory-cpu" class="sidebar-link">Memory &amp; CPU</a>
+                    <a href="#disk-io" class="sidebar-link">Disk I/O</a>
+                    <a href="#caching" class="sidebar-link">Caching Strategy</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">📈 Scalability</div>
+                <div class="sidebar-links">
+                    <a href="#scalability" class="sidebar-link">Overview</a>
+                    <a href="#load-balancing" class="sidebar-link">Load Balancing</a>
+                    <a href="#database-scaling" class="sidebar-link">Database Scaling</a>
+                    <a href="#consistent-hashing" class="sidebar-link">Consistent Hashing</a>
+                    <a href="#microservices" class="sidebar-link">Microservices &amp; Queues</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">🛡️ Reliability</div>
+                <div class="sidebar-links">
+                    <a href="#reliability" class="sidebar-link">Overview</a>
+                    <a href="#redundancy" class="sidebar-link">Redundancy</a>
+                    <a href="#circuit-breaker" class="sidebar-link">Circuit Breaker</a>
+                    <a href="#health-retries" class="sidebar-link">Health Checks &amp; Retries</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">🔒 Security</div>
+                <div class="sidebar-links">
+                    <a href="#security" class="sidebar-link">Authentication</a>
+                    <a href="#authorization" class="sidebar-link">Authorization</a>
+                    <a href="#owasp" class="sidebar-link">OWASP Top 10</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">🚀 Advanced</div>
+                <div class="sidebar-links">
+                    <a href="#cap" class="sidebar-link">CAP Theorem</a>
+                    <a href="#distributed" class="sidebar-link">Distributed Systems</a>
+                    <a href="#api" class="sidebar-link">API Design</a>
+                    <a href="#observability" class="sidebar-link">Observability</a>
+                    <a href="#url-shortener" class="sidebar-link">Case Study: URL Shortener</a>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+        <div class="container">
+        <header>
+            <h1>🏗️ System Design Complete Guide</h1>
+            <p>From Developer to Architect</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to System Design</h2>
+
+            <p><span class="highlight">System Design</span> is the process of defining the architecture, components, modules, interfaces, and data for a system so it can satisfy specified requirements — usually under real-world constraints of scale, latency, cost, and failure.</p>
+
+            <p>In interviews and production, “design a system” means more than drawing boxes. You clarify requirements, estimate load, pick a high-level architecture, then go deep on the pieces that will actually break: the database, the cache, the queue, and the failure modes.</p>
+
+            <div class="info-box premium">
+                <h3>How to approach a design</h3>
+                <ul>
+                    <li><strong>Clarify</strong> – functional vs non-functional requirements, read/write ratio, data size</li>
+                    <li><strong>Estimate</strong> – QPS, storage, bandwidth, how many servers you actually need</li>
+                    <li><strong>Sketch</strong> – client → edge → app → data stores → async path</li>
+                    <li><strong>Deep dive</strong> – the 2–3 bottlenecks (usually DB, cache, and fan-out)</li>
+                    <li><strong>Harden</strong> – failures, consistency, security, observability, cost</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="objectives">
+            <h2>Key Objectives</h2>
+            <p>Every serious design is a trade-off among a small set of goals. Name them out loud so you do not optimize the wrong one.</p>
+
+            <div class="grid-2">
+                <div class="feature-card card-blue">
+                    <h4>⚡ Performance</h4>
+                    <p>Minimize latency, maximize throughput. p50 vs p99 matters more than average.</p>
+                </div>
+                <div class="feature-card card-green">
+                    <h4>📈 Scalability</h4>
+                    <p>Handle 10× or 100× users by adding machines, not by rewriting the product.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>🛡️ Reliability</h4>
+                    <p>Stay available and correct when nodes, networks, and deploys fail.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>🔒 Security</h4>
+                    <p>Protect data in transit and at rest; authenticate, authorize, and audit.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>🚀 Operability</h4>
+                    <p>Easy to deploy, roll back, observe, and debug at 3 a.m.</p>
+                </div>
+                <div class="feature-card card-pink">
+                    <h4>💰 Cost</h4>
+                    <p>Right-size storage, compute, and egress. Premature sharding is expensive.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="components">
+            <h2>System Components</h2>
+            <p>Most internet systems are a pipeline of the same building blocks. Learn what each one is <em>for</em>, then compose them.</p>
+
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Role</th>
+                    <th>Typical tech</th>
+                </tr>
+                <tr>
+                    <td><strong>Browser / Client</strong></td>
+                    <td>UI, local cache, TLS termination at the edge of the user device</td>
+                    <td>Web, mobile, IoT</td>
+                </tr>
+                <tr>
+                    <td><strong>DNS + CDN</strong></td>
+                    <td>Name resolution and static/edge content close to the user</td>
+                    <td>Cloudflare, CloudFront, Fastly</td>
+                </tr>
+                <tr>
+                    <td><strong>Load balancer</strong></td>
+                    <td>Spread traffic, health-check, TLS, sticky sessions if needed</td>
+                    <td>NGINX, HAProxy, ALB, Envoy</td>
+                </tr>
+                <tr>
+                    <td><strong>App / API servers</strong></td>
+                    <td>Business logic; keep them as stateless as possible</td>
+                    <td>Node, Java, Go, Python</td>
+                </tr>
+                <tr>
+                    <td><strong>Cache</strong></td>
+                    <td>Hot data in memory to cut DB load and latency</td>
+                    <td>Redis, Memcached</td>
+                </tr>
+                <tr>
+                    <td><strong>Database</strong></td>
+                    <td>Source of truth, transactions, queries</td>
+                    <td>Postgres, MySQL, DynamoDB, Cassandra</td>
+                </tr>
+                <tr>
+                    <td><strong>Object storage</strong></td>
+                    <td>Large blobs (images, video, backups)</td>
+                    <td>S3, GCS</td>
+                </tr>
+                <tr>
+                    <td><strong>Message queue</strong></td>
+                    <td>Decouple producers from slow or bursty work</td>
+                    <td>Kafka, SQS, RabbitMQ</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="estimates">
+            <h2>Back-of-envelope Estimates</h2>
+            <p>Architects estimate before they scale. These numbers are good enough for interviews and capacity planning.</p>
+
+            <div class="info-box">
+                <h3>Numbers worth memorizing</h3>
+                <ul>
+                    <li>L1 cache ~0.5 ns · RAM ~100 ns · SSD ~100 µs · HDD ~10 ms · datacenter RTT ~0.5 ms · continent ~50–150 ms</li>
+                    <li>1 request/sec ≈ 86,400 requests/day. 1M users × 10 requests/day ≈ 116 QPS average (spike higher)</li>
+                    <li>1 character ≈ 1 byte. 1 million 1 KB records ≈ 1 GB. A year of 1 KB writes at 100 QPS ≈ ~3 TB</li>
+                    <li>A typical app server: thousands of QPS if I/O-bound and cached; a single DB primary is often the first wall</li>
+                </ul>
+            </div>
+
+            <div class="diagram-box">Example: URL shortener at 100M new URLs / month
+Writes ≈ 100e6 / (30 * 86400) ≈ 40 QPS  (peak ~200 QPS)
+Reads at 10:1  →  ~400 QPS avg, ~2k peak
+Storage: 100M * 500 bytes ≈ 50 GB / month  →  ~600 GB / year
+            </div>
+
+            <p>Always state assumptions: DAU, requests per user, read/write ratio, payload size, and peak multiplier (often 3–10× average).</p>
+        </section>
+
+        <section id="performance">
+            <h2>⚡ Performance</h2>
+
+            <h3>What is Performance?</h3>
+            <p>Performance measures how fast or responsive a system is under a given workload and hardware. Optimize the critical path: the work that sits on every user request.</p>
+
+            <div class="info-box">
+                <h4>Performance Metrics</h4>
+                <ul>
+                    <li><strong>Latency:</strong> Wait time + processing time (track p50, p95, p99 — not only average)</li>
+                    <li><strong>Throughput:</strong> Requests processed per second (QPS / RPS)</li>
+                    <li><strong>Response time:</strong> Total time until the client has a complete answer</li>
+                    <li><strong>Resource utilization:</strong> CPU, memory, disk, network — headroom prevents collapse at peak</li>
+                    <li><strong>Saturation:</strong> Queues growing means you are past capacity even if average CPU looks fine</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="network-latency">
+            <h2>1. Network Latency</h2>
+            <p>Time taken for data to travel between client and server — often the largest slice of user-facing latency. You cannot make light faster; you can move work closer and send less of it.</p>
+
+            <h4>Solutions</h4>
+            <ul>
+                <li>✅ <strong>Connection pooling:</strong> Reuse TCP/TLS connections instead of handshaking every request</li>
+                <li>✅ <strong>Compression:</strong> gzip / brotli for text; image CDNs for media</li>
+                <li>✅ <strong>CDN:</strong> Serve static (and some dynamic) content from the nearest PoP</li>
+                <li>✅ <strong>TLS session resumption:</strong> Avoid a full handshake on every visit</li>
+                <li>✅ <strong>HTTP/2 or HTTP/3:</strong> Multiplex streams, fewer connections, better loss recovery</li>
+                <li>✅ <strong>Keep-alive / persistent connections:</strong> Cut handshake cost for chatty APIs</li>
+                <li>✅ <strong>Regional deployment:</strong> Put app + data near users when a single region is too far</li>
+            </ul>
+        </section>
+
+        <section id="memory-cpu">
+            <h2>2. Memory &amp; CPU</h2>
+
+            <h3>Memory latency</h3>
+            <h4>Challenges</h4>
+            <ul>
+                <li>⚠️ Large heap memory = aggressive garbage collection pauses</li>
+                <li>⚠️ Memory bloat = cache eviction, swapping, and poor locality</li>
+                <li>⚠️ Memory leaks = slowly rising RSS until the process is killed</li>
+            </ul>
+
+            <h4>Solutions</h4>
+            <ul>
+                <li>✅ Bound caches (LRU + max memory). Never unbounded in-process maps of “hot” data</li>
+                <li>✅ Use weak/soft references or off-heap stores for large objects</li>
+                <li>✅ Prefer multiple smaller processes/pods over one giant JVM/Node heap</li>
+                <li>✅ Tune GC (G1/ZGC, Node --max-old-space-size) and measure pause times</li>
+            </ul>
+
+            <h3>CPU performance</h3>
+            <h4>Issues</h4>
+            <ul>
+                <li>❌ Inefficient algorithms (O(n²) on hot paths)</li>
+                <li>❌ Excess context switching and lock contention</li>
+                <li>❌ JSON encode/decode and crypto on every request without need</li>
+            </ul>
+
+            <h4>Solutions</h4>
+            <ul>
+                <li>✅ Efficient algorithms and indexed queries</li>
+                <li>✅ Batch / async I/O so the CPU is not blocked waiting on disk or network</li>
+                <li>✅ Event-loop or well-sized thread pools (Node, Nginx, Go goroutines)</li>
+                <li>✅ Profile before rewriting — CPU flame graphs beat guesses</li>
+            </ul>
+        </section>
+
+        <section id="disk-io">
+            <h2>3. Disk I/O Latency</h2>
+            <p>Disk is orders of magnitude slower than RAM. Sequential writes (logs, WAL) beat random writes. Indexes turn table scans into seeks.</p>
+
+            <h4>Solutions</h4>
+            <ul>
+                <li>✅ <strong>Sequential I/O:</strong> Append-only logs (Kafka, WAL, LSM trees)</li>
+                <li>✅ <strong>Batch I/O:</strong> Group writes; flush on interval or size, not per row</li>
+                <li>✅ <strong>Async I/O:</strong> Do not block the request thread on slow disks</li>
+                <li>✅ <strong>Query optimization:</strong> Indexes, covering queries, avoid N+1</li>
+                <li>✅ <strong>Data caching:</strong> Redis / Memcached in front of hot keys</li>
+                <li>✅ <strong>SSD:</strong> Lower latency and better random IOPS than HDD</li>
+                <li>✅ <strong>Partitioning:</strong> Keep working set smaller per node</li>
+            </ul>
+        </section>
+
+        <section id="caching">
+            <h2>Caching Strategy</h2>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-caching-strategy.png" alt="Cache layers from browser and CDN through Redis to the database, with HIT and MISS paths">
+                <div class="illustration-caption">Requests try fast layers first. A HIT returns early; a MISS loads from the database and warms the cache with a TTL.</div>
+            </div>
+
+            <p>Cache the result of expensive or frequent work. Every cache needs a <strong>key</strong>, a <strong>TTL</strong>, an <strong>eviction policy</strong>, and a plan for <strong>invalidation</strong>.</p>
+
+            <div class="info-box">
+                <h4>Cache types</h4>
+                <ul>
+                    <li><strong>HTTP / browser cache:</strong> Cache-Control, ETag — free capacity at the client</li>
+                    <li><strong>CDN / static cache:</strong> Images, CSS, JS, public API responses at the edge</li>
+                    <li><strong>Application cache:</strong> Redis objects, sessions, computed aggregates</li>
+                    <li><strong>Database cache:</strong> Buffer pool, query result cache (use carefully)</li>
+                    <li><strong>Full-page / fragment cache:</strong> Rendered HTML for mostly-static pages</li>
+                </ul>
+            </div>
+
+            <h3>Common patterns</h3>
+            <table>
+                <tr>
+                    <th>Pattern</th>
+                    <th>How it works</th>
+                    <th>Use when</th>
+                </tr>
+                <tr>
+                    <td><strong>Cache-aside</strong></td>
+                    <td>App reads cache; on miss, load DB and populate cache</td>
+                    <td>Most web apps (Redis + Postgres)</td>
+                </tr>
+                <tr>
+                    <td><strong>Read-through</strong></td>
+                    <td>Cache itself loads the store on miss</td>
+                    <td>You want the app unaware of the DB</td>
+                </tr>
+                <tr>
+                    <td><strong>Write-through</strong></td>
+                    <td>Writes go to cache and DB together</td>
+                    <td>Read-heavy data that must stay consistent</td>
+                </tr>
+                <tr>
+                    <td><strong>Write-behind</strong></td>
+                    <td>Write cache first; async flush to DB</td>
+                    <td>Very high write QPS; accept delay / risk</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <h4>When NOT to cache — and classic pitfalls</h4>
+                <ul>
+                    <li>❌ Data that changes every request, or must be strictly real-time</li>
+                    <li>❌ User-specific secrets in a shared public cache key</li>
+                    <li>❌ Stampede: many clients miss together — use locking, stale-while-revalidate, or probabilistic early expiry</li>
+                    <li>❌ Thundering herd after a deploy that flushes everything — warm in stages</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="scalability">
+            <h2>📈 Scalability</h2>
+
+            <p><span class="highlight">Scalability</span> is the ability to handle increased load by adding resources — without a linear explosion in operational pain.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-scale-up-vs-out.png" alt="Vertical scale-up of one large server versus horizontal scale-out of many servers behind a load balancer">
+                <div class="illustration-caption">Scale up buys time. Scale out buys headroom — if the app is stateless and the data layer can split work.</div>
+            </div>
+
+            <h3>Types of scaling</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td><strong>Vertical scaling<br>(Scale up)</strong></td>
+                    <td>Add CPU, RAM, or disk to the same machine</td>
+                    <td>✅ Simple<br>✅ No code changes</td>
+                    <td>❌ Hardware ceiling<br>❌ Single point of failure<br>❌ Cost grows fast</td>
+                </tr>
+                <tr>
+                    <td><strong>Horizontal scaling<br>(Scale out)</strong></td>
+                    <td>Add more machines behind a balancer</td>
+                    <td>✅ Near-unlimited capacity<br>✅ High availability<br>✅ Commodity hardware</td>
+                    <td>❌ Statelessness required<br>❌ Data consistency is harder</td>
+                </tr>
+            </table>
+
+            <p>Practical rule: scale the app tier horizontally first (cheap), then cache, then replicate the database for reads, then shard only when a single primary cannot take writes.</p>
+        </section>
+
+        <section id="load-balancing">
+            <h2>Load Balancing</h2>
+            <p>A load balancer distributes traffic across healthy servers, terminates TLS, and hides individual instance failures from clients.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-load-balancing.png" alt="Load balancer distributing client requests to app servers using round robin, least connections, and IP hash">
+                <div class="illustration-caption">Unhealthy instances are pulled from rotation. Algorithms trade evenness, locality, and connection reuse.</div>
+            </div>
+
+            <h4>Algorithms</h4>
+            <ul>
+                <li><strong>Round robin:</strong> Equal share; fine when servers are identical</li>
+                <li><strong>Least connections:</strong> Send to the server with the fewest in-flight requests (good for long-lived connections)</li>
+                <li><strong>Weighted round robin:</strong> Bigger instances get more traffic</li>
+                <li><strong>Least response time:</strong> Prefer the currently fastest backend</li>
+                <li><strong>IP hash / consistent hash:</strong> Same client → same server (sessions, cache locality)</li>
+            </ul>
+
+            <h4>L4 vs L7</h4>
+            <ul>
+                <li><strong>L4 (TCP):</strong> Fast, protocol-agnostic, less insight into HTTP paths</li>
+                <li><strong>L7 (HTTP):</strong> Route by path, header, or host; can do canaries, WAF, auth at the edge</li>
+            </ul>
+
+            <div class="tip-box info-box">
+                <p><strong>Health checks</strong> must match real readiness: a process that accepts TCP but cannot talk to the database should not receive traffic. Use a <code>/health</code> that checks dependencies with timeouts.</p>
+            </div>
+        </section>
+
+        <section id="database-scaling">
+            <h2>Database Scaling</h2>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-replication-sharding.png" alt="Primary-replica replication for reads versus sharding data across multiple databases">
+                <div class="illustration-caption">Replication multiplies read capacity. Sharding splits writes and storage when one primary is no longer enough.</div>
+            </div>
+
+            <h3>Indexes</h3>
+            <p>An index is a side structure (usually a B-tree) that turns “scan the table” into “jump to the row.” Index the columns you filter and join on. Too many indexes slow writes.</p>
+
+            <h3>Replication (primary–replica)</h3>
+            <ul>
+                <li>🔷 <strong>Primary:</strong> All writes (and strongly consistent reads if you need them)</li>
+                <li>🔷 <strong>Replicas:</strong> Serve reads; lag is typically milliseconds to seconds</li>
+                <li>✅ High read scalability and a hot standby for failover</li>
+                <li>⚠️ Replica lag: a read-your-writes user may not see their own update unless you read from primary or use session stickiness</li>
+            </ul>
+
+            <h3>Sharding (horizontal partitioning)</h3>
+            <ul>
+                <li>Split rows across databases so no single node holds everything</li>
+                <li><strong>Range sharding:</strong> IDs 1–10k, 10k–20k — simple, but hot ranges (new users) pile onto one shard</li>
+                <li><strong>Hash sharding:</strong> hash(user_id) % N — even spread; range scans across shards are painful</li>
+                <li><strong>Directory / lookup:</strong> A mapping service decides the shard (flexible, extra hop)</li>
+                <li>✅ Handles massive datasets and write QPS</li>
+                <li>❌ Cross-shard joins and transactions become application problems</li>
+            </ul>
+        </section>
+
+        <section id="consistent-hashing">
+            <h2>Consistent Hashing</h2>
+            <p>When you add or remove a cache or shard node, you do not want to remap <em>every</em> key. Consistent hashing places nodes and keys on a ring; a key belongs to the next node clockwise. Adding a node only steals keys from its neighbor.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-consistent-hashing.png" alt="Hash ring with servers A B C D and keys mapping clockwise; adding a node remaps only nearby keys">
+                <div class="illustration-caption">Virtual nodes (many positions per physical server) keep load even when hardware sizes differ.</div>
+            </div>
+
+            <div class="info-box">
+                <h4>Where it shows up</h4>
+                <ul>
+                    <li>Distributed caches (Memcached clusters, some Redis cluster modes)</li>
+                    <li>Partition assignment in streaming systems</li>
+                    <li>Load balancers that want session affinity without a sticky table</li>
+                    <li>CDN / edge cache key placement</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="microservices">
+            <h2>Microservices &amp; Message Queues</h2>
+
+            <h3>Microservices architecture</h3>
+            <p>Split a monolith along business boundaries (users, billing, feed) so teams can deploy and scale independently. You pay for this with network hops, distributed transactions, and operational complexity.</p>
+
+            <div class="info-box">
+                <p><strong>Benefits</strong></p>
+                <ul>
+                    <li>✅ Independent deployment and scaling</li>
+                    <li>✅ Technology flexibility per service</li>
+                    <li>✅ Fault isolation (if you design for it)</li>
+                    <li>✅ Smaller, focused teams</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Costs</strong></p>
+                <ul>
+                    <li>❌ Distributed debugging and eventual consistency</li>
+                    <li>❌ Network latency between services</li>
+                    <li>❌ Need for a platform: tracing, service mesh, CI/CD, on-call</li>
+                    <li>❌ Start with a modular monolith unless you have a real scaling or team boundary</li>
+                </ul>
+            </div>
+
+            <h3>Message queues</h3>
+            <p>Decouple components and absorb spikes. The API returns quickly; workers do the slow work.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-message-queue.png" alt="Producers enqueue jobs to Kafka or RabbitMQ; workers consume asynchronously; failed jobs go to a dead-letter queue">
+                <div class="illustration-caption">Producers enqueue; workers pull. Failed jobs retry, then land in a dead-letter queue for inspection.</div>
+            </div>
+
+            <ul>
+                <li><strong>RabbitMQ:</strong> Smart broker, competing consumers, classic task queues</li>
+                <li><strong>Kafka:</strong> High-throughput log; consumers keep offsets so messages can be replayed</li>
+                <li><strong>AWS SQS:</strong> Managed queue; pair with SNS for fan-out</li>
+            </ul>
+
+            <h4>Use cases</h4>
+            <ul>
+                <li>📧 Email and push notifications</li>
+                <li>📊 Report generation and ETL</li>
+                <li>🖼️ Image / video processing</li>
+                <li>🔔 Webhooks to third parties (with retries)</li>
+                <li>📰 Feed fan-out (write to many timelines asynchronously)</li>
+            </ul>
+        </section>
+
+        <section id="reliability">
+            <h2>🛡️ Reliability &amp; Fault Tolerance</h2>
+
+            <p><span class="highlight">Reliability</span> means the system stays available and correct even when parts fail. Design for failure; it is the normal case at scale.</p>
+
+            <h3>Types of failures</h3>
+            <ul>
+                <li>🔴 <strong>Network failure:</strong> Packet loss, partitions, DNS blips</li>
+                <li>🔴 <strong>Machine failure:</strong> Disk, host, zone outage</li>
+                <li>🔴 <strong>Software failure:</strong> Bugs, memory leaks, deadlocks</li>
+                <li>🔴 <strong>Deployment failure:</strong> Bad release, schema mismatch</li>
+                <li>🔴 <strong>Load-induced failure:</strong> Traffic spike, retry storms, cache flush</li>
+            </ul>
+
+            <p>Useful numbers: <strong>SLA / SLO</strong> (e.g. 99.9% availability ≈ 8.8 hours down per year). Error budgets tell you how much risk you can take on deploys.</p>
+        </section>
+
+        <section id="redundancy">
+            <h2>Redundancy Strategies</h2>
+
+            <h4>1. Active redundancy (active–active)</h4>
+            <ul>
+                <li>All servers handle traffic</li>
+                <li>If one fails, others absorb the load (keep spare capacity)</li>
+                <li>Example: N app servers behind a load balancer</li>
+            </ul>
+
+            <h4>2. Passive redundancy (active–passive)</h4>
+            <ul>
+                <li>Primary handles traffic; standby takes over on failure</li>
+                <li>Example: database primary + hot standby</li>
+            </ul>
+
+            <h4>3. Cold redundancy</h4>
+            <ul>
+                <li>Backups or offline environments; slower RTO</li>
+                <li>Fine for disaster recovery, not for user-facing APIs</li>
+            </ul>
+
+            <p>Spread replicas across <strong>availability zones</strong>. A single rack or AZ is one failure domain.</p>
+        </section>
+
+        <section id="circuit-breaker">
+            <h2>Circuit Breaker Pattern</h2>
+            <p>When a dependency is sick, calling it harder makes everything worse (threads pile up, retries amplify load). A circuit breaker stops sending traffic after a failure threshold, then probes recovery.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-circuit-breaker.png" alt="Circuit breaker states: Closed allowing traffic, Open failing fast to fallback, Half-Open testing recovery">
+                <div class="illustration-caption">Closed = normal. Open = fail fast to a fallback. Half-open = a trial request decides whether to close again.</div>
+            </div>
+
+            <ul>
+                <li><strong>Closed:</strong> Requests flow; failures are counted</li>
+                <li><strong>Open:</strong> Calls fail immediately (or hit a cache / default); the dependency gets time to recover</li>
+                <li><strong>Half-open:</strong> A small number of trial requests; success closes the circuit, failure re-opens it</li>
+            </ul>
+
+            <p>Pair with timeouts that are shorter than the user’s patience, and with bulkheads so one slow dependency cannot exhaust the whole thread pool.</p>
+        </section>
+
+        <section id="health-retries">
+            <h2>Health Checks &amp; Retry Strategies</h2>
+
+            <h3>Health checks</h3>
+            <ul>
+                <li>🩺 <strong>Liveness:</strong> Process is running (restart if this fails)</li>
+                <li>🩺 <strong>Readiness:</strong> Can serve traffic (DB connected, warmup done)</li>
+                <li>🩺 <strong>Heartbeat:</strong> Periodic signal in clustered systems</li>
+            </ul>
+
+            <h3>Retry strategies</h3>
+            <ul>
+                <li>🔄 <strong>Immediate retry:</strong> Only for clearly transient errors, and only once or twice</li>
+                <li>🔄 <strong>Exponential backoff + jitter:</strong> 1s, 2s, 4s… with randomness so clients do not retry in lockstep</li>
+                <li>🔄 <strong>Idempotency keys:</strong> Safe to retry POSTs that create resources</li>
+                <li>🔄 <strong>Circuit breaker:</strong> Stop retrying a known-down dependency</li>
+            </ul>
+
+            <div class="warning-box">
+                <p>Retries without backoff turn a small outage into a <strong>retry storm</strong>. Cap attempts, add jitter, and prefer queues for work that can wait.</p>
+            </div>
+        </section>
+
+        <section id="security">
+            <h2>🔒 Security — Authentication</h2>
+
+            <h3>Authentication vs authorization</h3>
+            <table>
+                <tr>
+                    <th>Authentication</th>
+                    <th>Authorization</th>
+                </tr>
+                <tr>
+                    <td>Verifying identity (“Who are you?”)</td>
+                    <td>Verifying permissions (“What can you do?”)</td>
+                </tr>
+                <tr>
+                    <td>Login with password, SSO, passkeys</td>
+                    <td>Role-based or attribute-based access control</td>
+                </tr>
+                <tr>
+                    <td>Session cookie or JWT proves the login</td>
+                    <td>Policies decide which resources that identity may touch</td>
+                </tr>
+            </table>
+
+            <h3>Authentication methods</h3>
+            <ul>
+                <li>🔐 <strong>Session-based:</strong> Server stores session; cookie is an opaque ID. Easy to revoke</li>
+                <li>🔐 <strong>Token-based (JWT):</strong> Stateless at the API; harder to revoke unless you keep a denylist or short TTL + refresh</li>
+                <li>🔐 <strong>OAuth 2.0 / OIDC:</strong> Delegate login to Google, GitHub, a company IdP</li>
+                <li>🔐 <strong>MFA:</strong> Password + TOTP / WebAuthn — stops most credential stuffing</li>
+            </ul>
+        </section>
+
+        <section id="authorization">
+            <h2>Authorization</h2>
+            <p>Never trust the client. Check permission on every request for the specific resource (object-level), not only “is logged in.”</p>
+            <ul>
+                <li><strong>RBAC:</strong> Roles like admin, editor, viewer</li>
+                <li><strong>ABAC:</strong> Rules on attributes (department, resource owner, time of day)</li>
+                <li><strong>ACL:</strong> Per-object lists (Google Docs style sharing)</li>
+            </ul>
+            <p>APIs should return 401 when identity is missing/invalid and 403 when identity is known but not allowed — do not leak whether a resource exists if that is sensitive.</p>
+        </section>
+
+        <section id="owasp">
+            <h2>OWASP Top 10 &amp; Hardening</h2>
+
+            <table>
+                <tr>
+                    <th>Vulnerability</th>
+                    <th>Description</th>
+                    <th>Prevention</th>
+                </tr>
+                <tr>
+                    <td><strong>Injection</strong></td>
+                    <td>SQL, command, or template injection</td>
+                    <td>Parameterized queries, never concatenate untrusted input into queries</td>
+                </tr>
+                <tr>
+                    <td><strong>XSS</strong></td>
+                    <td>Injected scripts in the browser</td>
+                    <td>Escape output, Content-Security-Policy, sanitize HTML</td>
+                </tr>
+                <tr>
+                    <td><strong>Broken authentication</strong></td>
+                    <td>Weak passwords, stolen sessions</td>
+                    <td>MFA, hashed passwords (Argon2/bcrypt), secure cookie flags</td>
+                </tr>
+                <tr>
+                    <td><strong>Sensitive data exposure</strong></td>
+                    <td>Cleartext secrets or PII</td>
+                    <td>TLS everywhere, encrypt at rest, minimize what you store</td>
+                </tr>
+                <tr>
+                    <td><strong>Broken access control</strong></td>
+                    <td>IDOR: user A fetches user B’s object by guessing an ID</td>
+                    <td>Authorize every object; do not rely on hidden IDs</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Security best practices</h3>
+                <ul>
+                    <li>✅ HTTPS (TLS) for all traffic; HSTS</li>
+                    <li>✅ Hash passwords (bcrypt, Argon2) — never reversible encryption for passwords</li>
+                    <li>✅ Rate limiting and bot protection on login and expensive endpoints</li>
+                    <li>✅ Input validation at the boundary; output encoding at the view</li>
+                    <li>✅ Security headers: CSP, HSTS, X-Frame-Options / frame-ancestors</li>
+                    <li>✅ Principle of least privilege for DB users, IAM roles, and secrets</li>
+                    <li>✅ Logging, alerting, and a process to rotate leaked credentials</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="cap">
+            <h2>🎯 CAP Theorem</h2>
+            <p>The <span class="highlight">CAP Theorem</span> says that during a network partition, a distributed system cannot be both fully consistent and fully available. You pick a side for that failure mode. Partition tolerance is not optional on a real network.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-cap-theorem.png" alt="CAP theorem triangle with Consistency, Availability, and Partition Tolerance, and CA CP AP database examples">
+                <div class="illustration-caption">On a partition you choose CP (refuse some requests to stay correct) or AP (keep serving, reconcile later).</div>
+            </div>
+
+            <table>
+                <tr><th>Property</th><th>Description</th><th>Example</th></tr>
+                <tr><td><strong>Consistency</strong></td><td>Every read sees the latest write (linearizability)</td><td>Bank ledger, inventory decrement</td></tr>
+                <tr><td><strong>Availability</strong></td><td>Every non-failing node returns a response</td><td>Social feed, “likes” counters</td></tr>
+                <tr><td><strong>Partition tolerance</strong></td><td>The system keeps a defined behavior when the network splits</td><td>Multi-AZ / multi-region</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Trade-offs (simplified)</h3>
+                <ul>
+                    <li><strong>CA:</strong> Single-node or tightly coupled RDBMS in one failure domain (MySQL, PostgreSQL on one primary)</li>
+                    <li><strong>CP:</strong> Prefer correctness: MongoDB (majority concern), etcd, ZooKeeper, Redis with strong settings</li>
+                    <li><strong>AP:</strong> Prefer liveness: Cassandra, DynamoDB (eventual), CouchDB — conflict resolution later</li>
+                </ul>
+            </div>
+
+            <p>PACELC adds: even without a partition, you still trade latency vs consistency (sync replication vs async).</p>
+        </section>
+
+        <section id="distributed">
+            <h2>🌐 Distributed Systems</h2>
+
+            <h3>Key challenges</h3>
+            <ul>
+                <li>🔄 <strong>Data consistency:</strong> Replicas diverge; you choose strong, sequential, or eventual</li>
+                <li>⏱️ <strong>Latency:</strong> Every hop and cross-region RTT is visible to users</li>
+                <li>🔀 <strong>Concurrency:</strong> Lost updates, compare-and-swap, optimistic locking</li>
+                <li>⚠️ <strong>Failure handling:</strong> Timeouts, retries, fencing tokens, leader election</li>
+                <li>🕐 <strong>Time:</strong> Do not trust unsynchronized clocks for correctness; use logical clocks or a true-time API when you must</li>
+            </ul>
+
+            <h3>Consensus</h3>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Paxos:</strong> Classic, notoriously subtle</li>
+                    <li><strong>Raft:</strong> Leader + log replication; used in etcd, Consul, many DBs</li>
+                    <li><strong>BFT:</strong> Survive malicious nodes (blockchains); expensive</li>
+                </ul>
+            </div>
+
+            <h3>Replication strategies</h3>
+            <ul>
+                <li><strong>Synchronous:</strong> Wait for replicas — strong consistency, higher write latency</li>
+                <li><strong>Asynchronous:</strong> Primary acknowledges first — faster, possible data loss on crash</li>
+                <li><strong>Quorum (R + W &gt; N):</strong> Dynamo-style tunable consistency</li>
+            </ul>
+
+            <h3>Unique IDs at scale</h3>
+            <p>Auto-increment IDs do not work across shards. Options: UUID v4 (simple, not sortable), ULID/UUIDv7 (time-sortable), Twitter Snowflake (timestamp + worker + sequence). Avoid coordinating a global counter on every insert.</p>
+        </section>
+
+        <section id="api">
+            <h2>🔌 API Design Best Practices</h2>
+
+            <h3>REST principles</h3>
+            <ul>
+                <li>✅ HTTP methods: GET (read), POST (create), PUT/PATCH (update), DELETE</li>
+                <li>✅ Nouns for resources: <code>/users</code>, <code>/products/42/reviews</code></li>
+                <li>✅ Status codes: 200, 201, 204, 400, 401, 403, 404, 409, 429, 500</li>
+                <li>✅ Version: <code>/api/v1/...</code> or header-based versioning</li>
+                <li>✅ Pagination (cursor-based at scale), filtering, sorting</li>
+                <li>✅ Idempotency for payments and order creation</li>
+            </ul>
+
+            <h3>API security</h3>
+            <div class="warning-box">
+                <ul>
+                    <li>🔐 OAuth 2.0 or session/JWT with short access tokens</li>
+                    <li>🔐 Rate limiting (token bucket / sliding window) per user and per IP</li>
+                    <li>🔐 Validate and bound payload size</li>
+                    <li>🔐 HTTPS only; never put secrets in query strings</li>
+                    <li>🔐 API keys for server-to-server; rotate them</li>
+                </ul>
+            </div>
+
+            <h3>Response shape</h3>
+            <pre><code>{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "name": "John Doe"
+  },
+  "message": "User retrieved successfully",
+  "timestamp": "2024-01-01T12:00:00Z"
+}</code></pre>
+
+            <p>GraphQL, gRPC, and webhooks are alternatives when REST’s round-trips or payload shape become the bottleneck — pick them for a reason, not for fashion.</p>
+        </section>
+
+        <section id="observability">
+            <h2>Observability</h2>
+            <p>You cannot operate what you cannot see. The three pillars:</p>
+            <ul>
+                <li><strong>Logs:</strong> Structured events (JSON) with request IDs — searchable, not a wall of print statements</li>
+                <li><strong>Metrics:</strong> QPS, latency histograms, error rate, saturation (RED / USE methods)</li>
+                <li><strong>Traces:</strong> One request across services (OpenTelemetry) so you see which hop is slow</li>
+            </ul>
+            <div class="info-box">
+                <p>Alert on <strong>symptoms users feel</strong> (error rate, p99 latency, checkout success), not only on CPU. Dashboards plus on-call runbooks close the loop.</p>
+            </div>
+        </section>
+
+        <section id="url-shortener">
+            <h2>Case Study: URL Shortener</h2>
+            <p>A classic interview problem that uses almost every idea above. Product: turn a long URL into a short code; redirect on GET.</p>
+
+            <div class="illustration">
+                <img src="/images/system-design/sd-url-shortener.png" alt="URL shortener write path creating a short code and read path 302 redirect via cache then database">
+                <div class="illustration-caption">Writes persist a mapping. Reads should almost always hit cache, then 302 to the original URL.</div>
+            </div>
+
+            <h3>Requirements (typical)</h3>
+            <ul>
+                <li>Create short URL; optional custom alias and expiry</li>
+                <li>Redirect with HTTP 301/302; analytics (click count) can be async</li>
+                <li>High read:write ratio; 100M+ redirects/day is a common prompt</li>
+            </ul>
+
+            <h3>Core design</h3>
+            <ol>
+                <li><strong>API:</strong> <code>POST /urls</code> returns <code>https://short.ly/abc123</code>; <code>GET /abc123</code> redirects</li>
+                <li><strong>ID generation:</strong> Base62-encode a Snowflake ID, or hash the URL and take 7 characters (handle collisions)</li>
+                <li><strong>Storage:</strong> <code>short_code → long_url, created_at, owner</code> in a SQL store; shard by hash(code) if huge</li>
+                <li><strong>Cache:</strong> Redis for hot codes (viral links); TTL plus write-through on create</li>
+                <li><strong>Scale reads:</strong> CDN or edge cache for 301s if the mapping is immutable</li>
+                <li><strong>Analytics:</strong> Enqueue click events; workers aggregate — do not write the DB on every redirect</li>
+            </ol>
+
+            <div class="diagram-box">GET /abc123
+  → LB → App
+  → Redis GET abc123
+       HIT  → 302 Location: https://example.com/...
+       MISS → DB lookup → set Redis → 302
+  → (async) click event → Kafka → counters
+            </div>
+
+            <p>Same playbook for rate limiters (token bucket in Redis), news feeds (fan-out on write vs read), and chat (gateway + fan-out + partitioned message store). Always start from QPS and data size, then pick the boxes.</p>
+        </section>
+
+    </div>
+    </main>
+    </div>
+
+    <script>
+        function toggleSection(element) {
+            const links = element.nextElementSibling;
+            const icon = element.querySelector('.toggle-icon');
+            if (!links) return;
+            links.classList.toggle('collapsed');
+            if (icon) icon.textContent = links.classList.contains('collapsed') ? '▶' : '▼';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('scroll', () => {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = windowHeight > 0 ? (window.scrollY / windowHeight) * 100 : 0;
+            const bar = document.getElementById('progressBar');
+            if (bar) bar.style.width = scrolled + '%';
+
+            const backToTop = document.getElementById('backToTop');
+            if (backToTop) {
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

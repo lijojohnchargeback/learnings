@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Web Frameworks - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🌐 Web Frameworks</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Overview</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Framework Comparison</a>
+                <a href="#wsgi-asgi" class="sidebar-link">WSGI vs ASGI</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🧪 Flask</div>
+            <div class="sidebar-links">
+                <a href="#flask" class="sidebar-link">Flask Basics</a>
+                <a href="#flask-blueprints" class="sidebar-link">Blueprints</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚡ FastAPI</div>
+            <div class="sidebar-links">
+                <a href="#fastapi" class="sidebar-link">FastAPI Basics</a>
+                <a href="#fastapi-validation" class="sidebar-link">Validation & Docs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🎸 Django</div>
+            <div class="sidebar-links">
+                <a href="#django" class="sidebar-link">Django Overview</a>
+                <a href="#django-orm" class="sidebar-link">Django ORM</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🌐 Python Web Frameworks</h1>
+            <p>Flask, FastAPI, and Django for backend development</p>
+        </header>
+
+        <section id="overview">
+            <h2>📊 Framework Comparison</h2>
+            <table>
+                <tr><th>Framework</th><th>Type</th><th>Best For</th><th>Learning Curve</th></tr>
+                <tr>
+                    <td><strong>Flask</strong></td>
+                    <td>Microframework</td>
+                    <td>Small-to-medium APIs, prototypes, microservices</td>
+                    <td>Easy</td>
+                </tr>
+                <tr>
+                    <td><strong>FastAPI</strong></td>
+                    <td>Modern ASGI framework</td>
+                    <td>High-performance APIs, async, auto-docs</td>
+                    <td>Easy-Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Django</strong></td>
+                    <td>Full-stack framework</td>
+                    <td>Large apps, admin panels, content sites</td>
+                    <td>Medium-Hard</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Recommendation:</strong> Use <strong>FastAPI</strong> for new APIs, <strong>Flask</strong> for simple services, and <strong>Django</strong> when you need batteries-included (ORM, admin, auth).
+            </div>
+        </section>
+
+        <section id="wsgi-asgi">
+            <h2>🔄 WSGI vs ASGI</h2>
+            <table>
+                <tr><th>Protocol</th><th>Description</th><th>Frameworks</th></tr>
+                <tr>
+                    <td><strong>WSGI</strong></td>
+                    <td>Web Server Gateway Interface — synchronous, one request per worker</td>
+                    <td>Flask, Django (default)</td>
+                </tr>
+                <tr>
+                    <td><strong>ASGI</strong></td>
+                    <td>Asynchronous Server Gateway Interface — async, WebSockets, long-lived connections</td>
+                    <td>FastAPI, Starlette, Django Channels</td>
+                </tr>
+            </table>
+
+            <div class="code-block"># WSGI servers: Gunicorn, uWSGI
+gunicorn app:app --workers 4 --bind 0.0.0.0:8000
+
+# ASGI servers: Uvicorn, Hypercorn
+uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4</div>
+        </section>
+
+        <section id="flask">
+            <h2>🧪 Flask</h2>
+            <div class="code-block"># app.py
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return jsonify({"message": "Hello, Flask!"})
+
+@app.route("/users/&lt;int:user_id&gt;", methods=["GET"])
+def get_user(user_id):
+    return jsonify({"id": user_id, "name": "Alice"})
+
+@app.route("/users", methods=["POST"])
+def create_user():
+    data = request.get_json()
+    return jsonify({"id": 1, **data}), 201
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"error": "Not found"}), 404
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)</div>
+
+            <div class="code-block"># Install & run
+pip install flask
+python app.py
+# or
+flask --app app run --debug</div>
+        </section>
+
+        <section id="flask-blueprints">
+            <h2>📁 Flask Blueprints</h2>
+            <div class="code-block"># routes/users.py
+from flask import Blueprint, jsonify
+
+users_bp = Blueprint("users", __name__, url_prefix="/api/users")
+
+@users_bp.route("/")
+def list_users():
+    return jsonify([{"id": 1, "name": "Alice"}])
+
+@users_bp.route("/&lt;int:id&gt;")
+def get_user(id):
+    return jsonify({"id": id, "name": "Alice"})
+
+# app.py
+from flask import Flask
+from routes.users import users_bp
+
+app = Flask(__name__)
+app.register_blueprint(users_bp)</div>
+        </section>
+
+        <section id="fastapi">
+            <h2>⚡ FastAPI</h2>
+            <div class="code-block"># main.py
+from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel
+
+app = FastAPI(title="My API", version="1.0.0")
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    age: int | None = None
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+
+@app.get("/")
+async def root():
+    return {"message": "Hello, FastAPI!"}
+
+@app.get("/users/{user_id}", response_model=UserResponse)
+async def get_user(user_id: int):
+    if user_id != 1:
+        raise HTTPException(status_code=404, detail="User not found")
+    return UserResponse(id=1, name="Alice", email="alice@example.com")
+
+@app.post("/users", response_model=UserResponse, status_code=201)
+async def create_user(user: UserCreate):
+    return UserResponse(id=1, name=user.name, email=user.email)</div>
+
+            <div class="code-block"># Install & run
+pip install fastapi uvicorn
+uvicorn main:app --reload
+# Auto-generated docs at http://localhost:8000/docs</div>
+        </section>
+
+        <section id="fastapi-validation">
+            <h2>✅ FastAPI Validation & Dependency Injection</h2>
+            <div class="code-block">from fastapi import Depends, Query, Header
+from pydantic import BaseModel, EmailStr, Field
+
+class UserCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=50)
+    email: EmailStr
+    age: int = Field(ge=0, le=150)
+
+# Dependency injection
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/items")
+async def list_items(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, le=100),
+    db = Depends(get_db)
+):
+    return db.query(Item).offset(skip).limit(limit).all()</div>
+
+            <div class="info-box">
+                <strong>💡 Auto-docs:</strong> FastAPI generates interactive Swagger UI at <code>/docs</code> and ReDoc at <code>/redoc</code> automatically.
+            </div>
+        </section>
+
+        <section id="django">
+            <h2>🎸 Django</h2>
+            <div class="code-block"># Project setup
+pip install django
+django-admin startproject myproject
+cd myproject
+python manage.py startapp users
+
+# settings.py — add 'users' to INSTALLED_APPS
+
+# users/models.py
+from django.db import models
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+# users/views.py
+from django.http import JsonResponse
+from .models import User
+
+def user_list(request):
+    users = list(User.objects.values("id", "name", "email"))
+    return JsonResponse({"users": users})
+
+# users/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("users/", views.user_list),
+]</div>
+        </section>
+
+        <section id="django-orm">
+            <h2>🗄️ Django ORM</h2>
+            <div class="code-block"># CRUD operations
+User.objects.create(name="Alice", email="alice@example.com")
+User.objects.filter(name__icontains="ali")
+User.objects.get(id=1)
+user.name = "Alicia"
+user.save()
+user.delete()
+
+# Relationships
+class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+
+# Migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Admin panel (auto-generated!)
+# users/admin.py
+from django.contrib import admin
+from .models import User
+admin.site.register(User)
+# Visit /admin/</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

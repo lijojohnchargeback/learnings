@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Learning &amp; Transformers — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧠 Deep Learning &amp; Transformers</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#nn" class="sidebar-link">Neural Networks</a>
+                <a href="#training" class="sidebar-link">Training Loop</a>
+                <a href="#cnn" class="sidebar-link">CNN</a>
+                <a href="#rnn" class="sidebar-link">RNN / LSTM</a>
+                <a href="#attention" class="sidebar-link">Attention</a>
+                <a href="#transformers" class="sidebar-link">Transformers</a>
+                <a href="#pytorch" class="sidebar-link">PyTorch</a>
+                <a href="#gpus" class="sidebar-link">GPUs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧠 3. Deep Learning &amp; Transformers</h1>
+            <p>Step 3 of 12 — How neural nets, attention, and GPUs actually produce tokens and embeddings.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Why you need this</h2>
+            <p>You do not need to invent GPT from scratch. You <span class="highlight">do need to know why context windows cost money, why batching matters, and why a 7B model on a T4 behaves differently from an API call.</span> This category is the mental model for inference, fine-tuning, and multimodal systems.</p>
+
+            <div class="illustration">
+                <img src="/images/dl/dl-hero.png" alt="Production deep learning path: neural nets, CNN and RNN, attention QKV, transformer layers, then GPUs and VRAM" loading="lazy">
+                <div class="illustration-caption">The production path: layers and loss → sequence models → attention → stacked transformers → GPU memory. Every later topic (RAG, agents, serving) sits on this stack.</div>
+            </div>
+
+            <div class="info-box premium">
+                <h3>What “deep” actually means</h3>
+                <p>Deep learning is machine learning with <strong>multi-layer neural nets</strong>. Depth is useful because each layer learns a more abstract representation: pixels → edges → objects; tokens → syntax → intent. Transformers are deep nets with attention instead of convolution or recurrence as the mixing step.</p>
+                <ul>
+                    <li><strong>Training</strong> finds weights that minimize a loss on data you have.</li>
+                    <li><strong>Inference</strong> runs those frozen weights on new inputs (chat, embeddings, vision).</li>
+                    <li><strong>Production</strong> is inference plus memory, latency, batching, and cost — not just accuracy in a notebook.</li>
+                </ul>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-blue">
+                    <h4>You will use this for</h4>
+                    <p>Choosing encoder vs decoder models, estimating VRAM, reading a Hugging Face card, and debugging “why is this request so slow / expensive.”</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>You will not need</h4>
+                    <p>Deriving every gradient by hand, or training a foundation model. Pretrained weights plus a tiny loop is the default.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Failure mode to avoid</h4>
+                    <p>Treating the API as magic. If you cannot name tokens, attention cost, and KV cache, you cannot budget or debug.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Neural nets</td><td>You can draw layers, loss, and a single neuron (weights, bias, activation)</td></tr>
+                <tr><td>2</td><td>Training loop</td><td>You can walk forward → loss → backprop → optimizer, and name epoch vs batch</td></tr>
+                <tr><td>3</td><td>CNN</td><td>You know why conv nets fit images and some audio spectrograms</td></tr>
+                <tr><td>4</td><td>RNN / LSTM</td><td>You know why they lost to Transformers for long context</td></tr>
+                <tr><td>5</td><td>Attention</td><td>You can explain Q, K, V, O(n²), and why a KV cache exists</td></tr>
+                <tr><td>6</td><td>Transformers</td><td>You can name encoder vs decoder vs encoder-decoder and pick one for a job</td></tr>
+                <tr><td>7</td><td>PyTorch</td><td>You can train a tiny model and save/load weights</td></tr>
+                <tr><td>8</td><td>GPUs</td><td>You can talk VRAM, batch size, mixed precision, and utilization</td></tr>
+            </table>
+        </section>
+
+        <section id="nn">
+            <h2>Neural networks</h2>
+            <p>A network maps inputs to outputs through weighted layers and nonlinearities (ReLU, GELU). Each connection has a <strong>weight</strong>. Each unit has a <strong>bias</strong>. Training is just adjusting those numbers so a loss goes down. Overfitting is the default; regularization, dropout, and more data are the usual answers.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-neural-network.png" alt="Neural network with input, hidden, and output layers, plus a zoomed neuron showing weights, bias, and activation" loading="lazy">
+                <div class="illustration-caption">Data flows left to right. Learning changes the weights. Without the activation <em>f</em>, stacked layers collapse into one linear map — that is why ReLU / GELU exist.</div>
+            </div>
+
+            <h3>The neuron, in one line</h3>
+            <div class="info-box">
+                <p><strong>Formula:</strong> <code>output = f(Σ (weight × input) + bias)</code></p>
+                <p>The sum is a linear mix of inputs. The activation <code>f</code> is the nonlinearity. Repeat this in layers and you can approximate complicated functions — images, speech, next-token probabilities.</p>
+            </div>
+
+            <h3>Layers</h3>
+            <ul>
+                <li><strong>Input:</strong> raw features, pixels, or token embeddings</li>
+                <li><strong>Hidden:</strong> learned representations. More layers = deeper. Width = how many units per layer.</li>
+                <li><strong>Output:</strong> logits (raw scores), class probabilities, a regression value, or a vocabulary distribution</li>
+            </ul>
+
+            <h3>Activation functions you will actually see</h3>
+            <table>
+                <tr><th>Function</th><th>Range</th><th>Typical use</th></tr>
+                <tr><td><strong>ReLU</strong></td><td>[0, ∞)</td><td>Default hidden activation in CNNs and MLPs; cheap</td></tr>
+                <tr><td><strong>GELU / SiLU</strong></td><td>smooth ReLU-like</td><td>Transformers (GPT, BERT-style). Slightly better, slightly slower</td></tr>
+                <tr><td><strong>Softmax</strong></td><td>probabilities that sum to 1</td><td>Multi-class heads and next-token prediction</td></tr>
+                <tr><td><strong>Sigmoid</strong></td><td>(0, 1)</td><td>Independent binary outputs; rare in hidden layers now</td></tr>
+                <tr><td><strong>Tanh</strong></td><td>(−1, 1)</td><td>Older hidden layers and some RNN gates</td></tr>
+            </table>
+
+            <h3>Overfitting is the default</h3>
+            <p>A net with enough parameters can memorize training noise. You want low training error <em>and</em> low validation error. Watch the two curves together — not only the training loss going down.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-overfitting.png" alt="Three scatter plots: underfitting with a straight line, a good smooth fit, and overfitting that wiggles through every point" loading="lazy">
+                <div class="illustration-caption">Underfit = too simple (high bias). Overfit = memorizes noise (high variance). In production you catch this with a held-out set, early stopping, and slice metrics — not by staring at training loss.</div>
+            </div>
+
+            <table>
+                <tr><th>Regularizer</th><th>What it does</th><th>When you use it</th></tr>
+                <tr><td>More / better data</td><td>The real fix when you can get it</td><td>Always prefer this over a clever trick</td></tr>
+                <tr><td>Dropout</td><td>Randomly zeros units during training</td><td>MLPs and older conv nets; less common inside modern transformers</td></tr>
+                <tr><td>Weight decay (AdamW)</td><td>Pulls weights toward zero</td><td>Default in almost every PyTorch training recipe</td></tr>
+                <tr><td>Early stopping</td><td>Stop when validation loss stops improving</td><td>Fine-tunes and small custom models</td></tr>
+                <tr><td>Data augmentation</td><td>Fake extra examples (crops, noise)</td><td>Vision; for text, careful paraphrasing / back-translation</td></tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>Production note:</strong> A 90% training accuracy with a 60% validation accuracy is not “almost done.” It is a model that will fail on real traffic. Lock the split (and the metric) before you tune.
+            </div>
+        </section>
+
+        <section id="training">
+            <h2>Training loop</h2>
+            <p>Training is a loop, not a one-shot formula. You sample a batch, predict, measure error, send gradients backward, and step the optimizer. An <strong>epoch</strong> is one full pass over the dataset. Fine-tuning an LLM uses the same loop — just with more VRAM and a pretrained starting point.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-training-loop.png" alt="Training loop: data batch, forward pass, loss, backpropagation, optimizer weight update" loading="lazy">
+                <div class="illustration-caption">One iteration: predict, measure error, send gradients backward, step the optimizer. Repeat thousands to millions of times. Autograd in PyTorch is this diagram as code.</div>
+            </div>
+
+            <h3>The five steps</h3>
+            <ol>
+                <li><strong>Batch</strong> — sample a mini-batch (e.g. 32 images, or 4 sequences of 2048 tokens)</li>
+                <li><strong>Forward</strong> — compute predictions ŷ from the current weights</li>
+                <li><strong>Loss</strong> — compare ŷ to labels y (cross-entropy for classification / next-token; MSE for regression)</li>
+                <li><strong>Backward</strong> — chain rule gives ∂loss/∂weight for every parameter</li>
+                <li><strong>Step</strong> — optimizer (SGD, Adam, AdamW) updates weights by <em>learning rate</em> × gradient</li>
+            </ol>
+
+            <h3>Vocabulary that shows up in every trainer</h3>
+            <table>
+                <tr><th>Term</th><th>Meaning</th><th>Why it matters</th></tr>
+                <tr><td>Epoch</td><td>One full pass through the training set</td><td>Fine-tunes are often 1–5 epochs; more overfits</td></tr>
+                <tr><td>Batch size</td><td>Examples per update</td><td>Bigger = stabler gradients, more VRAM</td></tr>
+                <tr><td>Learning rate</td><td>Step size</td><td>Too high diverges; too low crawls. Warmup + cosine decay is common</td></tr>
+                <tr><td>Gradient clipping</td><td>Cap huge gradients</td><td>Stops loss spikes in RNNs and some LLM fine-tunes</td></tr>
+                <tr><td>Checkpoint</td><td>Saved weights + optimizer state</td><td>Resume after a crash; pick the best val epoch</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Inference is not this loop</h4>
+                <p>At serve time you only run the <strong>forward</strong> pass. No loss, no backward, no optimizer. That is why inference uses less memory than training — unless the KV cache for long context eats it anyway (see Attention).</p>
+            </div>
+        </section>
+
+        <section id="cnn">
+            <h2>CNN</h2>
+            <p>Convolutional nets <strong>share a small filter</strong> across space. Nearby pixels are related, so a 3×3 kernel that detects an edge in the top-left also works in the bottom-right. That inductive bias is why CNNs crushed ImageNet in 2012 and still dominate cheap, small-scale vision.</p>
+
+            <div class="illustration">
+                <img src="/images/dl/dl-cnn.png" alt="A 3x3 convolution kernel sliding over an image grid to produce a feature map, then ReLU and pooling" loading="lazy">
+                <div class="illustration-caption">A kernel slides over the image. Early filters learn edges; later layers learn parts and objects. ReLU keeps only useful activations. Pooling downsamples so the next layer sees a larger field of view.</div>
+            </div>
+
+            <h3>Building blocks</h3>
+            <table>
+                <tr><th>Piece</th><th>What it does</th><th>Production angle</th></tr>
+                <tr><td>Convolution</td><td>Dot-product of a kernel with a local patch</td><td>Parameter count stays small even on big images</td></tr>
+                <tr><td>ReLU</td><td>Zeros negative activations</td><td>Cheap nonlinearity; default after conv</td></tr>
+                <tr><td>Pooling / stride</td><td>Downsample (max-pool or strided conv)</td><td>Cuts compute; you lose precise location unless you skip</td></tr>
+                <tr><td>Skip / residual (ResNet)</td><td>Add the input of a block back to its output</td><td>Lets you train 50–150+ layers without vanishing gradients</td></tr>
+                <tr><td>Batch / layer norm</td><td>Stabilize activations</td><td>Makes training less brittle to learning rate</td></tr>
+            </table>
+
+            <p>In modern stacks, <strong>vision Transformers (ViT)</strong> and CLIP / SigLIP-style encoders often replace or sit beside CNNs. Conv bias is still useful: smaller data, on-device, real-time detection (YOLO), and as a cheap stem before a transformer.</p>
+
+            <div class="info-box">
+                <strong>Production:</strong> Use a pretrained vision encoder (OpenCLIP, SigLIP, cloud Vision APIs, or a frozen ResNet) unless you have a labeled dataset large enough and a reason to train from scratch. Fine-tune the head first; unfreeze later if the metric needs it.
+            </div>
+
+            <h3>Where CNNs still win</h3>
+            <ul>
+                <li><strong>Object detection / segmentation</strong> at tight latency budgets (factory cameras, mobile)</li>
+                <li><strong>Medical and industrial images</strong> where you have modest data and a strong conv baseline</li>
+                <li><strong>Spectrograms</strong> — speech and audio often start as a 2D time-frequency image</li>
+            </ul>
+        </section>
+
+        <section id="rnn">
+            <h2>RNN / LSTM</h2>
+            <p>RNNs process sequences <strong>step by step</strong>. At time <em>t</em> they take the current token and a hidden state <code>h(t-1)</code>, then emit <code>h(t)</code>. LSTMs and GRUs added gates (forget, input, output) so the state could remember longer than a vanilla RNN. They still struggle to parallelize, and they still forget very long context. Transformers won because attention looks at all positions at once — with a quadratic cost.</p>
+
+            <div class="illustration">
+                <img src="/images/dl/dl-rnn-vs-transformer.png" alt="RNN processes tokens one after another with a hidden state; a Transformer attends to all tokens in parallel" loading="lazy">
+                <div class="illustration-caption">Left: each step waits on the previous hidden state — GPUs sit idle. Right: every token attends to every other token in one matmul. That is why training GPT-scale models is feasible, and why long context is expensive.</div>
+            </div>
+
+            <table>
+                <tr><th>Problem</th><th>RNN / LSTM</th><th>Transformer</th></tr>
+                <tr><td>Parallelism</td><td>Must run t=1, then t=2, …</td><td>All positions in one shot (training)</td></tr>
+                <tr><td>Long-range links</td><td>Signal travels through many steps; gradients vanish</td><td>Direct attention from token i to token j</td></tr>
+                <tr><td>Context cost</td><td>Linear in length, but quality dies</td><td>Quality holds; compute/memory is O(n²)</td></tr>
+                <tr><td>Streaming</td><td>Natural (one step at a time)</td><td>Needs KV cache and careful chunking</td></tr>
+            </table>
+
+            <p>You will still meet RNNs in older speech models, some on-device keyword spotting, and a few streaming setups. For new NLP, assume Transformer. If someone proposes an LSTM for a chatbot in 2026, ask what constraint (latency on a tiny MCU, existing checkpoint) makes that the right call.</p>
+
+            <div class="warning-box">
+                <strong>Vanishing gradients:</strong> a vanilla RNN multiplies the same weight matrix at every step. After 50–100 steps the gradient is ~0 and the net cannot learn “the subject of this sentence was 80 tokens ago.” LSTM gates slowed that death. Attention skipped it.
+            </div>
+        </section>
+
+        <section id="attention">
+            <h2>Attention</h2>
+            <p>Attention lets each token look at other tokens. <strong>Query / Key / Value:</strong> “what am I looking for / what do I contain / what do I pass on.” Scores are <code>softmax(QKᵀ / √d)</code>; the output is a weighted mix of values. Multi-head attention runs this in several subspaces so one head can track syntax while another tracks coreference.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-transformer-attention.png" alt="Transformer self-attention: a sentence tokenized, an attention heatmap, and encoder-decoder blocks with multi-head attention and positional encoding" loading="lazy">
+                <div class="illustration-caption">In “The cat sat on the mat”, the token <em>sat</em> puts high weight on <em>cat</em> and <em>mat</em>. Multi-head attention runs several of those mixes at once. Positional encoding is required because attention itself does not know word order.</div>
+            </div>
+
+            <h3>Q, K, V without the mystique</h3>
+            <ul>
+                <li><strong>Query (Q)</strong> — the current token asking “who is relevant to me?”</li>
+                <li><strong>Key (K)</strong> — every token advertising “this is what I am about”</li>
+                <li><strong>Value (V)</strong> — the payload mixed in if the query matches the key</li>
+            </ul>
+            <p>Self-attention means Q, K, V all come from the same sequence. Cross-attention (encoder-decoder) means Q comes from the decoder and K/V come from the encoder — translation, some speech, and classic T5.</p>
+
+            <h3>Why this is a production problem</h3>
+            <p>Full attention is <strong>O(n²)</strong> in sequence length n. Double the context and you roughly quadruple that layer’s compute and the KV storage. That is why an 8K prompt and a 128K prompt are not “the same model, just more text.”</p>
+
+            <div class="illustration">
+                <img src="/images/dl/dl-kv-cache.png" alt="Prefill writes keys and values into a cache; decode reads the cache for each new token; VRAM grows with context length" loading="lazy">
+                <div class="illustration-caption">Prefill processes the prompt once and writes K and V. Decode generates one token at a time and <em>reuses</em> that cache instead of recomputing the past. The cache is why long chats eat VRAM even when the weight file fits.</div>
+            </div>
+
+            <table>
+                <tr><th>Idea</th><th>What it is</th><th>Why it matters in production</th></tr>
+                <tr><td>Quadratic cost</td><td>Attention work scales with n × n</td><td>Context length blows up compute, latency, and bill</td></tr>
+                <tr><td>KV cache</td><td>Store past keys/values during decode</td><td>Without it, every new token would re-attend the whole history</td></tr>
+                <tr><td>FlashAttention</td><td>IO-aware GPU kernel for attention</td><td>Makes long context feasible; less HBM traffic</td></tr>
+                <tr><td>GQA / MQA</td><td>Fewer key/value heads than query heads</td><td>Smaller KV cache; Llama-style serving trick</td></tr>
+                <tr><td>Sliding window</td><td>Attend only to a local neighborhood</td><td>Linear-ish memory; some long-context models (Mistral-style)</td></tr>
+                <tr><td>Causal mask</td><td>Token i cannot see tokens &gt; i</td><td>Required for next-token training; encoder-only models do <em>not</em> mask this way</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Prefill vs decode (the latency split)</h4>
+                <p><strong>Prefill</strong> is compute-heavy and parallel — a long prompt saturates the GPU. <strong>Decode</strong> is memory-heavy — you stream one token, and the bottleneck is reading weights + KV. APIs feel “slow to first token” on huge RAG prompts (prefill) and “slow to finish” on long answers (decode). Batching many decodes together (vLLM continuous batching) is how you hide that.</p>
+            </div>
+        </section>
+
+        <section id="transformers">
+            <h2>Transformers</h2>
+            <p>A transformer is a stack of attention + MLP blocks with residuals and layer norm. The 2017 paper (“Attention Is All You Need”) was encoder-decoder for translation. Almost every chat model you ship in 2026 is a <strong>decoder-only</strong> stack with a causal mask. Embedding models are often <strong>encoder-only</strong>.</p>
+
+            <div class="illustration">
+                <img src="/images/dl/dl-transformer-flavors.png" alt="Three transformer flavors: encoder-only BERT for embeddings, decoder-only GPT for generation, encoder-decoder T5 for sequence mapping" loading="lazy">
+                <div class="illustration-caption">Pick the flavor from the job: embed/classify → encoder; chat/code/agents → decoder; classic translation or some speech → encoder-decoder. Mixing them up is how teams serve a 70B chat model as an embedding endpoint.</div>
+            </div>
+
+            <table>
+                <tr><th>Flavor</th><th>Masking</th><th>Examples</th><th>Job</th></tr>
+                <tr><td>Encoder-only</td><td>Bidirectional (sees both sides)</td><td>BERT, embedding models, many classifiers</td><td>Understand / embed text</td></tr>
+                <tr><td>Decoder-only</td><td>Causal (left to right)</td><td>GPT, Llama, most chat models</td><td>Generate next tokens</td></tr>
+                <tr><td>Encoder-decoder</td><td>Encoder bidirectional + decoder causal + cross-attn</td><td>T5, classic translation, some speech</td><td>Map sequence → sequence</td></tr>
+            </table>
+
+            <h3>One decoder block, in order</h3>
+            <ol>
+                <li><strong>Causal self-attention</strong> — token i may only attend to tokens ≤ i</li>
+                <li><strong>Residual + layer norm</strong> — add the input back so deep stacks stay trainable</li>
+                <li><strong>MLP / feed-forward</strong> — a large per-token network (often SwiGLU). This is where most parameters live</li>
+                <li><strong>Residual + layer norm</strong> again. Repeat dozens to hundreds of times</li>
+            </ol>
+
+            <p>Around the stack: <strong>token embeddings</strong> turn IDs into vectors; <strong>positional encodings</strong> (absolute sin/cos, or <strong>RoPE</strong> in most modern LLMs) inject order; an <strong>lm_head</strong> maps the last hidden state to vocabulary logits; you sample or argmax the next token, append it, and repeat.</p>
+
+            <div class="code-block"># Mental model of one decoder step
+# tokens -> embed + position (RoPE)
+# for each layer: self-attention (causal mask) -> MLP
+# lm_head -> logits over vocabulary
+# sample or argmax next token, append, repeat</div>
+
+            <div class="info-box premium">
+                <h3>RoPE and long context</h3>
+                <p>Attention is permutation-invariant without position. Rotary embeddings (RoPE) rotate Q/K by an angle that depends on token index so “dog bites man” ≠ “man bites dog”. Long-context recipes (YaRN, NTK scaling) stretch RoPE so a 4K-trained model can run at 128K with some quality loss. A huge window is not free and is not lossless.</p>
+            </div>
+
+            <h3>What this buys you as an engineer</h3>
+            <ul>
+                <li>An <strong>embedding model</strong> (encoder) is the right tool for search, clustering, and RAG indexes — not a chat model with “please return a vector.”</li>
+                <li>A <strong>chat / completion model</strong> (decoder) is the right tool for generation, tools, and agents.</li>
+                <li>Context is a <strong>budget</strong>: system prompt + history + RAG chunks + output tokens must fit, and the middle of a long prompt is where models go blind.</li>
+            </ul>
+        </section>
+
+        <section id="pytorch">
+            <h2>PyTorch</h2>
+            <p>The default research-to-production DL framework. Learn tensors, autograd, <code>nn.Module</code>, Dataset/DataLoader, training loops, <code>torch.save</code> / <code>load_state_dict</code>, and moving models to CUDA. Hugging Face Transformers sits on PyTorch for almost all open models — if you can train <code>TinyNet</code>, you can fine-tune a small LLM with the same loop.</p>
+
+            <h3>A tiny net</h3>
+            <div class="code-block">import torch
+import torch.nn as nn
+
+class TinyNet(nn.Module):
+    def __init__(self, d_in, d_hidden, d_out):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(d_in, d_hidden),
+            nn.ReLU(),
+            nn.Linear(d_hidden, d_out),
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+model = TinyNet(16, 32, 2)
+loss_fn = nn.CrossEntropyLoss()
+opt = torch.optim.AdamW(model.parameters(), lr=1e-3)</div>
+
+            <h3>The loop you will copy forever</h3>
+            <div class="code-block">device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = TinyNet(16, 32, 2).to(device)
+
+for epoch in range(5):
+    model.train()
+    for xb, yb in loader:
+        xb, yb = xb.to(device), yb.to(device)
+        logits = model(xb)
+        loss = loss_fn(logits, yb)
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+
+    model.eval()
+    with torch.no_grad():
+        # validation metrics here — never step the optimizer
+        pass
+
+torch.save(model.state_dict(), "tiny.pt")
+model.load_state_dict(torch.load("tiny.pt", map_location=device))</div>
+
+            <table>
+                <tr><th>Habit</th><th>Why</th></tr>
+                <tr><td><code>model.train()</code> vs <code>model.eval()</code></td><td>Dropout / batch-norm behave differently; eval at serve time</td></tr>
+                <tr><td><code>opt.zero_grad()</code> before backward</td><td>Gradients accumulate; forgetting this silently corrupts training</td></tr>
+                <tr><td><code>torch.no_grad()</code> for inference</td><td>No graph = less memory, faster</td></tr>
+                <tr><td>Save <code>state_dict</code>, not the whole pickle of Python objects</td><td>Portable across code versions</td></tr>
+                <tr><td><code>.to(device)</code> on model <em>and</em> batch</td><td>CPU tensor + CUDA model = a confusing runtime error</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Hugging Face shortcut:</strong> <code>AutoModelForCausalLM.from_pretrained(...)</code> is still an <code>nn.Module</code>. LoRA / QLoRA wrap the same forward + backward loop with fewer trainable weights. You do not need a new mental model — you need less VRAM.
+            </div>
+        </section>
+
+        <section id="gpus">
+            <h2>GPUs</h2>
+            <p>Training and serving large models is a <strong>memory problem first</strong>. VRAM holds weights, activations (training), optimizer states (training), and the KV cache (decode). Speed comes after the model fits. An idle GPU waiting on a Python loop or a CPU dataloader is wasted money.</p>
+
+            <div class="illustration">
+                <img src="/images/dl/dl-gpu-vram.png" alt="GPU VRAM stacked with weights, optimizer states, activations, and a growing KV cache, plus OOM fixes like smaller batch and quantization" loading="lazy">
+                <div class="illustration-caption">Adam optimizer states can be ~2× the weights. Activations scale with batch × sequence × layers. KV cache grows with every decoded token. If you OOM, shrink those — do not assume you “need A100s.”</div>
+            </div>
+
+            <table>
+                <tr><th>Concept</th><th>Practical meaning</th></tr>
+                <tr><td>VRAM</td><td>If you OOM, shrink batch, sequence length, or use quantization / gradient checkpointing</td></tr>
+                <tr><td>Utilization</td><td>Idle GPU while waiting on CPU/data is wasted money. Watch <code>nvidia-smi</code> power and GPU-util %</td></tr>
+                <tr><td>fp16 / bf16</td><td>Mixed precision: roughly 2× math throughput, smaller activations. bf16 is more stable on Ampere+</td></tr>
+                <tr><td>int8 / 4-bit</td><td>Weight-only or activation quant for serving. More tokens/sec, possible quality drop — measure it</td></tr>
+                <tr><td>Batching</td><td>Continuous batching in vLLM / TGI is how APIs stay cheap. One-request-at-a-time is the expensive default</td></tr>
+                <tr><td>Tensor / pipeline parallel</td><td>Split a model across GPUs when it does not fit on one. Needed for big training, not for a 7B chat box</td></tr>
+            </table>
+
+            <h3>Rough VRAM intuition (inference, decoder)</h3>
+            <p>Weights: about <strong>2 bytes × parameters</strong> in fp16 (7B ≈ 14 GB). Add KV cache: scales with <em>layers × heads × seq_len × batch</em>. A long RAG prompt on a 70B model can blow past the weight file. Quantize (8-bit / 4-bit) to trade quality for fit.</p>
+
+            <div class="code-block">nvidia-smi
+# memory-usage, GPU-util, power
+# if util is 5% and you are "slow", you are CPU-bound or unbatched</div>
+
+            <div class="warning-box">
+                <strong>Cloud habit:</strong> Profile one request before you buy a bigger GPU. Many “we need A100s” problems are unbatched Python loops, a 32K prompt stuffed with unused PDF pages, or loading the model in fp32 by accident.
+            </div>
+
+            <h3>Checklist before you scale hardware</h3>
+            <ul>
+                <li>Is the model on GPU at all? (<code>next(model.parameters()).device</code>)</li>
+                <li>Are you in <code>eval()</code> + <code>no_grad()</code> / inference mode?</li>
+                <li>Is batch size 1 because nobody wired a queue?</li>
+                <li>Is sequence length 8K because the prompt includes the whole corpus?</li>
+                <li>Have you tried bf16 / 8-bit and measured quality on your eval set?</li>
+            </ul>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can draw a neuron (weights, bias, activation) and a training step (forward, loss, backward, update)</li>
+                <li>You can explain attention (Q, K, V), why long context is O(n²), and what the KV cache is for</li>
+                <li>You can pick encoder vs decoder well enough to choose an embedding model vs a chat model</li>
+                <li>You can run a tiny PyTorch loop, save weights, and read <code>nvidia-smi</code> without guessing</li>
+                <li>You treat VRAM as a budget: batch, sequence length, precision, then GPU size — in that order</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> Generative AI &amp; LLM Engineering — tokens, prompts, APIs, and fine-tuning as product tools. The transformer math from this page is why those APIs bill you per token.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

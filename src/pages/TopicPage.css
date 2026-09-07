@@ -1,0 +1,122 @@
+.topic-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.topic-header {
+    position: relative;
+    padding: 4rem 2rem 2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.topic-header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.topic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.topic-category-icon {
+    font-size: 1.2rem;
+}
+
+.topic-title-main {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.topic-content-frame {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Override HTML file styles to fit within React app */
+.topic-content-frame body {
+    margin: 0 !important;
+    background: transparent !important;
+}
+
+.topic-content-frame .mobile-toggle {
+    display: none !important;
+}
+
+.topic-content-frame .sidebar {
+    position: sticky !important;
+    top: 20px;
+    height: calc(100vh - 40px);
+    margin-bottom: 2rem;
+}
+
+.topic-content-frame .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+.loading-container,
+.error-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    color: #fff;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .topic-content-frame .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+        z-index: 1000;
+    }
+
+    .topic-content-frame .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .topic-content-frame .mobile-toggle {
+        display: block !important;
+    }
+
+    .topic-content-frame body {
+        margin-left: 0 !important;
+    }
+}

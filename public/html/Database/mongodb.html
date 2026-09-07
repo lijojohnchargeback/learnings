@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🍃 MongoDB Guide</h2>
+            <p>NoSQL Database</p>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Fundamentals</div>
+                <ul>
+                    <li><a href="#intro">🏠 Introduction</a></li>
+                    <li><a href="#features">⚡ Key Features</a></li>
+                    <li><a href="#crud">🔧 CRUD Operations</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Queries</div>
+                <ul>
+                    <li><a href="#queries">🔍 Query Operators</a></li>
+                    <li><a href="#advanced-queries">📋 Advanced Queries</a></li>
+                    <li><a href="#aggregation">📊 Aggregation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Performance</div>
+                <ul>
+                    <li><a href="#indexing">⚡ Indexing</a></li>
+                    <li><a href="#optimization">🚀 Optimization</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Advanced Topics</div>
+                <ul>
+                    <li><a href="#replication">🔄 Replication</a></li>
+                    <li><a href="#sharding">📦 Sharding</a></li>
+                    <li><a href="#transactions">💳 Transactions</a></li>
+                    <li><a href="#geospatial">🌍 Geospatial</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Security & Operations</div>
+                <ul>
+                    <li><a href="#security">🔒 Security</a></li>
+                    <li><a href="#deployment">🚀 Deployment</a></li>
+                    <li><a href="#datatypes">📊 Data Types</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🍃 MongoDB Complete Guide</h1>
+                <p>NoSQL Document Database</p>
+            </header>
+
+        <section id="intro">
+            <h2>📚 MongoDB Architecture & The CAP Theorem</h2>
+            
+            <p>MongoDB is a distributed, document-oriented database. Unlike relational databases that use tables and rows, MongoDB stores data in <strong>BSON</strong> (Binary JSON), allowing for hierarchical, nested data structures.</p>
+
+            <div class="info-box premium">
+                <h3>The Architectural Perspective: CAP Theorem</h3>
+                <p>In the <strong>CAP Theorem</strong> (Consistency, Availability, Partition Tolerance), MongoDB is primarily a <strong>CP (Consistent and Partition Tolerant)</strong> system. While it offers high availability through Replica Sets, in the event of a network partition, it prioritizes data consistency by pausing writes until a primary is elected.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Senior Tip: Why NoSQL?</h3>
+                <p>Don't choose MongoDB just because it's "schemaless." Choose it when your data model is hierarchical, when you need horizontal scalability (Sharding), or when your application requires rapid iteration where a rigid relational schema becomes a bottleneck. Remember: <strong>Schemaless doesn't mean "no schema design"</strong>—it means "flexible schema."</p>
+            </div>
+            <h3>Core Concepts</h3>
+            <ul>
+                <li>🗂️ <strong>Database:</strong> Container for collections</li>
+                <li>📂 <strong>Collection:</strong> Group of documents (like tables)</li>
+                <li>📄 <strong>Document:</strong> Single record (like row)</li>
+                <li>🔑 <strong>Field:</strong> Key-value pair in document (like column)</li>
+            </ul>
+
+            <h3>BSON Data Format</h3>
+            <p>MongoDB uses <span class="highlight">BSON</span> (Binary JSON) which extends JSON with additional types:</p>
+            <div class="code-block">{
+    <span class="string">"_id"</span>: <span class="function">ObjectId</span>(<span class="string">"507f1f77bcf86cd799439011"</span>),
+    <span class="string">"name"</span>: <span class="string">"John Doe"</span>,
+    <span class="string">"age"</span>: <span class="number">30</span>,
+    <span class="string">"email"</span>: <span class="string">"john@example.com"</span>,
+    <span class="string">"createdAt"</span>: <span class="function">ISODate</span>(<span class="string">"2024-01-01T00:00:00Z"</span>),
+    <span class="string">"hobbies"</span>: [<span class="string">"reading"</span>, <span class="string">"gaming"</span>],
+    <span class="string">"address"</span>: {
+        <span class="string">"city"</span>: <span class="string">"New York"</span>,
+        <span class="string">"zip"</span>: <span class="string">"10001"</span>
+    }
+}</div>
+        </section>
+
+        <section id="crud">
+            <h2>🔧 CRUD Operations</h2>
+
+            <h3>Database & Collection Commands</h3>
+            <div class="code-block"><span class="comment">// Show all databases</span>
+show dbs
+
+<span class="comment">// Switch to/create database</span>
+use myDatabase
+
+<span class="comment">// Show current database</span>
+db
+
+<span class="comment">// Show collections</span>
+show collections
+
+<span class="comment">// Drop database</span>
+db.dropDatabase()
+
+<span class="comment">// Drop collection</span>
+db.users.drop()</div>
+
+            <h3>Create - Insert Operations</h3>
+            <div class="code-block"><span class="comment">// Insert one document</span>
+db.users.<span class="function">insertOne</span>({
+    name: <span class="string">"John Doe"</span>,
+    age: <span class="number">30</span>,
+    email: <span class="string">"john@example.com"</span>
+});
+
+<span class="comment">// Insert multiple documents</span>
+db.users.<span class="function">insertMany</span>([
+    { name: <span class="string">"Alice"</span>, age: <span class="number">25</span>, city: <span class="string">"NYC"</span> },
+    { name: <span class="string">"Bob"</span>, age: <span class="number">35</span>, city: <span class="string">"LA"</span> },
+    { name: <span class="string">"Charlie"</span>, age: <span class="number">28</span>, city: <span class="string">"Chicago"</span> }
+]);</div>
+
+            <h3>Read - Find Operations</h3>
+            <div class="code-block"><span class="comment">// Find all documents</span>
+db.users.<span class="function">find</span>()
+
+<span class="comment">// Find with filter</span>
+db.users.<span class="function">find</span>({ age: <span class="number">30</span> })
+
+<span class="comment">// Find one document</span>
+db.users.<span class="function">findOne</span>({ name: <span class="string">"John Doe"</span> })
+
+<span class="comment">// Projection (select specific fields)</span>
+db.users.<span class="function">find</span>(
+    { age: { $gt: <span class="number">25</span> } },
+    { name: <span class="number">1</span>, age: <span class="number">1</span>, _id: <span class="number">0</span> }
+)
+
+<span class="comment">// Sort and limit</span>
+db.users.<span class="function">find</span>().<span class="function">sort</span>({ age: <span class="number">-1</span> }).<span class="function">limit</span>(<span class="number">5</span>)
+
+<span class="comment">// Count documents</span>
+db.users.<span class="function">countDocuments</span>({ age: { $gte: <span class="number">30</span> } })</div>
+
+            <h3>Update Operations</h3>
+            <div class="code-block"><span class="comment">// Update one document</span>
+db.users.<span class="function">updateOne</span>(
+    { name: <span class="string">"John Doe"</span> },
+    { $set: { age: <span class="number">31</span>, city: <span class="string">"Boston"</span> } }
+)
+
+<span class="comment">// Update multiple documents</span>
+db.users.<span class="function">updateMany</span>(
+    { age: { $lt: <span class="number">30</span> } },
+    { $set: { status: <span class="string">"young"</span> } }
+)
+
+<span class="comment">// Replace entire document</span>
+db.users.<span class="function">replaceOne</span>(
+    { name: <span class="string">"Bob"</span> },
+    { name: <span class="string">"Robert"</span>, age: <span class="number">36</span>, city: <span class="string">"SF"</span> }
+)
+
+<span class="comment">// Upsert (update or insert)</span>
+db.users.<span class="function">updateOne</span>(
+    { email: <span class="string">"new@example.com"</span> },
+    { $set: { name: <span class="string">"New User"</span>, age: <span class="number">25</span> } },
+    { upsert: <span class="keyword">true</span> }
+)</div>
+
+            <h3>Update Operators</h3>
+            <div class="code-block"><span class="comment">// $set - Set field value</span>
+db.users.<span class="function">updateOne</span>(
+    { name: <span class="string">"John"</span> },
+    { $set: { age: <span class="number">32</span> } }
+)
+
+<span class="comment">// $inc - Increment value</span>
+db.users.<span class="function">updateOne</span>(
+    { name: <span class="string">"John"</span> },
+    { $inc: { age: <span class="number">1</span> } }
+)
+
+<span class="comment">// $unset - Remove field</span>
+db.users.<span class="function">updateOne</span>(
+    { name: <span class="string">"John"</span> },
+    { $unset: { middleName: <span class="string">""</span> } }
+)
+
+<span class="comment">// $push - Add to array</span>
+db.users.<span class="function">updateOne</span>(
+    { name: <span class="string">"John"</span> },
+    { $push: { hobbies: <span class="string">"reading"</span> } }
+)
+
+<span class="comment">// $pull - Remove from array</span>
+db.users.<span class="function">updateOne</span>(
+    { name: <span class="string">"John"</span> },
+    { $pull: { hobbies: <span class="string">"gaming"</span> } }
+)</div>
+
+            <h3>Delete Operations</h3>
+            <div class="code-block"><span class="comment">// Delete one document</span>
+db.users.<span class="function">deleteOne</span>({ name: <span class="string">"John Doe"</span> })
+
+<span class="comment">// Delete multiple documents</span>
+db.users.<span class="function">deleteMany</span>({ age: { $lt: <span class="number">25</span> } })
+
+<span class="comment">// Delete all documents</span>
+db.users.<span class="function">deleteMany</span>({})</div>
+        </section>
+
+        <section id="queries">
+            <h2>🔍 Query Operators</h2>
+
+            <h3>Comparison Operators</h3>
+            <table>
+                <tr>
+                    <th>Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><code>$eq</code></td>
+                    <td>Equal to</td>
+                    <td><code>{age: {$eq: 30}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$gt</code></td>
+                    <td>Greater than</td>
+                    <td><code>{age: {$gt: 25}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$gte</code></td>
+                    <td>Greater than or equal</td>
+                    <td><code>{age: {$gte: 30}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$lt</code></td>
+                    <td>Less than</td>
+                    <td><code>{age: {$lt: 40}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$lte</code></td>
+                    <td>Less than or equal</td>
+                    <td><code>{age: {$lte: 35}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$ne</code></td>
+                    <td>Not equal</td>
+                    <td><code>{status: {$ne: "inactive"}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$in</code></td>
+                    <td>In array</td>
+                    <td><code>{city: {$in: ["NYC", "LA"]}}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$nin</code></td>
+                    <td>Not in array</td>
+                    <td><code>{status: {$nin: ["banned"]}}</code></td>
+                </tr>
+            </table>
+
+            <h3>Logical Operators</h3>
+            <div class="code-block"><span class="comment">// $and - All conditions must be true</span>
+db.users.<span class="function">find</span>({
+    $and: [
+        { age: { $gte: <span class="number">25</span> } },
+        { city: <span class="string">"NYC"</span> }
+    ]
+})
+
+<span class="comment">// $or - At least one condition must be true</span>
+db.users.<span class="function">find</span>({
+    $or: [
+        { age: { $lt: <span class="number">25</span> } },
+        { city: <span class="string">"LA"</span> }
+    ]
+})
+
+<span class="comment">// $not - Inverts condition</span>
+db.users.<span class="function">find</span>({
+    age: { $not: { $lt: <span class="number">30</span> } }
+})
+
+<span class="comment">// $nor - No condition is true</span>
+db.users.<span class="function">find</span>({
+    $nor: [
+        { age: { $lt: <span class="number">20</span> } },
+        { status: <span class="string">"banned"</span> }
+    ]
+})</div>
+
+            <h3>Array Operators</h3>
+            <div class="code-block"><span class="comment">// $elemMatch - Match array element</span>
+db.users.<span class="function">find</span>({
+    hobbies: {
+        $elemMatch: {
+            title: <span class="string">"sports"</span>,
+            frequency: { $gte: <span class="number">3</span> }
+        }
+    }
+})
+
+<span class="comment">// $size - Array length</span>
+db.users.<span class="function">find</span>({
+    hobbies: { $size: <span class="number">3</span> }
+})
+
+<span class="comment">// $all - Contains all elements</span>
+db.users.<span class="function">find</span>({
+    tags: { $all: [<span class="string">"mongodb"</span>, <span class="string">"database"</span>] }
+})</div>
+
+            <h3>Real-World Query Examples</h3>
+            <div class="code-block"><span class="comment">// Find users aged 25-35 in NYC</span>
+db.users.<span class="function">find</span>({
+    age: { $gte: <span class="number">25</span>, $lte: <span class="number">35</span> },
+    city: <span class="string">"NYC"</span>
+})
+
+<span class="comment">// Find active users with email</span>
+db.users.<span class="function">find</span>({
+    status: <span class="string">"active"</span>,
+    email: { $exists: <span class="keyword">true</span>, $ne: <span class="keyword">null</span> }
+})
+
+<span class="comment">// Search by regex (pattern matching)</span>
+db.users.<span class="function">find</span>({
+    email: { $regex: /@gmail\.com$/ }
+})</div>
+        </section>
+
+        <section id="aggregation">
+            <h2>📊 Aggregation Framework</h2>
+
+            <p>The <span class="highlight">aggregation pipeline</span> processes documents through multiple stages to transform and analyze data. It's a framework for data aggregation modeled on the concept of data processing pipelines.</p>
+
+            <div class="info-box">
+                <h4>How Aggregation Pipelines Work:</h4>
+                <ol>
+                    <li>Each stage performs an operation on input documents (filter, group, calculate)</li>
+                    <li>Documents output from a stage are passed to the next stage</li>
+                    <li>Can return results for groups of documents (totals, averages, min, max)</li>
+                </ol>
+            </div>
+
+            <h3>Pipeline Stages Overview</h3>
+            <table>
+                <tr>
+                    <th>Stage</th>
+                    <th>Description</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><code>$match</code></td>
+                    <td>Filter documents (like find)</td>
+                    <td>Reduce documents early in pipeline</td>
+                </tr>
+                <tr>
+                    <td><code>$group</code></td>
+                    <td>Group documents by field</td>
+                    <td>Aggregate data, count, sum, average</td>
+                </tr>
+                <tr>
+                    <td><code>$project</code></td>
+                    <td>Select/reshape fields</td>
+                    <td>Include/exclude fields, create computed fields</td>
+                </tr>
+                <tr>
+                    <td><code>$sort</code></td>
+                    <td>Sort documents</td>
+                    <td>Order results by field(s)</td>
+                </tr>
+                <tr>
+                    <td><code>$limit</code></td>
+                    <td>Limit number of documents</td>
+                    <td>Get top N results</td>
+                </tr>
+                <tr>
+                    <td><code>$skip</code></td>
+                    <td>Skip documents</td>
+                    <td>Pagination</td>
+                </tr>
+                <tr>
+                    <td><code>$unwind</code></td>
+                    <td>Deconstruct array fields</td>
+                    <td>Create document per array element</td>
+                </tr>
+                <tr>
+                    <td><code>$lookup</code></td>
+                    <td>Join with another collection</td>
+                    <td>Left outer join</td>
+                </tr>
+                <tr>
+                    <td><code>$addFields</code></td>
+                    <td>Add new fields</td>
+                    <td>Computed fields, transformations</td>
+                </tr>
+                <tr>
+                    <td><code>$count</code></td>
+                    <td>Count documents</td>
+                    <td>Get total count</td>
+                </tr>
+                <tr>
+                    <td><code>$bucket</code></td>
+                    <td>Categorize into buckets</td>
+                    <td>Histogram, grouping by ranges</td>
+                </tr>
+                <tr>
+                    <td><code>$unset</code></td>
+                    <td>Remove fields</td>
+                    <td>Exclude fields from output</td>
+                </tr>
+            </table>
+
+            <h3>1. $match - Filter Documents</h3>
+            <p>Filters documents to pass only matching ones to next stage. Should be used early in pipeline.</p>
+            <div class="code-block"><span class="comment">// Basic match</span>
+db.persons.<span class="function">aggregate</span>([
+    { $match: { city: <span class="string">"New York"</span> } }
+])
+
+<span class="comment">// Match with comparison operator</span>
+db.persons.<span class="function">aggregate</span>([
+    { $match: { age: { $gt: <span class="number">25</span> } } }
+])
+
+<span class="comment">// Match with multiple conditions</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $match: {
+            $and: [
+                { age: { $gt: <span class="number">25</span> } },
+                { gender: <span class="string">"female"</span> }
+            ]
+        }
+    }
+])</div>
+
+            <h3>2. $group - Group and Aggregate</h3>
+            <p>Groups documents by specified field and performs aggregations.</p>
+            <div class="code-block"><span class="comment">// Group by single field</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: <span class="string">"$userId"</span>
+        }
+    }
+])
+
+<span class="comment">// Count documents per group</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: <span class="string">"$city"</span>,
+            count: { $sum: <span class="number">1</span> }
+        }
+    }
+])
+
+<span class="comment">// Multiple aggregations</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: <span class="string">"$city"</span>,
+            count: { $sum: <span class="number">1</span> },
+            avgAge: { $avg: <span class="string">"$age"</span> },
+            minAge: { $min: <span class="string">"$age"</span> },
+            maxAge: { $max: <span class="string">"$age"</span> }
+        }
+    }
+])
+
+<span class="comment">// Group by multiple fields</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: {
+                age: <span class="string">"$age"</span>,
+                gender: <span class="string">"$gender"</span>
+            },
+            count: { $sum: <span class="number">1</span> }
+        }
+    }
+])
+
+<span class="comment">// Group with embedded field</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: <span class="string">"$company.location"</span>,
+            total: { $sum: <span class="string">"$price"</span> }
+        }
+    }
+])</div>
+
+            <h3>3. $project - Reshape Documents</h3>
+            <p>Include, exclude, or add computed fields. 1 = include, 0 = exclude.</p>
+            <div class="code-block"><span class="comment">// Include specific fields</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $project: {
+            name: <span class="number">1</span>,
+            <span class="string">"company.title"</span>: <span class="number">1</span>
+        }
+    }
+])
+
+<span class="comment">// Exclude _id</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $project: {
+            _id: <span class="number">0</span>,
+            name: <span class="number">1</span>,
+            age: <span class="number">1</span>
+        }
+    }
+])
+
+<span class="comment">// Exclude fields (include everything else)</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $project: {
+            name: <span class="number">0</span>,
+            <span class="string">"company.title"</span>: <span class="number">0</span>
+        }
+    }
+])
+
+<span class="comment">// Add computed field</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $project: {
+            name: <span class="number">1</span>,
+            age: <span class="number">1</span>,
+            isActive: <span class="keyword">true</span>
+        }
+    }
+])
+
+<span class="comment">// Rename field</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $project: {
+            age: <span class="number">1</span>,
+            company: <span class="string">"$company.title"</span>
+        }
+    }
+])
+
+<span class="comment">// Transform with expression</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $project: {
+            name: { $toUpper: <span class="string">"$name"</span> },
+            age: <span class="number">1</span>
+        }
+    }
+])</div>
+
+            <h3>4. $addFields - Add New Fields</h3>
+            <p>Add fields with default values or computed values without removing other fields.</p>
+            <div class="code-block"><span class="comment">// Add simple field</span>
+db.collection.<span class="function">aggregate</span>([
+    {
+        $addFields: {
+            status: <span class="string">"active"</span>,
+            category: <span class="string">"premium"</span>
+        }
+    }
+])
+
+<span class="comment">// Add embedded field</span>
+db.collection.<span class="function">aggregate</span>([
+    {
+        $addFields: {
+            <span class="string">"address.country"</span>: <span class="string">"USA"</span>
+        }
+    }
+])
+
+<span class="comment">// Overwrite existing field</span>
+db.collection.<span class="function">aggregate</span>([
+    {
+        $addFields: {
+            age: { $add: [<span class="string">"$age"</span>, <span class="number">1</span>] }
+        }
+    }
+])
+
+<span class="comment">// Replace field with another field's value</span>
+db.posts.<span class="function">aggregate</span>([
+    {
+        $addFields: {
+            _id: <span class="string">"$body"</span>,
+            item: <span class="string">"$_id"</span>
+        }
+    }
+])</div>
+
+            <h3>5. $sort - Sort Documents</h3>
+            <p>Sort documents by field(s). 1 = ascending, -1 = descending.</p>
+            <div class="code-block"><span class="comment">// Sort by single field</span>
+db.persons.<span class="function">aggregate</span>([
+    { $sort: { age: <span class="number">-1</span> } }
+])
+
+<span class="comment">// Sort by multiple fields</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $sort: {
+            age: <span class="number">1</span>,
+            name: <span class="number">1</span>
+        }
+    }
+])</div>
+
+            <h3>6. $limit - Limit Results</h3>
+            <div class="code-block"><span class="comment">// Return first 100 documents</span>
+db.persons.<span class="function">aggregate</span>([
+    { $limit: <span class="number">100</span> }
+])
+
+<span class="comment">// Combined pipeline: filter, sort, limit</span>
+db.persons.<span class="function">aggregate</span>([
+    { $match: { age: { $gt: <span class="number">20</span> } } },
+    { $sort: { age: <span class="number">-1</span> } },
+    { $limit: <span class="number">10</span> },
+    { $project: { name: <span class="number">1</span>, age: <span class="number">1</span> } }
+])</div>
+
+            <h3>7. $skip - Skip Documents</h3>
+            <div class="code-block"><span class="comment">// Skip first 20 documents (pagination)</span>
+db.persons.<span class="function">aggregate</span>([
+    { $skip: <span class="number">20</span> },
+    { $limit: <span class="number">10</span> }
+])</div>
+
+            <h3>8. $unwind - Deconstruct Arrays</h3>
+            <p>Creates a new document for each element in an array field.</p>
+            <div class="code-block"><span class="comment">// Basic unwind</span>
+db.persons.<span class="function">aggregate</span>([
+    { $unwind: <span class="string">"$tags"</span> },
+    { $limit: <span class="number">100</span> },
+    { $project: { name: <span class="number">1</span>, gender: <span class="number">1</span>, tags: <span class="number">1</span> } }
+])
+
+<span class="comment">// Unwind with options</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $unwind: {
+            path: <span class="string">"$hobbies"</span>,
+            includeArrayIndex: <span class="string">"arrayIndex"</span>,
+            preserveNullAndEmptyArrays: <span class="keyword">true</span>
+        }
+    }
+])
+
+<span class="comment">// Unwind then group</span>
+db.persons.<span class="function">aggregate</span>([
+    { $unwind: <span class="string">"$tags"</span> },
+    {
+        $group: {
+            _id: {
+                age: <span class="string">"$age"</span>,
+                name: <span class="string">"$name"</span>,
+                tags: <span class="string">"$tags"</span>
+            }
+        }
+    }
+])</div>
+
+            <h3>9. $count - Count Documents</h3>
+            <div class="code-block"><span class="comment">// Count all documents</span>
+db.persons.<span class="function">aggregate</span>([
+    { $count: <span class="string">"allDocumentCount"</span> }
+])
+
+<span class="comment">// Count specific field</span>
+db.persons.<span class="function">aggregate</span>([
+    { $count: <span class="string">"totalCountries"</span> }
+])
+
+<span class="comment">// Count after filtering</span>
+db.persons.<span class="function">aggregate</span>([
+    { $match: { age: { $gt: <span class="number">25</span> } } },
+    { $count: <span class="string">"usersOver25"</span> }
+])
+
+<span class="comment">// Alternative count methods</span>
+db.persons.<span class="function">aggregate</span>([]).<span class="function">toArray</span>().length
+db.persons.<span class="function">aggregate</span>([]).<span class="function">itcount</span>()</div>
+
+            <h3>10. $unset - Remove Fields</h3>
+            <div class="code-block"><span class="comment">// Remove single field</span>
+db.unwinds.<span class="function">aggregate</span>([
+    { $unset: <span class="string">"name"</span> }
+])
+
+<span class="comment">// Remove multiple fields</span>
+db.unwinds.<span class="function">aggregate</span>([
+    { $unset: [<span class="string">"name"</span>, <span class="string">"_id"</span>] }
+])
+
+<span class="comment">// Remove embedded document fields</span>
+db.unwinds.<span class="function">aggregate</span>([
+    { $unset: [<span class="string">"name"</span>, <span class="string">"_id"</span>, <span class="string">"person.age"</span>] }
+])</div>
+
+            <h3>11. $bucket - Categorize into Buckets</h3>
+            <p>Categorizes documents into groups (buckets) based on specified boundaries.</p>
+            <div class="code-block">db.artists.<span class="function">aggregate</span>([
+    {
+        $bucket: {
+            groupBy: <span class="string">"$year_born"</span>,
+            boundaries: [<span class="number">1840</span>, <span class="number">1850</span>, <span class="number">1860</span>, <span class="number">1870</span>, <span class="number">1880</span>],
+            default: <span class="string">"Other"</span>,
+            output: {
+                count: { $sum: <span class="number">1</span> },
+                artists: {
+                    $push: {
+                        name: {
+                            $concat: [<span class="string">"$first_name"</span>, <span class="string">" "</span>, <span class="string">"$last_name"</span>]
+                        },
+                        year_born: <span class="string">"$year_born"</span>
+                    }
+                }
+            }
+        }
+    },
+    { $match: { count: { $gt: <span class="number">3</span> } } }
+])</div>
+
+            <h3>Accumulator Operators</h3>
+            <table>
+                <tr>
+                    <th>Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><code>$sum</code></td>
+                    <td>Sum of values</td>
+                    <td><code>{$sum: "$price"}</code> or <code>{$sum: 1}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$avg</code></td>
+                    <td>Average of values</td>
+                    <td><code>{$avg: "$age"}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$max</code></td>
+                    <td>Maximum value</td>
+                    <td><code>{$max: "$score"}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$min</code></td>
+                    <td>Minimum value</td>
+                    <td><code>{$min: "$score"}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$push</code></td>
+                    <td>Array of all values</td>
+                    <td><code>{$push: "$item"}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$addToSet</code></td>
+                    <td>Array of unique values</td>
+                    <td><code>{$addToSet: "$category"}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$first</code></td>
+                    <td>First value</td>
+                    <td><code>{$first: "$date"}</code></td>
+                </tr>
+                <tr>
+                    <td><code>$last</code></td>
+                    <td>Last value</td>
+                    <td><code>{$last: "$date"}</code></td>
+                </tr>
+            </table>
+
+            <h3>Accumulator Examples</h3>
+            <div class="code-block"><span class="comment">// Count documents per group</span>
+db.persons.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: <span class="string">"$favoriteFruit"</span>,
+            count: { $sum: <span class="number">1</span> }
+        }
+    }
+])
+
+<span class="comment">// Sum, avg, min, max</span>
+db.orders.<span class="function">aggregate</span>([
+    {
+        $group: {
+            _id: <span class="string">"$customer"</span>,
+            totalAmount: { $sum: <span class="string">"$amount"</span> },
+            avgAmount: { $avg: <span class="string">"$amount"</span> },
+            minAmount: { $min: <span class="string">"$amount"</span> },
+            maxAmount: { $max: <span class="string">"$amount"</span> }
+        }
+    }
+])</div>
+
+            <h3>Complex Pipeline Examples</h3>
+
+            <h4>Example 1: Sales Report by City</h4>
+            <div class="code-block">db.orders.<span class="function">aggregate</span>([
+    <span class="comment">// Stage 1: Filter by status</span>
+    { $match: { status: <span class="string">"A"</span> } },
+    
+    <span class="comment">// Stage 2: Group by customer and sum amounts</span>
+    {
+        $group: {
+            _id: <span class="string">"$cust_id"</span>,
+            total: { $sum: <span class="string">"$amount"</span> }
+        }
+    },
+    
+    <span class="comment">// Stage 3: Sort by total descending</span>
+    { $sort: { total: <span class="number">-1</span> } },
+    
+    <span class="comment">// Stage 4: Limit to top 10</span>
+    { $limit: <span class="number">10</span> }
+])</div>
+
+            <h4>Example 2: User Analytics</h4>
+            <div class="code-block">db.users.<span class="function">aggregate</span>([
+    <span class="comment">// Match active users</span>
+    { $match: { status: <span class="string">"active"</span> } },
+    
+    <span class="comment">// Unwind hobbies array</span>
+    { $unwind: <span class="string">"$hobbies"</span> },
+    
+    <span class="comment">// Group by hobby</span>
+    {
+        $group: {
+            _id: <span class="string">"$hobbies"</span>,
+            count: { $sum: <span class="number">1</span> },
+            users: { $push: <span class="string">"$name"</span> }
+        }
+    },
+    
+    <span class="comment">// Sort by count</span>
+    { $sort: { count: <span class="number">-1</span> } },
+    
+    <span class="comment">// Add percentage field</span>
+    {
+        $addFields: {
+            percentage: {
+                $multiply: [
+                    { $divide: [<span class="string">"$count"</span>, <span class="number">100</span>] },
+                    <span class="number">100</span>
+                ]
+            }
+        }
+    }
+])</div>
+
+            <h4>Example 3: Age Demographics</h4>
+            <div class="code-block">db.persons.<span class="function">aggregate</span>([
+    <span class="comment">// Bucket by age ranges</span>
+    {
+        $bucket: {
+            groupBy: <span class="string">"$age"</span>,
+            boundaries: [<span class="number">0</span>, <span class="number">18</span>, <span class="number">30</span>, <span class="number">50</span>, <span class="number">65</span>, <span class="number">100</span>],
+            default: <span class="string">"Other"</span>,
+            output: {
+                count: { $sum: <span class="number">1</span> },
+                avgAge: { $avg: <span class="string">"$age"</span> },
+                people: { $push: <span class="string">"$name"</span> }
+            }
+        }
+    }
+])</div>
+
+            <h3>Unary Operators</h3>
+            <p>Operators used within aggregation expressions:</p>
+            <table>
+                <tr>
+                    <th>Operator</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>$type</code></td>
+                    <td>Returns BSON type of field</td>
+                </tr>
+                <tr>
+                    <td><code>$abs</code></td>
+                    <td>Absolute value</td>
+                </tr>
+                <tr>
+                    <td><code>$multiply</code></td>
+                    <td>Multiply numbers</td>
+                </tr>
+                <tr>
+                    <td><code>$divide</code></td>
+                    <td>Divide numbers</td>
+                </tr>
+                <tr>
+                    <td><code>$add</code></td>
+                    <td>Add numbers or dates</td>
+                </tr>
+                <tr>
+                    <td><code>$subtract</code></td>
+                    <td>Subtract numbers or dates</td>
+                </tr>
+                <tr>
+                    <td><code>$concat</code></td>
+                    <td>Concatenate strings</td>
+                </tr>
+                <tr>
+                    <td><code>$toUpper</code></td>
+                    <td>Convert to uppercase</td>
+                </tr>
+                <tr>
+                    <td><code>$toLower</code></td>
+                    <td>Convert to lowercase</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Aggregation Best Practices:</h4>
+                <ul>
+                    <li>✅ Use <code>$match</code> early to reduce documents</li>
+                    <li>✅ Use indexes for <code>$match</code> and <code>$sort</code> stages</li>
+                    <li>✅ Use <code>$project</code> to reduce document size</li>
+                    <li>✅ Order stages efficiently (filter → project → sort)</li>
+                    <li>✅ Use <code>allowDiskUse: true</code> for large datasets</li>
+                    <li>⚠️ Avoid unnecessary <code>$unwind</code> operations</li>
+                    <li>⚠️ Be mindful of memory limits (100MB per stage)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="indexing">
+            <h2>⚡ Indexing & Performance Optimization</h2>
+
+            <p><span class="highlight">Indexes</span> improve query performance by creating data structures that allow faster searches. Without indexes, MongoDB must perform a <em>collection scan</em>, scanning every document in the collection.</p>
+
+            <div class="info-box premium">
+                <h3>The ESR Rule: Designing Compound Indexes</h3>
+                <p>When creating compound indexes, follow the <strong>ESR (Equality, Sort, Range)</strong> rule for optimum performance:</p>
+                <ul>
+                    <li><strong>E (Equality):</strong> Fields queried with exact matches (e.g., <code>{ status: "A" }</code>) should come first.</li>
+                    <li><strong>S (Sort):</strong> Fields used for sorting should follow equality fields.</li>
+                    <li><strong>R (Range):</strong> Fields queried with ranges (e.g., <code>{ age: { $gt: 25 } }</code>) should come last.</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>Senior Perspective: Index Overhead</h3>
+                <p>Every index adds a write performance cost. Each <code>insert</code>, <code>update</code>, and <code>delete</code> must update the B-Tree structure of the index. Always monitor your <strong>Execution Plan</strong> (<code>explain('executionStats')</code>) to ensure your indexes are actually being used and aren't providing diminishing returns.</p>
+            </div>
+
+            <h3>Index Commands</h3>
+            <div class="code-block"><span class="comment">// Create single field index</span>
+db.users.<span class="function">createIndex</span>({ email: <span class="number">1</span> })
+
+<span class="comment">// Create unique index</span>
+db.users.<span class="function">createIndex</span>(
+    { email: <span class="number">1</span> },
+    { unique: <span class="keyword">true</span> }
+)
+
+<span class="comment">// Create compound index</span>
+db.users.<span class="function">createIndex</span>({ city: <span class="number">1</span>, age: <span class="number">-1</span> })
+
+<span class="comment">// View all indexes</span>
+db.users.<span class="function">getIndexes</span>()
+
+<span class="comment">// Drop index</span>
+db.users.<span class="function">dropIndex</span>(<span class="string">"email_1"</span>)
+
+<span class="comment">// Analyze query performance</span>
+db.users.<span class="function">find</span>({ email: <span class="string">"test@example.com"</span> }).<span class="function">explain</span>(<span class="string">"executionStats"</span>)</div>
+
+            <h3>When to Use Indexes</h3>
+            <div class="info-box">
+                <p><strong>Create indexes for:</strong></p>
+                <ul>
+                    <li>Fields frequently used in queries</li>
+                    <li>Fields used for sorting</li>
+                    <li>Fields used in aggregations</li>
+                    <li>Unique constraints (like email)</li>
+                </ul>
+            </div>
+
+            <h3>Index Types</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><strong>Single Field</strong></td>
+                    <td>Index on one field</td>
+                    <td><code>createIndex({email: 1})</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Compound</strong></td>
+                    <td>Index on multiple fields</td>
+                    <td><code>createIndex({city: 1, age: -1})</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Multikey</strong></td>
+                    <td>Index on array fields</td>
+                    <td>Automatically created for arrays</td>
+                </tr>
+                <tr>
+                    <td><strong>Text</strong></td>
+                    <td>Full-text search</td>
+                    <td><code>createIndex({description: "text"})</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Geospatial</strong></td>
+                    <td>Location-based queries</td>
+                    <td><code>createIndex({location: "2dsphere"})</code></td>
+                </tr>
+                <tr>
+                    <td><strong>TTL</strong></td>
+                    <td>Auto-delete documents</td>
+                    <td><code>createIndex({createdAt: 1}, {expiresAfterSeconds: 3600})</code></td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="features">
+            <h2>⚡ Key Features Deep Dive</h2>
+
+            <h3>1. High Performance</h3>
+            <div class="info-box">
+                <h4>Advantages:</h4>
+                <ul>
+                    <li>✅ <strong>Embedded Documents:</strong> Reduce expensive joins by nesting related data</li>
+                    <li>✅ <strong>Dynamic Schema:</strong> No need for ALTER TABLE operations</li>
+                    <li>✅ <strong>Indexes:</strong> Support faster queries including on embedded documents and arrays</li>
+                    <li>✅ <strong>In-Memory Performance:</strong> Hot data stays in RAM for fast access</li>
+                </ul>
+            </div>
+
+            <h3>2. Rich Query Language</h3>
+            <p>MongoDB supports:</p>
+            <ul>
+                <li>📊 <strong>Data Aggregation:</strong> Complex data processing pipelines</li>
+                <li>🔍 <strong>Text Search:</strong> Full-text search capabilities</li>
+                <li>🌍 <strong>Geospatial Queries:</strong> Location-based searches</li>
+                <li>🎯 <strong>Graph Queries:</strong> Relationship traversal</li>
+            </ul>
+
+            <h3>3. High Availability (Replica Sets)</h3>
+            <div class="info-box">
+                <p><strong>What is a Replica Set?</strong></p>
+                <p>A group of MongoDB servers that maintain the same data set, providing redundancy and increasing data availability.</p>
+                <ul>
+                    <li>🔄 Automatic failover</li>
+                    <li>🔄 Data redundancy</li>
+                    <li>🔄 Read scaling</li>
+                    <li>🔄 Zero downtime maintenance</li>
+                </ul>
+            </div>
+
+            <h3>4. Horizontal Scalability (Sharding)</h3>
+            <p>MongoDB provides horizontal scalability through <span class="highlight">sharding</span> - distributing data across a cluster of machines.</p>
+
+            <h3>5. Storage Engines</h3>
+            <table>
+                <tr>
+                    <th>Engine</th>
+                    <th>Description</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td><strong>WiredTiger</strong></td>
+                    <td>Default storage engine with compression</td>
+                    <td>Most use cases, production workloads</td>
+                </tr>
+                <tr>
+                    <td><strong>In-Memory</strong></td>
+                    <td>Stores data in RAM</td>
+                    <td>Ultra-high performance, caching</td>
+                </tr>
+            </table>
+
+            <h3>MongoDB Ecosystem</h3>
+            <ul>
+                <li>🔹 <strong>MongoDB Atlas:</strong> Fully managed cloud database</li>
+                <li>🔹 <strong>MongoDB Compass:</strong> GUI for MongoDB</li>
+                <li>🔹 <strong>BI Connector:</strong> Connect to BI tools</li>
+                <li>🔹 <strong>MongoDB Realm:</strong> Serverless platform with sync</li>
+                <li>🔹 <strong>MongoDB Charts:</strong> Data visualization</li>
+            </ul>
+        </section>
+
+        <section id="advanced-queries">
+            <h2>📋 Advanced Query Techniques</h2>
+
+            <h3>Embedded Document Queries</h3>
+            <div class="code-block"><span class="comment">// Match entire embedded document</span>
+db.users.<span class="function">find</span>({
+    address: { city: <span class="string">"New York"</span>, zip: <span class="string">"10001"</span> }
+})
+
+<span class="comment">// Query on nested field (more flexible)</span>
+db.users.<span class="function">find</span>({ <span class="string">"address.city"</span>: <span class="string">"New York"</span> })
+
+<span class="comment">// Query with operator on nested field</span>
+db.users.<span class="function">find</span>({ <span class="string">"address.zipCode"</span>: { $gt: <span class="number">10000</span> } })</div>
+
+            <h3>Array Query Techniques</h3>
+
+            <h4>1. Match Exact Array</h4>
+            <div class="code-block"><span class="comment">// Exact match (order and elements matter)</span>
+db.inventory.<span class="function">find</span>({ tags: [<span class="string">"red"</span>, <span class="string">"blank"</span>] })
+
+<span class="comment">// Contains all elements (order doesn't matter)</span>
+db.inventory.<span class="function">find</span>({ tags: { $all: [<span class="string">"red"</span>, <span class="string">"blank"</span>] } })</div>
+
+            <h4>2. Query Array for Element</h4>
+            <div class="code-block"><span class="comment">// Contains at least one element</span>
+db.inventory.<span class="function">find</span>({ tags: <span class="string">"red"</span> })
+
+<span class="comment">// Array element meets condition</span>
+db.inventory.<span class="function">find</span>({ dim_cm: { $gt: <span class="number">25</span> } })</div>
+
+            <h4>3. Multiple Conditions on Array</h4>
+            <div class="code-block"><span class="comment">// Any element matches either condition</span>
+db.inventory.<span class="function">find</span>({ dim_cm: { $gt: <span class="number">15</span>, $lt: <span class="number">20</span> } })
+
+<span class="comment">// Single element matches both conditions</span>
+db.inventory.<span class="function">find</span>({
+    dim_cm: {
+        $elemMatch: { $gt: <span class="number">22</span>, $lt: <span class="number">30</span> }
+    }
+})</div>
+
+            <h4>4. Query by Array Index</h4>
+            <div class="code-block"><span class="comment">// Query second element in array</span>
+db.inventory.<span class="function">find</span>({ <span class="string">"dim_cm.1"</span>: { $gt: <span class="number">25</span> } })
+
+<span class="comment">// Query array length</span>
+db.inventory.<span class="function">find</span>({ tags: { $size: <span class="number">3</span> } })</div>
+
+            <h3>Array of Embedded Documents</h3>
+            <div class="code-block"><span class="comment">// Match embedded document in array</span>
+db.inventory.<span class="function">find</span>({
+    instock: { warehouse: <span class="string">"A"</span>, qty: <span class="number">5</span> }
+})
+
+<span class="comment">// Query field in embedded document</span>
+db.inventory.<span class="function">find</span>({ <span class="string">"instock.qty"</span>: { $lte: <span class="number">20</span> } })
+
+<span class="comment">// Use array index</span>
+db.inventory.<span class="function">find</span>({ <span class="string">"instock.0.qty"</span>: { $lte: <span class="number">20</span> } })
+
+<span class="comment">// Single document meets multiple conditions</span>
+db.inventory.<span class="function">find</span>({
+    instock: {
+        $elemMatch: { qty: <span class="number">5</span>, warehouse: <span class="string">"A"</span> }
+    }
+})</div>
+
+            <h3>Null and Missing Fields</h3>
+            <div class="code-block"><span class="comment">// Equality filter (matches null and missing)</span>
+db.inventory.<span class="function">find</span>({ item: <span class="keyword">null</span> })
+
+<span class="comment">// Type check (only null values)</span>
+db.inventory.<span class="function">find</span>({ item: { $type: <span class="number">10</span> } })
+
+<span class="comment">// Existence check (field doesn't exist)</span>
+db.inventory.<span class="function">find</span>({ item: { $exists: <span class="keyword">false</span> } })</div>
+
+            <h3>Projection Advanced</h3>
+            <div class="code-block"><span class="comment">// Return specific fields</span>
+db.inventory.<span class="function">find</span>(
+    { status: <span class="string">"A"</span> },
+    { item: <span class="number">1</span>, status: <span class="number">1</span> }
+)
+
+<span class="comment">// Suppress specific fields</span>
+db.inventory.<span class="function">find</span>(
+    { status: <span class="string">"A"</span> },
+    { status: <span class="number">0</span>, instock: <span class="number">0</span> }
+)
+
+<span class="comment">// Return specific embedded fields</span>
+db.inventory.<span class="function">find</span>(
+    { status: <span class="string">"A"</span> },
+    { item: <span class="number">1</span>, <span class="string">"size.uom"</span>: <span class="number">1</span> }
+)
+
+<span class="comment">// Project specific array elements ($slice)</span>
+db.inventory.<span class="function">find</span>(
+    { status: <span class="string">"A"</span> },
+    { item: <span class="number">1</span>, instock: { $slice: <span class="number">-1</span> } }
+)</div>
+        </section>
+
+        <section id="optimization">
+            <h2>🚀 Performance Optimization</h2>
+
+            <h3>Query Optimization Tips</h3>
+            <div class="info-box">
+                <ul>
+                    <li>✅ <strong>Use Indexes:</strong> Create indexes on frequently queried fields</li>
+                    <li>✅ <strong>Limit Results:</strong> Use <code>.limit()</code> to reduce data transfer</li>
+                    <li>✅ <strong>Project Fields:</strong> Only return necessary fields</li>
+                    <li>✅ <strong>Use Covered Queries:</strong> Queries satisfied entirely by index</li>
+                    <li>✅ <strong>Avoid $where:</strong> Use query operators instead of JavaScript</li>
+                    <li>✅ <strong>Batch Operations:</strong> Use bulkWrite for multiple operations</li>
+                </ul>
+            </div>
+
+            <h3>Explain Plans</h3>
+            <div class="code-block"><span class="comment">// Query execution plan</span>
+db.users.<span class="function">explain</span>().<span class="function">find</span>({ age: { $gt: <span class="number">25</span> } })
+
+<span class="comment">// Detailed execution statistics</span>
+db.users.<span class="function">explain</span>(<span class="string">"executionStats"</span>).<span class="function">find</span>({ age: { $gt: <span class="number">25</span> } })
+
+<span class="comment">// All plans and execution info</span>
+db.users.<span class="function">explain</span>(<span class="string">"allPlansExecution"</span>).<span class="function">find</span>({ age: { $gt: <span class="number">25</span> } })</div>
+
+            <h3>Understanding Execution Stats</h3>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>executionTimeMillis</strong></td>
+                    <td>Total time to execute query</td>
+                </tr>
+                <tr>
+                    <td><strong>totalDocsExamined</strong></td>
+                    <td>Number of documents scanned</td>
+                </tr>
+                <tr>
+                    <td><strong>totalKeysExamined</strong></td>
+                    <td>Number of index entries scanned</td>
+                </tr>
+                <tr>
+                    <td><strong>nReturned</strong></td>
+                    <td>Number of documents returned</td>
+                </tr>
+                <tr>
+                    <td><strong>stage</strong></td>
+                    <td>COLLSCAN (bad) or IXSCAN (good)</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <p><strong>Index Scan vs Collection Scan:</strong></p>
+                <ul>
+                    <li>✅ <strong>Index Scan:</strong> Fast - uses index</li>
+                    <li>❌ <strong>Collection Scan:</strong> Slow - scans all documents</li>
+                    <li>⚠️ Index is beneficial when scanning ~20% of documents or less</li>
+                </ul>
+            </div>
+
+            <h3>Capped Collections</h3>
+            <div class="info-box">
+                <p><strong>Definition:</strong> Fixed-size collections that automatically delete oldest documents when size limit is reached</p>
+                <p><strong>Use Cases:</strong> Logs, cache, real-time analytics</p>
+            </div>
+            <div class="code-block"><span class="comment">// Create capped collection</span>
+db.<span class="function">createCollection</span>(<span class="string">"logs"</span>, {
+    capped: <span class="keyword">true</span>,
+    size: <span class="number">5242880</span>,  <span class="comment">// 5 MB</span>
+    max: <span class="number">5000</span>       <span class="comment">// Max 5000 documents</span>
+})</div>
+        </section>
+
+        <section id="replication">
+            <h2>🔄 Replication & High Availability</h2>
+
+            <p>A <span class="highlight">replica set</span> is a group of MongoDB servers that maintain the same data set, providing redundancy and high availability.</p>
+
+            <div class="info-box premium">
+                <h3>Consistency vs. Latency: Tuning the Knobs</h3>
+                <p>To control the trade-off between consistency and latency, MongoDB provides two critical settings:</p>
+                <ul>
+                    <li><strong>Write Concern:</strong> (e.g., <code>w: "majority"</code>) Defines how many members must acknowledge a write before it is considered successful. <strong>Senior Tip:</strong> Always use <code>"majority"</code> for critical data to prevent "rollback" during failovers.</li>
+                    <li><strong>Read Preference:</strong> (e.g., <code>primaryPreferred</code>, <code>secondary</code>) Defines where the driver reads data from. Reading from secondaries increases throughput but risks <strong>stale reads</strong>.</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>Senior Perspective: The Oplog Mechanics</h3>
+                <p>Replication is <strong>asynchronous</strong>. It works via the <strong>Oplog</strong> (Operations Log), a capped collection that stores a rolling record of all data modifications. Secondaries tail this log and apply the changes. If a secondary falls too far behind the primary's Oplog (e.g., during a massive bulk write), it may go into <strong>Recovering</strong> state and require a full resync.</p>
+            </div>
+
+            <h3>Benefits of Replica Sets</h3>
+            <table>
+                <tr>
+                    <th>Benefit</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>High Availability</strong></td>
+                    <td>Automatic failover ensures uptime</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Redundancy</strong></td>
+                    <td>Multiple copies protect against data loss</td>
+                </tr>
+                <tr>
+                    <td><strong>Read Scaling</strong></td>
+                    <td>Distribute reads across secondaries</td>
+                </tr>
+                <tr>
+                    <td><strong>Disaster Recovery</strong></td>
+                    <td>Backup nodes in different datacenters</td>
+                </tr>
+                <tr>
+                    <td><strong>Zero Downtime Maintenance</strong></td>
+                    <td>Update nodes one at a time</td>
+                </tr>
+            </table>
+
+            <h3>Read Preference</h3>
+            <div class="code-block"><span class="comment">// Read from primary (default)</span>
+db.users.<span class="function">find</span>().<span class="function">readPref</span>(<span class="string">"primary"</span>)
+
+<span class="comment">// Read from primary preferred</span>
+db.users.<span class="function">find</span>().<span class="function">readPref</span>(<span class="string">"primaryPreferred"</span>)
+
+<span class="comment">// Read from secondary</span>
+db.users.<span class="function">find</span>().<span class="function">readPref</span>(<span class="string">"secondary"</span>)
+
+<span class="comment">// Read from secondary preferred</span>
+db.users.<span class="function">find</span>().<span class="function">readPref</span>(<span class="string">"secondaryPreferred"</span>)
+
+<span class="comment">// Read from nearest node</span>
+db.users.<span class="function">find</span>().<span class="function">readPref</span>(<span class="string">"nearest"</span>)</div>
+        </section>
+
+        <section id="sharding">
+            <h2>📦 Sharding - Horizontal Scaling</h2>
+
+            <p><span class="highlight">Sharding</span> is MongoDB's approach to meeting the demands of data growth by distributing data across multiple servers.</p>
+
+            <h3>Sharding Components</h3>
+            <div class="info-box">
+                <ul>
+                    <li>🔹 <strong>Shards:</strong> Each shard contains a subset of the data (can be replica set)</li>
+                    <li>🔹 <strong>Mongos:</strong> Query router that directs operations to appropriate shards</li>
+                    <li>🔹 <strong>Config Servers:</strong> Store metadata and configuration settings</li>
+                </ul>
+            </div>
+
+            <h3>Shard Key</h3>
+            <p>The <span class="highlight">shard key</span> determines how data is distributed across shards.</p>
+            <div class="warning-box">
+                <p><strong>Shard Key Selection is Critical:</strong></p>
+                <ul>
+                    <li>✅ Choose fields with high cardinality</li>
+                    <li>✅ Ensure even data distribution</li>
+                    <li>✅ Consider query patterns</li>
+                    <li>⚠️ Shard key cannot be changed after sharding</li>
+                    <li>⚠️ Poor shard key leads to performance issues</li>
+                </ul>
+            </div>
+
+            <h3>Sharding Strategies</h3>
+            <table>
+                <tr>
+                    <th>Strategy</th>
+                    <th>Description</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td><strong>Range-based</strong></td>
+                    <td>Divide data by shard key ranges</td>
+                    <td>Ordered data, range queries</td>
+                </tr>
+                <tr>
+                    <td><strong>Hash-based</strong></td>
+                    <td>Hash shard key for distribution</td>
+                    <td>Even distribution, random access</td>
+                </tr>
+                <tr>
+                    <td><strong>Zone-based</strong></td>
+                    <td>Associate data ranges with specific shards</td>
+                    <td>Geographic distribution</td>
+                </tr>
+            </table>
+
+            <h3>When to Shard</h3>
+            <ul>
+                <li>📊 Data size exceeds single server capacity</li>
+                <li>📊 Working set exceeds RAM</li>
+                <li>📊 Write throughput exceeds single server</li>
+                <li>📊 Need to distribute data geographically</li>
+            </ul>
+        </section>
+
+        <section id="transactions">
+            <h2>💳 Transactions</h2>
+
+            <p><span class="highlight">Multi-document transactions</span> allow you to execute multiple operations atomically.</p>
+
+            <h3>ACID Properties</h3>
+            <div class="info-box">
+                <ul>
+                    <li>✅ <strong>Atomicity:</strong> All operations succeed or all fail</li>
+                    <li>✅ <strong>Consistency:</strong> Data remains valid</li>
+                    <li>✅ <strong>Isolation:</strong> Concurrent transactions don't interfere</li>
+                    <li>✅ <strong>Durability:</strong> Committed data persists</li>
+                </ul>
+            </div>
+
+            <h3>Transaction Example</h3>
+            <div class="code-block"><span class="comment">// Start session</span>
+<span class="keyword">const</span> session = db.<span class="function">getMongo</span>().<span class="function">startSession</span>();
+
+<span class="comment">// Start transaction</span>
+session.<span class="function">startTransaction</span>();
+
+<span class="keyword">try</span> {
+    <span class="comment">// Perform operations</span>
+    db.accounts.<span class="function">updateOne</span>(
+        { _id: <span class="string">"account1"</span> },
+        { $inc: { balance: <span class="number">-100</span> } },
+        { session }
+    );
+    
+    db.accounts.<span class="function">updateOne</span>(
+        { _id: <span class="string">"account2"</span> },
+        { $inc: { balance: <span class="number">100</span> } },
+        { session }
+    );
+    
+    <span class="comment">// Commit transaction</span>
+    session.<span class="function">commitTransaction</span>();
+} <span class="keyword">catch</span> (error) {
+    <span class="comment">// Abort on error</span>
+    session.<span class="function">abortTransaction</span>();
+} <span class="keyword">finally</span> {
+    session.<span class="function">endSession</span>();
+}</div>
+
+            <div class="warning-box">
+                <p><strong>Transaction Considerations:</strong></p>
+                <ul>
+                    <li>⚠️ Use only when necessary (performance overhead)</li>
+                    <li>⚠️ Requires replica set or sharded cluster</li>
+                    <li>⚠️ Keep transactions short</li>
+                    <li>⚠️ Document-level atomicity is often sufficient</li>
+                </ul>
+            </div>
+
+            <h3>Document-Level Atomicity</h3>
+            <p>MongoDB provides atomicity at the document level by default:</p>
+            <div class="code-block"><span class="comment">// This operation is atomic</span>
+db.users.<span class="function">updateOne</span>(
+    { _id: <span class="number">1</span> },
+    {
+        $set: { name: <span class="string">"John"</span> },
+        $inc: { age: <span class="number">1</span> },
+        $push: { hobbies: <span class="string">"reading"</span> }
+    }
+)</div>
+        </section>
+
+        <section id="geospatial">
+            <h2>🌍 Geospatial Queries</h2>
+
+            <p>MongoDB supports <span class="highlight">geospatial queries</span> for location-based data.</p>
+
+            <h3>GeoJSON Format</h3>
+            <div class="code-block"><span class="comment">// Store location as GeoJSON</span>
+{
+    name: <span class="string">"Central Park"</span>,
+    location: {
+        type: <span class="string">"Point"</span>,
+        coordinates: [<span class="number">-73.968285</span>, <span class="number">40.785091</span>]  <span class="comment">// [longitude, latitude]</span>
+    }
+}</div>
+
+            <h3>Create Geospatial Index</h3>
+            <div class="code-block"><span class="comment">// Create 2dsphere index for GeoJSON</span>
+db.places.<span class="function">createIndex</span>({ location: <span class="string">"2dsphere"</span> })</div>
+
+            <h3>Geospatial Query Operators</h3>
+
+            <h4>$near - Find Nearby Locations</h4>
+            <div class="code-block"><span class="comment">// Find places near a point</span>
+db.places.<span class="function">find</span>({
+    location: {
+        $near: {
+            $geometry: {
+                type: <span class="string">"Point"</span>,
+                coordinates: [<span class="number">-73.968285</span>, <span class="number">40.785091</span>]
+            },
+            $maxDistance: <span class="number">5000</span>,  <span class="comment">// 5km in meters</span>
+            $minDistance: <span class="number">1000</span>   <span class="comment">// 1km minimum</span>
+        }
+    }
+})</div>
+
+            <h4>$geoWithin - Find Within Area</h4>
+            <div class="code-block"><span class="comment">// Find places within a polygon</span>
+db.places.<span class="function">find</span>({
+    location: {
+        $geoWithin: {
+            $geometry: {
+                type: <span class="string">"Polygon"</span>,
+                coordinates: [[
+                    [<span class="number">-73.98</span>, <span class="number">40.78</span>],
+                    [<span class="number">-73.96</span>, <span class="number">40.78</span>],
+                    [<span class="number">-73.96</span>, <span class="number">40.80</span>],
+                    [<span class="number">-73.98</span>, <span class="number">40.80</span>],
+                    [<span class="number">-73.98</span>, <span class="number">40.78</span>]
+                ]]
+            }
+        }
+    }
+})</div>
+
+            <h4>$geoIntersects - Find Intersecting Geometries</h4>
+            <div class="code-block"><span class="comment">// Find geometries that intersect</span>
+db.places.<span class="function">find</span>({
+    location: {
+        $geoIntersects: {
+            $geometry: {
+                type: <span class="string">"Point"</span>,
+                coordinates: [<span class="number">-73.968285</span>, <span class="number">40.785091</span>]
+            }
+        }
+    }
+})</div>
+
+            <h3>Supported Geometry Types</h3>
+            <ul>
+                <li>📍 <strong>Point:</strong> Single location</li>
+                <li>📍 <strong>LineString:</strong> Path or route</li>
+                <li>📍 <strong>Polygon:</strong> Area boundary</li>
+                <li>📍 <strong>MultiPoint:</strong> Multiple points</li>
+                <li>📍 <strong>MultiLineString:</strong> Multiple lines</li>
+                <li>📍 <strong>MultiPolygon:</strong> Multiple polygons</li>
+            </ul>
+        </section>
+
+        <section id="security">
+            <h2>🔒 Security & Authentication</h2>
+
+            <h3>Authentication</h3>
+            <p><span class="highlight">Authentication</span> verifies the identity of users connecting to MongoDB.</p>
+
+            <h4>Create User</h4>
+            <div class="code-block"><span class="comment">// Create database user</span>
+db.<span class="function">createUser</span>({
+    user: <span class="string">"appUser"</span>,
+    pwd: <span class="string">"securePassword123"</span>,
+    roles: [
+        { role: <span class="string">"readWrite"</span>, db: <span class="string">"myDatabase"</span> }
+    ]
+})
+
+<span class="comment">// Create admin user</span>
+db.<span class="function">createUser</span>({
+    user: <span class="string">"admin"</span>,
+    pwd: <span class="string">"adminPassword"</span>,
+    roles: [<span class="string">"userAdminAnyDatabase"</span>]
+})</div>
+
+            <h3>Built-in Roles</h3>
+            <table>
+                <tr>
+                    <th>Role Category</th>
+                    <th>Roles</th>
+                    <th>Permissions</th>
+                </tr>
+                <tr>
+                    <td><strong>Database User</strong></td>
+                    <td>read, readWrite</td>
+                    <td>Read and/or write to database</td>
+                </tr>
+                <tr>
+                    <td><strong>Database Admin</strong></td>
+                    <td>dbAdmin, userAdmin, dbOwner</td>
+                    <td>Admin tasks on database</td>
+                </tr>
+                <tr>
+                    <td><strong>All Database</strong></td>
+                    <td>readAnyDatabase, readWriteAnyDatabase</td>
+                    <td>Operations on all databases</td>
+                </tr>
+                <tr>
+                    <td><strong>Cluster Admin</strong></td>
+                    <td>clusterAdmin, clusterManager</td>
+                    <td>Cluster administration</td>
+                </tr>
+                <tr>
+                    <td><strong>Backup/Restore</strong></td>
+                    <td>backup, restore</td>
+                    <td>Backup and restore operations</td>
+                </tr>
+                <tr>
+                    <td><strong>Superuser</strong></td>
+                    <td>root</td>
+                    <td>All operations on all resources</td>
+                </tr>
+            </table>
+
+            <h3>Update User</h3>
+            <div class="code-block"><span class="comment">// Update user roles</span>
+db.<span class="function">updateUser</span>(<span class="string">"appUser"</span>, {
+    roles: [
+        { role: <span class="string">"read"</span>, db: <span class="string">"myDatabase"</span> },
+        { role: <span class="string">"readWrite"</span>, db: <span class="string">"otherDatabase"</span> }
+    ]
+})</div>
+
+            <h3>Authorization</h3>
+            <p><span class="highlight">Authorization</span> determines what users can do with resources.</p>
+
+            <h3>Security Best Practices</h3>
+            <ul>
+                <li>🔐 <strong>Enable Authentication:</strong> Always enable auth in production</li>
+                <li>🔐 <strong>Use SSL/TLS:</strong> Encrypt data in transit</li>
+                <li>🔐 <strong>Principle of Least Privilege:</strong> Grant minimum necessary permissions</li>
+                <li>🔐 <strong>Network Security:</strong> Use firewalls, VPNs</li>
+                <li>🔐 <strong>Encrypt at Rest:</strong> Enable encryption for stored data</li>
+                <li>🔐 <strong>Regular Auditing:</strong> Monitor database activity</li>
+                <li>🔐 <strong>Keep Software Updated:</strong> Apply security patches</li>
+            </ul>
+        </section>
+
+        <section id="deployment">
+            <h2>🚀 Deployment Options</h2>
+
+            <h3>1. MongoDB Atlas (Cloud)</h3>
+            <div class="info-box">
+                <p><strong>Fully managed cloud database service</strong></p>
+                <ul>
+                    <li>✅ Automated backups</li>
+                    <li>✅ Automated updates</li>
+                    <li>✅ Built-in monitoring</li>
+                    <li>✅ Global distribution</li>
+                    <li>✅ Free tier available</li>
+                    <li>✅ Multi-cloud support (AWS, Azure, GCP)</li>
+                </ul>
+            </div>
+
+            <h3>2. Self-Hosted</h3>
+            <div class="info-box">
+                <p><strong>Deploy on your own infrastructure</strong></p>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>⚙️ Manage shards and replica sets</li>
+                    <li>⚙️ Configure security and authentication</li>
+                    <li>⚙️ Provision servers and network</li>
+                    <li>⚙️ Regular backups</li>
+                    <li>⚙️ Software updates</li>
+                    <li>⚙️ Performance monitoring</li>
+                </ul>
+            </div>
+
+            <h3>Deployment Best Practices</h3>
+            <table>
+                <tr>
+                    <th>Practice</th>
+                    <th>Recommendation</th>
+                </tr>
+                <tr>
+                    <td><strong>Replica Set</strong></td>
+                    <td>Always use replica sets (minimum 3 nodes)</td>
+                </tr>
+                <tr>
+                    <td><strong>Hardware</strong></td>
+                    <td>Fast disks (SSD), sufficient RAM</td>
+                </tr>
+                <tr>
+                    <td><strong>Network</strong></td>
+                    <td>Low latency between replica set members</td>
+                </tr>
+                <tr>
+                    <td><strong>Monitoring</strong></td>
+                    <td>Use MongoDB Monitoring Service or tools like Prometheus</td>
+                </tr>
+                <tr>
+                    <td><strong>Backups</strong></td>
+                    <td>Automated, regular backups with tested restore process</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="datatypes">
+            <h2>📊 Data Types & Numbers</h2>
+
+            <h3>MongoDB Data Types</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>String</strong></td>
+                    <td>UTF-8 text</td>
+                    <td><code>"Hello World"</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Integer (int32)</strong></td>
+                    <td>32-bit integer</td>
+                    <td><code>NumberInt(42)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Long (int64)</strong></td>
+                    <td>64-bit integer</td>
+                    <td><code>NumberLong(9999999999)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Double</strong></td>
+                    <td>64-bit floating point</td>
+                    <td><code>3.14159</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Decimal128</strong></td>
+                    <td>High-precision decimal</td>
+                    <td><code>NumberDecimal("99.99")</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Boolean</strong></td>
+                    <td>true/false</td>
+                    <td><code>true</code></td>
+                </tr>
+                <tr>
+                    <td><strong>ObjectId</strong></td>
+                    <td>12-byte unique identifier</td>
+                    <td><code>ObjectId("507f1f77bcf86cd799439011")</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Date</strong></td>
+                    <td>ISO date</td>
+                    <td><code>new Date()</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Timestamp</strong></td>
+                    <td>Internal timestamp</td>
+                    <td><code>Timestamp(1, 0)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Array</strong></td>
+                    <td>List of values</td>
+                    <td><code>["a", "b", "c"]</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Object</strong></td>
+                    <td>Embedded document</td>
+                    <td><code>{city: "NYC"}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Null</strong></td>
+                    <td>Null value</td>
+                    <td><code>null</code></td>
+                </tr>
+            </table>
+
+            <h3>Number Types Explained</h3>
+            <div class="info-box">
+                <h4>Integers (int32)</h4>
+                <p>Default for whole numbers. Can store up to 12 digits by default.</p>
+                <div class="code-block">db.products.<span class="function">insertOne</span>({ quantity: <span class="function">NumberInt</span>(<span class="number">100</span>) })</div>
+
+                <h4>Longs (int64)</h4>
+                <p>For larger integers beyond int32 range</p>
+                <div class="code-block">db.stats.<span class="function">insertOne</span>({ views: <span class="function">NumberLong</span>(<span class="string">"9999999999"</span>) })</div>
+
+                <h4>Doubles (64-bit)</h4>
+                <p>Default for decimal numbers</p>
+                <div class="code-block">db.products.<span class="function">insertOne</span>({ price: <span class="number">29.99</span> })</div>
+
+                <h4>Decimal128 (High Precision)</h4>
+                <p>For financial calculations requiring exact precision</p>
+                <div class="code-block">db.transactions.<span class="function">insertOne</span>({
+    amount: <span class="function">NumberDecimal</span>(<span class="string">"99.99"</span>)
+})</div>
+            </div>
+
+            <h3>Working with Dates</h3>
+            <div class="code-block"><span class="comment">// Current date</span>
+db.events.<span class="function">insertOne</span>({
+    name: <span class="string">"Launch Event"</span>,
+    date: <span class="keyword">new</span> <span class="function">Date</span>()
+})
+
+<span class="comment">// Specific date</span>
+db.events.<span class="function">insertOne</span>({
+    name: <span class="string">"Conference"</span>,
+    date: <span class="function">ISODate</span>(<span class="string">"2024-12-31T00:00:00Z"</span>)
+})
+
+<span class="comment">// Query by date range</span>
+db.events.<span class="function">find</span>({
+    date: {
+        $gte: <span class="function">ISODate</span>(<span class="string">"2024-01-01"</span>),
+        $lt: <span class="function">ISODate</span>(<span class="string">"2024-12-31"</span>)
+    }
+})</div>
+
+            <h3>Database Statistics</h3>
+            <div class="code-block"><span class="comment">// Get database statistics</span>
+db.<span class="function">stats</span>()
+
+<span class="comment">// Returns information about:</span>
+<span class="comment">// - Database size</span>
+<span class="comment">// - Number of collections</span>
+<span class="comment">// - Number of documents</span>
+<span class="comment">// - Storage size</span>
+<span class="comment">// - Index size</span></div>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking on a link (mobile only)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside (mobile only)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>
+

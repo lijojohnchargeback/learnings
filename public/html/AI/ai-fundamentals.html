@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artificial Intelligence - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🤖 AI Guide</h2>
+            <p>Fundamentals to production ideas</p>
+        </div>
+
+        <nav>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Fundamentals</div>
+                <div class="sidebar-links">
+                    <a href="#intro" class="sidebar-link">Introduction</a>
+                    <a href="#history" class="sidebar-link">History</a>
+                    <a href="#hierarchy" class="sidebar-link">AI Structure</a>
+                    <a href="#types" class="sidebar-link">Types of AI</a>
+                    <a href="#data" class="sidebar-link">Data Science</a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Core Concepts</div>
+                <div class="sidebar-links">
+                    <a href="#ml" class="sidebar-link">Machine Learning</a>
+                    <a href="#dl" class="sidebar-link">Deep Learning</a>
+                    <a href="#neural" class="sidebar-link">Neural Networks</a>
+                    <a href="#training" class="sidebar-link">Training &amp; Evaluation</a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Language &amp; Vision</div>
+                <div class="sidebar-links">
+                    <a href="#nlp" class="sidebar-link">NLP</a>
+                    <a href="#attention" class="sidebar-link">Attention &amp; Transformers</a>
+                    <a href="#llm" class="sidebar-link">LLMs</a>
+                    <a href="#genai" class="sidebar-link">Generative AI</a>
+                    <a href="#cv" class="sidebar-link">Computer Vision</a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Advanced Topics</div>
+                <div class="sidebar-links">
+                    <a href="#rag" class="sidebar-link">RAG</a>
+                    <a href="#agents" class="sidebar-link">AI Agents</a>
+                    <a href="#finetune" class="sidebar-link">Fine-Tuning &amp; PEFT</a>
+                    <a href="#prompting" class="sidebar-link">Prompting &amp; Sampling</a>
+                    <a href="#advanced" class="sidebar-link">More Advanced Ideas</a>
+                    <a href="#mlops" class="sidebar-link">MLOps</a>
+                    <a href="#ethics" class="sidebar-link">AI Ethics</a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Practical</div>
+                <div class="sidebar-links">
+                    <a href="#tools" class="sidebar-link">Tools &amp; Frameworks</a>
+                    <a href="#applications" class="sidebar-link">Applications</a>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🤖 Artificial Intelligence</h1>
+                <p>A practical map of AI, machine learning, deep learning, transformers, RAG, and agents — with the details you need to talk about the field accurately.</p>
+            </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to AI</h2>
+
+            <p><span class="highlight">Artificial Intelligence (AI)</span> is the field of building systems that perform tasks we associate with intelligence: recognizing patterns, making decisions, understanding language, perceiving the world, and improving from experience.</p>
+
+            <p>AI is not one algorithm. It is a toolbox. Early systems used hand-written rules. Modern systems mostly <strong>learn from data</strong>. The systems you use every day — search ranking, spam filters, photo tagging, chat assistants — are almost all <strong>narrow AI</strong>: excellent at a defined job, not a general mind.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-hierarchy.png" alt="Nested diagram showing Artificial Intelligence containing Machine Learning containing Deep Learning, with Transformers, LLMs, and Generative AI as related layers" loading="lazy">
+                <div class="illustration-caption">AI is the broad field. Machine learning is one way to build AI. Deep learning is a kind of machine learning. Transformers power most LLMs; generative AI also includes diffusion models, not only chatbots.</div>
+            </div>
+
+            <div class="info-box">
+                <h3>What “intelligence” means in practice</h3>
+                <ul>
+                    <li><strong>Perception:</strong> see, hear, and read (images, speech, text)</li>
+                    <li><strong>Reasoning:</strong> combine facts, constraints, and goals</li>
+                    <li><strong>Learning:</strong> improve from examples or rewards instead of only rules</li>
+                    <li><strong>Language:</strong> parse, translate, summarize, and generate text</li>
+                    <li><strong>Action:</strong> recommend, control a robot, call a tool, or write code</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Common mix-up:</strong> ChatGPT is not “general AI.” It is a very capable <em>narrow</em> language model. It can discuss many topics, but it does not have human-level understanding, persistent goals, or reliable world models. Fluency is not the same as AGI.
+            </div>
+        </section>
+
+        <section id="history">
+            <h2>📅 History of AI</h2>
+
+            <p>The field is older than neural networks. It moved through symbolic rules, statistical learning, the deep-learning boom, and then transformers. The dates below are the ones that actually changed how people build systems.</p>
+
+            <table>
+                <tr>
+                    <th>Year</th>
+                    <th>Milestone</th>
+                    <th>Why it matters</th>
+                </tr>
+                <tr>
+                    <td><strong>1950</strong></td>
+                    <td>Turing Test</td>
+                    <td>Alan Turing asks whether a machine can imitate a human in conversation</td>
+                </tr>
+                <tr>
+                    <td><strong>1956</strong></td>
+                    <td>Dartmouth Conference</td>
+                    <td>John McCarthy coins “Artificial Intelligence”; the field is named</td>
+                </tr>
+                <tr>
+                    <td><strong>1966</strong></td>
+                    <td>ELIZA</td>
+                    <td>Early chatbot; people over-attribute understanding to pattern matching</td>
+                </tr>
+                <tr>
+                    <td><strong>1997</strong></td>
+                    <td>Deep Blue</td>
+                    <td>IBM’s chess system beats Garry Kasparov — search + evaluation, not deep learning</td>
+                </tr>
+                <tr>
+                    <td><strong>2011</strong></td>
+                    <td>IBM Watson</td>
+                    <td>Wins Jeopardy!; retrieval and ranking at TV-quiz scale</td>
+                </tr>
+                <tr>
+                    <td><strong>2012</strong></td>
+                    <td>AlexNet</td>
+                    <td>CNNs crush ImageNet; GPUs + deep nets become the default for vision</td>
+                </tr>
+                <tr>
+                    <td><strong>2016</strong></td>
+                    <td>AlphaGo</td>
+                    <td>DeepMind beats Lee Sedol; reinforcement learning + search in Go</td>
+                </tr>
+                <tr>
+                    <td><strong>2017</strong></td>
+                    <td>Transformer</td>
+                    <td>“Attention Is All You Need” — parallel sequence models replace most RNNs</td>
+                </tr>
+                <tr>
+                    <td><strong>2018</strong></td>
+                    <td>BERT &amp; GPT-1</td>
+                    <td>Pretrained language models: encoder (BERT) vs decoder (GPT)</td>
+                </tr>
+                <tr>
+                    <td><strong>2020</strong></td>
+                    <td>GPT-3</td>
+                    <td>175B parameters; in-context learning becomes a product idea</td>
+                </tr>
+                <tr>
+                    <td><strong>2022</strong></td>
+                    <td>ChatGPT</td>
+                    <td>Instruction-tuned + aligned GPT-3.5; conversational AI goes mainstream</td>
+                </tr>
+                <tr>
+                    <td><strong>2023</strong></td>
+                    <td>GPT-4, Claude, Gemini, Llama 2</td>
+                    <td>Multimodal models, open weights, and a competitive frontier</td>
+                </tr>
+                <tr>
+                    <td><strong>2024</strong></td>
+                    <td>Reasoning models</td>
+                    <td>o1-style models spend tokens “thinking”; RAG and agents become default architecture</td>
+                </tr>
+                <tr>
+                    <td><strong>2025–2026</strong></td>
+                    <td>Agents &amp; multimodal</td>
+                    <td>Tool use, computer-use agents, native audio/video, and cheaper open models</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Two winters, then a boom</h4>
+                <p>AI funding collapsed twice (roughly the 1970s and late 1980s) when rule-based systems failed to scale. The current wave is different because <strong>data, GPUs, and the transformer</strong> all arrived together. That does not mean AGI is solved — it means the engineering stack is finally productive.</p>
+            </div>
+        </section>
+
+        <section id="hierarchy">
+            <h2>🏗️ AI Hierarchical Structure</h2>
+
+            <p>These two maps match the original notes file, with the wiring fixed. Keep two trees separate: <strong>capability</strong> (narrow vs general vs superintelligence) and <strong>technique</strong> (rules, ML, neural nets, generative models).</p>
+
+            <div class="warning-box">
+                <h4>Is the original ASCII correct?</h4>
+                <p>Mostly as a teaching sketch. Three places were misleading:</p>
+                <ul>
+                    <li><strong>Deep Learning looked like a child of Unsupervised Learning</strong> because the vertical line sat under “Unsupervised.” DL is a <em>technique</em> (neural nets). You can do supervised CNNs, self-supervised LLMs, or RL with deep nets.</li>
+                    <li><strong>Generative AI hung only under Transformers.</strong> Text LLMs are transformers. Image models are often diffusion or GANs (sometimes with a transformer backbone).</li>
+                    <li><strong>“General AI encompasses multiple subfields”</strong> mixes AGI (a future capability) with the field of AI (which already has those subfields). Subfields live under Narrow AI today.</li>
+                </ul>
+                <p>ChatGPT as “advanced Weak / Narrow AI” is correct. Calculator-as-AI is a stretch — a thermostat rule engine is a fairer “rule-based” example.</p>
+            </div>
+
+            <h3>Diagram 1: AI structure — top-down</h3>
+            <div class="illustration">
+                <img src="/images/ai/ai-structure-topdown.png" alt="Top-down AI structure: Narrow, General, and Superintelligent AI, then techniques under Narrow AI, machine-learning types as siblings, and deep learning spanning them" loading="lazy">
+                <div class="illustration-caption">ANI / AGI / ASI are capability levels. Everything we ship today hangs off Narrow AI. Deep learning sits under ML as a whole, not under clustering.</div>
+            </div>
+
+            <div class="ai-map" aria-label="Corrected top-down AI map">
+                <div class="ai-map-root">Artificial Intelligence — machines that perform intelligent tasks</div>
+                <div class="ai-map-row cols-3">
+                    <div class="ai-map-card is-live"><strong>Narrow AI (ANI)</strong>Task-specific. Recommenders, spam filters, ChatGPT, Deep Blue. This is what exists.</div>
+                    <div class="ai-map-card is-muted"><strong>General AI (AGI)</strong>Human-level transfer across domains. Not achieved.</div>
+                    <div class="ai-map-card is-muted"><strong>Superintelligence (ASI)</strong>Beyond the best humans. Theoretical.</div>
+                </div>
+                <div class="ai-map-row cols-4">
+                    <div class="ai-map-card"><strong>Rule-based</strong>IF–THEN, no learning</div>
+                    <div class="ai-map-card is-live"><strong>Machine Learning</strong>Learn patterns from data</div>
+                    <div class="ai-map-card"><strong>Robotics</strong>AI + hardware</div>
+                    <div class="ai-map-card"><strong>Vision / NLP</strong>See and use language</div>
+                </div>
+                <p class="ai-map-note">Five learning <em>setups</em> — siblings, not a stack. Deep learning is not the sixth box under Unsupervised.</p>
+                <div class="ai-map-row cols-5">
+                    <div class="ai-map-card"><strong>Supervised</strong>Labeled x → y</div>
+                    <div class="ai-map-card"><strong>Unsupervised</strong>Clusters, no y</div>
+                    <div class="ai-map-card"><strong>Semi-supervised</strong>Few labels</div>
+                    <div class="ai-map-card"><strong>Self-supervised</strong>Labels from the data</div>
+                    <div class="ai-map-card"><strong>Reinforcement</strong>Rewards</div>
+                </div>
+                <div class="ai-map-band">Deep Learning — neural nets that can use any of the five setups above</div>
+                <div class="ai-map-row cols-5">
+                    <div class="ai-map-card"><strong>Text / LLMs</strong>GPT, Claude, Llama</div>
+                    <div class="ai-map-card"><strong>Code</strong>Copilot, code models</div>
+                    <div class="ai-map-card"><strong>Image</strong>Diffusion &amp; GANs</div>
+                    <div class="ai-map-card"><strong>Audio / video</strong>TTS, music, Sora-class</div>
+                    <div class="ai-map-card"><strong>Multimodal</strong>Text + image + audio</div>
+                </div>
+            </div>
+
+            <div class="diagram-box terminal">Artificial Intelligence (AI)
+        Broad goal: machines that perform intelligent tasks
+                                             │
+        ┌────────────────────────────────────┼────────────────────────────────────┐
+        ▼                                    ▼                                    ▼
+  Narrow / Weak AI (ANI)               General AI (AGI)              Superintelligent AI (ASI)
+  Task-specific                        Human-level, transfer         Beyond the best humans
+  Examples: recommenders,              across domains                Self-improving (speculative)
+  spam filters, ChatGPT, Deep Blue     Status: not achieved          Status: theoretical
+        │
+        ▼
+        Techniques in use today (almost all deployed AI is Narrow AI)
+        │
+┌─────────────┴──────────┬──────────────┬──────────────┬──────────────┐
+▼                        ▼              ▼              ▼              ▼
+Rule-Based AI        Machine Learning  Robotics     Computer Vision    NLP
+(IF–THEN rules)      (learn from data) (AI+hardware)  (see)           (language)
+                             │
+                             ▼
+              Types of Machine Learning  —  siblings, not a stack
+        ┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+        ▼              ▼              ▼              ▼              ▼
+   Supervised     Unsupervised   Semi-supervised  Self-supervised  Reinforcement
+   (labeled y)     (clusters)     (few labels)    (labels from     (rewards)
+                                                   the data itself)
+                             │
+                             ▼
+              Deep Learning  ←  technique that can use ANY type above
+              (multi-layer neural nets — not a child of Unsupervised)
+                             │
+            ┌────────────────┴────────────────┐
+            ▼                                 ▼
+     Neural architectures              Generative AI
+     ANN · CNN · RNN · LSTM/GRU        (create new samples)
+     Transformers                             │
+                             ┌────────┬───────┼────────┬────────┐
+                             ▼        ▼       ▼        ▼        ▼
+                           Text     Code    Image    Audio/    Multimodal
+                           LLMs    Copilot  Diffusion Video    VLMs
+                                            &amp; GANs</div>
+
+            <h3>Diagram 2: complete taxonomy</h3>
+            <div class="illustration">
+                <img src="/images/ai/ai-taxonomy-tree.png" alt="AI taxonomy tree: rule-based systems, expert systems, robotics, computer vision, NLP, and machine learning including deep learning, generative AI, RAG, and agents" loading="lazy">
+                <div class="illustration-caption">Technique tree. Deep learning is drawn across the learning types. RAG and agents sit on generative models, they are not a new kind of intelligence.</div>
+            </div>
+
+            <div class="diagram-box terminal">Artificial Intelligence (AI)
+│
+├── Rule-Based AI
+│     ├── Predefined IF–THEN rules; no learning from data
+│     └── Example: thermostat, business-rule engine
+│
+├── Expert Systems
+│     ├── Knowledge base + inference engine
+│     └── Example: medical guideline systems
+│
+├── Robotics
+│     ├── Sense, plan, and act with hardware
+│     └── Example: warehouse robots, drones
+│
+├── Computer Vision
+│     ├── Classification, detection, segmentation, OCR
+│     └── Example: face unlock, inspection cameras
+│
+├── Natural Language Processing (NLP)
+│     ├── Understand and generate language
+│     └── Example: translation, search, chat
+│
+└── Machine Learning (ML)  —  learn patterns from data
+      ├── Supervised          labeled (x → y)     e.g. spam detection
+      ├── Unsupervised        structure, no y      e.g. customer segments
+      ├── Semi-supervised     few labels
+      ├── Self-supervised     labels from the data itself (next token)
+      ├── Reinforcement       rewards / penalties  e.g. AlphaGo
+      │
+      └── Deep Learning (DL)  —  neural nets; used with the types above
+            ├── Architectures
+            │     ├── ANN     tabular / basic patterns
+            │     ├── CNN     images and video
+            │     ├── RNN / LSTM / GRU     sequences (older default)
+            │     └── Transformers         language, vision, audio
+            │
+            └── Generative AI  —  create new text, images, audio, video, code
+                  ├── Text / LLMs     GPT, Gemini, Claude, Llama
+                  ├── Code            Copilot, code LLMs
+                  ├── Image           diffusion (Stable Diffusion, DALL·E), GANs
+                  ├── Audio / video   TTS, music, text-to-video
+                  ├── Multimodal      VLMs, text+image+audio
+                  ├── RAG             retrieve your docs, then generate
+                  └── Agents          plan → tool call → observe → repeat</div>
+
+            <h3>Capability vs technique (quick table)</h3>
+            <table>
+                <tr>
+                    <th>Layer</th>
+                    <th>What it is</th>
+                    <th>Relationship</th>
+                </tr>
+                <tr>
+                    <td><strong>Artificial Intelligence</strong></td>
+                    <td>The whole field of intelligent systems</td>
+                    <td>Includes rules, search, ML, robotics, planning</td>
+                </tr>
+                <tr>
+                    <td><strong>Machine Learning</strong></td>
+                    <td>Systems that learn patterns from data</td>
+                    <td>A subset of AI — not the only subset</td>
+                </tr>
+                <tr>
+                    <td><strong>Deep Learning</strong></td>
+                    <td>ML with multi-layer neural nets</td>
+                    <td>A subset of ML, usable with any learning type</td>
+                </tr>
+                <tr>
+                    <td><strong>Transformers</strong></td>
+                    <td>A neural architecture built on attention</td>
+                    <td>One DL architecture, not a parent of all GenAI</td>
+                </tr>
+                <tr>
+                    <td><strong>LLMs</strong></td>
+                    <td>Large transformer language models</td>
+                    <td>One application of transformers</td>
+                </tr>
+                <tr>
+                    <td><strong>Generative AI</strong></td>
+                    <td>Models that create new text, images, audio, video, code</td>
+                    <td>Includes LLMs, diffusion, GANs</td>
+                </tr>
+            </table>
+
+            <div class="info-box premium">
+                <h3>The three capability labels</h3>
+                <ul>
+                    <li><strong>Narrow AI (ANI):</strong> Where we are. One task or a cluster of related tasks — chess, transcription, coding assistance.</li>
+                    <li><strong>AGI:</strong> Hypothetical systems that can learn and transfer across most intellectual work at human level. Not achieved.</li>
+                    <li><strong>ASI:</strong> Speculative systems that exceed the best humans across most domains.</li>
+                </ul>
+                <p><strong>Don’t confuse AGI with “strong AI.”</strong> In philosophy, strong AI often meant a machine that <em>is</em> a mind. AGI is an engineering target: human-level capability.</p>
+            </div>
+
+            <div class="info-box">
+                <h4>📌 Key insights</h4>
+                <ul>
+                    <li><strong>The field of AI</strong> already has many subfields. AGI is a capability goal, not the parent of those subfields.</li>
+                    <li><strong>ML is a subset of AI</strong>, not a synonym. Data science overlaps; it is not a third intelligence level.</li>
+                    <li><strong>Deep learning is a subset of ML</strong> that uses neural networks — including supervised vision and self-supervised LLMs.</li>
+                    <li><strong>Progression of methods:</strong> rules → statistics → classical ML → deep learning → transformers → LLMs and diffusion.</li>
+                    <li><strong>RAG and agents</strong> are system patterns on top of generative models, not new branches of intelligence.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="types">
+            <h2>🎯 Types of AI</h2>
+
+            <h3>1. Narrow AI (Weak AI)</h3>
+            <p>Designed for a defined task. It does not automatically transfer to a new domain. Almost every deployed system is narrow AI, including large chat models.</p>
+            <div class="info-box">
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Virtual assistants (Siri, Alexa)</li>
+                    <li>Recommendation systems (Netflix, YouTube)</li>
+                    <li>Image recognition and medical imaging models</li>
+                    <li>Spam filters and fraud detectors</li>
+                    <li>Code assistants and chat LLMs</li>
+                </ul>
+            </div>
+
+            <h3>2. General AI (AGI)</h3>
+            <p>A system that can learn, reason, and apply knowledge across a wide range of tasks with human-level flexibility — including tasks it was not specialized for.</p>
+            <ul>
+                <li><strong>Status:</strong> Not achieved. Benchmarks keep moving; none equal “a competent human hire.”</li>
+                <li><strong>Goal:</strong> Broad competence plus transfer, not just a bigger chatbot.</li>
+            </ul>
+
+            <h3>3. Superintelligent AI (ASI)</h3>
+            <p>Theoretical AI that surpasses humans in most economically and scientifically valuable work, possibly including the ability to improve itself.</p>
+            <ul>
+                <li><strong>Status:</strong> Speculative. Useful as a risk and governance conversation, not as a product category.</li>
+            </ul>
+
+            <h3>Major branches of the field</h3>
+            <table>
+                <tr>
+                    <th>Branch</th>
+                    <th>Description</th>
+                    <th>Typical applications</th>
+                </tr>
+                <tr>
+                    <td><strong>Machine Learning</strong></td>
+                    <td>Learn patterns from data</td>
+                    <td>Fraud detection, recommendations, forecasting</td>
+                </tr>
+                <tr>
+                    <td><strong>Deep Learning</strong></td>
+                    <td>Neural nets with many layers</td>
+                    <td>Vision, speech, language, protein folding</td>
+                </tr>
+                <tr>
+                    <td><strong>NLP</strong></td>
+                    <td>Understand and generate language</td>
+                    <td>Search, translation, chat, summarization</td>
+                </tr>
+                <tr>
+                    <td><strong>Computer Vision</strong></td>
+                    <td>Interpret images and video</td>
+                    <td>Face unlock, inspection, driving perception</td>
+                </tr>
+                <tr>
+                    <td><strong>Robotics</strong></td>
+                    <td>Sense, plan, and act in the physical world</td>
+                    <td>Warehouse robots, drones, surgery</td>
+                </tr>
+                <tr>
+                    <td><strong>Planning &amp; search</strong></td>
+                    <td>Explore action sequences under constraints</td>
+                    <td>Games, routing, compilers, AlphaGo</td>
+                </tr>
+                <tr>
+                    <td><strong>Expert / rule systems</strong></td>
+                    <td>Knowledge bases + inference rules</td>
+                    <td>Medical guidelines, business rules, tax engines</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="data">
+            <h2>📊 Data Science</h2>
+
+            <p><span class="highlight">Data Science</span> extracts insight from data using statistics, analysis, and often ML. AI needs data. Data science is how you get that data into a shape a model (or a human) can use.</p>
+
+            <h3>Data types</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>Structured</strong></td>
+                    <td>Rows and columns with a schema</td>
+                    <td>SQL tables, spreadsheets</td>
+                </tr>
+                <tr>
+                    <td><strong>Unstructured</strong></td>
+                    <td>No fixed schema</td>
+                    <td>Text, images, audio, video</td>
+                </tr>
+                <tr>
+                    <td><strong>Semi-structured</strong></td>
+                    <td>Nested fields, flexible schema</td>
+                    <td>JSON, XML, logs</td>
+                </tr>
+                <tr>
+                    <td><strong>Labeled</strong></td>
+                    <td>Each example has a target</td>
+                    <td>Spam / not spam, house price</td>
+                </tr>
+                <tr>
+                    <td><strong>Unlabeled</strong></td>
+                    <td>No target column</td>
+                    <td>Raw click logs, photo dumps</td>
+                </tr>
+            </table>
+
+            <h3>Preprocessing that actually matters</h3>
+            <ol>
+                <li><strong>Cleaning:</strong> missing values, duplicates, broken types, leaked test rows</li>
+                <li><strong>Transformation:</strong> scaling, encoding categoricals, log-transforms</li>
+                <li><strong>Integration:</strong> joins across product, billing, and support systems</li>
+                <li><strong>Reduction:</strong> feature selection, PCA, or just deleting unused columns</li>
+                <li><strong>Split discipline:</strong> train / validation / test, preferably by time for anything that drifts</li>
+            </ol>
+
+            <h3>AI vs ML vs DL vs data science</h3>
+            <table>
+                <tr>
+                    <th>Concept</th>
+                    <th>Job</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>AI</strong></td>
+                    <td>Make a system behave intelligently</td>
+                    <td>A routing agent that books a ticket</td>
+                </tr>
+                <tr>
+                    <td><strong>Machine Learning</strong></td>
+                    <td>Learn the behavior from data</td>
+                    <td>A model that predicts churn</td>
+                </tr>
+                <tr>
+                    <td><strong>Deep Learning</strong></td>
+                    <td>Learn with neural nets</td>
+                    <td>A vision model that finds tumors</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Science</strong></td>
+                    <td>Turn data into decisions and models</td>
+                    <td>A dashboard plus a forecast plus an A/B test</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="ml">
+            <h2>📈 Machine Learning</h2>
+
+            <p><span class="highlight">Machine Learning</span> lets a system learn patterns from data instead of encoding every rule by hand. You choose a model family, feed it examples, and measure whether it generalizes to new examples.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-ml-types.png" alt="Three columns comparing supervised learning with labeled examples, unsupervised clustering, and reinforcement learning with an agent-environment reward loop" loading="lazy">
+                <div class="illustration-caption">The three classical settings: labeled targets, unlabeled structure, and learning from rewards.</div>
+            </div>
+
+            <h3>1. Supervised learning</h3>
+            <p>Each example is a pair <code>(x, y)</code>. The model learns to predict <code>y</code> from <code>x</code>.</p>
+            <ul>
+                <li><strong>Classification:</strong> y is a class (spam, disease, intent)</li>
+                <li><strong>Regression:</strong> y is a number (price, latency, remaining life)</li>
+            </ul>
+            <div class="info-box">
+                <p><strong>Use cases:</strong> email spam, house prices, diagnosis from lab values, sentiment, credit risk</p>
+                <p><strong>Workhorse models:</strong> linear / logistic regression, trees, random forests, gradient boosting (XGBoost, LightGBM), small neural nets</p>
+            </div>
+
+            <h3>2. Unsupervised learning</h3>
+            <p>No labels. The algorithm finds structure: groups, axes, or outliers.</p>
+            <ul>
+                <li><strong>Clustering:</strong> K-means, hierarchical, DBSCAN — customer segments</li>
+                <li><strong>Dimensionality reduction:</strong> PCA, t-SNE, UMAP — compress and visualize</li>
+                <li><strong>Anomaly detection:</strong> “this row does not look like the others”</li>
+            </ul>
+
+            <h3>3. Semi-supervised learning</h3>
+            <p>A little labeled data plus a lot of unlabeled data. Useful when labels are expensive (medical images, legal docs). The unlabeled mass helps the model learn the shape of the input space.</p>
+
+            <h3>4. Self-supervised learning</h3>
+            <p>Labels are created from the data itself. Predict the next word. Predict a masked patch of an image. This is how modern LLMs and many vision models are pretrained — you do not need humans to label every token.</p>
+
+            <h3>5. Reinforcement learning</h3>
+            <p>An <strong>agent</strong> takes actions in an <strong>environment</strong>, observes a new <strong>state</strong>, and receives a <strong>reward</strong>. It learns a policy that maximizes long-term reward.</p>
+            <div class="info-box">
+                <p><strong>Use cases:</strong> games (AlphaGo), robotics, bidding, some LLM alignment (RLHF)</p>
+                <p><strong>Core ideas:</strong> exploration vs exploitation, value functions, policy gradients, reward hacking (the agent optimizes the metric, not your intent)</p>
+            </div>
+
+            <h3>ML workflow</h3>
+            <ol>
+                <li><strong>Problem:</strong> what decision, for whom, what costs of being wrong</li>
+                <li><strong>Data collection:</strong> logs, labels, privacy constraints</li>
+                <li><strong>Preprocessing &amp; features:</strong> the unglamorous 80%</li>
+                <li><strong>Baseline:</strong> majority class, last week’s average, a regex</li>
+                <li><strong>Model selection &amp; training</strong></li>
+                <li><strong>Evaluation:</strong> holdout, time split, slices, calibration</li>
+                <li><strong>Deployment:</strong> API, batch job, or on-device</li>
+                <li><strong>Monitoring &amp; retraining:</strong> drift is normal</li>
+            </ol>
+
+            <div class="warning-box">
+                <strong>Leakage:</strong> if a feature is only known after the prediction time, or includes the label, your accuracy is fake. For anything that happens over days, split by time, not at random.
+            </div>
+        </section>
+
+        <section id="dl">
+            <h2>🧠 Deep Learning</h2>
+
+            <p><span class="highlight">Deep Learning</span> is machine learning with neural networks that have many layers. Depth lets the model build a hierarchy of features: edges → parts → objects in vision; characters → words → syntax → meaning in language.</p>
+
+            <h3>When deep learning wins</h3>
+            <ul>
+                <li>Unstructured data: images, audio, raw text</li>
+                <li>Enough data (thousands to billions of examples)</li>
+                <li>A GPU/TPU budget and a way to serve the model</li>
+            </ul>
+            <p>For small tabular problems, gradient boosting still often beats a neural net. Start cheap.</p>
+
+            <h3>Network families</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Best for</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>MLP / ANN</strong></td>
+                    <td>Tabular patterns</td>
+                    <td>Churn, credit scoring baselines</td>
+                </tr>
+                <tr>
+                    <td><strong>CNN</strong></td>
+                    <td>Grid-like data (images)</td>
+                    <td>ResNet, EfficientNet, YOLO</td>
+                </tr>
+                <tr>
+                    <td><strong>RNN / LSTM / GRU</strong></td>
+                    <td>Sequences (older default)</td>
+                    <td>Early translation, time series</td>
+                </tr>
+                <tr>
+                    <td><strong>Transformer</strong></td>
+                    <td>Language, vision, audio, multimodal</td>
+                    <td>BERT, GPT, ViT, Whisper</td>
+                </tr>
+                <tr>
+                    <td><strong>GNN</strong></td>
+                    <td>Graphs (molecules, social nets)</td>
+                    <td>Drug discovery, recommendations</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="neural">
+            <h2>🔗 Neural Networks</h2>
+
+            <p>A neural network is a stack of linear maps and nonlinearities. Each connection has a <strong>weight</strong>. Each unit has a <strong>bias</strong>. Training is just adjusting those numbers so the loss goes down.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-neural-network.png" alt="Neural network with input hidden and output layers, plus a zoomed neuron showing weights, bias, and activation" loading="lazy">
+                <div class="illustration-caption">Data flows left to right. Learning changes the weights. The activation function is what makes the stack able to fit nonlinear patterns.</div>
+            </div>
+
+            <h3>The neuron</h3>
+            <div class="info-box">
+                <p><strong>Formula:</strong> <code>output = activation(Σ (weight × input) + bias)</code></p>
+                <p>Without an activation, stacked layers collapse into one linear map. ReLU, GELU, and SiLU are the usual hidden-layer choices in modern nets.</p>
+            </div>
+
+            <h3>Layers</h3>
+            <ul>
+                <li><strong>Input:</strong> raw features or embeddings</li>
+                <li><strong>Hidden:</strong> learned representations (more layers = deeper)</li>
+                <li><strong>Output:</strong> logits, probabilities, or generated tokens</li>
+            </ul>
+
+            <h3>Activation functions</h3>
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Range</th>
+                    <th>Typical use</th>
+                </tr>
+                <tr>
+                    <td><strong>Sigmoid</strong></td>
+                    <td>(0, 1)</td>
+                    <td>Binary output (less common in hidden layers)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tanh</strong></td>
+                    <td>(−1, 1)</td>
+                    <td>Older hidden layers; zero-centered</td>
+                </tr>
+                <tr>
+                    <td><strong>ReLU</strong></td>
+                    <td>[0, ∞)</td>
+                    <td>Default hidden activation; fast</td>
+                </tr>
+                <tr>
+                    <td><strong>GELU / SiLU</strong></td>
+                    <td>smooth ReLU-like</td>
+                    <td>Transformers (GPT, BERT-style)</td>
+                </tr>
+                <tr>
+                    <td><strong>Softmax</strong></td>
+                    <td>probabilities that sum to 1</td>
+                    <td>Multi-class or next-token heads</td>
+                </tr>
+            </table>
+
+            <h3>CNNs in one paragraph</h3>
+            <p>A convolution slides a small filter over the image. Early filters learn edges; later layers learn objects. <strong>Pooling</strong> downsamples. <strong>Skip connections</strong> (ResNet) let gradients flow through very deep stacks. YOLO-style detectors predict boxes in one pass for real-time use.</p>
+
+            <h3>RNNs in one paragraph</h3>
+            <p>RNNs step through a sequence and keep a hidden state. They struggle with long-range dependencies (vanishing gradients). LSTM and GRU add gates. Transformers largely replaced them for language because attention is parallel and sees the whole context at once.</p>
+        </section>
+
+        <section id="training">
+            <h2>📊 Training &amp; Evaluation</h2>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-training-loop.png" alt="Training loop: data batch, forward pass, loss, backpropagation, optimizer weight update" loading="lazy">
+                <div class="illustration-caption">One iteration: predict, measure error, send gradients backward, step the optimizer. An epoch is one full pass over the dataset.</div>
+            </div>
+
+            <h3>Forward pass and backpropagation</h3>
+            <ol>
+                <li>A batch of examples goes through the network</li>
+                <li>The last layer produces predictions</li>
+                <li>A <strong>loss</strong> compares predictions to labels (cross-entropy, MSE, …)</li>
+                <li><strong>Backprop</strong> uses the chain rule to get ∂loss/∂weight for every weight</li>
+                <li>An <strong>optimizer</strong> (SGD, Adam, AdamW) takes a step of size <em>learning rate</em></li>
+            </ol>
+
+            <h3>Vocabulary</h3>
+            <table>
+                <tr>
+                    <th>Term</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><strong>Epoch</strong></td>
+                    <td>One full pass through the training set</td>
+                </tr>
+                <tr>
+                    <td><strong>Batch size</strong></td>
+                    <td>Examples per update (32–4096+ depending on hardware)</td>
+                </tr>
+                <tr>
+                    <td><strong>Iteration / step</strong></td>
+                    <td>One weight update</td>
+                </tr>
+                <tr>
+                    <td><strong>Learning rate</strong></td>
+                    <td>Step size. Too high = diverge. Too low = crawl.</td>
+                </tr>
+                <tr>
+                    <td><strong>Scheduler</strong></td>
+                    <td>Changes LR over time (warmup, cosine decay)</td>
+                </tr>
+            </table>
+
+            <h3>Classification metrics</h3>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Formula</th>
+                    <th>Use when</th>
+                </tr>
+                <tr>
+                    <td><strong>Accuracy</strong></td>
+                    <td>(TP + TN) / N</td>
+                    <td>Classes are balanced and errors cost the same (rare)</td>
+                </tr>
+                <tr>
+                    <td><strong>Precision</strong></td>
+                    <td>TP / (TP + FP)</td>
+                    <td>False positives are expensive</td>
+                </tr>
+                <tr>
+                    <td><strong>Recall</strong></td>
+                    <td>TP / (TP + FN)</td>
+                    <td>False negatives are expensive</td>
+                </tr>
+                <tr>
+                    <td><strong>F1</strong></td>
+                    <td>Harmonic mean of precision and recall</td>
+                    <td>Need one number on imbalanced data</td>
+                </tr>
+                <tr>
+                    <td><strong>ROC-AUC / PR-AUC</strong></td>
+                    <td>Ranking quality</td>
+                    <td>PR-AUC when positives are rare</td>
+                </tr>
+            </table>
+
+            <h3>Regression metrics</h3>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td><strong>MAE</strong></td>
+                    <td>Average absolute error — easy to explain</td>
+                </tr>
+                <tr>
+                    <td><strong>MSE / RMSE</strong></td>
+                    <td>Punish large errors; RMSE is in the target’s units</td>
+                </tr>
+                <tr>
+                    <td><strong>R²</strong></td>
+                    <td>Variance explained — can look great while MAE is still useless</td>
+                </tr>
+            </table>
+
+            <h3>Underfitting vs overfitting</h3>
+            <div class="illustration">
+                <img src="/images/ai/ai-overfitting.png" alt="Three scatter plots: underfitting with a straight line, a good smooth fit, and overfitting that wiggles through every point" loading="lazy">
+                <div class="illustration-caption">Underfit = too simple (high bias). Overfit = memorizes noise (high variance). You want low training error <em>and</em> low validation error.</div>
+            </div>
+
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Underfitting</th>
+                    <th>Good fit</th>
+                    <th>Overfitting</th>
+                </tr>
+                <tr>
+                    <td><strong>Train error</strong></td>
+                    <td>High</td>
+                    <td>Low</td>
+                    <td>Very low</td>
+                </tr>
+                <tr>
+                    <td><strong>Val error</strong></td>
+                    <td>High</td>
+                    <td>Low</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>Fix</strong></td>
+                    <td>Bigger model, better features, train longer</td>
+                    <td>—</td>
+                    <td>Regularization, more data, simpler model, early stopping</td>
+                </tr>
+            </table>
+
+            <h3>Regularization</h3>
+            <ul>
+                <li><strong>L2 (weight decay):</strong> keep weights small — default in AdamW</li>
+                <li><strong>L1:</strong> sparse weights, crude feature selection</li>
+                <li><strong>Dropout:</strong> randomly drop units during training</li>
+                <li><strong>Early stopping:</strong> halt when validation loss stops improving</li>
+                <li><strong>Data augmentation:</strong> extra views of the same example</li>
+                <li><strong>Batch / layer / RMS norm:</strong> stabilize activations so training does not explode</li>
+            </ul>
+        </section>
+
+        <section id="nlp">
+            <h2>💬 Natural Language Processing</h2>
+
+            <p><span class="highlight">NLP</span> is how machines read, interpret, and produce human language. Today that mostly means transformers plus tokenization. Classical NLP (regex, TF-IDF, CRFs) is still useful for cheap, tight tasks.</p>
+
+            <h3>Evolution</h3>
+            <ol>
+                <li><strong>Rules:</strong> grammars and pattern lists</li>
+                <li><strong>Statistics:</strong> n-grams, HMMs, noisy channel translation</li>
+                <li><strong>Classical ML:</strong> bag-of-words + logistic regression / SVMs</li>
+                <li><strong>Deep learning:</strong> word2vec, RNNs, seq2seq</li>
+                <li><strong>Transformers &amp; LLMs:</strong> pretrained on the internet, then aligned</li>
+            </ol>
+
+            <h3>Core tasks</h3>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>What you want</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>Classification</strong></td>
+                    <td>A label for a document</td>
+                    <td>Spam, intent, topic</td>
+                </tr>
+                <tr>
+                    <td><strong>NER</strong></td>
+                    <td>Spans: people, orgs, dates</td>
+                    <td>Extract vendors from invoices</td>
+                </tr>
+                <tr>
+                    <td><strong>Sentiment</strong></td>
+                    <td>Tone or aspect sentiment</td>
+                    <td>Review mining</td>
+                </tr>
+                <tr>
+                    <td><strong>Translation</strong></td>
+                    <td>Same meaning, new language</td>
+                    <td>Product localization</td>
+                </tr>
+                <tr>
+                    <td><strong>QA / RAG</strong></td>
+                    <td>Answer grounded in sources</td>
+                    <td>Internal docs chatbot</td>
+                </tr>
+                <tr>
+                    <td><strong>Summarization</strong></td>
+                    <td>Shorter text, same facts</td>
+                    <td>Meeting notes</td>
+                </tr>
+                <tr>
+                    <td><strong>Generation</strong></td>
+                    <td>New text or code</td>
+                    <td>Drafts, copilots</td>
+                </tr>
+            </table>
+
+            <h3>Embeddings</h3>
+            <p>An embedding is a vector that puts similar meanings nearby in space. Older static embeddings (Word2Vec, GloVe, FastText) gave each word one vector. Contextual models (BERT, sentence transformers, LLM embedding APIs) give a vector that depends on the sentence. That is the substrate for search, clustering, and RAG.</p>
+        </section>
+
+        <section id="attention">
+            <h2>🔎 Attention &amp; Transformers</h2>
+
+            <p>The transformer is the architecture behind nearly every modern LLM and many vision/audio models. The idea: every token can look at every other token in the sequence, in parallel.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-transformer-attention.png" alt="Transformer self-attention: a sentence tokenized, an attention heatmap, and encoder-decoder blocks with multi-head attention and positional encoding" loading="lazy">
+                <div class="illustration-caption">Self-attention builds a weighted mix of other tokens. Multi-head attention runs several of those mixes at once. Positional encoding injects word order.</div>
+            </div>
+
+            <h3>Pieces you should be able to name</h3>
+            <ul>
+                <li><strong>Tokenization:</strong> text → subword IDs (BPE, SentencePiece). “unhappiness” might become <code>un</code> + <code>happiness</code>.</li>
+                <li><strong>Embeddings:</strong> each token ID becomes a vector.</li>
+                <li><strong>Positional information:</strong> sin/cos encodings or rotary (RoPE) so order is not lost.</li>
+                <li><strong>Query / Key / Value:</strong> attention scores come from Q·K, then those weights mix V.</li>
+                <li><strong>Multi-head:</strong> several attention patterns in parallel (syntax vs coreference, etc.).</li>
+                <li><strong>Feed-forward / MLP:</strong> per-token nonlinear transform after attention.</li>
+                <li><strong>Residuals + layer norm:</strong> keep deep stacks trainable.</li>
+            </ul>
+
+            <h3>Encoder vs decoder vs encoder-decoder</h3>
+            <table>
+                <tr>
+                    <th>Family</th>
+                    <th>Masking</th>
+                    <th>Famous models</th>
+                    <th>Good at</th>
+                </tr>
+                <tr>
+                    <td><strong>Encoder</strong></td>
+                    <td>Bidirectional (see both sides)</td>
+                    <td>BERT, RoBERTa</td>
+                    <td>Classification, NER, embeddings</td>
+                </tr>
+                <tr>
+                    <td><strong>Decoder</strong></td>
+                    <td>Causal (only past tokens)</td>
+                    <td>GPT, Llama, Claude, Gemini</td>
+                    <td>Generation, chat, code</td>
+                </tr>
+                <tr>
+                    <td><strong>Encoder–decoder</strong></td>
+                    <td>Both</td>
+                    <td>T5, BART, original Transformer</td>
+                    <td>Translation, summarization</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Why transformers beat RNNs:</strong> they train in parallel on GPUs, they have a direct path between distant tokens, and they scale predictably as you add data and parameters.
+            </div>
+        </section>
+
+        <section id="llm">
+            <h2>🤖 Large Language Models</h2>
+
+            <p><span class="highlight">LLMs</span> are decoder (or encoder-decoder) transformers trained on huge text corpora to predict the next token. After pretraining they are usually <strong>instruction-tuned</strong> and <strong>aligned</strong> so they follow requests instead of only completing internet text.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-rlhf.png" alt="Three stages of LLM alignment: pretraining on unlabeled text, supervised fine-tuning on instructions, then RLHF with a reward model" loading="lazy">
+                <div class="illustration-caption">Pretrain for knowledge and fluency. SFT for following instructions. RLHF / DPO for preferred style, safety, and helpfulness. None of this guarantees factuality.</div>
+            </div>
+
+            <h3>Representative models (facts, not rumors)</h3>
+            <table>
+                <tr>
+                    <th>Model</th>
+                    <th>Org</th>
+                    <th>Notes</th>
+                    <th>Era</th>
+                </tr>
+                <tr>
+                    <td><strong>BERT</strong></td>
+                    <td>Google</td>
+                    <td>Encoder, 110M–340M; not a chat LLM</td>
+                    <td>2018</td>
+                </tr>
+                <tr>
+                    <td><strong>GPT-3</strong></td>
+                    <td>OpenAI</td>
+                    <td>175B dense decoder; few-shot prompting</td>
+                    <td>2020</td>
+                </tr>
+                <tr>
+                    <td><strong>PaLM</strong></td>
+                    <td>Google</td>
+                    <td>540B; Pathways training</td>
+                    <td>2022</td>
+                </tr>
+                <tr>
+                    <td><strong>GPT-4 / GPT-4o</strong></td>
+                    <td>OpenAI</td>
+                    <td>Parameter count <strong>undisclosed</strong> (ignore “1.76T” rumors)</td>
+                    <td>2023–2024</td>
+                </tr>
+                <tr>
+                    <td><strong>Claude</strong></td>
+                    <td>Anthropic</td>
+                    <td>Constitutional AI; long context; size undisclosed</td>
+                    <td>2023–</td>
+                </tr>
+                <tr>
+                    <td><strong>Gemini</strong></td>
+                    <td>Google</td>
+                    <td>Native multimodal family</td>
+                    <td>2023–</td>
+                </tr>
+                <tr>
+                    <td><strong>Llama</strong></td>
+                    <td>Meta</td>
+                    <td>Open weights; 8B to 405B-class over Llama 2/3/4</td>
+                    <td>2023–</td>
+                </tr>
+                <tr>
+                    <td><strong>Mistral / Mixtral</strong></td>
+                    <td>Mistral</td>
+                    <td>Efficient dense and Mixture-of-Experts models</td>
+                    <td>2023–</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>Correction:</strong> GPT-4’s size was never published. Treating a leaked rumor as a spec is how blog posts go stale. Prefer “undisclosed” unless the lab states it.
+            </div>
+
+            <h3>Training vs inference</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Training</th>
+                    <th>Inference</th>
+                </tr>
+                <tr>
+                    <td><strong>Goal</strong></td>
+                    <td>Set the weights</td>
+                    <td>Use the weights</td>
+                </tr>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>Huge (clusters, weeks)</td>
+                    <td>Per token; still expensive at scale</td>
+                </tr>
+                <tr>
+                    <td><strong>When</strong></td>
+                    <td>Rarely</td>
+                    <td>Every user request</td>
+                </tr>
+            </table>
+
+            <h3>What LLMs are bad at (unless you add systems around them)</h3>
+            <ul>
+                <li><strong>Fresh facts:</strong> weights are a snapshot. Use RAG or tools.</li>
+                <li><strong>Arithmetic &amp; exact tables:</strong> they approximate. Use a calculator or DB.</li>
+                <li><strong>Hallucination:</strong> fluent wrong answers. Ground, cite, and evaluate.</li>
+                <li><strong>Long, precise procedures:</strong> they drift. Use agents with checks, or don’t.</li>
+            </ul>
+        </section>
+
+        <section id="genai">
+            <h2>🎨 Generative AI</h2>
+
+            <p><span class="highlight">Generative AI</span> produces new samples that look like the training distribution: text, images, audio, video, 3D, or code. LLMs are one family. Images are dominated by <strong>diffusion</strong> today. Older work used GANs and VAEs.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-diffusion.png" alt="Diffusion process: a clear image is noised in the forward process, then a model learns the reverse denoising process guided by a text prompt" loading="lazy">
+                <div class="illustration-caption">Diffusion: destroy the image with noise, then train a net to reverse the noise. Text (and now video) conditions each step.</div>
+            </div>
+
+            <h3>Techniques</h3>
+            <table>
+                <tr>
+                    <th>Technique</th>
+                    <th>Idea</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>Autoregressive LLMs</strong></td>
+                    <td>Next-token prediction</td>
+                    <td>GPT, Claude, Llama, Gemini</td>
+                </tr>
+                <tr>
+                    <td><strong>Diffusion</strong></td>
+                    <td>Iterative denoising</td>
+                    <td>Stable Diffusion, DALL·E, Sora-class video</td>
+                </tr>
+                <tr>
+                    <td><strong>GANs</strong></td>
+                    <td>Generator vs discriminator game</td>
+                    <td>StyleGAN; less used for text-to-image now</td>
+                </tr>
+                <tr>
+                    <td><strong>VAEs</strong></td>
+                    <td>Encode to a latent, decode back</td>
+                    <td>Compression, some image stacks</td>
+                </tr>
+                <tr>
+                    <td><strong>NeRF / 3D gens</strong></td>
+                    <td>Scene or mesh from views / text</td>
+                    <td>Novel-view synthesis, game assets</td>
+                </tr>
+                <tr>
+                    <td><strong>Multimodal</strong></td>
+                    <td>One model, many media</td>
+                    <td>GPT-4o, Gemini, vision-language models</td>
+                </tr>
+            </table>
+
+            <h3>Mixture of Experts (MoE)</h3>
+            <p>Instead of using every parameter on every token, an MoE model routes each token to a few <strong>expert</strong> MLPs. You get a large parameter count with smaller compute per token (Mixtral-style). Routing and load-balancing are the hard parts.</p>
+        </section>
+
+        <section id="cv">
+            <h2>👁️ Computer Vision</h2>
+
+            <p><span class="highlight">Computer Vision</span> turns pixels into structure: labels, boxes, masks, pose, text, or 3D. CNNs were the workhorse after 2012. Vision transformers (ViT) and multimodal LLMs now share that job.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-computer-vision.png" alt="Four computer vision tasks on a street scene: classification, object detection with boxes, semantic segmentation, and pose estimation" loading="lazy">
+                <div class="illustration-caption">Same image, four jobs: one label, boxes, per-pixel classes, and a skeleton. Always name the task before you pick a model.</div>
+            </div>
+
+            <h3>Tasks</h3>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Output</th>
+                    <th>Where it shows up</th>
+                </tr>
+                <tr>
+                    <td><strong>Classification</strong></td>
+                    <td>One or more labels</td>
+                    <td>Moderation, cataloging</td>
+                </tr>
+                <tr>
+                    <td><strong>Detection</strong></td>
+                    <td>Boxes + classes</td>
+                    <td>Driving, CCTV, retail shelves</td>
+                </tr>
+                <tr>
+                    <td><strong>Segmentation</strong></td>
+                    <td>Class (or instance) per pixel</td>
+                    <td>Medical imaging, AR, maps</td>
+                </tr>
+                <tr>
+                    <td><strong>Pose</strong></td>
+                    <td>Keypoints</td>
+                    <td>Fitness, animation, sports</td>
+                </tr>
+                <tr>
+                    <td><strong>OCR</strong></td>
+                    <td>Text from pixels</td>
+                    <td>IDs, invoices, signs</td>
+                </tr>
+                <tr>
+                    <td><strong>Depth / 3D</strong></td>
+                    <td>Geometry</td>
+                    <td>Robotics, SLAM, reconstruction</td>
+                </tr>
+            </table>
+
+            <h3>Model lineages worth knowing</h3>
+            <ul>
+                <li><strong>Classification CNNs:</strong> VGG, ResNet, EfficientNet</li>
+                <li><strong>Detectors:</strong> R-CNN family (two-stage), YOLO (single-stage, real-time)</li>
+                <li><strong>ViT / CLIP:</strong> patches + transformers; CLIP ties images to language for zero-shot labels and search</li>
+                <li><strong>Generative vision:</strong> GANs historically; diffusion now; VLMs that talk about images</li>
+            </ul>
+        </section>
+
+        <section id="rag">
+            <h2>📚 RAG — Retrieval-Augmented Generation</h2>
+
+            <p>An LLM’s weights are a frozen encyclopedia. <span class="highlight">RAG</span> fetches relevant documents at query time and stuffs them into the prompt so the model can answer with <em>your</em> facts, not just memorized internet text.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-rag-pipeline.png" alt="RAG pipeline: user question, embed query, vector database retrieval of chunks, prompt with context, LLM answer with citations" loading="lazy">
+                <div class="illustration-caption">Embed → retrieve top-k chunks → generate from question + context. Citations are how you debug the system when it is wrong.</div>
+            </div>
+
+            <h3>Pipeline</h3>
+            <ol>
+                <li><strong>Ingest:</strong> split docs into chunks (too big = noisy; too small = no context)</li>
+                <li><strong>Embed &amp; index:</strong> store vectors in a vector DB (pgvector, Chroma, Pinecone, Weaviate)</li>
+                <li><strong>Retrieve:</strong> dense search, often plus keyword (hybrid) and reranking</li>
+                <li><strong>Generate:</strong> LLM sees question + passages; instructed to say “I don’t know” if unsupported</li>
+                <li><strong>Evaluate:</strong> faithfulness (grounded?), relevance, citation precision</li>
+            </ol>
+
+            <div class="info-box">
+                <h4>Why RAG instead of only fine-tuning?</h4>
+                <ul>
+                    <li>Docs change daily — retrieval updates without retraining</li>
+                    <li>You can cite sources and inspect what the model saw</li>
+                    <li>Fine-tuning is for <em>style and skills</em>; RAG is for <em>knowledge</em></li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Failure modes:</strong> bad chunking, wrong embedding model, retrieving similar-but-wrong passages, stuffing too much context, and never measuring hallucinations. RAG is a search problem wearing a chatbot costume.
+            </div>
+        </section>
+
+        <section id="agents">
+            <h2>🧭 AI Agents</h2>
+
+            <p>A chatbot answers in one shot. An <span class="highlight">agent</span> loops: think, pick a tool, observe the result, repeat until the goal is done or it should stop. That is how “book a flight,” “fix this repo,” or “file these invoices” get automated.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-agent-loop.png" alt="AI agent loop: observe, reason and plan, act with tools, observe the result, repeat until the user goal is complete" loading="lazy">
+                <div class="illustration-caption">Perceive → plan → act with tools → observe. Guardrails, budgets, and human approval matter more than a clever prompt.</div>
+            </div>
+
+            <h3>Building blocks</h3>
+            <table>
+                <tr>
+                    <th>Piece</th>
+                    <th>Role</th>
+                </tr>
+                <tr>
+                    <td><strong>Policy (LLM)</strong></td>
+                    <td>Chooses the next action from the transcript</td>
+                </tr>
+                <tr>
+                    <td><strong>Tools</strong></td>
+                    <td>APIs: search, SQL, calendar, code exec, browser</td>
+                </tr>
+                <tr>
+                    <td><strong>Memory</strong></td>
+                    <td>Short-term = context window; long-term = DB / RAG</td>
+                </tr>
+                <tr>
+                    <td><strong>Planner</strong></td>
+                    <td>Optional: break a goal into steps before acting</td>
+                </tr>
+                <tr>
+                    <td><strong>Orchestration</strong></td>
+                    <td>Timeouts, max steps, retries, human-in-the-loop</td>
+                </tr>
+            </table>
+
+            <h3>Patterns</h3>
+            <ul>
+                <li><strong>Tool-calling / function calling:</strong> model emits a structured call; your runtime executes it</li>
+                <li><strong>ReAct:</strong> explicit Thought → Action → Observation traces</li>
+                <li><strong>Multi-agent:</strong> specialist roles (researcher, coder, critic) with a supervisor</li>
+                <li><strong>Computer use:</strong> the agent operates a GUI like a human — powerful and easy to misuse</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Agents fail in production</strong> when tools are unconstrained, loops never terminate, or the model is allowed to invent APIs. Cap steps, log every tool call, and require confirmation for anything that spends money or changes data.
+            </div>
+        </section>
+
+        <section id="finetune">
+            <h2>🎛️ Fine-Tuning &amp; PEFT</h2>
+
+            <p><strong>Pretraining</strong> teaches general language. <strong>Fine-tuning</strong> specializes the model: your tone, your JSON schema, your medical jargon. You rarely train all weights of a 70B model from scratch.</p>
+
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>What changes</th>
+                    <th>When to use it</th>
+                </tr>
+                <tr>
+                    <td><strong>Full fine-tune</strong></td>
+                    <td>Every parameter</td>
+                    <td>You have lots of data and GPUs</td>
+                </tr>
+                <tr>
+                    <td><strong>LoRA / QLoRA</strong></td>
+                    <td>Small adapter matrices (QLoRA = quantized base)</td>
+                    <td>Default PEFT; cheap, swappable adapters</td>
+                </tr>
+                <tr>
+                    <td><strong>Prefix / prompt tuning</strong></td>
+                    <td>Learned virtual tokens</td>
+                    <td>Tiny data, keep base frozen</td>
+                </tr>
+                <tr>
+                    <td><strong>SFT</strong></td>
+                    <td>Supervised instruction pairs</td>
+                    <td>Teach a format or skill</td>
+                </tr>
+                <tr>
+                    <td><strong>DPO / RLHF</strong></td>
+                    <td>Preference data</td>
+                    <td>Style, safety, “which answer is better”</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Rule of thumb:</strong> prompt well first, then RAG for knowledge, then fine-tune for consistent behavior. Fine-tuning will not magically add last week’s wiki.
+            </div>
+        </section>
+
+        <section id="prompting">
+            <h2>✍️ Prompting &amp; Sampling</h2>
+
+            <p>A prompt is the entire context the model conditions on: system instructions, retrieved docs, few-shot examples, and the user message. Sampling parameters decide how greedy or diverse the next token is.</p>
+
+            <h3>Prompting patterns that hold up</h3>
+            <ul>
+                <li><strong>Clear role + constraints:</strong> who it is, what format, what it must not do</li>
+                <li><strong>Few-shot:</strong> 2–5 input/output examples beat adjectives like “be professional”</li>
+                <li><strong>Chain of thought:</strong> ask for steps when the task is multi-hop (or use a reasoning model)</li>
+                <li><strong>Structured output:</strong> JSON schema / tool calls instead of free prose</li>
+                <li><strong>Separation:</strong> instructions vs untrusted user/retrieved text (prompt injection lives here)</li>
+            </ul>
+
+            <h3>Sampling knobs</h3>
+            <table>
+                <tr>
+                    <th>Knob</th>
+                    <th>Effect</th>
+                </tr>
+                <tr>
+                    <td><strong>Temperature</strong></td>
+                    <td>0 ≈ greedy/deterministic; higher ≈ more random</td>
+                </tr>
+                <tr>
+                    <td><strong>Top-p (nucleus)</strong></td>
+                    <td>Sample from the smallest set of tokens whose probability ≥ p</td>
+                </tr>
+                <tr>
+                    <td><strong>Max tokens</strong></td>
+                    <td>Hard cap on output length</td>
+                </tr>
+                <tr>
+                    <td><strong>Stop sequences</strong></td>
+                    <td>End generation at a delimiter</td>
+                </tr>
+            </table>
+
+            <h3>Reasoning models</h3>
+            <p>Models trained to spend tokens on an internal chain of thought (o1-class and successors) often beat a single-shot GPT-style answer on math, code, and planning. You pay with latency and cost. Use them when the extra thinking is cheaper than a wrong action.</p>
+        </section>
+
+        <section id="advanced">
+            <h2>🚀 More Advanced Ideas</h2>
+
+            <h3>Transfer learning</h3>
+            <p>Start from a model trained on a huge dataset (ImageNet, web text). Replace or add a small head, freeze early layers if data is scarce, then fine-tune. You inherit features you could never learn from 500 of your own photos.</p>
+
+            <h3>Foundation models</h3>
+            <p>A foundation model is trained at scale on broad data and adapted to many tasks (via prompts, adapters, or heads). GPT, Llama, Whisper, and CLIP are in this category. The product is the adaptation layer, not a new net from scratch.</p>
+
+            <h3>Ensemble methods (classical ML)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>How</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>Bagging</strong></td>
+                    <td>Average models trained on bootstrap samples</td>
+                    <td>Random Forest</td>
+                </tr>
+                <tr>
+                    <td><strong>Boosting</strong></td>
+                    <td>Each model fixes the previous residual</td>
+                    <td>XGBoost, LightGBM, CatBoost</td>
+                </tr>
+                <tr>
+                    <td><strong>Stacking</strong></td>
+                    <td>A meta-model learns to combine base models</td>
+                    <td>Kaggle blends</td>
+                </tr>
+            </table>
+
+            <h3>Hyperparameter search</h3>
+            <ul>
+                <li><strong>Grid:</strong> exhaustive, slow</li>
+                <li><strong>Random:</strong> often better per hour than grid</li>
+                <li><strong>Bayesian / Hyperband:</strong> spend trials where they help</li>
+                <li><strong>AutoML:</strong> useful baselines; still needs a human on leakage and metrics</li>
+            </ul>
+
+            <h3>Compression for serving</h3>
+            <table>
+                <tr>
+                    <th>Technique</th>
+                    <th>Idea</th>
+                    <th>Win</th>
+                </tr>
+                <tr>
+                    <td><strong>Quantization</strong></td>
+                    <td>FP32 → INT8 / INT4</td>
+                    <td>Smaller VRAM, faster decode</td>
+                </tr>
+                <tr>
+                    <td><strong>Pruning</strong></td>
+                    <td>Drop unused weights</td>
+                    <td>Sparsity (hardware must support it)</td>
+                </tr>
+                <tr>
+                    <td><strong>Distillation</strong></td>
+                    <td>Student copies a teacher</td>
+                    <td>Small model, similar quality</td>
+                </tr>
+                <tr>
+                    <td><strong>Speculative decoding</strong></td>
+                    <td>Draft with a small model, verify with a large one</td>
+                    <td>Lower latency</td>
+                </tr>
+            </table>
+
+            <h3>Federated learning &amp; privacy</h3>
+            <p>Train across devices without pooling raw data (phones send gradients, not photos). Combine with <strong>differential privacy</strong> if you need mathematical privacy budgets. Harder to debug; used when data cannot leave the device or tenant.</p>
+        </section>
+
+        <section id="mlops">
+            <h2>⚙️ MLOps</h2>
+
+            <p><span class="highlight">MLOps</span> is how models survive after the notebook: versioning, tests, deployment, monitoring, and retraining. LLMOps adds evals, prompt/version control, tracing, and cost/latency budgets.</p>
+
+            <h3>Lifecycle</h3>
+            <ol>
+                <li>Define the decision and the metric</li>
+                <li>Collect and document data (lineage)</li>
+                <li>Train and track experiments</li>
+                <li>Evaluate offline (and with humans for LLMs)</li>
+                <li>Register the model / prompt / index</li>
+                <li>Deploy (API, batch, edge)</li>
+                <li>Monitor quality, drift, cost, and abuse</li>
+                <li>Retrain or refresh retrieval when the world moves</li>
+            </ol>
+
+            <h3>Tooling map</h3>
+            <table>
+                <tr>
+                    <th>Need</th>
+                    <th>Typical tools</th>
+                </tr>
+                <tr>
+                    <td><strong>Code + data + model versions</strong></td>
+                    <td>Git, DVC, lakehouse tables</td>
+                </tr>
+                <tr>
+                    <td><strong>Experiments</strong></td>
+                    <td>MLflow, Weights &amp; Biases, Aim</td>
+                </tr>
+                <tr>
+                    <td><strong>Serving</strong></td>
+                    <td>FastAPI, TensorFlow Serving, vLLM, SageMaker, Vertex</td>
+                </tr>
+                <tr>
+                    <td><strong>CI/CD</strong></td>
+                    <td>GitHub Actions, GitLab CI — test eval sets on every change</td>
+                </tr>
+                <tr>
+                    <td><strong>Observability</strong></td>
+                    <td>Prometheus, Grafana, Langfuse / Phoenix for traces</td>
+                </tr>
+            </table>
+
+            <h3>Rollouts</h3>
+            <ul>
+                <li><strong>Shadow:</strong> new model scores live traffic, users still see the old one</li>
+                <li><strong>Canary:</strong> 1–5% of users first</li>
+                <li><strong>Blue-green:</strong> two environments, flip the pointer</li>
+                <li><strong>A/B:</strong> measure the business metric, not only loss</li>
+            </ul>
+        </section>
+
+        <section id="ethics">
+            <h2>⚖️ AI Ethics &amp; Responsible AI</h2>
+
+            <p>Capability without process becomes bias, leaks, and unaccountable decisions. Responsible AI is product work: data, evals, access control, and a human who owns outcomes.</p>
+
+            <h3>Bias and fairness</h3>
+            <ul>
+                <li>Historical, representation, measurement, and amplification biases</li>
+                <li>Mitigations: better data, slice metrics, fairness constraints, audits — not a single “debias” button</li>
+            </ul>
+
+            <h3>Privacy</h3>
+            <ul>
+                <li>Training data can be regurgitated; prompts can contain secrets</li>
+                <li>Techniques: minimization, anonymization, federated learning, differential privacy, tenant isolation</li>
+            </ul>
+
+            <h3>Explainability</h3>
+            <ul>
+                <li>Trees and linear models are inspectable; deep nets need probes (SHAP, LIME, attention — none are perfect)</li>
+                <li>High-stakes domains (lending, medicine) often require a simpler model or a documented override</li>
+            </ul>
+
+            <h3>Security</h3>
+            <ul>
+                <li><strong>Adversarial examples:</strong> tiny input changes that flip a classifier</li>
+                <li><strong>Prompt injection / jailbreaks:</strong> untrusted text that hijacks an agent</li>
+                <li><strong>Data poisoning:</strong> bad training or RAG documents</li>
+                <li><strong>Model theft:</strong> distillation of APIs</li>
+            </ul>
+
+            <h3>Principles to operationalize</h3>
+            <table>
+                <tr>
+                    <th>Principle</th>
+                    <th>In practice</th>
+                </tr>
+                <tr>
+                    <td><strong>Fairness</strong></td>
+                    <td>Measure harm by group; do not ship on average accuracy alone</td>
+                </tr>
+                <tr>
+                    <td><strong>Safety</strong></td>
+                    <td>Refuse dangerous actions; rate-limit tools</td>
+                </tr>
+                <tr>
+                    <td><strong>Privacy</strong></td>
+                    <td>Do not train on secrets; redact logs</td>
+                </tr>
+                <tr>
+                    <td><strong>Transparency</strong></td>
+                    <td>Tell users when they talk to a model; cite sources</td>
+                </tr>
+                <tr>
+                    <td><strong>Accountability</strong></td>
+                    <td>A named owner, an incident process, audit trails</td>
+                </tr>
+                <tr>
+                    <td><strong>Human control</strong></td>
+                    <td>Augment people; keep a stop button for irreversible acts</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="tools">
+            <h2>🛠️ Tools &amp; Frameworks</h2>
+
+            <h3>Deep learning</h3>
+            <table>
+                <tr>
+                    <th>Stack</th>
+                    <th>Notes</th>
+                    <th>Best for</th>
+                </tr>
+                <tr>
+                    <td><strong>PyTorch</strong></td>
+                    <td>Default research + most new models</td>
+                    <td>Training, custom nets</td>
+                </tr>
+                <tr>
+                    <td><strong>TensorFlow</strong></td>
+                    <td>Still strong in production TF shops</td>
+                    <td>Existing TF pipelines</td>
+                </tr>
+                <tr>
+                    <td><strong>Keras 3</strong></td>
+                    <td>High-level API; can run on TF, PyTorch, or JAX</td>
+                    <td>Fast prototyping</td>
+                </tr>
+                <tr>
+                    <td><strong>JAX</strong></td>
+                    <td>Composable transforms, great on TPUs</td>
+                    <td>Research, large-scale training</td>
+                </tr>
+            </table>
+
+            <h3>Classical ML &amp; data</h3>
+            <ul>
+                <li><strong>Scikit-learn, XGBoost, LightGBM, CatBoost</strong></li>
+                <li><strong>Pandas / Polars, NumPy, Jupyter</strong></li>
+                <li><strong>Matplotlib, Seaborn, Plotly</strong></li>
+            </ul>
+
+            <h3>NLP &amp; LLMs</h3>
+            <ul>
+                <li><strong>Hugging Face Transformers + PEFT + TRL</strong> — models, LoRA, alignment</li>
+                <li><strong>spaCy / NLTK</strong> — industrial and teaching NLP</li>
+                <li><strong>vLLM / llama.cpp</strong> — fast local or self-hosted inference</li>
+                <li><strong>LangChain / LlamaIndex</strong> — orchestration (keep the core logic yours)</li>
+            </ul>
+
+            <h3>Vision</h3>
+            <ul>
+                <li><strong>OpenCV, Pillow</strong></li>
+                <li><strong>Detectron2, Ultralytics YOLO</strong></li>
+                <li><strong>timm</strong> — image model zoo</li>
+            </ul>
+        </section>
+
+        <section id="applications">
+            <h2>🌍 Applications</h2>
+
+            <h3>Healthcare</h3>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Imaging:</strong> CXR, CT, MRI, retinal photos — assist, do not silently replace clinicians</li>
+                    <li><strong>Discovery:</strong> AlphaFold-style structure, molecule generation, trial matching</li>
+                    <li><strong>Operations:</strong> coding, prior auth, ambient clinical notes — high hallucination risk</li>
+                </ul>
+            </div>
+
+            <h3>Finance</h3>
+            <div class="info-box">
+                <ul>
+                    <li>Fraud, AML, and account takeover — class imbalance is the whole game</li>
+                    <li>Credit decisioning — fairness and explainability are legal requirements, not extras</li>
+                    <li>Document intelligence and report drafting with RAG over filings</li>
+                </ul>
+            </div>
+
+            <h3>Software &amp; knowledge work</h3>
+            <div class="info-box">
+                <ul>
+                    <li>Code completion, test generation, incident summarization</li>
+                    <li>Internal search (RAG) over wikis, tickets, and runbooks</li>
+                    <li>Agents that open PRs — review like you would a junior hire</li>
+                </ul>
+            </div>
+
+            <h3>Physical world</h3>
+            <ul>
+                <li><strong>Autonomy:</strong> perception + prediction + planning; the hard part is the tail of rare events</li>
+                <li><strong>Manufacturing:</strong> visual inspection, predictive maintenance, scheduling</li>
+                <li><strong>Agriculture &amp; climate:</strong> crop stress, yield, satellite deforestation, grid optimization</li>
+            </ul>
+
+            <div class="tip-box">
+                <strong>How to keep learning:</strong> pick one tabular ML project (metrics + leakage), one fine-tuned or RAG language app, and one evaluation harness. Read the Production AI Engineer track in this site when you want serving, agents, and LLMOps in depth.
+            </div>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 1024 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(e.target) &&
+                toggle && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>

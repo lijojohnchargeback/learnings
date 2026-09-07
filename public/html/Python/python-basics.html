@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Basics - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🐍 Python Basics</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Introduction</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">What is Python?</a>
+                <a href="#setup" class="sidebar-link">Setup & Installation</a>
+                <a href="#first-program" class="sidebar-link">First Program</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">💾 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#variables" class="sidebar-link">Variables</a>
+                <a href="#datatypes" class="sidebar-link">Data Types</a>
+                <a href="#type-conversion" class="sidebar-link">Type Conversion</a>
+                <a href="#operators" class="sidebar-link">Operators</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Control Flow</div>
+            <div class="sidebar-links">
+                <a href="#conditionals" class="sidebar-link">If/Else</a>
+                <a href="#loops" class="sidebar-link">Loops</a>
+                <a href="#comprehensions" class="sidebar-link">Comprehensions</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📝 Strings</div>
+            <div class="sidebar-links">
+                <a href="#strings" class="sidebar-link">String Operations</a>
+                <a href="#f-strings" class="sidebar-link">f-Strings</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🐍 Python Basics</h1>
+            <p>Your Complete Guide to Python Fundamentals for Backend Development</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 What is Python?</h2>
+            <p><span class="highlight">Python is a high-level, interpreted, general-purpose programming language</span> known for its clean syntax, readability, and vast ecosystem. It is one of the most popular languages for backend development, data science, automation, and AI.</p>
+
+            <div class="info-box">
+                <h3>Key Facts</h3>
+                <ul>
+                    <li>📅 <strong>Created:</strong> 1991 by Guido van Rossum</li>
+                    <li>🐍 <strong>Name:</strong> Named after Monty Python's Flying Circus</li>
+                    <li>🌐 <strong>Use Cases:</strong> Web backends, APIs, scripting, data science, ML, DevOps</li>
+                    <li>⚡ <strong>Philosophy:</strong> "There should be one obvious way to do it" (Zen of Python)</li>
+                </ul>
+            </div>
+
+            <h3>Why Python for Backend?</h3>
+            <table>
+                <tr><th>Advantages ✅</th><th>Considerations ⚠️</th></tr>
+                <tr>
+                    <td>
+                        <ul>
+                            <li>Easy to read and write</li>
+                            <li>Huge ecosystem (PyPI)</li>
+                            <li>Fast development speed</li>
+                            <li>Great frameworks (Django, FastAPI, Flask)</li>
+                            <li>Strong community support</li>
+                            <li>Excellent for APIs and microservices</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>Slower than compiled languages (C, Go, Rust)</li>
+                            <li>GIL limits true multi-threading for CPU tasks</li>
+                            <li>Dynamic typing can hide bugs without tests</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="setup">
+            <h2>🔧 Setup & Installation</h2>
+
+            <h3>Install Python</h3>
+            <div class="code-block"># Check if Python is installed
+python --version
+python3 --version
+
+# Windows: Download from python.org
+# macOS: brew install python
+# Linux: sudo apt install python3 python3-pip python3-venv</div>
+
+            <h3>Virtual Environment (Best Practice)</h3>
+            <div class="code-block"># Create virtual environment
+python -m venv venv
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (macOS/Linux)
+source venv/bin/activate
+
+# Install packages
+pip install requests flask fastapi
+
+# Save dependencies
+pip freeze > requirements.txt</div>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> Always use a virtual environment per project to isolate dependencies.
+            </div>
+        </section>
+
+        <section id="first-program">
+            <h2>👋 Your First Program</h2>
+            <div class="code-block"># hello.py
+print("Hello, World!")
+
+# Run it
+python hello.py</div>
+
+            <h3>Python REPL</h3>
+            <div class="code-block">$ python
+>>> 2 + 2
+4
+>>> name = "Python"
+>>> print(f"Hello, {name}!")
+Hello, Python!
+>>> exit()</div>
+        </section>
+
+        <section id="variables">
+            <h2>📦 Variables</h2>
+            <p>Python uses <strong>dynamic typing</strong> — no need to declare variable types.</p>
+
+            <div class="code-block">name = "Alice"       # str
+age = 30             # int
+salary = 75000.50    # float
+is_active = True     # bool
+
+# Multiple assignment
+x, y, z = 1, 2, 3
+a = b = c = 0
+
+# Naming conventions (PEP 8)
+user_name = "snake_case"    # variables & functions
+MAX_RETRIES = 3             # constants (convention)
+class UserAccount: pass     # PascalCase for classes</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Note:</strong> Python is case-sensitive. <code>name</code> and <code>Name</code> are different variables.
+            </div>
+        </section>
+
+        <section id="datatypes">
+            <h2>🔢 Data Types</h2>
+
+            <table>
+                <tr><th>Type</th><th>Example</th><th>Description</th></tr>
+                <tr><td><code>int</code></td><td><code>42, -7, 0</code></td><td>Integers (arbitrary precision)</td></tr>
+                <tr><td><code>float</code></td><td><code>3.14, -0.5</code></td><td>Floating-point numbers</td></tr>
+                <tr><td><code>str</code></td><td><code>"hello", 'world'</code></td><td>Text strings</td></tr>
+                <tr><td><code>bool</code></td><td><code>True, False</code></td><td>Boolean values</td></tr>
+                <tr><td><code>list</code></td><td><code>[1, 2, 3]</code></td><td>Ordered, mutable collection</td></tr>
+                <tr><td><code>tuple</code></td><td><code>(1, 2, 3)</code></td><td>Ordered, immutable collection</td></tr>
+                <tr><td><code>dict</code></td><td><code>{"key": "value"}</code></td><td>Key-value pairs</td></tr>
+                <tr><td><code>set</code></td><td><code>{1, 2, 3}</code></td><td>Unordered, unique items</td></tr>
+                <tr><td><code>None</code></td><td><code>None</code></td><td>Represents absence of value</td></tr>
+            </table>
+
+            <div class="code-block"># Check type
+type(42)          # &lt;class 'int'&gt;
+isinstance(42, int)  # True
+
+# Truthy/Falsy values
+bool(0)       # False
+bool("")      # False
+bool([])      # False
+bool(None)    # False
+bool("hi")    # True
+bool(1)       # True</div>
+        </section>
+
+        <section id="type-conversion">
+            <h2>🔄 Type Conversion</h2>
+            <div class="code-block">int("42")       # 42
+float("3.14")   # 3.14
+str(100)        # "100"
+bool(0)         # False
+list("abc")     # ['a', 'b', 'c']
+
+# Safe conversion
+value = "42"
+result = int(value) if value.isdigit() else 0</div>
+        </section>
+
+        <section id="operators">
+            <h2>⚙️ Operators</h2>
+
+            <h3>Arithmetic</h3>
+            <div class="code-block">10 + 3    # 13 (addition)
+10 - 3    # 7  (subtraction)
+10 * 3    # 30 (multiplication)
+10 / 3    # 3.333... (division, always float)
+10 // 3   # 3  (floor division)
+10 % 3    # 1  (modulus)
+2 ** 10   # 1024 (exponent)</div>
+
+            <h3>Comparison</h3>
+            <div class="code-block">5 == 5    # True
+5 != 3    # True
+5 > 3     # True
+5 >= 5    # True</div>
+
+            <h3>Logical</h3>
+            <div class="code-block">True and False   # False
+True or False    # True
+not True         # False
+
+# Short-circuit evaluation
+name = None
+display = name or "Guest"  # "Guest"</div>
+
+            <h3>Walrus Operator (:=) — Python 3.8+</h3>
+            <div class="code-block"># Assign and use in one expression
+if (n := len(data)) > 10:
+    print(f"List has {n} items")</div>
+        </section>
+
+        <section id="conditionals">
+            <h2>🔀 Conditionals</h2>
+            <div class="code-block">age = 25
+
+if age >= 18:
+    print("Adult")
+elif age >= 13:
+    print("Teenager")
+else:
+    print("Child")
+
+# Ternary expression
+status = "adult" if age >= 18 else "minor"
+
+# Match statement (Python 3.10+)
+match status:
+    case "adult":
+        print("Welcome")
+    case "minor":
+        print("Restricted")
+    case _:
+        print("Unknown")</div>
+        </section>
+
+        <section id="loops">
+            <h2>🔁 Loops</h2>
+
+            <h3>for Loop</h3>
+            <div class="code-block"># Iterate over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# With index using enumerate
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+
+# Range
+for i in range(5):       # 0, 1, 2, 3, 4
+    print(i)
+
+for i in range(2, 10, 2):  # 2, 4, 6, 8
+    print(i)</div>
+
+            <h3>while Loop</h3>
+            <div class="code-block">count = 0
+while count < 5:
+    print(count)
+    count += 1</div>
+
+            <h3>break, continue, else</h3>
+            <div class="code-block">for num in range(10):
+    if num == 3:
+        continue  # skip 3
+    if num == 7:
+        break     # stop at 7
+    print(num)
+else:
+    print("Loop completed without break")</div>
+        </section>
+
+        <section id="comprehensions">
+            <h2>📋 List Comprehensions</h2>
+            <div class="code-block"># Basic
+squares = [x**2 for x in range(10)]
+
+# With condition
+evens = [x for x in range(20) if x % 2 == 0]
+
+# Dict comprehension
+word_lengths = {word: len(word) for word in ["hello", "world"]}
+
+# Set comprehension
+unique_lengths = {len(word) for word in ["hello", "world", "hi"]}
+
+# Generator expression (memory efficient)
+total = sum(x**2 for x in range(1000000))</div>
+        </section>
+
+        <section id="strings">
+            <h2>📝 String Operations</h2>
+            <div class="code-block">text = "  Hello, Python!  "
+
+text.strip()          # "Hello, Python!"
+text.lower()        # "  hello, python!  "
+text.upper()          # "  HELLO, PYTHON!  "
+text.replace("Python", "World")
+"Python" in text      # True
+text.split(",")       # ['  Hello', ' Python!  ']
+"-".join(["a", "b"])  # "a-b"
+
+# Slicing
+text = "Python"
+text[0]      # 'P'
+text[-1]     # 'n'
+text[0:3]    # 'Pyt'
+text[::2]    # 'Pto'</div>
+        </section>
+
+        <section id="f-strings">
+            <h2>✨ f-Strings (Formatted String Literals)</h2>
+            <div class="code-block">name = "Alice"
+age = 30
+score = 95.567
+
+# Basic
+print(f"Hello, {name}!")
+
+# Expressions inside
+print(f"Next year: {age + 1}")
+
+# Formatting numbers
+print(f"Score: {score:.1f}%")     # Score: 95.6%
+print(f"ID: {42:05d}")              # ID: 00042
+
+# Debug (Python 3.8+)
+print(f"{name=}, {age=}")           # name='Alice', age=30</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

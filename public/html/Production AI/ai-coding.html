@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding & Application Development — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">👨‍💻 AI Coding & Apps</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#cursor" class="sidebar-link">Cursor</a>
+                <a href="#codex" class="sidebar-link">Codex</a>
+                <a href="#claude-code" class="sidebar-link">Claude Code</a>
+                <a href="#copilot" class="sidebar-link">Copilot</a>
+                <a href="#coding-agents" class="sidebar-link">AI Coding Agents</a>
+                <a href="#react" class="sidebar-link">React / Next.js</a>
+                <a href="#fastapi" class="sidebar-link">FastAPI</a>
+                <a href="#node" class="sidebar-link">Node.js</a>
+                <a href="#apps" class="sidebar-link">AI Applications</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>👨‍💻 9. AI Coding & AI Application Development</h1>
+            <p>Step 9 of 12 — Use coding agents to ship faster, then own the app architecture: UI, API, and model boundary.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Two skills</h2>
+            <ol>
+                <li><strong>Build with AI:</strong> Cursor, Copilot, Claude Code, Codex — agents that edit repos.</li>
+                <li><strong>Build AI products:</strong> React/Next.js + FastAPI/Node that call models safely.</li>
+            </ol>
+            <p>Production AI engineers need both. Agents do not replace code review, tests, or secret hygiene. <span class="highlight">Never paste production keys into a chat. Never merge agent diffs you did not read.</span></p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>One IDE agent</td><td>You can land a small PR with tests using Cursor or Copilot</td></tr>
+                <tr><td>2</td><td>Repo rules</td><td>You have AGENTS.md / rules so the agent follows your stack</td></tr>
+                <tr><td>3</td><td>Next.js UI</td><td>Streaming chat, auth session, no keys in the browser</td></tr>
+                <tr><td>4</td><td>FastAPI or Node</td><td>A /chat route with tracing, quotas, and RAG/tools</td></tr>
+                <tr><td>5</td><td>Product</td><td>You can name the user, the workflow, and the eval for your app</td></tr>
+            </table>
+        </section>
+
+        <section id="cursor">
+            <h2>Cursor</h2>
+            <p>AI-native editor: chat, inline edit, agent mode, rules, MCP. Best results come from a tight repo map, tests, and a short task. Point the agent at files. Ask for diffs, not essays. Keep secrets in env files that are gitignored.</p>
+            <div class="info-box">
+                <strong>Practice:</strong> "Add rate limiting to this FastAPI route and a pytest for 429" — then read every changed line.
+            </div>
+        </section>
+
+        <section id="codex">
+            <h2>Codex</h2>
+            <p>OpenAI’s coding agent family (CLI/cloud/IDE depending on product generation). Treat it like a junior engineer with no production access: scoped tasks, CI as the judge, no unattended deploys. Good for greenfield spikes and test generation.</p>
+        </section>
+
+        <section id="claude-code">
+            <h2>Claude Code</h2>
+            <p>Terminal-first coding agent that can navigate a repo, run commands, and iterate. Powerful on large refactors. Constrain the workspace, review terminal commands (especially rm, migrate, push), and use CLAUDE.md / project instructions.</p>
+        </section>
+
+        <section id="copilot">
+            <h2>GitHub Copilot</h2>
+            <p>Autocomplete + chat + agent features inside VS Code/GitHub. Strong for boilerplate and tests. Weaker if you accept every suggestion — Copilot does not know your SLA. Enable org policies for public code matching if required.</p>
+        </section>
+
+        <section id="coding-agents">
+            <h2>AI coding agents</h2>
+            <p>Common loop: plan → edit → run tests → fix. Your job is the spec and the gates: lint, typecheck, unit tests, secret scan. Multi-file agents hallucinate APIs — keep OpenAPI and types as source of truth.</p>
+            <div class="warning-box">
+                <strong>Dependency risk:</strong> Agents love to add packages. Review lockfiles. Pin versions. No mystery postinstall scripts.
+            </div>
+        </section>
+
+        <section id="react">
+            <h2>React / Next.js</h2>
+            <p>Default UI for AI apps: chat threads, tool call cards, citations, file upload. Use server routes or a BFF so the browser never sees model keys. Stream with SSE or fetch streams. Optimistic UI for user messages; show token/error states.</p>
+            <div class="code-block">// Next.js route handler sketch
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const session = await getSession();
+  if (!session) return new Response("Unauthorized", { status: 401 });
+
+  const stream = await callModelGateway({ userId: session.id, messages });
+  return new Response(stream, { headers: { "Content-Type": "text/event-stream" } });
+}</div>
+        </section>
+
+        <section id="fastapi">
+            <h2>FastAPI</h2>
+            <p>Python AI backend: Pydantic models, async, easy OpenAPI. Put RAG, agents, and eval jobs here. Split "HTTP API" from "workers" when jobs exceed request timeouts (ingest, fine-tune, batch eval).</p>
+            <div class="code-block">from fastapi import FastAPI, Depends
+from fastapi.responses import StreamingResponse
+
+app = FastAPI()
+
+@app.post("/v1/chat")
+async def chat(body: ChatIn, user=Depends(auth)):
+    return StreamingResponse(generate(user.id, body), media_type="text/event-stream")</div>
+        </section>
+
+        <section id="node">
+            <h2>Node.js</h2>
+            <p>Use when the team is TS-first, or for MCP servers, Next.js API routes, and realtime (ws). Same gateway pattern: auth, quota, vendor SDK behind an adapter. Don’t run heavy embedding of 10k PDFs on the Node event loop — hand off to a Python/Go worker.</p>
+        </section>
+
+        <section id="apps">
+            <h2>AI applications (product patterns)</h2>
+            <table>
+                <tr><th>Pattern</th><th>UI + backend</th></tr>
+                <tr><td>Chat with citations</td><td>Thread DB, RAG, stream, quote chunks</td></tr>
+                <tr><td>Copilot in a product</td><td>Side panel, current page as context, tools = your APIs</td></tr>
+                <tr><td>Workflow assistant</td><td>Stepper UI, human approve, durable jobs</td></tr>
+                <tr><td>Internal search</td><td>Hybrid retrieval, ACL filters, eval dashboard</td></tr>
+            </table>
+            <p>Every app needs: identity, tenancy, audit log, cost limit per user, and a "this was generated by AI" posture for legal/UX.</p>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can ship a streaming chat app with auth and no client-side model keys</li>
+                <li>You use a coding agent without skipping review</li>
+                <li>You can draw the box: Next.js / FastAPI / model vendor / vector DB</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> Cloud AI & Infrastructure — where those boxes actually run.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

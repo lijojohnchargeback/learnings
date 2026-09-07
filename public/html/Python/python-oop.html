@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python OOP - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🏗️ Python OOP</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Basics</div>
+            <div class="sidebar-links">
+                <a href="#classes" class="sidebar-link">Classes & Objects</a>
+                <a href="#init" class="sidebar-link">__init__ & Attributes</a>
+                <a href="#methods" class="sidebar-link">Methods</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔐 Encapsulation</div>
+            <div class="sidebar-links">
+                <a href="#encapsulation" class="sidebar-link">Access Control</a>
+                <a href="#properties" class="sidebar-link">Properties</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🧬 Inheritance</div>
+            <div class="sidebar-links">
+                <a href="#inheritance" class="sidebar-link">Inheritance</a>
+                <a href="#polymorphism" class="sidebar-link">Polymorphism</a>
+                <a href="#abc" class="sidebar-link">Abstract Classes</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">✨ Modern Python</div>
+            <div class="sidebar-links">
+                <a href="#dataclasses" class="sidebar-link">Dataclasses</a>
+                <a href="#magic" class="sidebar-link">Magic Methods</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🏗️ Python Object-Oriented Programming</h1>
+            <p>Classes, inheritance, encapsulation, and modern Python patterns</p>
+        </header>
+
+        <section id="classes">
+            <h2>📖 Classes & Objects</h2>
+            <div class="code-block">class User:
+    species = "Homo sapiens"  # Class attribute (shared)
+
+    def __init__(self, name, email):
+        self.name = name        # Instance attribute
+        self.email = email
+
+    def greet(self):
+        return f"Hello, I'm {self.name}"
+
+# Creating objects
+user = User("Alice", "alice@example.com")
+print(user.greet())  # "Hello, I'm Alice"
+print(User.species)  # "Homo sapiens"</div>
+        </section>
+
+        <section id="init">
+            <h2>🔧 __init__ & Attributes</h2>
+            <div class="code-block">class Product:
+    def __init__(self, name: str, price: float, stock: int = 0):
+        self.name = name
+        self.price = price
+        self._stock = stock      # Protected (convention)
+        self.__sku = "AUTO-001"  # Name-mangled (private)
+
+    def __repr__(self):
+        return f"Product(name={self.name!r}, price={self.price})"
+
+    def __str__(self):
+        return f"{self.name} - ${self.price:.2f}"
+
+product = Product("Laptop", 999.99, stock=10)
+print(repr(product))  # Product(name='Laptop', price=999.99)
+print(str(product))   # Laptop - $999.99</div>
+        </section>
+
+        <section id="methods">
+            <h2>⚙️ Instance, Class & Static Methods</h2>
+            <div class="code-block">class DatabaseConnection:
+    _pool_size = 5
+
+    def __init__(self, url):
+        self.url = url
+
+    # Instance method — operates on self
+    def connect(self):
+        return f"Connected to {self.url}"
+
+    # Class method — operates on class, receives cls
+    @classmethod
+    def from_env(cls):
+        import os
+        return cls(os.environ["DATABASE_URL"])
+
+    @classmethod
+    def set_pool_size(cls, size):
+        cls._pool_size = size
+
+    # Static method — no access to self or cls
+    @staticmethod
+    def validate_url(url):
+        return url.startswith(("postgres://", "mysql://"))
+
+db = DatabaseConnection.from_env()</div>
+        </section>
+
+        <section id="encapsulation">
+            <h2>🔐 Encapsulation</h2>
+            <table>
+                <tr><th>Convention</th><th>Meaning</th><th>Example</th></tr>
+                <tr><td><code>name</code></td><td>Public</td><td><code>self.name</code></td></tr>
+                <tr><td><code>_name</code></td><td>Protected (convention)</td><td><code>self._password</code></td></tr>
+                <tr><td><code>__name</code></td><td>Name-mangled (private)</td><td><code>self.__secret</code></td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Python philosophy:</strong> "We're all consenting adults." Access control is by convention, not enforcement.
+            </div>
+        </section>
+
+        <section id="properties">
+            <h2>🏷️ Properties</h2>
+            <div class="code-block">class Temperature:
+    def __init__(self, celsius):
+        self._celsius = celsius
+
+    @property
+    def celsius(self):
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self, value):
+        if value < -273.15:
+            raise ValueError("Below absolute zero")
+        self._celsius = value
+
+    @property
+    def fahrenheit(self):
+        return self._celsius * 9/5 + 32
+
+temp = Temperature(25)
+print(temp.fahrenheit)  # 77.0
+temp.celsius = 30     # Uses setter</div>
+        </section>
+
+        <section id="inheritance">
+            <h2>🧬 Inheritance</h2>
+            <div class="code-block">class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        raise NotImplementedError
+
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name} says Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return f"{self.name} says Meow!"
+
+# Multiple inheritance
+class FlyingMixin:
+    def fly(self):
+        return "Flying high!"
+
+class Duck(Animal, FlyingMixin):
+    def speak(self):
+        return f"{self.name} says Quack!"
+
+# Method Resolution Order (MRO)
+print(Duck.__mro__)</div>
+        </section>
+
+        <section id="polymorphism">
+            <h2>🔄 Polymorphism</h2>
+            <div class="code-block">def animal_sound(animal: Animal):
+    print(animal.speak())
+
+animals = [Dog("Rex"), Cat("Whiskers"), Duck("Donald")]
+for animal in animals:
+    animal_sound(animal)
+# Rex says Woof!
+# Whiskers says Meow!
+# Donald says Quack!</div>
+        </section>
+
+        <section id="abc">
+            <h2>📐 Abstract Base Classes</h2>
+            <div class="code-block">from abc import ABC, abstractmethod
+
+class Repository(ABC):
+    @abstractmethod
+    def find_by_id(self, id: int):
+        pass
+
+    @abstractmethod
+    def save(self, entity):
+        pass
+
+class UserRepository(Repository):
+    def find_by_id(self, id: int):
+        return db.query(User).get(id)
+
+    def save(self, entity):
+        db.session.add(entity)
+        db.session.commit()
+
+# Cannot instantiate Repository directly
+# repo = Repository()  # TypeError!</div>
+        </section>
+
+        <section id="dataclasses">
+            <h2>✨ Dataclasses (Python 3.7+)</h2>
+            <div class="code-block">from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class UserDTO:
+    id: int
+    name: str
+    email: str
+    roles: List[str] = field(default_factory=list)
+    is_active: bool = True
+
+user = UserDTO(1, "Alice", "alice@example.com")
+user.roles.append("admin")
+
+# Frozen (immutable)
+@dataclass(frozen=True)
+class Config:
+    host: str
+    port: int = 8000</div>
+
+            <div class="info-box">
+                <strong>💡 Backend tip:</strong> Use dataclasses or Pydantic models for request/response DTOs in APIs.
+            </div>
+        </section>
+
+        <section id="magic">
+            <h2>🪄 Magic Methods (Dunder Methods)</h2>
+            <table>
+                <tr><th>Method</th><th>Purpose</th><th>Triggers</th></tr>
+                <tr><td><code>__init__</code></td><td>Constructor</td><td><code>obj = Class()</code></td></tr>
+                <tr><td><code>__str__</code></td><td>Human-readable string</td><td><code>print(obj)</code></td></tr>
+                <tr><td><code>__repr__</code></td><td>Developer representation</td><td><code>repr(obj)</code></td></tr>
+                <tr><td><code>__len__</code></td><td>Length</td><td><code>len(obj)</code></td></tr>
+                <tr><td><code>__eq__</code></td><td>Equality</td><td><code>obj == other</code></td></tr>
+                <tr><td><code>__lt__</code></td><td>Less than</td><td><code>obj &lt; other</code></td></tr>
+                <tr><td><code>__getitem__</code></td><td>Index access</td><td><code>obj[key]</code></td></tr>
+                <tr><td><code>__enter__/__exit__</code></td><td>Context manager</td><td><code>with obj:</code></td></tr>
+                <tr><td><code>__call__</code></td><td>Callable object</td><td><code>obj()</code></td></tr>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

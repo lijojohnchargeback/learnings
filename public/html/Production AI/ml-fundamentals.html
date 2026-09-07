@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI / ML Fundamentals — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🤖 AI / ML Fundamentals</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#ai-vs-ml" class="sidebar-link">AI vs ML</a>
+                <a href="#supervised" class="sidebar-link">Learning Types</a>
+                <a href="#splits" class="sidebar-link">Splits &amp; Leakage</a>
+                <a href="#classification" class="sidebar-link">Classification</a>
+                <a href="#regression" class="sidebar-link">Regression</a>
+                <a href="#evaluation" class="sidebar-link">Evaluation</a>
+                <a href="#features" class="sidebar-link">Feature Engineering</a>
+                <a href="#models" class="sidebar-link">Classical Models</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🤖 2. AI / ML Fundamentals</h1>
+            <p>Step 2 of 12 — Classical ML vocabulary so you can evaluate models, not just call APIs.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Why this still matters in the LLM era</h2>
+            <p><span class="highlight">LLMs did not replace ML; they sit on top of it.</span> Ranking, routing, fraud, churn, latency forecasts, and “is this RAG answer grounded?” are still classifiers and regressors. A Production AI engineer who cannot read a confusion matrix will ship a 99% accurate spam filter that misses every real attack — because the class is rare and accuracy is the wrong number.</p>
+            <p>This step is not “become a Kaggle grandmaster.” It is the mental model you reuse for every LLM eval: <strong>split data honestly, pick a metric from the cost of being wrong, beat a cheap baseline, then monitor drift.</strong></p>
+
+            <div class="illustration">
+                <img src="/images/pai-ml/ml-workflow.png" alt="Seven-step production ML workflow: problem, data, features, baseline, train, evaluate, deploy and monitor, with a loop back from monitoring to data when drift appears" loading="lazy">
+                <div class="illustration-caption">Read the image left to right. The dashed loop is the part notebooks skip: production data shifts, so you retrain. Skip the baseline box and you will not know whether the fancy model earned its complexity.</div>
+            </div>
+
+            <div class="info-box">
+                <h3>What you will be able to do</h3>
+                <ul>
+                    <li>Explain AI vs ML vs deep learning vs generative AI without marketing language</li>
+                    <li>Pick supervised, unsupervised, or self-supervised for a real product problem</li>
+                    <li>Split data by time, spot leakage, and refuse a fake metric</li>
+                    <li>Train a sklearn baseline and defend precision, recall, MAE, or RMSE</li>
+                    <li>Encode categoricals, scale numbers, and treat prompt fields as features</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>AI vs ML vs DL</td><td>You can explain the stack in one paragraph to a PM</td></tr>
+                <tr><td>2</td><td>Learning types</td><td>You can pick supervised vs unsupervised for a business problem</td></tr>
+                <tr><td>3</td><td>Splits &amp; leakage</td><td>You refuse a random split on time-ordered events</td></tr>
+                <tr><td>4</td><td>Classification</td><td>You can train a baseline and read a confusion matrix</td></tr>
+                <tr><td>5</td><td>Regression</td><td>You can predict a number and report MAE/RMSE, not just R²</td></tr>
+                <tr><td>6</td><td>Evaluation</td><td>You refuse a metric that hides the failure mode you care about</td></tr>
+                <tr><td>7</td><td>Features</td><td>You can encode categoricals, scale numbers, and spot leakage</td></tr>
+                <tr><td>8</td><td>Classical models</td><td>You know when linear / trees / boosting beat an LLM</td></tr>
+            </table>
+        </section>
+
+        <section id="ai-vs-ml">
+            <h2>AI vs ML vs deep learning vs GenAI</h2>
+            <p>These words get stacked in pitch decks as if they were synonyms. They are a <strong>containment hierarchy plus one overlapping product category</strong>. AI is the field. Machine learning is one way to build AI (learn from data instead of only writing rules). Deep learning is machine learning with multi-layer neural nets. Generative AI is a job the model does — produce new text, images, audio, or code — and it is usually deep learning, but not always a chatbot.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-ml/ml-ai-stack.png" alt="Nested stack: Artificial Intelligence contains Machine Learning, which contains Deep Learning, with Generative AI overlapping as systems that produce new content" loading="lazy">
+                <div class="illustration-caption">Read the nesting. A rule engine is AI but not ML. A logistic regression spam filter is ML but not deep learning. A Transformer is deep learning. GPT is generative AI; a churn model is not, even if it uses a neural net. The footnote on the image is the production rule: start with the cheapest system that hits the metric.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-hierarchy.png" alt="Nested diagram showing Artificial Intelligence containing Machine Learning containing Deep Learning, with Transformers, LLMs, and Generative AI as related layers" loading="lazy">
+                <div class="illustration-caption">Same idea, different drawing (from the AI fundamentals guide). Outer ring = the field. Middle ring = learn from data. Inner ring = neural nets. The three boxes along the bottom are specializations, not a new layer of intelligence: Transformers are an architecture, LLMs are large sequence models, GenAI also includes diffusion. Use this image when someone asks “is ChatGPT ML or AI?” — the answer is both, and also deep learning.</div>
+            </div>
+
+            <table>
+                <tr><th>Term</th><th>Meaning</th><th>Is it “learning”?</th><th>Example</th></tr>
+                <tr><td><strong>AI</strong></td><td>Any system that performs tasks that look intelligent</td><td>Optional</td><td>Rule engine, search, LLM agent</td></tr>
+                <tr><td><strong>ML</strong></td><td>Systems that learn patterns from data instead of only rules</td><td>Yes</td><td>Spam filter, demand forecast</td></tr>
+                <tr><td><strong>Deep learning</strong></td><td>ML with multi-layer neural nets</td><td>Yes</td><td>Image models, Transformers</td></tr>
+                <tr><td><strong>Generative AI</strong></td><td>Models that produce new text, images, audio, code</td><td>Usually</td><td>GPT, diffusion, TTS</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Production view</h3>
+                <p>Start with the cheapest system that meets the metric. A regex + logistic regression can beat a 70B model on a narrow task (PII detection, intent, routing). Use an LLM when the input is messy language and the output is language — and still put a classifier in front to route, score, or refuse.</p>
+            </div>
+        </section>
+
+        <section id="supervised">
+            <h2>Supervised vs unsupervised (and the siblings)</h2>
+            <p>The question is not “which algorithm.” It is <strong>what signal you have</strong>. If every row has a target you care about, it is supervised. If you only have X and want structure, it is unsupervised. If labels come from the data itself (next token, masked patch), it is self-supervised — that is how LLMs are pretrained.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-ml-types.png" alt="Three columns comparing supervised learning with labeled examples, unsupervised clustering, and reinforcement learning with an agent-environment reward loop" loading="lazy">
+                <div class="illustration-caption"><strong>How to read this image.</strong> Column 1: each house has a price — that pair (X → y) is supervised. Column 2: colored blobs with no labels — the algorithm invented the groups. Column 3: the robot (agent) acts, the world (environment) returns a new state and a reward; that loop is how AlphaGo and some LLM alignment (RLHF) work. Self-supervised is missing from the drawing on purpose: it looks like unsupervised data but trains like supervised (predict the next token).</div>
+            </div>
+
+            <h3>1. Supervised</h3>
+            <p>Labeled examples <code>(x, y)</code>. Classification and regression. Most business ML, and most LLM evals (thumbs up/down, grounded/not, toxicity score).</p>
+            <ul>
+                <li><strong>Classification:</strong> y is a class — spam, intent, ticket priority, “this citation supports the claim”</li>
+                <li><strong>Regression:</strong> y is a number — latency, token cost, CSAT, remaining useful life</li>
+            </ul>
+
+            <h3>2. Unsupervised</h3>
+            <p>No labels. Clustering, dimensionality reduction, anomaly detection. Useful for segments (“these tenants behave alike”) and “this request looks weird.” Do not treat cluster IDs as ground truth unless a human named the clusters.</p>
+
+            <h3>3. Semi-supervised</h3>
+            <p>A little labeled data plus a lot of unlabeled data. Typical when labels are expensive (medical images, legal review). The unlabeled mass helps the model learn the shape of the input space.</p>
+
+            <h3>4. Self-supervised</h3>
+            <p>Labels from the data itself: next token, masked token, masked image patch. This is how LLMs and many vision models are pretrained. You do not need humans to label every token — the text is the label.</p>
+
+            <h3>5. Reinforcement learning</h3>
+            <p>An agent takes actions, observes a new state, and gets a reward. Exploration vs exploitation is the hard part. In production AI you mostly meet RL as <strong>RLHF</strong> (a reward model scores completions) or as a bandit that picks which prompt/model to serve.</p>
+
+            <div class="code-block">from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+clf = LogisticRegression(max_iter=1000)
+clf.fit(X_train, y_train)
+print(clf.score(X_test, y_test))  # accuracy — often the wrong headline</div>
+        </section>
+
+        <section id="splits">
+            <h2>Train / validation / test — and leakage</h2>
+            <p>A model that memorizes the training set is useless. You need three buckets with different jobs:</p>
+            <ul>
+                <li><strong>Train:</strong> fit parameters</li>
+                <li><strong>Validation:</strong> pick hyperparameters, thresholds, and when to stop</li>
+                <li><strong>Test:</strong> touch once, at the end, to report the number you will defend</li>
+            </ul>
+            <p>For anything that happens over days in production — tickets, transactions, chat logs — <strong>split by time</strong>, not at random. Random splits leak the future into the past.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-ml/ml-split-leakage.png" alt="Left: a time-ordered split into train, validation, and a locked test set. Right: leakage from shuffling future rows into train and from using a feature only known after the label" loading="lazy">
+                <div class="illustration-caption"><strong>Left panel:</strong> time flows left to right; test is locked (you look at it once). <strong>Right panel:</strong> two classic lies. “Shuffle split” mixes January and December, so the model peeks at tomorrow. “Feature leakage” uses a column that only exists after the outcome (purchased_after_churn). If your metric looks too good, look here first.</div>
+            </div>
+
+            <div class="warning-box">
+                <strong>Leakage:</strong> If a feature is only known after prediction time, or includes the label, your metric is a lie. Other silent leaks: IDs that encode the target, preprocessing fit on train+test, duplicates of the same user in both sides, and RAG chunks that contain the answer because you indexed the eval set.
+            </div>
+
+            <div class="code-block"># Time-based split — production events, not i.i.d. rows
+df = df.sort_values("event_time")
+cut = int(len(df) * 0.8)
+X_train, y_train = df.iloc[:cut].drop(columns=["y"]), df.iloc[:cut]["y"]
+X_test, y_test = df.iloc[cut:].drop(columns=["y"]), df.iloc[cut:]["y"]
+
+# Group split — keep the same user / tenant / session on one side
+from sklearn.model_selection import GroupShuffleSplit
+gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+train_idx, test_idx = next(gss.split(X, y, groups=df["user_id"]))</div>
+        </section>
+
+        <section id="classification">
+            <h2>Classification</h2>
+            <p>Predict a class: spam vs ham, intent, ticket priority, “this RAG answer is grounded.” Classes can be binary or multi-class. <strong>Imbalance is the default in production</strong> — fraud, PII, and incidents are rare. Accuracy on a 1% positive class can be 99% while you catch nothing.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-ml/ml-class-vs-reg.png" alt="Left: classification with two colored classes and a decision boundary. Right: regression as a fitted line with residual errors on a latency axis" loading="lazy">
+                <div class="illustration-caption"><strong>Left:</strong> the model draws a boundary; output is a class (spam/ham, fraud/ok). <strong>Right:</strong> the model draws a line through numbers; the dashed verticals are residuals — the errors MAE and RMSE measure. If your y is a score you will threshold later (toxicity 0–1), it is still classification at the product layer even if you trained a regressor.</div>
+            </div>
+
+            <h3>The confusion matrix</h3>
+            <p>Every classification metric is a story about four counts. Draw this on a whiteboard before you pick a number:</p>
+
+            <div class="illustration">
+                <img src="/images/pai-ml/ml-confusion-matrix.png" alt="2x2 confusion matrix with true positive, false positive, false negative, and true negative, plus precision and recall formulas" loading="lazy">
+                <div class="illustration-caption"><strong>Read the grid, then ignore any tiny formula art.</strong> TP = you said yes and you were right. FP = you said yes and you were wrong (false alarm). FN = you said no and missed it. TN = you said no and it really was no. <strong>Precision = TP / (TP + FP)</strong> — when you flag fraud, how often are you right? <strong>Recall = TP / (TP + FN)</strong> — of all real fraud, how much did you catch? You cannot maximize both without changing the data or the cost of review.</div>
+            </div>
+
+            <table>
+                <tr><th>Metric</th><th>Formula</th><th>Use when</th></tr>
+                <tr><td><strong>Accuracy</strong></td><td>(TP + TN) / N</td><td>Classes are balanced and all errors cost the same (rare)</td></tr>
+                <tr><td><strong>Precision</strong></td><td>TP / (TP + FP)</td><td>False positives are expensive (flagging fraud, blocking users)</td></tr>
+                <tr><td><strong>Recall</strong></td><td>TP / (TP + FN)</td><td>False negatives are expensive (missing cancer, missing PII)</td></tr>
+                <tr><td><strong>F1</strong></td><td>Harmonic mean of precision and recall</td><td>You need a single number on imbalanced data</td></tr>
+                <tr><td><strong>ROC-AUC / PR-AUC</strong></td><td>Ranking quality across thresholds</td><td>PR-AUC when positives are rare; ROC-AUC can look fine while PR is bad</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Thresholds are a product decision</h3>
+                <p>Most models output a probability. The 0.5 default is arbitrary. Plot precision and recall vs threshold, then pick the operating point from the cost of a false alarm vs a miss. For LLM judges, the same idea applies: “score ≥ 0.8 means grounded” is a threshold you must tune on a labeled set.</p>
+            </div>
+
+            <div class="code-block">from sklearn.metrics import classification_report, confusion_matrix
+
+y_pred = clf.predict(X_test)
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred, digits=3))
+
+# Operating point: raise threshold to buy precision, lower it to buy recall
+proba = clf.predict_proba(X_test)[:, 1]
+y_strict = (proba >= 0.8).astype(int)</div>
+        </section>
+
+        <section id="regression">
+            <h2>Regression</h2>
+            <p>Predict a continuous value: latency, token cost, CSAT, remaining useful life, expected tokens in a prompt. Linear models are still strong baselines and are explainable — coefficients you can show a PM. Trees and boosting win on messy tabular data with nonlinearities and missing values.</p>
+
+            <table>
+                <tr><th>Metric</th><th>Meaning</th><th>Watch out</th></tr>
+                <tr><td><strong>MAE</strong></td><td>Average absolute error — robust, easy to explain (“off by 12 ms”)</td><td>Treats a 100 ms miss like ten 10 ms misses</td></tr>
+                <tr><td><strong>RMSE</strong></td><td>Penalizes large errors more — good when outliers hurt</td><td>One bad row can dominate the number</td></tr>
+                <tr><td><strong>MAPE</strong></td><td>Percent error — useful for finance-style reporting</td><td>Explodes when true values are near 0; avoid for latency</td></tr>
+                <tr><td><strong>R²</strong></td><td>Fraction of variance explained vs predicting the mean</td><td>Can look high while MAE is still unusable for the product</td></tr>
+            </table>
+
+            <div class="code-block">from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+model = Ridge(alpha=1.0)
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+print("MAE", mean_absolute_error(y_test, pred))
+print("RMSE", mean_squared_error(y_test, pred, squared=False))</div>
+
+            <div class="info-box">
+                <h4>LLM crossover</h4>
+                <p>Token billing, time-to-first-token, and “how long will this agent run?” are regression problems. A Ridge model on prompt length + tool count often beats a gut feel — and is cheaper than asking GPT to estimate GPT’s cost.</p>
+            </div>
+        </section>
+
+        <section id="evaluation">
+            <h2>Evaluation</h2>
+            <p>Evaluation is a product decision. Choose the metric from the <strong>cost of being wrong</strong>, then lock a validation protocol: holdout, k-fold, or time-based split. For LLMs you reuse this mindset with offline eval sets, LLM-as-judge, and human ratings — the protocol matters more than the library.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-overfitting.png" alt="Three scatter plots: underfitting with a straight line, a good smooth fit, and overfitting that wiggles through every point" loading="lazy">
+                <div class="illustration-caption"><strong>How to read this image.</strong> Blue dots = data. Teal curve = the true pattern. Orange line = what the model learned. <em>Left (underfit / high bias):</em> too simple — training and validation error are both high. <em>Middle (good fit):</em> follows the wave, ignores noise — both errors low. <em>Right (overfit / high variance):</em> wiggles through every point — training error looks amazing, validation error is bad. In production this is “99% on the notebook, 60% after launch.” Fix underfit with a richer model or better features. Fix overfit with more data, regularization, dropout, or a simpler model. Always watch <strong>train vs validation together</strong>.</div>
+            </div>
+
+            <ul>
+                <li><strong>Baseline first:</strong> majority class, last week’s average, keyword matcher. If you cannot beat that, you do not have a model — you have a ritual.</li>
+                <li><strong>Calibration:</strong> predicted probabilities should match observed rates if you threshold. A model that says 0.8 should be right ~80% of the time in that bucket.</li>
+                <li><strong>Slices:</strong> report metrics by language, tenant, or traffic source. Averages hide the one customer who generates the support tickets.</li>
+                <li><strong>Online vs offline:</strong> A/B tests catch distribution shift that notebooks miss. Offline eval is necessary and not sufficient.</li>
+                <li><strong>Error analysis:</strong> read 20 failures. Patterns (one vendor’s PDF, one locale, one prompt template) beat another hyperparameter sweep.</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>LLM eval trap:</strong> “The model sounds good” is not a metric. Build a golden set of 50–200 labeled examples, freeze it, and rerun it on every prompt or model change — same idea as a unit test suite.
+            </div>
+        </section>
+
+        <section id="features">
+            <h2>Feature engineering</h2>
+            <p>Features are how you turn raw logs into something a model can learn. Production ML is often 80% data work. For LLM systems the same job is chunking, metadata filters, and prompt fields — they are features with different names.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-ml/ml-feature-pipeline.png" alt="Feature pipeline from raw JSON logs through numeric scaling and categorical one-hot encoding into a combined vector and a model, with a leakage warning on a late-arriving column" loading="lazy">
+                <div class="illustration-caption"><strong>Follow the arrows.</strong> Raw logs (left) are not model-ready. Numeric columns go through a scaler so tokens and latency_ms share a scale. Categorical columns (model, region) become one-hot bits. Those branches join into one vector, then a classifier. The red badge is the production lesson: a column that only exists after score time is leakage — drop it. The small callouts (embeddings, 1h/7d windows) are how you bring text and time into the same pipeline.</div>
+            </div>
+
+            <table>
+                <tr><th>Technique</th><th>When</th><th>Pitfall</th></tr>
+                <tr><td>One-hot / target encoding</td><td>Categorical columns</td><td>Target encoding leaks if you fit it on the whole dataset</td></tr>
+                <tr><td>Scaling (Standard / MinMax)</td><td>Distance-based and regularized linear models</td><td>Trees do not need it; still fit the scaler on train only</td></tr>
+                <tr><td>Binning, logs, ratios</td><td>Skewed counts, money, latencies</td><td>Log of 0; invent a +1 or a missing flag</td></tr>
+                <tr><td>Embeddings</td><td>Text, images — bridge to RAG and deep learning</td><td>Mixing embedding models without re-indexing</td></tr>
+                <tr><td>Time windows</td><td>Counts in last 1h / 7d — classic for fraud and ops</td><td>Using the current event in the window (leakage)</td></tr>
+            </table>
+
+            <div class="code-block">from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+
+pre = ColumnTransformer([
+    ("num", StandardScaler(), ["tokens", "latency_ms"]),
+    ("cat", OneHotEncoder(handle_unknown="ignore"), ["model", "region"]),
+])
+pipe = Pipeline([("pre", pre), ("clf", LogisticRegression(max_iter=1000))])
+pipe.fit(X_train, y_train)  # scaler and encoder see train only</div>
+
+            <div class="info-box">
+                <strong>LLM crossover:</strong> Chunking, metadata filters, and prompt fields are feature engineering for retrieval and generation. A “user_tier” field in the system prompt is a feature. So is “retrieved_at” if you accidentally include tomorrow’s doc in today’s index.
+            </div>
+        </section>
+
+        <section id="models">
+            <h2>Classical models you should still know</h2>
+            <p>Before you fine-tune or call an API, know the cheap models that still win on tabular data. A Production AI stack often looks like: <strong>boosting model for structured events + embeddings/LLM for language.</strong></p>
+
+            <table>
+                <tr><th>Family</th><th>Strength</th><th>Use when</th></tr>
+                <tr><td><strong>Linear / logistic / Ridge</strong></td><td>Fast, stable, explainable coefficients</td><td>Baseline, well-scaled numeric features, you need to debug</td></tr>
+                <tr><td><strong>Decision trees</strong></td><td>Nonlinear, missing values, no scaling</td><td>Teaching, simple rules, tiny datasets</td></tr>
+                <tr><td><strong>Random forest</strong></td><td>Bags of trees; hard to overfit badly</td><td>Solid tabular default before boosting</td></tr>
+                <tr><td><strong>Gradient boosting</strong> (XGBoost, LightGBM, CatBoost)</td><td>Usually the best on tabular competitions and production tables</td><td>Churn, fraud, ranking, conversion — if you have labels</td></tr>
+                <tr><td><strong>k-NN / SVM</strong></td><td>Simple geometry / margins</td><td>Small data; rarely the production default in 2026</td></tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>Do not use an LLM as a classifier until a boosting model (or even logistic regression) has lost.</strong> Language in, language out is the LLM’s job. “Is this JSON valid?” and “which of 12 ticket queues?” are usually not.
+            </div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can train a sklearn baseline, split data correctly, and defend your metric</li>
+                <li>You can spot leakage, class imbalance, and the difference between precision and recall</li>
+                <li>You can explain underfitting vs overfitting from the three-plot image, not from a slogan</li>
+                <li>You can explain AI vs ML vs DL vs GenAI without marketing language</li>
+                <li>You know when a linear model or a booster should beat an API call</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> Deep Learning &amp; Transformers — the architecture underneath modern LLMs.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

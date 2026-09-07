@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Basics - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🚀 JavaScript Basics</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Introduction</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">What is JavaScript?</a>
+                <a href="#versions" class="sidebar-link">JS Versions</a>
+                <a href="#setup" class="sidebar-link">Adding JavaScript</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">💾 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#output" class="sidebar-link">Output Methods</a>
+                <a href="#comments" class="sidebar-link">Comments</a>
+                <a href="#variables" class="sidebar-link">Variables</a>
+                <a href="#datatypes" class="sidebar-link">Data Types</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚙️ Operators</div>
+            <div class="sidebar-links">
+                <a href="#operators" class="sidebar-link">All Operators</a>
+                <a href="#equality" class="sidebar-link">== vs ===</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Control Flow</div>
+            <div class="sidebar-links">
+                <a href="#conditionals" class="sidebar-link">If/Else/Switch</a>
+                <a href="#loops" class="sidebar-link">Loops</a>
+                <a href="#break-continue" class="sidebar-link">Break & Continue</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>🚀 JavaScript Basics</h1>
+            <p>Your Complete Guide to JavaScript Fundamentals</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 What is JavaScript?</h2>
+            
+            <p><span class="highlight">JavaScript is a high-level, object-oriented, multi-paradigm programming language</span> that supports both imperative and declarative programming styles.</p>
+
+            <div class="info-box">
+                <h3>Key Facts</h3>
+                <ul>
+                    <li>📅 <strong>Created:</strong> May 1995 by Brendan Eich</li>
+                    <li>🏷️ <strong>Names:</strong> Mocha → LiveScript → JavaScript → ECMAScript</li>
+                    <li>🌐 <strong>Use Cases:</strong> Client-side, Backend (Node.js), Mobile apps, SPAs</li>
+                    <li>⚠️ <strong>Note:</strong> Java and JavaScript are completely different languages!</li>
+                </ul>
+            </div>
+
+            <h3>Why Learn JavaScript?</h3>
+            <table>
+                <tr><th>Advantages ✅</th><th>Disadvantages ❌</th></tr>
+                <tr>
+                    <td>
+                        <ul>
+                            <li>Client-side execution (fast)</li>
+                            <li>Browser validation</li>
+                            <li>Easy to learn</li>
+                            <li>No compiler needed</li>
+                            <li>High speed</li>
+                            <li>Versatile (frontend + backend)</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>Less secure (client-side code visible)</li>
+                            <li>No direct hardware access</li>
+                            <li>Browser compatibility issues</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <h3>Prerequisites</h3>
+            <p>Basic knowledge of <strong>HTML</strong> and <strong>CSS</strong></p>
+        </section>
+
+        <section id="versions">
+            <h2>📅 JavaScript Versions (ECMAScript)</h2>
+
+            <table>
+                <tr><th>Year</th><th>Version</th><th>Key Features</th></tr>
+                <tr>
+                    <td>1997</td>
+                    <td>ES1</td>
+                    <td>First Edition</td>
+                </tr>
+                <tr>
+                    <td>1998</td>
+                    <td>ES2</td>
+                    <td>Editorial changes</td>
+                </tr>
+                <tr>
+                    <td>1999</td>
+                    <td>ES3</td>
+                    <td>Regular expressions, try/catch, switch, do-while</td>
+                </tr>
+                <tr>
+                    <td>2009</td>
+                    <td>ES5</td>
+                    <td>"use strict", JSON, Array methods (forEach, map, filter, reduce), getters/setters</td>
+                </tr>
+                <tr>
+                    <td>2015</td>
+                    <td>ES6 (ES2015)</td>
+                    <td>let/const, arrow functions, classes, promises, modules, template literals, destructuring</td>
+                </tr>
+                <tr>
+                    <td>2016</td>
+                    <td>ES2016</td>
+                    <td>Exponentiation operator (**), Array.includes()</td>
+                </tr>
+                <tr>
+                    <td>2017</td>
+                    <td>ES2017</td>
+                    <td>async/await, Object.entries(), Object.values(), string padding</td>
+                </tr>
+                <tr>
+                    <td>2018</td>
+                    <td>ES2018</td>
+                    <td>Async iteration, Promise.finally(), rest/spread properties</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 ES6 (2015) was a major update!</strong> Most modern JavaScript features come from ES6 and later versions.
+            </div>
+        </section>
+
+        <section id="setup">
+            <h2>🔧 Adding JavaScript to HTML</h2>
+
+            <h3>1. Inline JavaScript</h3>
+            <div class="code-block">&lt;script&gt;
+    console.log("Hello, World!");
+&lt;/script&gt;</div>
+
+            <h3>2. External JavaScript (Recommended)</h3>
+            <div class="code-block">&lt;script src="script.js"&gt;&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <strong>💡 Best Practice:</strong> You can add multiple external JavaScript files. Place scripts at the end of the body for better performance.
+            </div>
+
+            <h3>Script Loading Strategies</h3>
+            <table>
+                <tr><th>Method</th><th>Behavior</th><th>Use When</th></tr>
+                <tr>
+                    <td><strong>Normal</strong></td>
+                    <td>HTML parsing → Script download → Script execution → HTML parsing (blocking)</td>
+                    <td>Script depends on DOM being ready</td>
+                </tr>
+                <tr>
+                    <td><strong>async</strong></td>
+                    <td>HTML parsing + Script download → Script execution → HTML parsing</td>
+                    <td>Independent scripts (analytics)</td>
+                </tr>
+                <tr>
+                    <td><strong>defer</strong></td>
+                    <td>HTML parsing + Script download → HTML complete → Script execution</td>
+                    <td>Scripts that need full DOM (recommended)</td>
+                </tr>
+            </table>
+
+            <div class="code-block">&lt;!-- Async --&gt;
+&lt;script src="script.js" async&gt;&lt;/script&gt;
+
+&lt;!-- Defer (Recommended) --&gt;
+&lt;script src="script.js" defer&gt;&lt;/script&gt;</div>
+        </section>
+
+        <section id="output">
+            <h2>📤 JavaScript Output Methods</h2>
+
+            <p>JavaScript can display data in different ways:</p>
+
+            <h3>1. innerHTML - Modify HTML Element</h3>
+            <div class="code-block">document.getElementById("demo").innerHTML = "Hello World!";</div>
+
+            <h3>2. document.write() - Write to HTML</h3>
+            <div class="code-block">document.write("Hello World!");</div>
+            <div class="warning-box">
+                <strong>⚠️ Warning:</strong> Using document.write() after page load will delete all existing HTML!
+            </div>
+
+            <h3>3. window.alert() - Alert Box</h3>
+            <div class="code-block">window.alert("Hello World!");
+// or simply
+alert("Hello World!");</div>
+
+            <h3>4. console.log() - Browser Console (Most Common)</h3>
+            <div class="code-block">console.log("Hello World!");
+console.log("Value:", 42);
+console.log({name: "John", age: 30});</div>
+
+            <div class="info-box">
+                <strong>💡 Best Practice:</strong> Use <code>console.log()</code> for debugging and development.
+            </div>
+        </section>
+
+        <section id="comments">
+            <h2>💬 Comments</h2>
+
+            <p>Comments explain code and make it more readable. They are ignored by JavaScript.</p>
+
+            <h3>Single-line Comments</h3>
+            <div class="code-block">// This is a single-line comment
+let x = 5; // This is also a comment</div>
+
+            <h3>Multi-line Comments</h3>
+            <div class="code-block">/* 
+This is a multi-line comment
+It can span multiple lines
+Very useful for documentation
+*/
+let y = 10;</div>
+        </section>
+
+        <section id="variables">
+            <h2>📦 Variables</h2>
+
+            <p>A <span class="highlight">variable is an identifier used to store and refer to a value</span>.</p>
+
+            <div class="code-block">var x = 5;
+var y = 6;
+var z = x + y; // z is 11</div>
+
+            <h3>Variable Declaration Keywords</h3>
+            <table>
+                <tr><th>Keyword</th><th>Scope</th><th>Reassignable</th><th>Hoisting</th><th>Use When</th></tr>
+                <tr>
+                    <td><code>var</code></td>
+                    <td>Function</td>
+                    <td>✅ Yes</td>
+                    <td>✅ Yes</td>
+                    <td>❌ Avoid (legacy)</td>
+                </tr>
+                <tr>
+                    <td><code>let</code></td>
+                    <td>Block</td>
+                    <td>✅ Yes</td>
+                    <td>❌ No</td>
+                    <td>✅ Values that change</td>
+                </tr>
+                <tr>
+                    <td><code>const</code></td>
+                    <td>Block</td>
+                    <td>❌ No</td>
+                    <td>❌ No</td>
+                    <td>✅ Constants (recommended)</td>
+                </tr>
+            </table>
+
+            <div class="code-block">// var (old way - avoid)
+var name = "John";
+
+// let (for values that change)
+let age = 30;
+age = 31; // OK
+
+// const (for constants - recommended)
+const PI = 3.14159;
+// PI = 3.14; // Error: Cannot reassign const</div>
+
+            <div class="info-box">
+                <strong>💡 Best Practice:</strong> Use <code>const</code> by default. Use <code>let</code> only when you need to reassign. Avoid <code>var</code>.
+            </div>
+
+            <h3>Variable Naming Rules</h3>
+            <ul>
+                <li>✅ Must start with letter, $, or _</li>
+                <li>✅ Can contain letters, numbers, $, _</li>
+                <li>✅ Case-sensitive (myVar ≠ myvar)</li>
+                <li>❌ Cannot use reserved keywords (let, class, return, etc.)</li>
+                <li>✅ Use camelCase for readability (firstName, lastName)</li>
+            </ul>
+        </section>
+
+        <section id="datatypes">
+            <h2>🏷️ Data Types & Storage Architecture</h2>
+
+            <div class="info-box premium">
+                <h3>Stack vs Heap Allocation</h3>
+                <ul>
+                    <li><strong>Primitives:</strong> Stored on the <strong>Stack</strong>. Fixed size, accessed by value, extremely fast.</li>
+                    <li><strong>Reference Types:</strong> Stored on the <strong>Heap</strong>. Dynamic size, accessed by reference (pointer on stack), subject to garbage collection.</li>
+                </ul>
+            </div>
+
+            <h3>Primitive Immortality</h3>
+            <p>Primitives in JavaScript are <strong>Immutable</strong>. When you change a string, you are not modifying the old one; the engine creates a <strong>new</strong> string in memory and updates the variable's reference.</p>
+
+            <div class="code-block">let str = "Hello";
+str = str + " World"; // "Hello" is abandoned in memory; new string created.</div>
+        </section>
+
+        <section id="operators">
+            <h2>⚙️ Operators</h2>
+
+            <h3>1. Arithmetic Operators</h3>
+            <div class="code-block">let a = 5;
+let b = 2;
+
+console.log(a + b);  // 7 (Addition)
+console.log(a - b);  // 3 (Subtraction)
+console.log(a * b);  // 10 (Multiplication)
+console.log(a / b);  // 2.5 (Division)
+console.log(a % b);  // 1 (Modulus/Remainder)
+console.log(a ** 6); // 15625 (Exponentiation)
+
+a++; // Increment (a = 6)
+b--; // Decrement (b = 1)</div>
+
+            <h3>2. Comparison Operators</h3>
+            <div class="code-block">let a = 5;
+let b = 2;
+let c = "5";
+
+console.log(a > b);   // true
+console.log(a < b);   // false
+console.log(a >= b);  // true
+console.log(a <= b);  // false
+console.log(a == c);  // true (loose equality)
+console.log(a === c); // false (strict equality)
+console.log(a != c);  // false
+console.log(a !== c); // true</div>
+
+            <h3>3. Logical Operators</h3>
+            <div class="code-block">let a = 5;
+let b = 2;
+
+console.log(a > b && b > a); // false (AND)
+console.log(a > b || b > a); // true (OR)
+console.log(!(a > b));       // false (NOT)</div>
+
+            <h3>4. Assignment Operators</h3>
+            <div class="code-block">let x = 10;
+
+x += 5;  // x = x + 5  → 15
+x -= 3;  // x = x - 3  → 12
+x *= 2;  // x = x * 2  → 24
+x /= 4;  // x = x / 4  → 6
+x %= 4;  // x = x % 4  → 2</div>
+        </section>
+
+        <section id="equality">
+            <h2>⚖️ == vs === (Equality Operators)</h2>
+
+            <table>
+                <tr><th>Operator</th><th>Name</th><th>Compares</th><th>Example</th></tr>
+                <tr>
+                    <td><code>==</code></td>
+                    <td>Abstract Equality</td>
+                    <td>Value only (type coercion)</td>
+                    <td><code>5 == "5"</code> → true</td>
+                </tr>
+                <tr>
+                    <td><code>===</code></td>
+                    <td>Strict Equality</td>
+                    <td>Value AND type</td>
+                    <td><code>5 === "5"</code> → false</td>
+                </tr>
+            </table>
+
+            <div class="code-block">// Abstract Equality (==)
+console.log(0 == false);           // true
+console.log(1 == "1");             // true
+console.log(null == undefined);    // true
+console.log('0' == false);         // true
+
+// Strict Equality (===) - RECOMMENDED
+console.log(0 === false);          // false
+console.log(1 === "1");            // false
+console.log(null === undefined);   // false
+console.log('0' === false);        // false
+
+// Objects and Arrays
+console.log([] == []);             // false (different references)
+console.log([] === []);            // false
+console.log({} == {});             // false
+console.log({} === {});            // false</div>
+
+            <div class="info-box">
+                <strong>💡 Best Practice:</strong> Always use <code>===</code> and <code>!==</code> to avoid unexpected type coercion bugs!
+            </div>
+        </section>
+
+        <section id="conditionals">
+            <h2>🔀 Conditional Statements</h2>
+
+            <h3>if Statement</h3>
+            <div class="code-block">let age = 18;
+
+if (age >= 18) {
+    console.log("You are an adult");
+}</div>
+
+            <h3>if...else Statement</h3>
+            <div class="code-block">let age = 16;
+
+if (age >= 18) {
+    console.log("You are an adult");
+} else {
+    console.log("You are a minor");
+}</div>
+
+            <h3>if...else if...else Statement</h3>
+            <div class="code-block">let score = 85;
+
+if (score >= 90) {
+    console.log("Grade: A");
+} else if (score >= 80) {
+    console.log("Grade: B");
+} else if (score >= 70) {
+    console.log("Grade: C");
+} else {
+    console.log("Grade: F");
+}</div>
+
+            <h3>switch Statement</h3>
+            <p>Alternative to multiple if...else statements</p>
+            <div class="code-block">const day = "Tuesday";
+
+switch(day) {
+    case "Monday":
+        console.log("Start of work week");
+        break;
+    case "Tuesday":
+        console.log("Second day of work");
+        break;
+    case "Friday":
+        console.log("Last work day!");
+        break;
+    default:
+        console.log("Regular day");
+}</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Don't forget <code>break</code> statements in switch cases, or execution will "fall through" to the next case!
+            </div>
+        </section>
+
+        <section id="loops">
+            <h2>🔄 Loops</h2>
+
+            <h3>for Loop</h3>
+            <div class="code-block">// Print numbers 1 to 5
+for (let i = 1; i <= 5; i++) {
+    console.log(i);
+}
+
+// Loop through array
+const fruits = ["Apple", "Banana", "Orange"];
+for (let i = 0; i < fruits.length; i++) {
+    console.log(fruits[i]);
+}</div>
+
+            <h3>while Loop</h3>
+            <div class="code-block">let count = 1;
+
+while (count <= 5) {
+    console.log(count);
+    count++;
+}</div>
+
+            <h3>do...while Loop</h3>
+            <p>Executes at least once, then checks condition</p>
+            <div class="code-block">let count = 1;
+
+do {
+    console.log(count);
+    count++;
+} while (count <= 5);</div>
+
+            <h3>for...of Loop (ES6)</h3>
+            <div class="code-block">const fruits = ["Apple", "Banana", "Orange"];
+
+for (let fruit of fruits) {
+    console.log(fruit);
+}</div>
+        </section>
+
+        <section id="break-continue">
+            <h2>⏸️ Break and Continue</h2>
+
+            <h3>break - Exit Loop</h3>
+            <div class="code-block">// Stop when i equals 5
+for (let i = 1; i <= 10; i++) {
+    if (i === 5) {
+        break; // Exit loop
+    }
+    console.log(i);
+}
+// Output: 1, 2, 3, 4</div>
+
+            <h3>continue - Skip Iteration</h3>
+            <div class="code-block">// Skip number 5
+for (let i = 1; i <= 10; i++) {
+    if (i === 5) {
+        continue; // Skip this iteration
+    }
+    console.log(i);
+}
+// Output: 1, 2, 3, 4, 6, 7, 8, 9, 10</div>
+
+            <div class="info-box">
+                <strong>💡 Remember:</strong>
+                <ul>
+                    <li><code>break</code> - Exits the entire loop</li>
+                    <li><code>continue</code> - Skips current iteration and continues with next</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

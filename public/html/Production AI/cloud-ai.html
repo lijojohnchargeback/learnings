@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud AI & AI Infrastructure — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">☁️ Cloud AI & Infrastructure</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#choose" class="sidebar-link">How to choose</a>
+                <a href="#bedrock" class="sidebar-link">AWS Bedrock</a>
+                <a href="#sagemaker" class="sidebar-link">SageMaker</a>
+                <a href="#vertex" class="sidebar-link">GCP Vertex AI</a>
+                <a href="#foundry" class="sidebar-link">Azure AI Foundry</a>
+                <a href="#azure-ml" class="sidebar-link">Azure ML</a>
+                <a href="#cloudrun" class="sidebar-link">Cloud Run</a>
+                <a href="#k8s" class="sidebar-link">EKS / GKE / AKS</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>☁️ 10. Cloud AI & AI Infrastructure</h1>
+            <p>Step 10 of 12 — Managed model APIs vs train/serve yourself, plus where the app runs.</p>
+        </header>
+
+        <section id="overview">
+            <h2>The split</h2>
+            <p><span class="highlight">Foundation models</span> (Bedrock, Vertex, Azure OpenAI / Foundry) vs <span class="highlight">custom training/serving</span> (SageMaker, Vertex Training, Azure ML) vs <span class="highlight">app compute</span> (Cloud Run, Kubernetes). Most products start on a managed chat API and add GPU serving only when cost, latency, or data gravity forces it.</p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>One cloud LLM API</td><td>IAM, private networking, logging, quotas</td></tr>
+                <tr><td>2</td><td>App hosting</td><td>You deploy the API to Cloud Run or a cluster</td></tr>
+                <tr><td>3</td><td>Optional GPUs</td><td>You know when SageMaker/Vertex endpoints beat calling OpenAI</td></tr>
+                <tr><td>4</td><td>K8s</td><td>You can explain Deployments, Services, HPA, GPU operators</td></tr>
+            </table>
+        </section>
+
+        <section id="choose">
+            <h2>How to choose</h2>
+            <table>
+                <tr><th>Need</th><th>Lean toward</th></tr>
+                <tr><td>Fastest enterprise path, many models</td><td>Bedrock / Vertex / Azure Foundry</td></tr>
+                <tr><td>Fine-tune + host your weights</td><td>SageMaker, Vertex, Azure ML, or self-host on GPU nodes</td></tr>
+                <tr><td>Scale-to-zero HTTP APIs</td><td>Cloud Run, Lambda, Azure Container Apps</td></tr>
+                <tr><td>Long-running GPU, custom mesh, multi-service</td><td>EKS / GKE / AKS</td></tr>
+            </table>
+            <div class="info-box">
+                <strong>Always:</strong> VPC endpoints where possible, customer-managed keys if required, no public GPU notebooks with secrets.
+            </div>
+        </section>
+
+        <section id="bedrock">
+            <h2>AWS Bedrock</h2>
+            <p>Managed access to Anthropic, Amazon, Meta, etc. on AWS. Use IAM, CloudWatch, Guardrails, Knowledge Bases (managed RAG), Agents. Good when the rest of the company is already on AWS. Invoke via SDK; treat model IDs as config.</p>
+            <div class="code-block"># boto3 sketch
+import boto3, json
+brt = boto3.client("bedrock-runtime", region_name="us-east-1")
+resp = brt.invoke_model(
+    modelId="anthropic.claude-sonnet-4-20250514-v1:0",
+    body=json.dumps({"anthropic_version": "bedrock-2023-05-31", "max_tokens": 256, "messages": [...]}),
+)</div>
+        </section>
+
+        <section id="sagemaker">
+            <h2>SageMaker</h2>
+            <p>Train, tune, and host custom models (including open LLMs) on AWS. Endpoints, batch transform, pipelines, Feature Store. Heavier than Bedrock. Use when you own the weights or need a private GPU fleet with AWS ops.</p>
+        </section>
+
+        <section id="vertex">
+            <h2>GCP Vertex AI</h2>
+            <p>Gemini + Model Garden + Vector Search + pipelines + Agent Builder. Strong if you want Google models and GCP data (BigQuery). Vertex Prediction hosts custom containers. Wire IAM and VPC-SC for regulated data.</p>
+        </section>
+
+        <section id="foundry">
+            <h2>Azure AI Foundry</h2>
+            <p>Azure’s hub for models (including Azure OpenAI), evaluations, and content safety. Fits Microsoft 365 / Entra shops. Foundry is the productized "model catalog + playground + deploy" layer on top of Azure ML/OpenAI resources.</p>
+        </section>
+
+        <section id="azure-ml">
+            <h2>Azure Machine Learning</h2>
+            <p>Classic MLOps on Azure: workspaces, compute clusters, jobs, managed endpoints. Use for custom training and SKLearn/PyTorch jobs; use Foundry/OpenAI for hosted frontier models. Same discipline: environments, registries, approved base images.</p>
+        </section>
+
+        <section id="cloudrun">
+            <h2>Cloud Run (and cousins)</h2>
+            <p>Container → HTTPS, scale to zero, pay per request. Perfect for FastAPI gateways and light RAG. Limits: request timeout, no sticky GPU (GPU Cloud Run exists in some regions — check current quotas). Put heavy ingest on Cloud Tasks / Pub/Sub workers instead.</p>
+            <div class="code-block">gcloud run deploy ai-api --source . --region us-central1 --allow-unauthenticated=false</div>
+        </section>
+
+        <section id="k8s">
+            <h2>EKS / GKE / AKS</h2>
+            <p>Managed Kubernetes. You still own: node pools (CPU vs GPU), NVIDIA device plugin, autoscaling, ingress, secrets, network policies. Typical AI layout: API Deployment, worker Deployment (GPU), Redis, and a vector DB (in-cluster or managed).</p>
+            <table>
+                <tr><th>Object</th><th>AI use</th></tr>
+                <tr><td>Deployment + HPA</td><td>Scale chat API on CPU/RPS</td></tr>
+                <tr><td>GPU node pool</td><td>vLLM / TGI; scale on queue depth, not only CPU</td></tr>
+                <tr><td>Job / CronJob</td><td>Eval, re-embed, batch inference</td></tr>
+                <tr><td>Ingress / Gateway</td><td>TLS, WAF, auth at the edge</td></tr>
+            </table>
+            <div class="warning-box">
+                <strong>GPU bins pack badly.</strong> One 70B replica can idle a whole node. Measure utilization before you add nodes.
+            </div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can deploy an AI API on your company’s cloud with IAM (not a laptop key)</li>
+                <li>You can explain Bedrock/Vertex/Foundry vs SageMaker/Azure ML</li>
+                <li>You know when Cloud Run is enough and when you need a GPU cluster</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> LLMOps / MLOps — Docker, CI, eval, observability, and serving under load.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

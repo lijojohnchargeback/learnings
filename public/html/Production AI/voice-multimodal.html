@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice AI & Multimodal AI — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🎙️ Voice AI & Multimodal</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#stack" class="sidebar-link">The Voice Stack</a>
+                <a href="#stt" class="sidebar-link">STT</a>
+                <a href="#tts" class="sidebar-link">TTS</a>
+                <a href="#elevenlabs" class="sidebar-link">ElevenLabs</a>
+                <a href="#realtime" class="sidebar-link">OpenAI Realtime</a>
+                <a href="#vapi" class="sidebar-link">Vapi</a>
+                <a href="#retell" class="sidebar-link">Retell</a>
+                <a href="#streaming" class="sidebar-link">Streaming</a>
+                <a href="#barge" class="sidebar-link">Interruptions</a>
+                <a href="#voice-agents" class="sidebar-link">Voice Agents</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🎙️ 8. Voice AI & Multimodal AI</h1>
+            <p>Step 8 of 12 — Latency, turn-taking, and audio quality dominate. Text RAG rules still apply — with a 500ms budget.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Why voice is different</h2>
+            <p>Chat can wait 3 seconds. Phone users hang up. Voice systems add <span class="highlight">speech-to-text, a brain (LLM/agent), text-to-speech, and a transport (WebRTC, SIP, WebSocket)</span>. Multimodal adds images/video in the same session. Production work is streaming, barge-in, and fallbacks when STT is wrong.</p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>STT / TTS</td><td>You can transcribe and speak a sentence with timestamps</td></tr>
+                <tr><td>2</td><td>Streaming</td><td>You play audio before the full LLM sentence exists</td></tr>
+                <tr><td>3</td><td>Barge-in</td><td>You stop TTS when the user starts talking</td></tr>
+                <tr><td>4</td><td>A platform</td><td>You ship a test call on Vapi, Retell, or Realtime</td></tr>
+                <tr><td>5</td><td>Agent</td><td>Tools work on voice without reading a 2k-token policy aloud</td></tr>
+            </table>
+        </section>
+
+        <section id="stack">
+            <h2>The voice stack</h2>
+            <table>
+                <tr><th>Layer</th><th>Job</th><th>Examples</th></tr>
+                <tr><td>Transport</td><td>Audio in/out, telephony</td><td>WebRTC, Twilio, SIP</td></tr>
+                <tr><td>STT</td><td>Speech → text (partial + final)</td><td>Deepgram, Whisper, vendor realtime</td></tr>
+                <tr><td>Orchestration</td><td>VAD, turn-taking, tools</td><td>Your server, Vapi, Retell, Realtime</td></tr>
+                <tr><td>LLM</td><td>Reply + tool calls</td><td>GPT, Gemini, Claude</td></tr>
+                <tr><td>TTS</td><td>Text → speech, streaming</td><td>ElevenLabs, OpenAI TTS, cartesia</td></tr>
+            </table>
+        </section>
+
+        <section id="stt">
+            <h2>STT (speech-to-text)</h2>
+            <p>Need partial transcripts for low latency and a final transcript for the LLM. Measure WER on your domain (names, SKUs). Send a hint / keyword list. Store audio (with consent) to debug STT vs model errors.</p>
+        </section>
+
+        <section id="tts">
+            <h2>TTS (text-to-speech)</h2>
+            <p>Stream audio chunks. Split on sentence boundaries so you can start speaking before the LLM finishes. SSML or vendor tags for pauses. Cache greetings. Match sample rate to the phone codec (often 8kHz μ-law on PSTN vs 24kHz on web).</p>
+        </section>
+
+        <section id="elevenlabs">
+            <h2>ElevenLabs</h2>
+            <p>High-quality voices, cloning (policy-sensitive), streaming TTS, and conversational products. Use for branded voice. Watch latency, concurrency limits, and consent for cloned voices. Keep a fallback TTS if the vendor blips.</p>
+        </section>
+
+        <section id="realtime">
+            <h2>OpenAI Realtime</h2>
+            <p>Speech-to-speech (and audio+text) over a persistent connection. The model can interrupt and produce audio directly, cutting STT/TTS hops. You still need: session config, tools, truncation, and server-side secrets. Good for web voice UX; telephony still needs a SIP/WebRTC bridge.</p>
+        </section>
+
+        <section id="vapi">
+            <h2>Vapi</h2>
+            <p>Voice agent platform: numbers, STT/TTS/LLM mix-and-match, tools via webhooks, squads. Fast to a demo phone number. Production: own the webhook SLA, log every turn, and pin model+voice versions.</p>
+        </section>
+
+        <section id="retell">
+            <h2>Retell</h2>
+            <p>Telephony-first voice agents (inbound/outbound). Similar job as Vapi: prompts, tools, call analytics. Compare on latency, telephony quality in your countries, and how custom LLM endpoints work.</p>
+        </section>
+
+        <section id="streaming">
+            <h2>Streaming</h2>
+            <p>Pipeline: user audio → partial STT → (optional) endpointing → LLM token stream → sentence flush → TTS stream → speaker. Never wait for the full essay. Use a jitter buffer. Measure TTFB (time to first byte of audio).</p>
+            <div class="code-block"># Pseudo: flush TTS on punctuation
+buffer = ""
+for token in llm_stream():
+    buffer += token
+    if buffer.endswith((".", "?", "!")):
+        yield tts_stream(buffer)
+        buffer = ""</div>
+        </section>
+
+        <section id="barge">
+            <h2>Interruptions (barge-in)</h2>
+            <p>If the user speaks, cancel TTS and optionally cancel the LLM. Voice activity detection (VAD) must ignore echo. Too sensitive = the bot never finishes; too dull = talking over the user. Tune on real calls. After barge-in, use the new transcript as the latest user turn.</p>
+        </section>
+
+        <section id="voice-agents">
+            <h2>Voice agents</h2>
+            <p>Same agent rules, tighter constraints: short spoken sentences, confirm critical slots (phone numbers) by repeating them, DTMF for digits, and a "let me look that up" filler while tools run. Do not read JSON. Escalate to a human with a warm transfer and a written summary.</p>
+            <div class="info-box">
+                <strong>Multimodal:</strong> vision + voice (show a screenshot, talk through it). Keep one session clock. Images belong in tools/RAG, not as a 10MB base64 dump every turn.
+            </div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can explain STT → LLM → TTS and where barge-in hooks in</li>
+                <li>You have measured time-to-first-audio on a test call</li>
+                <li>You know when to use a platform vs OpenAI Realtime vs a custom WebRTC stack</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> AI Coding & Application Development — ship the actual product UI and backend.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Functions - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">⚡ JavaScript Functions</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Basics</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#declaration" class="sidebar-link">Function Declaration</a>
+                <a href="#expression" class="sidebar-link">Function Expression</a>
+                <a href="#anonymous" class="sidebar-link">Anonymous Functions</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🚀 Modern Functions</div>
+            <div class="sidebar-links">
+                <a href="#arrow" class="sidebar-link">Arrow Functions</a>
+                <a href="#iife" class="sidebar-link">IIFE</a>
+                <a href="#generator" class="sidebar-link">Generator Functions</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🎯 Advanced Concepts</div>
+            <div class="sidebar-links">
+                <a href="#higher-order" class="sidebar-link">Higher-Order Functions</a>
+                <a href="#callback" class="sidebar-link">Callback Functions</a>
+                <a href="#curry" class="sidebar-link">Curry Functions</a>
+                <a href="#pure" class="sidebar-link">Pure Functions</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⏰ Timing & Async</div>
+            <div class="sidebar-links">
+                <a href="#timer" class="sidebar-link">Timer Functions</a>
+                <a href="#async" class="sidebar-link">Async Functions</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>⚡ JavaScript Functions</h1>
+            <p>Complete Guide to Functions in JavaScript</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to Functions</h2>
+            
+            <p>In JavaScript, functions are <strong>First-Class Citizens</strong>. This means they are treated like any other variable: they can be passed as arguments, returned from other functions, and even have properties assigned to them like objects.</p>
+
+            <div class="info-box premium">
+                <h3>The "Function as Object" Reality</h3>
+                <p>Technically, every function in JavaScript is a <code>Function</code> object. When you define a function, you are creating an instance of the <code>Function</code> class, which is why functions can have methods like <code>.call()</code> and <code>.bind()</code>.</p>
+            </div>
+
+            <div class="info-box">
+                <strong>Architectural Benefits:</strong>
+                <ul>
+                    <li>✅ <strong>Abstraction:</strong> Hide complex implementation details behind a simple interface.</li>
+                    <li>✅ <strong>Avoidance of Side Effects:</strong> Using Pure Functions makes applications predictable and testable.</li>
+                    <li>✅ <strong>Memory Optimization:</strong> Shared logic reduces the footprint of the application.</li>
+                </ul>
+            </div>
+            
+            <div class="code-block"><span class="comment">// Basic function structure</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name) {
+    <span class="keyword">return</span> <span class="string">`Hello, ${name}!`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">greet</span>(<span class="string">"John"</span>)); <span class="comment">// "Hello, John!"</span></div>
+        </section>
+        </section>
+
+        <section id="declaration">
+            <h2>📝 Function Declaration</h2>
+            <p>A <strong>Function Declaration</strong> is a statement that defines a named function. Its primary characteristic is <strong>Hoisting</strong>.</p>
+            
+            <div class="info-box premium">
+                <h3>The Mechanics of Hoisting</h3>
+                <p>During the <strong>Creation Phase</strong> of the Execution Context, the JavaScript engine moves the entire function definition to the top of its scope. This is why you can invoke a declared function before its line of definition.</p>
+            </div>
+
+            <div class="code-block"><span class="comment">// Can be called before declaration due to Hoisting</span>
+sayHi(); 
+
+<span class="keyword">function</span> <span class="function">sayHi</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Hi there!"</span>);
+}</div>
+        </section>
+
+            <h3>Parameters and Arguments</h3>
+            <div class="info-box">
+                <p><strong>Parameters vs Arguments:</strong></p>
+                <ul>
+                    <li><strong>Parameters:</strong> Variables listed in function definition (firstName, lastName)</li>
+                    <li><strong>Arguments:</strong> Actual values passed when calling ("John", "Doe")</li>
+                </ul>
+            </div>
+
+            <div class="code-block"><span class="comment">// Multiple parameters</span>
+<span class="keyword">function</span> <span class="function">calculateArea</span>(width, height) {
+    <span class="keyword">return</span> width * height;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">calculateArea</span>(<span class="number">5</span>, <span class="number">10</span>)); <span class="comment">// 50</span>
+
+<span class="comment">// No parameters</span>
+<span class="keyword">function</span> <span class="function">getCurrentTime</span>() {
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="function">Date</span>().<span class="function">toLocaleTimeString</span>();
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">getCurrentTime</span>()); <span class="comment">// "4:30:15 PM"</span>
+</div>
+
+            <h3>Default Parameters (ES6)</h3>
+            <div class="code-block"><span class="comment">// Default parameter values</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name = <span class="string">"Guest"</span>, greeting = <span class="string">"Hello"</span>) {
+    <span class="keyword">return</span> <span class="string">`${greeting}, ${name}!`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">greet</span>()); <span class="comment">// "Hello, Guest!"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">greet</span>(<span class="string">"John"</span>)); <span class="comment">// "Hello, John!"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">greet</span>(<span class="string">"John"</span>, <span class="string">"Hi"</span>)); <span class="comment">// "Hi, John!"</span>
+
+<span class="comment">// Real example: Create user profile</span>
+<span class="keyword">function</span> <span class="function">createUser</span>(name, role = <span class="string">"user"</span>, isActive = <span class="keyword">true</span>) {
+    <span class="keyword">return</span> {
+        name: name,
+        role: role,
+        isActive: isActive,
+        createdAt: <span class="keyword">new</span> <span class="function">Date</span>()
+    };
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">createUser</span>(<span class="string">"John"</span>));
+<span class="comment">// { name: "John", role: "user", isActive: true, createdAt: ... }</span>
+</div>
+
+            <h3>Rest Parameters (...)</h3>
+            <div class="code-block"><span class="comment">// Rest parameters - collect remaining arguments into array</span>
+<span class="keyword">function</span> <span class="function">sum</span>(...numbers) {
+    <span class="keyword">return</span> numbers.<span class="function">reduce</span>((total, num) => total + num, <span class="number">0</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">sum</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)); <span class="comment">// 6</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">sum</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)); <span class="comment">// 15</span>
+
+<span class="comment">// Combining regular and rest parameters</span>
+<span class="keyword">function</span> <span class="function">introduce</span>(firstName, lastName, ...hobbies) {
+    <span class="keyword">return</span> <span class="string">`${firstName} ${lastName} likes: ${hobbies.join(", ")}`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">introduce</span>(<span class="string">"John"</span>, <span class="string">"Doe"</span>, <span class="string">"coding"</span>, <span class="string">"reading"</span>, <span class="string">"gaming"</span>));
+<span class="comment">// "John Doe likes: coding, reading, gaming"</span>
+</div>
+
+            <h3>Return Statement</h3>
+            <div class="code-block"><span class="comment">// Function with return value</span>
+<span class="keyword">function</span> <span class="function">multiply</span>(a, b) {
+    <span class="keyword">return</span> a * b; <span class="comment">// Returns result</span>
+}
+
+<span class="keyword">let</span> result = <span class="function">multiply</span>(<span class="number">5</span>, <span class="number">3</span>);
+<span class="function">console</span>.<span class="function">log</span>(result); <span class="comment">// 15</span>
+
+<span class="comment">// Function without return (returns undefined)</span>
+<span class="keyword">function</span> <span class="function">logMessage</span>(message) {
+    <span class="function">console</span>.<span class="function">log</span>(message);
+    <span class="comment">// No return statement</span>
+}
+
+<span class="keyword">let</span> value = <span class="function">logMessage</span>(<span class="string">"Hello"</span>); <span class="comment">// Prints "Hello"</span>
+<span class="function">console</span>.<span class="function">log</span>(value); <span class="comment">// undefined</span>
+
+<span class="comment">// Early return</span>
+<span class="keyword">function</span> <span class="function">divide</span>(a, b) {
+    <span class="keyword">if</span> (b === <span class="number">0</span>) {
+        <span class="keyword">return</span> <span class="string">"Cannot divide by zero"</span>;
+    }
+    <span class="keyword">return</span> a / b;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">divide</span>(<span class="number">10</span>, <span class="number">2</span>)); <span class="comment">// 5</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">divide</span>(<span class="number">10</span>, <span class="number">0</span>)); <span class="comment">// "Cannot divide by zero"</span>
+</div>
+
+            <h3>Function Scope</h3>
+            <div class="code-block"><span class="comment">// Variables declared inside function are local</span>
+<span class="keyword">function</span> <span class="function">testScope</span>() {
+    <span class="keyword">let</span> localVar = <span class="string">"I'm local"</span>;
+    <span class="function">console</span>.<span class="function">log</span>(localVar); <span class="comment">// Works</span>
+}
+
+<span class="function">testScope</span>();
+<span class="comment">// console.log(localVar); // Error: localVar is not defined</span>
+
+<span class="comment">// Global vs Local scope</span>
+<span class="keyword">let</span> globalVar = <span class="string">"I'm global"</span>;
+
+<span class="keyword">function</span> <span class="function">accessGlobal</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(globalVar); <span class="comment">// Can access global</span>
+    <span class="keyword">let</span> localVar = <span class="string">"I'm local"</span>;
+}
+
+<span class="function">accessGlobal</span>(); <span class="comment">// "I'm global"</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>✅ Key Characteristics:</strong></p>
+                <ul>
+                    <li><strong>Hoisted:</strong> Can be called before declaration in code</li>
+                    <li><strong>Named:</strong> Must have a function name</li>
+                    <li><strong>Function Scope:</strong> Creates its own scope for variables</li>
+                    <li><strong>this Binding:</strong> Has its own `this` context</li>
+                    <li><strong>arguments Object:</strong> Has access to `arguments` object</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Best Practices:</strong></p>
+                <ul>
+                    <li>Use descriptive function names (verbs): calculateTotal, getUserData, validateEmail</li>
+                    <li>Keep functions small and focused (single responsibility)</li>
+                    <li>Avoid too many parameters (max 3-4 recommended)</li>
+                    <li>Always return a value or undefined explicitly</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="expression">
+            <h2>💡 Function Expression</h2>
+            <p>Assigning a function to a variable. This function can be named or anonymous, and it is <strong>not hoisted</strong>.</p>
+            
+            <div class="info-box">
+                <strong>Temporal Dead Zone (TDZ):</strong>
+                <p>Unlike declarations, expressions are treated like variables. If you use <code>const</code> or <code>let</code>, the function exists in a "dead zone" until the execution reaches the assignment line.</p>
+            </div>
+
+            <div class="code-block"><span class="comment">// Function Expression</span>
+<span class="keyword">const</span> <span class="function">getFullName</span> = <span class="keyword">function</span>(firstName, lastName) {
+    <span class="keyword">return</span> `${firstName} ${lastName}`;
+};</div>
+        </section>
+
+        <section id="anonymous">
+            <h2>👤 Anonymous Functions</h2>
+            <p><strong>Use Case:</strong> Functions without names, typically used as callbacks.</p>
+            
+            <div class="code-block"><span class="comment">// setTimeout with anonymous function</span>
+<span class="function">setTimeout</span>(<span class="keyword">function</span>() {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Executed after 3 seconds"</span>);
+}, <span class="number">3000</span>);
+
+<span class="comment">// Array method with anonymous function</span>
+<span class="keyword">let</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];
+<span class="keyword">let</span> doubled = numbers.<span class="function">map</span>(<span class="keyword">function</span>(num) {
+    <span class="keyword">return</span> num * <span class="number">2</span>;
+});
+<span class="function">console</span>.<span class="function">log</span>(doubled); <span class="comment">// [2, 4, 6, 8]</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>📌 Common Uses:</strong></p>
+                <ul>
+                    <li>Callbacks (setTimeout, setInterval)</li>
+                    <li>Array methods (map, filter, forEach)</li>
+                    <li>Event handlers</li>
+                    <li>One-time operations</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="arrow">
+            <h2>➡️ Arrow Functions (ES6)</h2>
+            <p>Arrow functions provide a concise syntax and <strong>lexical scoping</strong> for the <code>this</code> identifier.</p>
+            
+            <div class="info-box premium">
+                <h3>The `this` Context Matrix</h3>
+                <p>In regular functions, <code>this</code> is determined by <strong>how</strong> the function is called (Dynamic Scope). In arrow functions, <code>this</code> is determined by <strong>where</strong> the function is defined (Lexical Scope).</p>
+            </div>
+
+            <div class="code-block"><span class="comment">// Regular Function: 'this' depends on caller</span>
+<span class="keyword">function</span> <span class="function">User</span>() {
+    this.age = 0;
+    <span class="function">setInterval</span>(<span class="keyword">function</span>() {
+        this.age++; <span class="comment">// Error: 'this' points to Global/Window</span>
+    }, 1000);
+}
+
+<span class="comment">// Arrow Function: 'this' points to the User instance</span>
+<span class="keyword">function</span> <span class="function">UserFixed</span>() {
+    this.age = 0;
+    <span class="function">setInterval</span>(() => {
+        this.age++; <span class="comment">// Success: 'this' preserved lexically</span>
+    }, 1000);
+}</div>
+        </section>
+
+        <section id="iife">
+            <h2>⚡ Closures & Data Privacy</h2>
+            <p>A <strong>Closure</strong> is the combination of a function bundled together with references to its surrounding state (lexical environment).</p>
+            
+            <div class="info-box premium">
+                <h3>The Persistent Scope</h3>
+                <p>Even after a parent function has finished executing, a closure allows the child function to "remember" and access the variables of that parent. This is essential for <strong>State Management</strong> and <strong>Encapsulation</strong>.</p>
+            </div>
+
+            <div class="code-block"><span class="comment">// Closure Example</span>
+<span class="keyword">function</span> <span class="function">createCounter</span>() {
+    <span class="keyword">let</span> count = 0; <span class="comment">// Private state</span>
+    <span class="keyword">return</span> <span class="keyword">function</span>() {
+        count++;
+        <span class="keyword">return</span> count;
+    };
+}
+
+<span class="keyword">const</span> counter = <span class="function">createCounter</span>();
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">counter</span>()); <span class="comment">// 1</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">counter</span>()); <span class="comment">// 2</span></div>
+        </section>
+
+        <section id="higher-order">
+            <h2>🚀 Higher-Order Functions</h2>
+            <p><span class="highlight">Functions that accept or return other functions</span></p>
+            
+            <div class="code-block"><span class="comment">// Higher-order function example</span>
+<span class="keyword">function</span> <span class="function">createMultiplier</span>(multiplier) {
+    <span class="keyword">return</span> <span class="keyword">function</span>(number) {
+        <span class="keyword">return</span> number * multiplier;
+    };
+}
+
+<span class="keyword">const</span> double = <span class="function">createMultiplier</span>(<span class="number">2</span>);
+<span class="keyword">const</span> triple = <span class="function">createMultiplier</span>(<span class="number">3</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">double</span>(<span class="number">5</span>)); <span class="comment">// 10</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">triple</span>(<span class="number">5</span>)); <span class="comment">// 15</span>
+
+<span class="comment">// Real example: Discount calculator</span>
+<span class="keyword">function</span> <span class="function">createDiscountCalculator</span>(discountPercent) {
+    <span class="keyword">return</span> <span class="keyword">function</span>(price) {
+        <span class="keyword">return</span> price * (<span class="number">1</span> - discountPercent / <span class="number">100</span>);
+    };
+}
+
+<span class="keyword">const</span> apply20PercentOff = <span class="function">createDiscountCalculator</span>(<span class="number">20</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">apply20PercentOff</span>(<span class="number">100</span>)); <span class="comment">// 80</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>📚 Higher-Order Function Definition:</strong></p>
+                <p>Functions that accept other functions as arguments OR return functions as values.</p>
+                <ul>
+                    <li>✅ Accept functions as parameters</li>
+                    <li>✅ Return functions as results</li>
+                    <li>✅ Enable functional programming patterns</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="callback">
+            <h2>📞 Callback Functions</h2>
+            <p>Functions passed as arguments to other functions</p>
+            
+            <div class="code-block"><span class="comment">// Callback function example</span>
+<span class="keyword">function</span> <span class="function">processUserInput</span>(callback) {
+    <span class="keyword">let</span> name = <span class="string">"John Doe"</span>;
+    <span class="function">callback</span>(name);
+}
+
+<span class="function">processUserInput</span>(<span class="keyword">function</span>(name) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Welcome, ${name}!`</span>);
+});
+
+<span class="comment">// Real example: Array operations</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+
+numbers.<span class="function">forEach</span>(<span class="keyword">function</span>(num) {
+    <span class="function">console</span>.<span class="function">log</span>(num * <span class="number">2</span>);
+});
+</div>
+            
+            <div class="info-box">
+                <p><strong>🎯 Callback Function Uses:</strong></p>
+                <ul>
+                    <li><strong>Async Operations:</strong> Handle operations after completion</li>
+                    <li><strong>Event Handling:</strong> Respond to user interactions</li>
+                    <li><strong>Array Methods:</strong> map(), filter(), forEach()</li>
+                    <li><strong>Timer Functions:</strong> setTimeout(), setInterval()</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="curry">
+            <h2>🍛 Curry Functions</h2>
+            <p>Transform function with multiple arguments into nested single-argument functions</p>
+            
+            <div class="code-block"><span class="comment">// Normal function</span>
+<span class="keyword">const</span> add = (a, b, c) => a + b + c;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">add</span>(<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>)); <span class="comment">// 10</span>
+
+<span class="comment">// Curried version</span>
+<span class="keyword">const</span> addCurry = (a) => (b) => (c) => a + b + c;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">addCurry</span>(<span class="number">2</span>)(<span class="number">3</span>)(<span class="number">5</span>)); <span class="comment">// 10</span>
+
+<span class="comment">// Real example: URL builder</span>
+<span class="keyword">const</span> buildURL = (protocol) => (domain) => (path) => 
+    <span class="string">`${protocol}://${domain}/${path}`</span>;
+
+<span class="keyword">const</span> https = <span class="function">buildURL</span>(<span class="string">"https"</span>);
+<span class="keyword">const</span> myWebsite = <span class="function">https</span>(<span class="string">"example.com"</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">myWebsite</span>(<span class="string">"about"</span>)); <span class="comment">// "https://example.com/about"</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>💡 Currying Benefits:</strong></p>
+                <ul>
+                    <li><strong>Partial Application:</strong> Create specialized functions</li>
+                    <li><strong>Reusability:</strong> Build complex functions from simple ones</li>
+                    <li><strong>Functional Composition:</strong> Chain operations elegantly</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="pure">
+            <h2>✨ Pure Functions</h2>
+            <p>Functions that don't modify external state (no side effects)</p>
+            
+            <div class="code-block"><span class="comment">// Impure function (modifies external variable)</span>
+<span class="keyword">let</span> total = <span class="number">0</span>;
+<span class="keyword">function</span> <span class="function">impureAdd</span>(number) {
+    total += number;
+    <span class="keyword">return</span> total;
+}
+
+<span class="comment">// Pure function (no side effects)</span>
+<span class="keyword">function</span> <span class="function">pureAdd</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">pureAdd</span>(<span class="number">5</span>, <span class="number">3</span>)); <span class="comment">// 8 (always)</span>
+
+<span class="comment">// Real example: Calculate tax</span>
+<span class="keyword">const</span> calculateTax = (price, taxRate) => price * taxRate;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">calculateTax</span>(<span class="number">100</span>, <span class="number">0.08</span>)); <span class="comment">// 8</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>✅ Pure Function Rules:</strong></p>
+                <ul>
+                    <li><strong>Same Input = Same Output:</strong> Predictable results</li>
+                    <li><strong>No Side Effects:</strong> Doesn't modify external state</li>
+                    <li><strong>No External Dependencies:</strong> Only uses parameters</li>
+                    <li><strong>Testable:</strong> Easy to test and debug</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="generator">
+            <h2>🔄 Generator Functions</h2>
+            <p>Functions that can pause and resume, producing sequence of values</p>
+            
+            <div class="code-block"><span class="comment">// Generator function</span>
+<span class="keyword">function</span>* <span class="function">numberGenerator</span>() {
+    <span class="keyword">yield</span> <span class="number">1</span>;
+    <span class="keyword">yield</span> <span class="number">2</span>;
+    <span class="keyword">yield</span> <span class="number">3</span>;
+}
+
+<span class="keyword">const</span> gen = <span class="function">numberGenerator</span>();
+<span class="function">console</span>.<span class="function">log</span>(gen.<span class="function">next</span>().<span class="keyword">value</span>); <span class="comment">// 1</span>
+<span class="function">console</span>.<span class="function">log</span>(gen.<span class="function">next</span>().<span class="keyword">value</span>); <span class="comment">// 2</span>
+<span class="function">console</span>.<span class="function">log</span>(gen.<span class="function">next</span>().<span class="keyword">value</span>); <span class="comment">// 3</span>
+
+<span class="comment">// Real example: ID generator</span>
+<span class="keyword">function</span>* <span class="function">idGenerator</span>() {
+    <span class="keyword">let</span> id = <span class="number">1</span>;
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="keyword">yield</span> id++;
+    }
+}
+
+<span class="keyword">const</span> ids = <span class="function">idGenerator</span>();
+<span class="function">console</span>.<span class="function">log</span>(ids.<span class="function">next</span>().<span class="keyword">value</span>); <span class="comment">// 1</span>
+<span class="function">console</span>.<span class="function">log</span>(ids.<span class="function">next</span>().<span class="keyword">value</span>); <span class="comment">// 2</span>
+<span class="function">console</span>.<span class="function">log</span>(ids.<span class="function">next</span>().<span class="keyword">value</span>); <span class="comment">// 3</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>🔑 Generator Function Features:</strong></p>
+                <ul>
+                    <li><strong>Defined with `function*`:</strong> Asterisk notation</li>
+                    <li><strong>`yield` keyword:</strong> Pause and resume execution</li>
+                    <li><strong>Returns Iterator:</strong> Call `.next()` to get values</li>
+                    <li><strong>Lazy Evaluation:</strong> Generate values on demand</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="timer">
+            <h2>⏰ Timer Functions</h2>
+
+            <h3>setTimeout() - Execute Once After Delay</h3>
+            <div class="code-block"><span class="comment">// Basic setTimeout</span>
+<span class="function">setTimeout</span>(() => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Executed after 2 seconds"</span>);
+}, <span class="number">2000</span>);
+
+<span class="comment">// Real example: Show notification</span>
+<span class="keyword">function</span> <span class="function">showNotification</span>(message) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Notification: ${message}`</span>);
+    
+    <span class="comment">// Auto-hide after 3 seconds</span>
+    <span class="function">setTimeout</span>(() => {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Notification hidden"</span>);
+    }, <span class="number">3000</span>);
+}
+</div>
+
+            <h3>setInterval() - Execute Repeatedly</h3>
+            <div class="code-block"><span class="comment">// Basic setInterval</span>
+<span class="keyword">let</span> counter = <span class="number">0</span>;
+<span class="keyword">const</span> intervalId = <span class="function">setInterval</span>(() => {
+    counter++;
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Counter: ${counter}`</span>);
+    
+    <span class="keyword">if</span> (counter >= <span class="number">5</span>) {
+        <span class="function">clearInterval</span>(intervalId);
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Stopped!"</span>);
+    }
+}, <span class="number">1000</span>);
+
+<span class="comment">// Real example: Auto-save</span>
+<span class="keyword">function</span> <span class="function">startAutoSave</span>() {
+    <span class="keyword">return</span> <span class="function">setInterval</span>(() => {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Auto-saving document..."</span>);
+        <span class="comment">// saveDocument();</span>
+    }, <span class="number">30000</span>); <span class="comment">// Every 30 seconds</span>
+}
+</div>
+
+            <h3>clearTimeout() & clearInterval()</h3>
+            <div class="code-block"><span class="comment">// Cancel setTimeout</span>
+<span class="keyword">const</span> timeoutId = <span class="function">setTimeout</span>(() => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"This won't run"</span>);
+}, <span class="number">5000</span>);
+
+<span class="function">clearTimeout</span>(timeoutId); <span class="comment">// Cancelled!</span>
+
+<span class="comment">// Cancel setInterval</span>
+<span class="keyword">const</span> intervalId = <span class="function">setInterval</span>(() => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Repeating..."</span>);
+}, <span class="number">1000</span>);
+
+<span class="function">setTimeout</span>(() => {
+    <span class="function">clearInterval</span>(intervalId);
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Stopped interval"</span>);
+}, <span class="number">5000</span>);
+</div>
+        </section>
+
+        <section id="async">
+            <h2>⚡ Async Functions</h2>
+
+            <p>Async functions make asynchronous code look synchronous, using Promises under the hood.</p>
+
+            <div class="code-block"><span class="comment">// Basic async function</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">fetchData</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">let</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"https://api.example.com/data"</span>);
+        <span class="keyword">let</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+        <span class="keyword">return</span> data;
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Error:"</span>, error);
+    }
+}
+
+<span class="comment">// Real example: Load user profile</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">getUserProfile</span>(userId) {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`/api/users/${userId}`</span>);
+        <span class="keyword">const</span> userData = <span class="keyword">await</span> user.<span class="function">json</span>();
+        
+        <span class="keyword">const</span> posts = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`/api/users/${userId}/posts`</span>);
+        <span class="keyword">const</span> postsData = <span class="keyword">await</span> posts.<span class="function">json</span>();
+        
+        <span class="keyword">return</span> {
+            user: userData,
+            posts: postsData
+        };
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Failed to load profile:"</span>, error);
+    }
+}
+
+<span class="comment">// Using the async function</span>
+<span class="function">getUserProfile</span>(<span class="number">123</span>).<span class="function">then</span>(profile => {
+    <span class="function">console</span>.<span class="function">log</span>(profile);
+});
+</div>
+        </section>
+
+    </div>
+    
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        // Highlight active section on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

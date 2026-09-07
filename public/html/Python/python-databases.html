@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Databases - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🗄️ Python Databases</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Database Types</a>
+                <a href="#connections" class="sidebar-link">Connection Strings</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🐘 PostgreSQL</div>
+            <div class="sidebar-links">
+                <a href="#psycopg" class="sidebar-link">psycopg2 / psycopg3</a>
+                <a href="#sqlalchemy" class="sidebar-link">SQLAlchemy ORM</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🍃 MongoDB</div>
+            <div class="sidebar-links">
+                <a href="#pymongo" class="sidebar-link">PyMongo</a>
+                <a href="#motor" class="sidebar-link">Motor (Async)</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 Patterns</div>
+            <div class="sidebar-links">
+                <a href="#migrations" class="sidebar-link">Migrations</a>
+                <a href="#repository" class="sidebar-link">Repository Pattern</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🗄️ Python Database Integration</h1>
+            <p>PostgreSQL, MongoDB, SQLAlchemy, and database patterns for backends</p>
+        </header>
+
+        <section id="intro">
+            <h2>📖 Database Types</h2>
+            <table>
+                <tr><th>Type</th><th>Examples</th><th>Python Libraries</th><th>Best For</th></tr>
+                <tr>
+                    <td><strong>Relational (SQL)</strong></td>
+                    <td>PostgreSQL, MySQL, SQLite</td>
+                    <td>psycopg2, SQLAlchemy, asyncpg</td>
+                    <td>Structured data, transactions, joins</td>
+                </tr>
+                <tr>
+                    <td><strong>Document (NoSQL)</strong></td>
+                    <td>MongoDB</td>
+                    <td>PyMongo, Motor, Beanie</td>
+                    <td>Flexible schemas, JSON-like docs</td>
+                </tr>
+                <tr>
+                    <td><strong>Key-Value</strong></td>
+                    <td>Redis</td>
+                    <td>redis-py</td>
+                    <td>Caching, sessions, pub/sub</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="connections">
+            <h2>🔗 Connection Strings & Environment</h2>
+            <div class="code-block"># .env file
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+MONGODB_URL=mongodb://localhost:27017/mydb
+REDIS_URL=redis://localhost:6379/0
+
+# Load with python-dotenv
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")</div>
+        </section>
+
+        <section id="psycopg">
+            <h2>🐘 PostgreSQL with psycopg</h2>
+            <div class="code-block">import psycopg2
+from psycopg2.extras import RealDictCursor
+
+# Connect
+conn = psycopg2.connect(
+    host="localhost",
+    database="mydb",
+    user="user",
+    password="password"
+)
+
+# Query with dict results
+with conn.cursor(cursor_factory=RealDictCursor) as cur:
+    cur.execute("SELECT * FROM users WHERE id = %s", (1,))
+    user = cur.fetchone()
+    print(user["name"])
+
+# Insert
+with conn.cursor() as cur:
+    cur.execute(
+        "INSERT INTO users (name, email) VALUES (%s, %s) RETURNING id",
+        ("Alice", "alice@example.com")
+    )
+    new_id = cur.fetchone()[0]
+    conn.commit()
+
+conn.close()</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Security:</strong> Always use parameterized queries (<code>%s</code> placeholders). Never concatenate user input into SQL strings.
+            </div>
+        </section>
+
+        <section id="sqlalchemy">
+            <h2>🔧 SQLAlchemy ORM</h2>
+            <div class="code-block">from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+from datetime import datetime
+
+engine = create_engine("postgresql://user:pass@localhost/mydb")
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(255), unique=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    posts = relationship("Post", back_populates="author")
+
+class Post(Base):
+    __tablename__ = "posts"
+    id = Column(Integer, primary_key=True)
+    title = Column(String(200))
+    author_id = Column(Integer, ForeignKey("users.id"))
+    author = relationship("User", back_populates="posts")
+
+# CRUD
+session = SessionLocal()
+
+# Create
+user = User(name="Alice", email="alice@example.com")
+session.add(user)
+session.commit()
+
+# Read
+user = session.query(User).filter(User.email == "alice@example.com").first()
+users = session.query(User).filter(User.name.like("%Ali%")).all()
+
+# Update
+user.name = "Alicia"
+session.commit()
+
+# Delete
+session.delete(user)
+session.commit()
+session.close()</div>
+
+            <h3>FastAPI + SQLAlchemy Dependency</h3>
+            <div class="code-block">from fastapi import Depends
+from sqlalchemy.orm import Session
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    return db.query(User).filter(User.id == user_id).first()</div>
+        </section>
+
+        <section id="pymongo">
+            <h2>🍃 MongoDB with PyMongo</h2>
+            <div class="code-block">from pymongo import MongoClient
+from bson import ObjectId
+
+client = MongoClient("mongodb://localhost:27017")
+db = client["mydb"]
+users = db["users"]
+
+# Create
+result = users.insert_one({
+    "name": "Alice",
+    "email": "alice@example.com",
+    "roles": ["admin", "user"]
+})
+print(result.inserted_id)
+
+# Read
+user = users.find_one({"email": "alice@example.com"})
+all_users = list(users.find({"roles": "admin"}))
+
+# Update
+users.update_one(
+    {"_id": ObjectId("...")},
+    {"$set": {"name": "Alicia"}, "$push": {"roles": "editor"}}
+)
+
+# Delete
+users.delete_one({"email": "alice@example.com"})
+
+# Aggregation
+pipeline = [
+    {"$match": {"status": "active"}},
+    {"$group": {"_id": "$role", "count": {"$sum": 1}}},
+    {"$sort": {"count": -1}}
+]
+results = list(users.aggregate(pipeline))</div>
+        </section>
+
+        <section id="motor">
+            <h2>⚡ Async MongoDB with Motor</h2>
+            <div class="code-block">from motor.motor_asyncio import AsyncIOMotorClient
+
+client = AsyncIOMotorClient("mongodb://localhost:27017")
+db = client["mydb"]
+
+async def get_user(email: str):
+    return await db.users.find_one({"email": email})
+
+async def create_user(user_data: dict):
+    result = await db.users.insert_one(user_data)
+    return result.inserted_id
+
+# FastAPI endpoint
+@app.get("/users/{email}")
+async def get_user_endpoint(email: str):
+    user = await get_user(email)
+    if not user:
+        raise HTTPException(status_code=404)
+    user["_id"] = str(user["_id"])
+    return user</div>
+        </section>
+
+        <section id="migrations">
+            <h2>🔄 Database Migrations</h2>
+            <div class="code-block"># Alembic (SQLAlchemy migrations)
+pip install alembic
+
+# Initialize
+alembic init alembic
+
+# Create migration
+alembic revision --autogenerate -m "add users table"
+
+# Apply migrations
+alembic upgrade head
+
+# Rollback
+alembic downgrade -1</div>
+
+            <div class="code-block"># alembic/versions/001_add_users.py
+def upgrade():
+    op.create_table(
+        "users",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("name", sa.String(100), nullable=False),
+        sa.Column("email", sa.String(255), unique=True),
+        sa.Column("created_at", sa.DateTime, server_default=sa.func.now()),
+    )
+
+def downgrade():
+    op.drop_table("users")</div>
+        </section>
+
+        <section id="repository">
+            <h2>🏗️ Repository Pattern</h2>
+            <div class="code-block">from abc import ABC, abstractmethod
+from typing import Optional, List
+
+class UserRepository(ABC):
+    @abstractmethod
+    def find_by_id(self, id: int) -> Optional[User]: ...
+
+    @abstractmethod
+    def find_by_email(self, email: str) -> Optional[User]: ...
+
+    @abstractmethod
+    def save(self, user: User) -> User: ...
+
+    @abstractmethod
+    def delete(self, id: int) -> bool: ...
+
+class SQLAlchemyUserRepository(UserRepository):
+    def __init__(self, session: Session):
+        self.session = session
+
+    def find_by_id(self, id: int) -> Optional[User]:
+        return self.session.query(User).get(id)
+
+    def find_by_email(self, email: str) -> Optional[User]:
+        return self.session.query(User).filter_by(email=email).first()
+
+    def save(self, user: User) -> User:
+        self.session.add(user)
+        self.session.commit()
+        self.session.refresh(user)
+        return user
+
+    def delete(self, id: int) -> bool:
+        user = self.find_by_id(id)
+        if user:
+            self.session.delete(user)
+            self.session.commit()
+            return True
+        return False</div>
+
+            <div class="info-box">
+                <strong>💡 Benefit:</strong> Repository pattern decouples business logic from database implementation, making testing and swapping databases easier.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

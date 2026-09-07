@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🐬 MySQL</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Basics</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#databases" class="sidebar-link">Databases & Tables</a>
+                <a href="#datatypes" class="sidebar-link">Data Types</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 CRUD</div>
+            <div class="sidebar-links">
+                <a href="#insert" class="sidebar-link">INSERT</a>
+                <a href="#select" class="sidebar-link">SELECT</a>
+                <a href="#update" class="sidebar-link">UPDATE</a>
+                <a href="#delete" class="sidebar-link">DELETE</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔒 Constraints</div>
+            <div class="sidebar-links">
+                <a href="#constraints" class="sidebar-link">All Constraints</a>
+                <a href="#keys" class="sidebar-link">Primary & Foreign Keys</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔗 Advanced</div>
+            <div class="sidebar-links">
+                <a href="#joins" class="sidebar-link">Joins</a>
+                <a href="#functions" class="sidebar-link">Functions</a>
+                <a href="#operators" class="sidebar-link">Operators</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>🐬 MySQL Complete Guide</h1>
+            <p>Relational Database Management System</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to MySQL</h2>
+            
+            <p><span class="highlight">MySQL</span> is an open-source relational database management system (RDBMS) that uses Structured Query Language (SQL).</p>
+
+            <div class="info-box">
+                <h3>Key Concepts</h3>
+                <ul>
+                    <li><strong>Database:</strong> Collection of organized data</li>
+                    <li><strong>DBMS:</strong> Software to manage databases (MySQL, PostgreSQL)</li>
+                    <li><strong>SQL:</strong> Structured Query Language to interact with databases</li>
+                    <li><strong>Database Server:</strong> Can contain multiple databases</li>
+                </ul>
+            </div>
+
+            <h3>Database Hierarchy</h3>
+            <div class="code-block">Application → DBMS → Database → Table → Row → Column</div>
+
+            <h3>MySQL vs SQL</h3>
+            <ul>
+                <li><strong>SQL:</strong> The language itself (Structured Query Language)</li>
+                <li><strong>MySQL:</strong> A database management system that uses SQL</li>
+            </ul>
+        </section>
+
+        <section id="databases">
+            <h2>🗄️ Databases & Tables</h2>
+
+            <h3>Database Commands</h3>
+            <div class="code-block">-- Show all databases
+SHOW DATABASES;
+
+-- Create database
+CREATE DATABASE company;
+
+-- Use database
+USE company;
+
+-- Drop database
+DROP DATABASE company;</div>
+
+            <h3>Table Commands</h3>
+            <div class="code-block">-- Show all tables
+SHOW TABLES;
+
+-- Show columns in table
+SHOW COLUMNS FROM users;
+
+-- Describe table structure
+DESC users;
+
+-- Create table
+CREATE TABLE users (
+    id INT,
+    name VARCHAR(255),
+    age INT
+);
+
+-- Drop table
+DROP TABLE users;</div>
+        </section>
+
+        <section id="datatypes">
+            <h2>🏷️ Data Types</h2>
+
+            <h3>Numeric Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr><td><code>INT</code></td><td>Integer values</td></tr>
+                <tr><td><code>FLOAT</code></td><td>Floating-point numbers</td></tr>
+                <tr><td><code>DOUBLE</code></td><td>Double precision decimals</td></tr>
+                <tr><td><code>DECIMAL</code></td><td>Exact decimal values</td></tr>
+                <tr><td><code>BOOLEAN</code></td><td>True/False (0/1)</td></tr>
+            </table>
+
+            <h3>String Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr><td><code>CHAR(n)</code></td><td>Fixed-length string</td></tr>
+                <tr><td><code>VARCHAR(n)</code></td><td>Variable-length string</td></tr>
+                <tr><td><code>TEXT</code></td><td>Large text data</td></tr>
+                <tr><td><code>BLOB</code></td><td>Binary large object</td></tr>
+            </table>
+
+            <h3>Date/Time Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr><td><code>DATE</code></td><td>Date (YYYY-MM-DD)</td></tr>
+                <tr><td><code>DATETIME</code></td><td>Date and time</td></tr>
+                <tr><td><code>TIMESTAMP</code></td><td>Unix timestamp</td></tr>
+                <tr><td><code>YEAR</code></td><td>Year value</td></tr>
+            </table>
+
+            <h3>Miscellaneous Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr><td><code>ENUM</code></td><td>Enumeration (predefined values)</td></tr>
+                <tr><td><code>SET</code></td><td>Set of strings</td></tr>
+                <tr><td><code>JSON</code></td><td>JSON data</td></tr>
+            </table>
+        </section>
+
+        <section id="insert">
+            <h2>➕ INSERT - Create Data</h2>
+
+            <h3>Insert Single Row</h3>
+            <div class="code-block">INSERT INTO users (id, name, age)
+VALUES (1, 'John', 30);</div>
+
+            <h3>Insert Multiple Rows</h3>
+            <div class="code-block">INSERT INTO users (name, age)
+VALUES
+    ('Alice', 25),
+    ('Bob', 35),
+    ('Charlie', 28);</div>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> If a column has AUTO_INCREMENT, you don't need to specify its value.
+            </div>
+        </section>
+
+        <section id="select">
+            <h2>🔍 SELECT - Read Data</h2>
+
+            <h3>Basic SELECT</h3>
+            <div class="code-block">-- Select all columns
+SELECT * FROM users;
+
+-- Select specific columns
+SELECT name, email FROM users;</div>
+
+            <h3>WHERE Clause</h3>
+            <div class="code-block">-- Single condition
+SELECT * FROM users WHERE id = 1;
+
+-- Multiple conditions (AND)
+SELECT * FROM users
+WHERE age >= 25 AND age <= 35;
+
+-- OR condition
+SELECT * FROM users
+WHERE name = 'John' OR name = 'Alice';</div>
+
+            <h3>ORDER BY & LIMIT</h3>
+            <div class="code-block">-- Sort ascending
+SELECT * FROM users ORDER BY age ASC;
+
+-- Sort descending
+SELECT * FROM users ORDER BY age DESC;
+
+-- Limit results
+SELECT * FROM users LIMIT 10;
+
+-- Offset and limit
+SELECT * FROM users LIMIT 10 OFFSET 20;</div>
+
+            <h3>LIKE & Wildcards</h3>
+            <div class="code-block">-- Starts with 'J'
+SELECT * FROM users WHERE name LIKE 'J%';
+
+-- Ends with 'n'
+SELECT * FROM users WHERE name LIKE '%n';
+
+-- Contains 'oh'
+SELECT * FROM users WHERE name LIKE '%oh%';</div>
+        </section>
+
+        <section id="update">
+            <h2>✏️ UPDATE - Modify Data</h2>
+
+            <div class="code-block">-- Update single record
+UPDATE users
+SET name = 'John Doe', age = 31
+WHERE id = 1;
+
+-- Update multiple records
+UPDATE users
+SET status = 'active'
+WHERE age >= 18;</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Warning:</strong> Always use WHERE clause with UPDATE, or you'll update ALL rows!
+            </div>
+        </section>
+
+        <section id="delete">
+            <h2>🗑️ DELETE - Remove Data</h2>
+
+            <div class="code-block">-- Delete specific record
+DELETE FROM users WHERE id = 1;
+
+-- Delete with condition
+DELETE FROM users WHERE age < 18;
+
+-- Delete all records (DANGER!)
+DELETE FROM users;</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Danger:</strong> DELETE without WHERE clause removes ALL rows!
+            </div>
+        </section>
+
+        <section id="constraints">
+            <h2>🔒 Constraints</h2>
+
+            <p>Constraints enforce rules on data in tables.</p>
+
+            <table>
+                <tr><th>Constraint</th><th>Purpose</th><th>Example</th></tr>
+                <tr>
+                    <td><code>NOT NULL</code></td>
+                    <td>Column cannot be null</td>
+                    <td><code>name VARCHAR(100) NOT NULL</code></td>
+                </tr>
+                <tr>
+                    <td><code>UNIQUE</code></td>
+                    <td>No duplicate values</td>
+                    <td><code>email VARCHAR(100) UNIQUE</code></td>
+                </tr>
+                <tr>
+                    <td><code>PRIMARY KEY</code></td>
+                    <td>Unique identifier</td>
+                    <td><code>id INT PRIMARY KEY</code></td>
+                </tr>
+                <tr>
+                    <td><code>FOREIGN KEY</code></td>
+                    <td>Link to another table</td>
+                    <td><code>FOREIGN KEY (user_id) REFERENCES users(id)</code></td>
+                </tr>
+                <tr>
+                    <td><code>CHECK</code></td>
+                    <td>Validate values</td>
+                    <td><code>age INT CHECK (age >= 18)</code></td>
+                </tr>
+                <tr>
+                    <td><code>DEFAULT</code></td>
+                    <td>Default value</td>
+                    <td><code>status VARCHAR(20) DEFAULT 'active'</code></td>
+                </tr>
+                <tr>
+                    <td><code>AUTO_INCREMENT</code></td>
+                    <td>Auto-generate ID</td>
+                    <td><code>id INT AUTO_INCREMENT</code></td>
+                </tr>
+            </table>
+
+            <h3>Complete Example with All Constraints</h3>
+            <div class="code-block">CREATE TABLE students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    age INT CHECK (age >= 18),
+    department_id INT,
+    enrollment_date DATE DEFAULT (CURRENT_DATE),
+    
+    -- Foreign key
+    CONSTRAINT fk_department
+        FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+        ON DELETE CASCADE,
+    
+    -- Index for faster searches
+    INDEX idx_name (name)
+);</div>
+        </section>
+
+        <section id="keys">
+            <h2>🔑 Primary & Foreign Keys</h2>
+
+            <h3>Primary Key</h3>
+            <p>Uniquely identifies each record in a table.</p>
+            <div class="code-block">CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    age INT
+);
+
+INSERT INTO users (name, age) VALUES ('John', 30);
+SELECT * FROM users;</div>
+
+            <h3>Foreign Key</h3>
+            <p>Links two tables together.</p>
+            <div class="code-block">-- Parent table
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255)
+);
+
+-- Child table with foreign key
+CREATE TABLE posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255),
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+INSERT INTO users (name) VALUES ('John');
+INSERT INTO posts (title, user_id) VALUES ('My First Post', 1);</div>
+
+            <div class="info-box">
+                <strong>💡 ON DELETE CASCADE:</strong> When a user is deleted, all their posts are automatically deleted too.
+            </div>
+        </section>
+
+        <section id="joins">
+            <h2>🔗 Joins</h2>
+
+            <p>Joins combine rows from two or more tables based on a related column.</p>
+
+            <h3>INNER JOIN</h3>
+            <p>Returns only matching records from both tables.</p>
+            <div class="code-block">SELECT users.name, posts.title
+FROM users
+INNER JOIN posts ON users.id = posts.user_id;</div>
+
+            <h3>LEFT JOIN</h3>
+            <p>Returns all records from left table, and matching records from right table.</p>
+            <div class="code-block">SELECT users.name, posts.title
+FROM users
+LEFT JOIN posts ON users.id = posts.user_id;</div>
+
+            <h3>RIGHT JOIN</h3>
+            <p>Returns all records from right table, and matching records from left table.</p>
+            <div class="code-block">SELECT users.name, posts.title
+FROM users
+RIGHT JOIN posts ON users.id = posts.user_id;</div>
+
+            <h3>Real-World Example</h3>
+            <div class="code-block">-- Get users with their orders
+SELECT
+    users.name,
+    orders.order_id,
+    orders.total_amount,
+    orders.order_date
+FROM users
+LEFT JOIN orders ON users.id = orders.user_id
+WHERE orders.status = 'completed'
+ORDER BY orders.order_date DESC;</div>
+        </section>
+
+        <section id="functions">
+            <h2>📊 MySQL Functions</h2>
+
+            <h3>Aggregate Functions</h3>
+            <div class="code-block">-- COUNT - Count rows
+SELECT COUNT(*) AS total_users FROM users;
+
+-- SUM - Total of column
+SELECT SUM(price) AS total_sales FROM orders;
+
+-- AVG - Average
+SELECT AVG(age) AS avg_age FROM users;
+
+-- MIN and MAX
+SELECT MIN(price), MAX(price) FROM products;
+
+-- GROUP BY
+SELECT city, COUNT(*) AS user_count
+FROM users
+GROUP BY city;</div>
+
+            <h3>String Functions</h3>
+            <div class="code-block">-- CONCAT - Join strings
+SELECT CONCAT(first_name, ' ', last_name) AS full_name
+FROM users;
+
+-- UPPER and LOWER
+SELECT UPPER(name), LOWER(email) FROM users;
+
+-- LENGTH
+SELECT name, LENGTH(name) AS name_length FROM users;
+
+-- LEFT and RIGHT
+SELECT LEFT(name, 3), RIGHT(name, 3) FROM users;</div>
+
+            <h3>Date/Time Functions</h3>
+            <div class="code-block">-- NOW - Current date and time
+SELECT NOW();
+
+-- CURDATE - Current date
+SELECT CURDATE();
+
+-- CURTIME - Current time
+SELECT CURTIME();
+
+-- DATE_FORMAT
+SELECT DATE_FORMAT(created_at, '%Y-%m-%d') FROM users;
+
+-- DATEDIFF - Difference between dates
+SELECT DATEDIFF(NOW(), created_at) AS days_old FROM users;
+
+-- DATE_ADD and DATE_SUB
+SELECT DATE_ADD(NOW(), INTERVAL 7 DAY);
+SELECT DATE_SUB(NOW(), INTERVAL 1 MONTH);</div>
+
+            <h3>Other Useful Functions</h3>
+            <div class="code-block">-- IF statement
+SELECT name, IF(age >= 18, 'Adult', 'Minor') AS category
+FROM users;
+
+-- CASE statement
+SELECT name,
+    CASE
+        WHEN age < 18 THEN 'Minor'
+        WHEN age >= 18 AND age < 65 THEN 'Adult'
+        ELSE 'Senior'
+    END AS age_group
+FROM users;
+
+-- ROUND
+SELECT ROUND(price, 2) FROM products;
+
+-- RAND - Random number
+SELECT RAND();
+
+-- VERSION
+SELECT VERSION();</div>
+        </section>
+
+        <section id="operators">
+            <h2>⚙️ Operators</h2>
+
+            <h3>Comparison Operators</h3>
+            <div class="code-block">-- Equal
+SELECT * FROM users WHERE age = 30;
+
+-- Not equal
+SELECT * FROM users WHERE age != 30;
+SELECT * FROM users WHERE age <> 30;
+
+-- Greater than / Less than
+SELECT * FROM users WHERE age > 25;
+SELECT * FROM users WHERE age < 40;
+
+-- Greater than or equal / Less than or equal
+SELECT * FROM users WHERE age >= 18;
+SELECT * FROM users WHERE age <= 65;</div>
+
+            <h3>Logical Operators</h3>
+            <div class="code-block">-- AND
+SELECT * FROM users WHERE age >= 18 AND age <= 65;
+
+-- OR
+SELECT * FROM users WHERE city = 'New York' OR city = 'Los Angeles';
+
+-- NOT
+SELECT * FROM users WHERE NOT city = 'Boston';
+
+-- BETWEEN
+SELECT * FROM users WHERE age BETWEEN 25 AND 35;
+
+-- IN
+SELECT * FROM users WHERE city IN ('New York', 'LA', 'Chicago');
+
+-- IS NULL / IS NOT NULL
+SELECT * FROM users WHERE email IS NULL;
+SELECT * FROM users WHERE email IS NOT NULL;</div>
+
+            <h3>Special Operators</h3>
+            <div class="code-block">-- DISTINCT - Remove duplicates
+SELECT DISTINCT city FROM users;
+
+-- AS - Alias
+SELECT name AS user_name, age AS user_age FROM users;
+
+-- UNION - Combine results
+SELECT name FROM users
+UNION
+SELECT name FROM customers;
+
+-- EXISTS
+SELECT * FROM users
+WHERE EXISTS (SELECT * FROM orders WHERE orders.user_id = users.id);</div>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

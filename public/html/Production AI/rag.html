@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG & Knowledge Engineering — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📚 RAG & Knowledge Engineering</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#embeddings" class="sidebar-link">Embeddings</a>
+                <a href="#vectordb" class="sidebar-link">Vector DBs</a>
+                <a href="#chunking" class="sidebar-link">Chunking</a>
+                <a href="#retrieval" class="sidebar-link">Retrieval</a>
+                <a href="#rerank" class="sidebar-link">Reranking</a>
+                <a href="#hybrid" class="sidebar-link">Hybrid Search</a>
+                <a href="#multimodal" class="sidebar-link">Multimodal RAG</a>
+                <a href="#eval" class="sidebar-link">RAG Evaluation</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>📚 5. RAG & Knowledge Engineering</h1>
+            <p>Step 5 of 12 — Retrieve the right evidence, then generate. Most "hallucinations" are retrieval failures.</p>
+        </header>
+
+        <section id="overview">
+            <h2>What RAG is</h2>
+            <p><span class="highlight">Retrieval-Augmented Generation</span> fetches relevant documents at query time and puts them in the prompt so the model answers from your data. Knowledge engineering is the boring work that makes it true: parsing, chunking, metadata, ACLs, freshness, and evals.</p>
+            <div class="info-box">
+                <h3>Canonical pipeline</h3>
+                <ol>
+                    <li>Ingest: parse PDF/HTML/tickets → clean text + metadata</li>
+                    <li>Chunk + embed + index</li>
+                    <li>Query: embed question → retrieve → (optional) rerank</li>
+                    <li>Generate with citations → log → evaluate</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Embeddings</td><td>You pick a model and know cosine similarity is not magic</td></tr>
+                <tr><td>2</td><td>Vector DB</td><td>You can upsert, filter metadata, and delete by document id</td></tr>
+                <tr><td>3</td><td>Chunking</td><td>You choose size/overlap from the query type, not a tweet</td></tr>
+                <tr><td>4</td><td>Retrieval</td><td>You inspect top-k and see why a wrong chunk won</td></tr>
+                <tr><td>5</td><td>Rerank</td><td>You add a cross-encoder when recall is OK but precision is not</td></tr>
+                <tr><td>6</td><td>Hybrid</td><td>You combine BM25 + vectors for IDs, codes, and rare terms</td></tr>
+                <tr><td>7</td><td>Multimodal</td><td>You can retrieve from images/tables, not only markdown</td></tr>
+                <tr><td>8</td><td>Eval</td><td>You have a golden set: recall@k, faithfulness, answer relevance</td></tr>
+            </table>
+        </section>
+
+        <section id="embeddings">
+            <h2>Embeddings</h2>
+            <p>An embedding is a dense vector that places similar meaning nearby. Use a dedicated embedding model (not a chat model). Same model at index time and query time. Watch dimension, multilingual support, and instruction prefixes (e.g. "query:" vs "passage:").</p>
+            <div class="code-block">from openai import OpenAI
+
+client = OpenAI()
+
+def embed(texts: list[str]) -> list[list[float]]:
+    r = client.embeddings.create(model="text-embedding-3-small", input=texts)
+    return [d.embedding for d in r.data]</div>
+            <div class="warning-box">
+                <strong>Never mix models</strong> in one index. Re-embed everything if you change the embedding model.
+            </div>
+        </section>
+
+        <section id="vectordb">
+            <h2>Vector databases</h2>
+            <p>Stores vectors + metadata and runs ANN search (HNSW, IVF). Options: pgvector (start here if you already have Postgres), Pinecone, Weaviate, Qdrant, Chroma, OpenSearch k-NN.</p>
+            <table>
+                <tr><th>Need</th><th>Look for</th></tr>
+                <tr><td>ACLs</td><td>Metadata filters on tenant / role before ANN, not after</td></tr>
+                <tr><td>Updates</td><td>Delete-by-source-id and re-index a document</td></tr>
+                <tr><td>Hybrid</td><td>Sparse + dense in one query, or two indexes + fusion</td></tr>
+                <tr><td>Ops</td><td>Backups, replicas, SLO on p95 query latency</td></tr>
+            </table>
+        </section>
+
+        <section id="chunking">
+            <h2>Chunking</h2>
+            <p>Chunks are the unit of retrieval. Too big: diluted similarity. Too small: missing context. Overlap helps sentences that straddle a boundary. Prefer structure: headings, pages, tickets, functions — not only N characters.</p>
+            <div class="code-block">def chunk(text: str, size: int = 800, overlap: int = 120) -> list[str]:
+    out, i = [], 0
+    while i &lt; len(text):
+        out.append(text[i:i + size])
+        i += size - overlap
+    return out</div>
+            <p>Better: split on markdown headings, then pack until a token budget. Keep <code>source</code>, <code>title</code>, <code>page</code>, <code>updated_at</code> on every chunk.</p>
+        </section>
+
+        <section id="retrieval">
+            <h2>Retrieval</h2>
+            <p>Query rewrite, HyDE (hypothetical document), and multi-query can lift recall. Always log the retrieved chunk ids. If the answer is wrong, first ask: was the evidence in top-k?</p>
+            <div class="code-block">def retrieve(q: str, k: int = 8, tenant: str | None = None):
+    qv = embed([q])[0]
+    filt = {"tenant": tenant} if tenant else None
+    return vector_db.query(qv, top_k=k, filter=filt)</div>
+        </section>
+
+        <section id="rerank">
+            <h2>Reranking</h2>
+            <p>Bi-encoders (embeddings) are fast and approximate. A cross-encoder reranker reads query+chunk together and scores relevance. Pattern: retrieve 50, rerank to 5. Worth it when latency budget allows (~50–200ms extra).</p>
+        </section>
+
+        <section id="hybrid">
+            <h2>Hybrid search</h2>
+            <p>Keyword search (BM25) wins on SKUs, error codes, names, and exact phrases. Vectors win on paraphrase. Fuse with RRF (reciprocal rank fusion) or a weighted score. This is the production default for support and docs.</p>
+            <div class="code-block">def rrf(rank_lists, k=60):
+    scores = {}
+    for ranks in rank_lists:
+        for r, doc_id in enumerate(ranks, start=1):
+            scores[doc_id] = scores.get(doc_id, 0) + 1.0 / (k + r)
+    return sorted(scores, key=scores.get, reverse=True)</div>
+        </section>
+
+        <section id="multimodal">
+            <h2>Multimodal RAG</h2>
+            <p>PDFs are not text. Tables, screenshots, and diagrams need OCR, table extractors, or vision embeddings. Options: caption images into text and embed; or use a multimodal embedding space (image+text). Store the original asset URL so the UI can show the figure, not only the caption.</p>
+        </section>
+
+        <section id="eval">
+            <h2>RAG evaluation</h2>
+            <table>
+                <tr><th>Metric</th><th>Question it answers</th></tr>
+                <tr><td>Context recall / hit@k</td><td>Did we retrieve a chunk that contains the answer?</td></tr>
+                <tr><td>Context precision</td><td>Are retrieved chunks actually relevant?</td></tr>
+                <tr><td>Faithfulness</td><td>Does the answer stick to the context?</td></tr>
+                <tr><td>Answer relevance</td><td>Does it address the user question?</td></tr>
+                <tr><td>Citation accuracy</td><td>Do cited chunks support the claims?</td></tr>
+            </table>
+            <p>Build a golden set of 50–200 real questions with labeled source docs. Automate with LLM-as-judge only after you sample-check the judge. Track regressions when you change chunking or models.</p>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can ingest a corpus, retrieve with metadata filters, and cite sources</li>
+                <li>You have an eval set and know your hit@k</li>
+                <li>You can debug a bad answer by looking at retrieved chunks first</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> AI Agents — when one retrieval+generate pass is not enough and the system must plan and use tools.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

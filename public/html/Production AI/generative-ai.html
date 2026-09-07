@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI &amp; LLM Engineering — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">✨ Generative AI &amp; LLM Engineering</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Core</div>
+            <div class="sidebar-links">
+                <a href="#llms" class="sidebar-link">LLMs</a>
+                <a href="#tokens" class="sidebar-link">Tokens</a>
+                <a href="#context" class="sidebar-link">Context Windows</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Engineering</div>
+            <div class="sidebar-links">
+                <a href="#prompting" class="sidebar-link">Prompting</a>
+                <a href="#structured" class="sidebar-link">Structured Output</a>
+                <a href="#apis" class="sidebar-link">Model APIs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Production</div>
+            <div class="sidebar-links">
+                <a href="#finetune" class="sidebar-link">Fine-tuning</a>
+                <a href="#inference" class="sidebar-link">Inference</a>
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>✨ 4. Generative AI &amp; LLM Engineering</h1>
+            <p>Step 4 of 12 — Treat models as unreliable computers with a token meter attached.</p>
+        </header>
+
+        <section id="overview">
+            <h2>The job</h2>
+            <p>LLM engineering is <span class="highlight">productizing next-token prediction</span>: pick a model, bound the context, constrain the output, log traces, and control cost and latency. Prompting is the first lever; APIs and inference settings are the rest. The model is not a database, not a search engine, and not grounded unless you ground it.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-hero.png" alt="Production LLM pipeline from user app through prompt builder and model API to JSON output and an observability panel showing tokens, cost, and latency" loading="lazy">
+                <div class="illustration-caption">Five stages you actually ship: the app, a prompt that mixes system + tools + RAG + user, a vendor API, constrained output, then traces for tokens, dollars, and latency. The orange token meter is the budget you never stop watching.</div>
+            </div>
+
+            <table>
+                <tr><th>Stage in the diagram</th><th>What it is</th><th>What goes wrong if you skip it</th></tr>
+                <tr><td><strong>1. User / app</strong></td><td>Chat UI, ticket bot, or internal tool</td><td>You optimize the model instead of the product</td></tr>
+                <tr><td><strong>2. Prompt builder</strong></td><td>System + tools JSON + retrieved chunks + user text</td><td>Injection, bloated context, unversioned prompts</td></tr>
+                <tr><td><strong>3. Model API</strong></td><td>OpenAI, Anthropic, Gemini, Bedrock, or a local server</td><td>Vendor lock-in, no timeout, no fallback on 429</td></tr>
+                <tr><td><strong>4. Constrained output</strong></td><td>JSON / tool calls the app can parse</td><td>Poems where you needed a ticket object</td></tr>
+                <tr><td><strong>5. Observability</strong></td><td><code>tokens_in</code>, <code>tokens_out</code>, USD, p95 latency, request id</td><td>Surprise bills and silent quality drift</td></tr>
+            </table>
+
+            <div class="grid-3">
+                <div class="feature-card card-orange">
+                    <h4>Unreliable computer</h4>
+                    <p>Fluent text is not evidence. Retry, validate, cite, or refuse. Never let a raw completion hit a database or a customer without a gate.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Token meter</h4>
+                    <p>You pay for input + output. System prompts, tool schemas, RAG chunks, and retries are hidden meters that dominate cost.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Product levers</h4>
+                    <p>Model choice, context budget, output schema, sampling knobs, and traces. Prompting is only the first of those.</p>
+                </div>
+            </div>
+
+            <div class="info-box premium">
+                <h3>What “generative” covers (not only chat)</h3>
+                <ul>
+                    <li><strong>Text LLMs</strong> — decoder-only transformers that sample the next token. Chat, code, agents.</li>
+                    <li><strong>Diffusion / flow models</strong> — images, video, some audio. Different training loop than next-token prediction.</li>
+                    <li><strong>Speech</strong> — ASR in, TTS out; often a separate stack from the chat model.</li>
+                    <li><strong>This step</strong> — you productize <em>LLMs as APIs</em>. Images and voice get their own later steps.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>LLMs</td><td>You can describe pretrain → instruct/chat → deploy, and why none of that is a knowledge database</td></tr>
+                <tr><td>2</td><td>Tokens</td><td>You estimate cost from tokens in/out, including hidden prompt and retry tokens — not “number of words”</td></tr>
+                <tr><td>3</td><td>Context</td><td>You truncate, summarize, or retrieve instead of stuffing everything, and you reserve room for the answer</td></tr>
+                <tr><td>4</td><td>Prompting</td><td>You version prompts like code, A/B them, and keep untrusted text out of the system slot</td></tr>
+                <tr><td>5</td><td>Structured output</td><td>You parse JSON/schema reliably with validation and a retry cap</td></tr>
+                <tr><td>6</td><td>Model APIs</td><td>You wrap OpenAI/Anthropic/Gemini/Bedrock behind one interface with timeout and fallback</td></tr>
+                <tr><td>7</td><td>Fine-tuning</td><td>You know when not to fine-tune (usually: RAG or better prompts first)</td></tr>
+                <tr><td>8</td><td>Inference</td><td>You can set temperature, max tokens, streaming, and a timeout — and log the full text anyway</td></tr>
+            </table>
+        </section>
+
+        <section id="llms">
+            <h2>LLMs</h2>
+            <p>A large language model predicts the next token given previous tokens. Chat models add a conversation template (system / user / assistant). “Intelligence” is compressed statistics plus alignment. It is not a database and it is not grounded unless you ground it (RAG, tools, citations).</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-hero.png" alt="Five-step LLM loop: prompt, tokenize, transformer layers, sample next token, decode to text" loading="lazy">
+                <div class="illustration-caption">The existing next-token loop, with each box named. Production adds sampling, a stop reason, and a repeat until <code>max_tokens</code> or an end-of-sequence token — then you detokenize.</div>
+            </div>
+
+            <table>
+                <tr><th>Box in the diagram</th><th>What happens</th><th>Production note</th></tr>
+                <tr><td><strong>1. Prompt</strong></td><td>Your assembled messages (system, history, tools, user)</td><td>This is the only place you still control the input</td></tr>
+                <tr><td><strong>2. Tokens</strong></td><td>Subword pieces, not words. Leading spaces change IDs</td><td>Billing and the context window count these IDs</td></tr>
+                <tr><td><strong>3. Transformer</strong></td><td>Stacked decoder blocks with causal self-attention</td><td>KV cache makes chat cheaper than regenerating from scratch</td></tr>
+                <tr><td><strong>4. Next token</strong></td><td>Softmax over the vocabulary, then sample or greedy</td><td>Temperature / top_p live here</td></tr>
+                <tr><td><strong>5. Text</strong></td><td>Detokenize the running sequence into UTF-8</td><td>Stream tokens to the UI; store the full string for logs</td></tr>
+            </table>
+
+            <h3>How a chat model is actually built</h3>
+            <p>Modern assistants are not one training run. Skipping a stage shows up as a model that can complete text but cannot follow “answer in JSON” or refuses nothing.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-training-pipeline.png" alt="Four-stage LLM training: pretraining on corpora, supervised fine-tuning on instruction pairs, alignment with RLHF or DPO, then serving behind an API" loading="lazy">
+                <div class="illustration-caption">Read the four panels left to right. Pretrain compresses the corpus. SFT teaches the chat format. Alignment steers style and safety. Serving is where your product lives — quantization, batching, and guardrails, not more pretraining.</div>
+            </div>
+
+            <table>
+                <tr><th>Panel</th><th>What happens</th><th>What it does <em>not</em> do</th></tr>
+                <tr><td><strong>1. Pretraining</strong></td><td>Next-token prediction on huge text/code corpora (web, books, code, papers)</td><td>Does not teach “be a helpful assistant” or a guaranteed world model</td></tr>
+                <tr><td><strong>2. SFT</strong></td><td>Supervised fine-tune on instruction → response pairs (format, tools, markdown, refusals)</td><td>Does not add fresh weekly facts; quality of pairs beats volume of web text here</td></tr>
+                <tr><td><strong>3. Alignment</strong></td><td>RLHF (reward model + RL) or DPO (direct preference pairs). RLAIF uses AI judges at scale</td><td>Does not guarantee factuality. Over-optimizing the reward can make the model sycophantic</td></tr>
+                <tr><td><strong>4. Serving</strong></td><td>API or self-host: quantization, batching, safety filters, rate limits</td><td>The weights are frozen unless you fine-tune again. Product quality is mostly prompts, retrieval, and evals</td></tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>Grounding is extra.</strong> Pretrain + SFT + RLHF still hallucinate. If the answer must be true, retrieve evidence, call tools, or refuse. Alignment is about preferred style and policy, not a source of truth.
+            </div>
+        </section>
+
+        <section id="tokens">
+            <h2>Tokens</h2>
+            <p>Models do not see words. They see subword tokens from a fixed vocabulary (often 32K–200K IDs). English is roughly 0.75 words per token; code, URLs, CJK, and other languages differ — sometimes 2–3× more tokens for the same sentence. You pay for <strong>input + output</strong> tokens.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-tokens.png" alt="Sentence split into token chips, with input token breakdown versus output tokens and a cost formula USD equals tokens in times price plus tokens out times price" loading="lazy">
+                <div class="illustration-caption">The sentence is four chips. The bill is not. Input is usually dominated by system + tools + RAG. Output is what the user sees, plus every retry you forgot to count.</div>
+            </div>
+
+            <table>
+                <tr><th>Part of the picture</th><th>Typical share on a RAG support bot</th><th>What to do</th></tr>
+                <tr><td><strong>Token chips</strong> (“Ex”, “plain”, “ RAG”, “.”)</td><td>The user question is tiny</td><td>Count with a real tokenizer, not <code>len(words)</code></td></tr>
+                <tr><td><strong>Input column</strong></td><td>System 200–800, tools JSON 50–400, RAG 1K–8K, user tens</td><td>Shrink RAG and tool schemas before you switch models</td></tr>
+                <tr><td><strong>Output column</strong></td><td>Completion + validation retries</td><td>Cap <code>max_tokens</code>; cap retries at 1–2</td></tr>
+                <tr><td><strong>Cost bar</strong></td><td>USD ≈ (in × $in) + (out × $out)</td><td>Output is often 3–10× more expensive per token than input</td></tr>
+            </table>
+
+            <div class="code-block">import tiktoken
+
+enc = tiktoken.encoding_for_model("gpt-4o-mini")
+text = "Explain RAG in one paragraph."
+print(len(enc.encode(text)))  # input tokens ≈ this
+
+# Habit: log every call
+# tokens_in, tokens_out, model, usd_estimate, request_id</div>
+
+            <div class="info-box">
+                <strong>Habit:</strong> Log <code>tokens_in</code>, <code>tokens_out</code>, model name, and USD estimate on every request. Hidden costs that surprise teams: system prompt, tools JSON, RAG chunks, and retries.
+            </div>
+
+            <h3>Rough sizes (English)</h3>
+            <table>
+                <tr><th>Text</th><th>Rough tokens</th></tr>
+                <tr><td>1 word</td><td>~1.3</td></tr>
+                <tr><td>1 paragraph</td><td>100–200</td></tr>
+                <tr><td>~1 page (500 words)</td><td>600–800</td></tr>
+                <tr><td>128K window</td><td>~90–100K words — not a free hard drive</td></tr>
+            </table>
+        </section>
+
+        <section id="context">
+            <h2>Context windows</h2>
+            <p>The window is the max tokens of <strong>prompt + generation</strong> the model can attend to. Long windows are not free: latency and price grow, and models still “lose” details in the middle. Prefer retrieval, summarization, and hierarchical memory over dumping a 200-page PDF.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-context-window.png" alt="Context window budget bar split among system prompt, chat history, retrieved docs, user question, and reserved output tokens, with a warning that overflow drops the oldest tokens" loading="lazy">
+                <div class="illustration-caption">The bar is a budget, not storage. Left is oldest; right is newest. If you pack retrieved docs until the dashed “output reserved” slice disappears, the model truncates from the left — often your system prompt.</div>
+            </div>
+
+            <table>
+                <tr><th>Slice in the bar</th><th>What it holds</th><th>How to keep it honest</th></tr>
+                <tr><td><strong>System prompt (~8%)</strong></td><td>Role, policy, output contract</td><td>Keep it short and stable; version it. If this drops, the model forgets the job</td></tr>
+                <tr><td><strong>Chat history (~25%)</strong></td><td>Prior turns and tool traces</td><td>Drop oldest tool dumps; keep a rolling summary instead of infinite history</td></tr>
+                <tr><td><strong>Retrieved docs (~40%)</strong></td><td>RAG chunks, tickets, wiki pages</td><td>Top-k after rerank, not “the whole PDF”. Metadata filters before ANN</td></tr>
+                <tr><td><strong>User question (~7%)</strong></td><td>The current query</td><td>Usually cheap. Put it last (or follow the vendor’s recommended order)</td></tr>
+                <tr><td><strong>Output reserved (~20%)</strong></td><td>Room for <code>max_tokens</code></td><td>Always subtract this from the prompt budget. No reserve = truncated answers</td></tr>
+            </table>
+
+            <ul>
+                <li>Reserve budget for the completion (<code>max_tokens</code>) before you pack RAG</li>
+                <li>Put instructions first, retrieved evidence next, user query last — unless the vendor documents a different order</li>
+                <li>Drop oldest tool traces; keep a rolling summary</li>
+                <li>Advertised 1M windows still cost money and still miss the middle. Retrieval beats stuffing</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Lost in the middle:</strong> Even when everything fits, models attend more to the start and end of the window. Put the critical instruction and the question at the edges; do not bury the only relevant chunk in position 40 of 80.
+            </div>
+        </section>
+
+        <section id="prompting">
+            <h2>Prompting</h2>
+            <p>Prompts are programs. Store them in files, version them, and evaluate. Techniques: role/system instructions, few-shot examples, chain-of-thought (when allowed), and “think then answer” only if you need reasoning and can afford tokens.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-prompt-boundary.png" alt="Trusted system prompt on the left separated by a red boundary from untrusted user messages and retrieved docs, which enter the user or context slot of the chat template" loading="lazy">
+                <div class="illustration-caption">The red wall is the whole lesson. System is trusted code. User text and retrieved docs are data. They belong in the user/context slot — never concatenated into the system prompt. Version the file like <code>prompts/support_v12.md</code>.</div>
+            </div>
+
+            <table>
+                <tr><th>Region in the diagram</th><th>Treat as</th><th>Rule</th></tr>
+                <tr><td><strong>Trusted: system</strong></td><td>Your code / policy</td><td>Short, versioned, no user strings interpolated in</td></tr>
+                <tr><td><strong>Untrusted: user</strong></td><td>Hostile by default</td><td>Can contain “ignore previous instructions”. Delimit it</td></tr>
+                <tr><td><strong>Untrusted: retrieved docs</strong></td><td>Also hostile</td><td>A wiki page can jailbreak you. Same boundary as the user</td></tr>
+                <tr><td><strong>Git-style prompt file</strong></td><td>An artifact</td><td>PR reviews, evals, A/B — not a string buried in a Jupyter cell</td></tr>
+            </table>
+
+            <div class="code-block">SYSTEM = """You are a support assistant for Acme.
+Answer only from the CONTEXT. If missing, say you don't know.
+Cite chunk ids. Never invent policy."""
+
+def build_prompt(question: str, chunks: list[str]) -> str:
+    ctx = "\n\n".join(chunks)
+    return f"{SYSTEM}\n\nCONTEXT:\n{ctx}\n\nUSER:\n{question}"</div>
+
+            <div class="warning-box">
+                <strong>Prompt injection:</strong> Treat retrieved docs and user text as data, not instructions. Separate them clearly; never concatenate untrusted text into the system prompt without a boundary. Tool results are untrusted too.
+            </div>
+        </section>
+
+        <section id="structured">
+            <h2>Structured output</h2>
+            <p>Agents and UIs need JSON, not poems. Use JSON mode / tool calling / constrained decoding. Validate with Pydantic or Zod. Retry with the validation error as feedback — cap retries.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-structured-output.png" alt="Flowchart from a Pydantic schema through JSON-mode generation to a validator; valid JSON goes to the app, invalid loops back with the error for one retry then fail" loading="lazy">
+                <div class="illustration-caption">Schema first, then generate, then validate. The green path writes to the app. The red path sends the validator error back once. After two attempts, fail closed — do not loop forever on a confused model.</div>
+            </div>
+
+            <table>
+                <tr><th>Box</th><th>Job</th><th>Failure mode</th></tr>
+                <tr><td><strong>Schema</strong></td><td>Fields, types, ranges (priority 1–5)</td><td>Vague “return JSON” with no schema → extra keys, strings for numbers</td></tr>
+                <tr><td><strong>JSON mode / tools</strong></td><td>Ask the vendor to constrain decoding</td><td>Still can be invalid against <em>your</em> schema. Always validate client-side</td></tr>
+                <tr><td><strong>Validator</strong></td><td>Pydantic / Zod / JSON Schema</td><td>Parsing with <code>json.loads</code> only is not enough</td></tr>
+                <tr><td><strong>Retry once</strong></td><td>Feed the error text back</td><td>Unbounded retries burn tokens and can oscillate</td></tr>
+            </table>
+
+            <div class="code-block">from pydantic import BaseModel, Field
+
+class Ticket(BaseModel):
+    intent: str
+    priority: int = Field(ge=1, le=5)
+    needs_human: bool
+
+# 1) ask model for JSON (json_mode or tool call)
+# 2) Ticket.model_validate_json(raw)
+# 3) on ValidationError, retry once with the error text
+# 4) else: raise / send to human queue</div>
+        </section>
+
+        <section id="apis">
+            <h2>Model APIs</h2>
+            <p>OpenAI-compatible chat completions are the lingua franca. Wrap vendors so you can swap models. Always set timeout, max retries, and a fallback model for 429/5xx.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-api-gateway.png" alt="ChatClient interface in the center with OpenAI, Anthropic, Gemini, and Bedrock vendor cards and a dashed fallback arrow on 429 or 5xx" loading="lazy">
+                <div class="illustration-caption">Product code talks to <code>ChatClient</code>, not to four SDKs. Primary vendor on the happy path; dashed arrow is the fallback when you hit rate limits or 5xx. Timeout and retry live on the client, not in each call site.</div>
+            </div>
+
+            <table>
+                <tr><th>Piece</th><th>Why it is there</th></tr>
+                <tr><td><strong>ChatClient.create()</strong></td><td>One method: messages, temperature, max_tokens, tools</td></tr>
+                <tr><td><strong>timeout = 30s</strong></td><td>Hung generations pin workers and confuse users</td></tr>
+                <tr><td><strong>max_retries = 2</strong></td><td>Transient 429/5xx; not application errors</td></tr>
+                <tr><td><strong>Fallback vendor</strong></td><td>Different model, same interface — degraded but up</td></tr>
+                <tr><td><strong>Request id</strong></td><td>Join traces, evals, and user reports</td></tr>
+            </table>
+
+            <div class="code-block">from openai import OpenAI
+
+client = OpenAI()  # or base_url= for compatible servers
+
+resp = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": "List 3 RAG failure modes."},
+    ],
+    temperature=0.2,
+    max_tokens=400,
+    timeout=30,
+)
+print(resp.choices[0].message.content)</div>
+
+            <div class="info-box">
+                <strong>Compatibility:</strong> Many hosts speak the OpenAI chat schema (vLLM, TGI, Groq, Together, Azure). That is why the wrapper is worth it on day one — swapping is a config change, not a rewrite.
+            </div>
+        </section>
+
+        <section id="finetune">
+            <h2>Fine-tuning</h2>
+            <p>Fine-tune when you need a stable style, a private vocabulary, or a small model that must match a big one on a narrow task. Do not fine-tune to “add knowledge” that changes weekly — use RAG. Do not fine-tune before you have an eval set.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-finetune-decision.png" alt="Decision tree: weekly facts go to RAG; otherwise check if you need a stable style with an eval set before LoRA or a rare full fine-tune" loading="lazy">
+                <div class="illustration-caption">Walk the diamonds top to bottom. New weekly facts → RAG or tools. No special style → better prompts. No golden eval set → stop. Only then LoRA/QLoRA, and almost never a full fine-tune.</div>
+            </div>
+
+            <table>
+                <tr><th>Diamond / leaf</th><th>Meaning in production</th></tr>
+                <tr><td><strong>“Weekly facts?”</strong></td><td>Policies, prices, tickets, docs. Weights go stale; retrieval stays fresh</td></tr>
+                <tr><td><strong>“Stable style / private vocab?”</strong></td><td>Brand voice, ICD codes, internal jargon, strict JSON the base model keeps missing</td></tr>
+                <tr><td><strong>“Golden eval set?”</strong></td><td>Without it you cannot tell if LoRA helped or just overfit tonight’s examples</td></tr>
+                <tr><td><strong>LoRA / QLoRA</strong></td><td>Cheap adapters on open weights. Default fine-tune if you must</td></tr>
+                <tr><td><strong>Full FT / distillation</strong></td><td>Lots of data and GPU, or a teacher labeling a cheaper student. Rare</td></tr>
+            </table>
+
+            <table>
+                <tr><th>Method</th><th>When</th></tr>
+                <tr><td>Prompt / system + RAG</td><td>Default first attempt</td></tr>
+                <tr><td>LoRA / QLoRA</td><td>Adapt open weights cheaply after prompts and RAG plateau</td></tr>
+                <tr><td>Full fine-tune</td><td>Rare; lots of data and GPU</td></tr>
+                <tr><td>Distillation</td><td>Teacher labels → smaller student for cost</td></tr>
+            </table>
+        </section>
+
+        <section id="inference">
+            <h2>Inference</h2>
+            <p>Inference is generating tokens. Settings change personality and cost. Decode is sequential: output length dominates latency even when the prompt is short.</p>
+
+            <div class="illustration">
+                <img src="/images/genai/genai-inference-knobs.png" alt="Five inference controls: temperature slider, top_p, max_tokens hard cap, streaming toggle with full-text logging, and a 30 second timeout, plus a self-host row for vLLM TGI and llama.cpp" loading="lazy">
+                <div class="illustration-caption">Five knobs on one dashboard. Temperature and top_p change sampling. <code>max_tokens</code> is the hard stop. Streaming is UX, not a substitute for logs. The clock is a timeout. The bottom row is self-host — same product rules as a vendor API.</div>
+            </div>
+
+            <table>
+                <tr><th>Knob in the diagram</th><th>Effect</th><th>Default habit</th></tr>
+                <tr><td><strong>temperature</strong></td><td>Higher = more random</td><td>~0 for extraction/JSON; ~0.2–0.4 for support; ~0.7+ only if you want variety</td></tr>
+                <tr><td><strong>top_p</strong></td><td>Nucleus sampling</td><td>Often leave default if temperature is already set — do not crank both</td></tr>
+                <tr><td><strong>max_tokens</strong></td><td>Hard cap</td><td>Always set. Prevents runaway cost and hung streams</td></tr>
+                <tr><td><strong>streaming</strong></td><td>Tokens to the UI as they arrive</td><td>Better UX; still persist the full text for logs and evals</td></tr>
+                <tr><td><strong>timeout</strong></td><td>Abort the HTTP call</td><td>30s is a starting point; pair with a user-visible retry</td></tr>
+                <tr><td><strong>seed</strong></td><td>Best-effort reproducibility</td><td>Never guaranteed across vendors or even days</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Self-host later:</strong> vLLM, TGI, TensorRT-LLM, llama.cpp. Same product rules as the diagram’s bottom row: batching, queues, health checks, and a token meter. Quantization (AWQ, GPTQ, GGUF) trades quality for VRAM — measure on <em>your</em> eval set.
+            </div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can ship a chat API with logging, token counts, timeouts, and JSON validation</li>
+                <li>You can walk the training-pipeline diagram and explain what each stage does <em>not</em> buy you</li>
+                <li>You treat the context window as a budget with a reserved output slice</li>
+                <li>You can explain when fine-tuning is the wrong tool</li>
+                <li>You treat prompts as versioned artifacts with evals, and untrusted text stays out of the system slot</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> RAG &amp; Knowledge Engineering — give the model your data without stuffing the whole corpus into context.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

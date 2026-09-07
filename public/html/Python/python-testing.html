@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Testing - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧪 Python Testing</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Why Test?</a>
+                <a href="#pytest-basics" class="sidebar-link">pytest Basics</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 pytest Features</div>
+            <div class="sidebar-links">
+                <a href="#fixtures" class="sidebar-link">Fixtures</a>
+                <a href="#parametrize" class="sidebar-link">Parametrize</a>
+                <a href="#mocking" class="sidebar-link">Mocking</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🌐 API Testing</div>
+            <div class="sidebar-links">
+                <a href="#fastapi-testing" class="sidebar-link">Testing FastAPI</a>
+                <a href="#coverage" class="sidebar-link">Coverage</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧪 Python Testing</h1>
+            <p>pytest, fixtures, mocking, and testing REST APIs</p>
+        </header>
+
+        <section id="intro">
+            <h2>📖 Why Test?</h2>
+            <table>
+                <tr><th>Test Type</th><th>Purpose</th><th>Speed</th></tr>
+                <tr><td><strong>Unit Tests</strong></td><td>Test individual functions/classes in isolation</td><td>Fast (ms)</td></tr>
+                <tr><td><strong>Integration Tests</strong></td><td>Test components working together (API + DB)</td><td>Medium (seconds)</td></tr>
+                <tr><td><strong>End-to-End Tests</strong></td><td>Test full user flows</td><td>Slow (minutes)</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Testing pyramid:</strong> Many unit tests, fewer integration tests, even fewer E2E tests.
+            </div>
+        </section>
+
+        <section id="pytest-basics">
+            <h2>🔧 pytest Basics</h2>
+            <div class="code-block"># Install
+pip install pytest
+
+# test_math.py
+def add(a, b):
+    return a + b
+
+def test_add_positive_numbers():
+    assert add(2, 3) == 5
+
+def test_add_negative_numbers():
+    assert add(-1, -1) == -2
+
+def test_add_zero():
+    assert add(0, 5) == 5
+
+# Run tests
+pytest                          # Run all tests
+pytest test_math.py             # Run specific file
+pytest -v                       # Verbose output
+pytest -k "add"                 # Run tests matching "add"
+pytest -x                       # Stop on first failure
+pytest --tb=short               # Short traceback</div>
+
+            <div class="code-block"># Test exceptions
+import pytest
+
+def divide(a, b):
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+def test_divide_by_zero():
+    with pytest.raises(ValueError, match="Cannot divide by zero"):
+        divide(10, 0)</div>
+        </section>
+
+        <section id="fixtures">
+            <h2>🔩 Fixtures</h2>
+            <div class="code-block"># conftest.py — shared fixtures
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+@pytest.fixture
+def db_session():
+    """Create a test database session."""
+    engine = create_engine("sqlite:///:memory:")
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    yield session
+    session.close()
+
+@pytest.fixture
+def sample_user():
+    return {"name": "Alice", "email": "alice@example.com"}
+
+# test_users.py
+def test_create_user(db_session, sample_user):
+    user = User(**sample_user)
+    db_session.add(user)
+    db_session.commit()
+    assert user.id is not None
+    assert user.name == "Alice"</div>
+
+            <div class="code-block"># Fixture scopes
+@pytest.fixture(scope="module")   # Once per module
+@pytest.fixture(scope="session")  # Once per test session
+@pytest.fixture(autouse=True)     # Runs automatically for every test</div>
+        </section>
+
+        <section id="parametrize">
+            <h2>📋 Parametrize</h2>
+            <div class="code-block">import pytest
+
+@pytest.mark.parametrize("input,expected", [
+    (2, 4),
+    (3, 9),
+    (4, 16),
+    (0, 0),
+    (-2, 4),
+])
+def test_square(input, expected):
+    assert input ** 2 == expected
+
+@pytest.mark.parametrize("email,valid", [
+    ("alice@example.com", True),
+    ("invalid-email", False),
+    ("", False),
+    ("user@domain", False),
+])
+def test_email_validation(email, valid):
+    result = validate_email(email)
+    assert result == valid</div>
+        </section>
+
+        <section id="mocking">
+            <h2>🎭 Mocking</h2>
+            <div class="code-block">from unittest.mock import Mock, patch, MagicMock
+import pytest
+
+# Mock external API calls
+@patch("app.services.email.send_email")
+def test_user_registration(mock_send_email):
+    mock_send_email.return_value = True
+    result = register_user("alice@example.com", "password123")
+    assert result["success"] is True
+    mock_send_email.assert_called_once_with(
+        to="alice@example.com",
+        subject="Welcome!",
+    )
+
+# Mock database
+def test_get_user_not_found(mocker):
+    mock_db = mocker.patch("app.db.get_session")
+    mock_db.return_value.query.return_value.get.return_value = None
+    with pytest.raises(UserNotFoundError):
+        get_user(999)
+
+# pytest-mock (cleaner syntax)
+def test_with_pytest_mock(mocker):
+    mock_requests = mocker.patch("requests.get")
+    mock_requests.return_value.json.return_value = {"status": "ok"}
+    result = fetch_external_data()
+    assert result["status"] == "ok"</div>
+        </section>
+
+        <section id="fastapi-testing">
+            <h2>🌐 Testing FastAPI</h2>
+            <div class="code-block"># Install
+pip install httpx pytest
+
+# conftest.py
+import pytest
+from fastapi.testclient import TestClient
+from app.main import app
+
+@pytest.fixture
+def client():
+    return TestClient(app)
+
+@pytest.fixture
+def auth_headers(client):
+    response = client.post("/auth/login", json={
+        "email": "test@example.com",
+        "password": "testpass"
+    })
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+# test_api.py
+def test_health_check(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "healthy"}
+
+def test_create_user(client):
+    response = client.post("/api/v1/users", json={
+        "name": "Alice",
+        "email": "alice@example.com"
+    })
+    assert response.status_code == 201
+    data = response.json()
+    assert data["name"] == "Alice"
+    assert "id" in data
+
+def test_get_user_not_found(client):
+    response = client.get("/api/v1/users/99999")
+    assert response.status_code == 404
+
+def test_protected_route(client, auth_headers):
+    response = client.get("/api/v1/me", headers=auth_headers)
+    assert response.status_code == 200
+
+def test_validation_error(client):
+    response = client.post("/api/v1/users", json={"name": ""})
+    assert response.status_code == 422</div>
+
+            <h3>Async Testing</h3>
+            <div class="code-block">import pytest
+from httpx import AsyncClient, ASGITransport
+
+@pytest.mark.asyncio
+async def test_async_endpoint():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/users")
+        assert response.status_code == 200</div>
+        </section>
+
+        <section id="coverage">
+            <h2>📊 Code Coverage</h2>
+            <div class="code-block"># Install
+pip install pytest-cov
+
+# Run with coverage report
+pytest --cov=app --cov-report=html --cov-report=term-missing
+
+# View HTML report
+# Open htmlcov/index.html in browser
+
+# pyproject.toml
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=app --cov-fail-under=80"
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/migrations/*", "tests/*"]</div>
+
+            <div class="info-box">
+                <strong>💡 Target:</strong> Aim for 80%+ coverage on business logic. 100% coverage doesn't guarantee bug-free code, but untested code is a risk.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

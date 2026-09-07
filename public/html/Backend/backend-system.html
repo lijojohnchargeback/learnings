@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete Backend Systems Guide - HTTP, APIs, Auth, Caching, and Architecture">
+    <meta name="keywords" content="Backend, HTTP, REST API, Authentication, Caching, Node.js, Middleware">
+    <title>Backend Systems - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>⚙️ Backend Systems</h2>
+            <p>Architecture & Patterns</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#principles" class="sidebar-link">🏛️ Backend Principles</a>
+                <a href="#http" class="sidebar-link">🌐 HTTP Protocol</a>
+                <a href="#ssl-tls" class="sidebar-link">🔒 SSL / TLS / HTTPS</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Request Pipeline</div>
+            <div class="sidebar-links">
+                <a href="#routing" class="sidebar-link">🛤️ Routing</a>
+                <a href="#serialization" class="sidebar-link">📦 Serialization</a>
+                <a href="#auth" class="sidebar-link">🔐 Auth & Authorization</a>
+                <a href="#validation" class="sidebar-link">✅ Validation & Transformation</a>
+                <a href="#middleware-flow" class="sidebar-link">🔄 Middleware Flow</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Architecture</div>
+            <div class="sidebar-links">
+                <a href="#rest-api" class="sidebar-link">📡 REST API</a>
+                <a href="#databases" class="sidebar-link">🗄️ Databases</a>
+                <a href="#caching" class="sidebar-link">⚡ Caching</a>
+                <a href="#background-tasks" class="sidebar-link">⏳ Background Tasks</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Advanced</div>
+            <div class="sidebar-links">
+                <a href="#elasticsearch" class="sidebar-link">🔍 Elasticsearch</a>
+                <a href="#error-handling" class="sidebar-link">🚨 Error Handling</a>
+                <a href="#api-design" class="sidebar-link">🎯 API Design</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>⚙️ Backend Systems</h1>
+                <p>Complete Guide to Server-Side Architecture, APIs, and Patterns</p>
+            </header>
+
+            <!-- 1. BACKEND PRINCIPLES -->
+            <section id="principles">
+                <h2>1) Backend Principles</h2>
+
+                <div class="illustration">
+                    <img src="/images/backend/backend-architecture-overview.png" alt="Backend architecture: client request flowing through DNS, load balancer, API server, database, cache, and message queue">
+                    <div class="illustration-caption">A typical backend sits behind DNS and a load balancer, then talks to databases, caches, and async workers.</div>
+                </div>
+
+                <p>The <strong>backend</strong> is the server-side of an application: it receives requests, enforces security, runs business rules, reads and writes data, and returns responses. Frontends render UI; backends own truth, secrets, and durability.</p>
+
+                <div class="info-box premium">
+                    <h3>What a backend actually does</h3>
+                    <ul>
+                        <li><strong>Accept traffic</strong> – HTTP/HTTPS (and sometimes WebSocket, gRPC, or queues)</li>
+                        <li><strong>Protect the system</strong> – auth, authorization, rate limits, input validation</li>
+                        <li><strong>Apply business logic</strong> – rules that must be consistent for every client</li>
+                        <li><strong>Persist and retrieve data</strong> – databases, caches, object storage</li>
+                        <li><strong>Coordinate side effects</strong> – emails, webhooks, search indexing, reports</li>
+                    </ul>
+                </div>
+
+                <p>A well-designed backend system should embody these ten core qualities:</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>1. Reliable</h4>
+                        <ul>
+                            <li>Error handling and recovery</li>
+                            <li>Data integrity</li>
+                            <li>Redundancy and failover mechanisms</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>2. Scalable</h4>
+                        <ul>
+                            <li>Horizontal scaling</li>
+                            <li>Load balancing</li>
+                            <li>Caching strategies</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>3. Maintainable</h4>
+                        <ul>
+                            <li>Clean and modular code</li>
+                            <li>Consistent coding standards</li>
+                            <li>Comprehensive documentation</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>4. Secure</h4>
+                        <ul>
+                            <li>Authentication and authorization</li>
+                            <li>Data encryption</li>
+                            <li>Regular security audits</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>5. Efficient</h4>
+                        <ul>
+                            <li>Optimized algorithms</li>
+                            <li>Resource management</li>
+                            <li>Performance monitoring</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-pink">
+                        <h4>6. Testable</h4>
+                        <ul>
+                            <li>Unit and integration tests</li>
+                            <li>Automated testing frameworks</li>
+                            <li>CI/CD pipelines</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>7. Extensible</h4>
+                        <ul>
+                            <li>Modular architecture</li>
+                            <li>Plugin systems</li>
+                            <li>Clear APIs for future enhancements</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>8. Monitorable</h4>
+                        <ul>
+                            <li>Logging and alerting</li>
+                            <li>Performance metrics</li>
+                            <li>Health checks</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>9. Documented</h4>
+                        <ul>
+                            <li>API documentation</li>
+                            <li>System architecture diagrams</li>
+                            <li>User guides and tutorials</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>10. Compliant</h4>
+                        <ul>
+                            <li>Adherence to industry standards</li>
+                            <li>Data privacy regulations</li>
+                            <li>Regular compliance audits</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Monolith vs Microservices (quick mental model)</h3>
+                <table>
+                    <tr><th>Style</th><th>When it fits</th><th>Trade-off</th></tr>
+                    <tr><td><strong>Monolith</strong></td><td>Early product, one team, shared domain</td><td>Simpler deploy; harder to scale one hot path alone</td></tr>
+                    <tr><td><strong>Modular monolith</strong></td><td>Growing codebase, still one deploy unit</td><td>Clear boundaries without network complexity</td></tr>
+                    <tr><td><strong>Microservices</strong></td><td>Independent teams, uneven scale, clear domains</td><td>More ops, latency, and distributed failure modes</td></tr>
+                </table>
+            </section>
+
+            <!-- 2. HTTP PROTOCOL -->
+            <section id="http">
+                <h2>2) HTTP Protocol</h2>
+
+                <div class="illustration">
+                    <img src="/images/backend/http-request-response.png" alt="HTTP request from client to server and response with status code and JSON body">
+                    <div class="illustration-caption">Every API call is an HTTP message pair: a request (method, URL, headers, body) and a response (status, headers, body).</div>
+                </div>
+
+                <div class="info-box">
+                    <p>HTTP uses port <strong>80</strong> (HTTP) and <strong>443</strong> (HTTPS). It can send HTML, JSON, files, static assets, or video. Most modern APIs speak JSON over HTTPS.</p>
+                </div>
+
+                <h3>Anatomy of a Request</h3>
+                <table>
+                    <tr><th>Part</th><th>Example</th><th>Purpose</th></tr>
+                    <tr><td><strong>Method</strong></td><td><code>GET</code>, <code>POST</code></td><td>Intent of the operation</td></tr>
+                    <tr><td><strong>URL / path</strong></td><td><code>/api/users/42</code></td><td>Which resource</td></tr>
+                    <tr><td><strong>Headers</strong></td><td><code>Authorization</code>, <code>Content-Type</code></td><td>Metadata (auth, format, cache)</td></tr>
+                    <tr><td><strong>Query</strong></td><td><code>?page=2&amp;limit=20</code></td><td>Filters, pagination, search</td></tr>
+                    <tr><td><strong>Body</strong></td><td>JSON payload</td><td>Data for create/update (usually)</td></tr>
+                </table>
+
+                <h3>Request Flow</h3>
+                <div class="diagram-box">
+Client → DNS Server → Load Balancer → Firewall → Server
+                </div>
+                <p>DNS turns a hostname into an IP. A load balancer spreads traffic across instances. Firewalls and reverse proxies (Nginx, ALB) terminate TLS, enforce rate limits, and forward clean requests to app servers.</p>
+
+                <h3>Proxy Types</h3>
+                <table>
+                    <tr><th>Type</th><th>Description</th></tr>
+                    <tr><td><strong>Reverse Proxy</strong></td><td>Client redirects to an IP that indirectly connects to another server (e.g., Nginx)</td></tr>
+                    <tr><td><strong>Forward Proxy</strong></td><td>Client request is sent to a filter before reaching the internet</td></tr>
+                </table>
+
+                <h3>Why Use a Backend Instead of Frontend?</h3>
+                <ul>
+                    <li><strong>Security</strong> – Hide credentials and business logic</li>
+                    <li><strong>CORS</strong> – Cross-origin restrictions</li>
+                    <li><strong>Database</strong> – Direct DB access from browser is unsafe</li>
+                    <li><strong>Computing Power</strong> – Heavy processing on the server</li>
+                </ul>
+
+                <h3>Stateless vs Stateful</h3>
+                <table>
+                    <tr><th>Concept</th><th>Description</th></tr>
+                    <tr><td><strong>Stateless Request</strong></td><td>Does not contain past records; each HTTP request is independent</td></tr>
+                    <tr><td><strong>Client-Server Model</strong></td><td>Can contain past records via sessions/memory</td></tr>
+                </table>
+
+                <h3>OSI Layers (HTTP Context)</h3>
+                <table>
+                    <tr><th>Layer</th><th>Name</th><th>What Happens</th><th>Protocol</th><th>Port</th></tr>
+                    <tr><td><strong>7</strong></td><td>Application</td><td>Browser creates request</td><td>HTTP / HTTPS</td><td>80 / 443</td></tr>
+                    <tr><td><strong>6</strong></td><td>Presentation</td><td>Encrypts data</td><td>SSL / TLS</td><td>Uses 443</td></tr>
+                    <tr><td><strong>5</strong></td><td>Session</td><td>Manages session</td><td>NetBIOS / RPC</td><td>N/A</td></tr>
+                    <tr><td><strong>4</strong></td><td>Transport</td><td>Reliable delivery</td><td>TCP</td><td>443</td></tr>
+                    <tr><td><strong>3</strong></td><td>Network</td><td>Adds IP address</td><td>IP</td><td>N/A</td></tr>
+                    <tr><td><strong>2</strong></td><td>Data Link</td><td>Adds MAC address</td><td>Ethernet / ARP</td><td>N/A</td></tr>
+                    <tr><td><strong>1</strong></td><td>Physical</td><td>Sends bits</td><td>Cable / Wi-Fi</td><td>N/A</td></tr>
+                </table>
+
+                <h3>HTTP Versions Comparison</h3>
+                <table>
+                    <tr><th>Feature</th><th>HTTP/1.1</th><th>HTTP/2</th><th>HTTP/3</th></tr>
+                    <tr><td>Year</td><td>1997</td><td>2015</td><td>2022</td></tr>
+                    <tr><td>Data format</td><td>Text-based</td><td>Binary</td><td>Binary</td></tr>
+                    <tr><td>Transport</td><td>TCP</td><td>TCP</td><td><strong>QUIC (UDP)</strong></td></tr>
+                    <tr><td>Multiplexing</td><td>❌ No</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+                    <tr><td>Head-of-line blocking</td><td>❌ Yes</td><td>❌ At TCP level</td><td>❌ Fully removed</td></tr>
+                    <tr><td>Header compression</td><td>❌ No</td><td>HPACK</td><td>QPACK</td></tr>
+                    <tr><td>Connection setup</td><td>Slow</td><td>Faster</td><td><strong>Very fast (0-RTT)</strong></td></tr>
+                    <tr><td>Security</td><td>Optional TLS</td><td>Mostly TLS</td><td><strong>Built-in TLS 1.3</strong></td></tr>
+                </table>
+
+                <h3>HTTP Methods</h3>
+                <table>
+                    <tr><th>Method</th><th>Description</th><th>Idempotent?</th></tr>
+                    <tr><td><code>GET</code></td><td>Fetch a resource</td><td>✅ Yes</td></tr>
+                    <tr><td><code>POST</code></td><td>Create a new resource</td><td>❌ No</td></tr>
+                    <tr><td><code>PUT</code></td><td>Complete replace of a resource</td><td>✅ Yes</td></tr>
+                    <tr><td><code>PATCH</code></td><td>Update one specified field</td><td>⚠️ Depends on payload</td></tr>
+                    <tr><td><code>DELETE</code></td><td>Remove a resource</td><td>✅ Yes</td></tr>
+                    <tr><td><code>HEAD</code></td><td>Fetch headers only</td><td>✅ Yes</td></tr>
+                    <tr><td><code>OPTIONS</code></td><td>Describe communication options (CORS preflight)</td><td>✅ Yes</td></tr>
+                </table>
+
+                <h3>Idempotent vs Non-Idempotent</h3>
+                <p>A request is <strong>idempotent</strong> if making the same request multiple times has the same effect as making it once. Useful for safe retries on network failures.</p>
+
+                <h3>CORS: Simple vs Preflight Requests</h3>
+                <div class="grid-2">
+                    <div class="info-box">
+                        <h4>Simple Request</h4>
+                        <p>Sent directly without asking the server first. Meets certain criteria (simple methods, simple headers).</p>
+                        <div class="code-block">POST /submit HTTP/1.1
+Host: example.com
+Content-Type: application/x-www-form-urlencoded
+name=John&amp;age=20</div>
+                    </div>
+                    <div class="info-box">
+                        <h4>Preflight Request</h4>
+                        <p>Browser sends an OPTIONS request first when the actual request uses custom headers or non-simple methods.</p>
+                        <div class="code-block">OPTIONS /submit HTTP/1.1
+Host: example.com
+Access-Control-Request-Method: PUT
+Access-Control-Request-Headers: X-Custom-Header
+Origin: http://mywebsite.com</div>
+                    </div>
+                </div>
+
+                <h3>HTTP Status Codes</h3>
+                <table>
+                    <tr><th>Class</th><th>Code</th><th>Meaning</th><th>Description</th></tr>
+                    <tr><td><strong>1xx</strong></td><td>100</td><td>Continue</td><td>Request received, client can continue</td></tr>
+                    <tr><td><strong>2xx</strong></td><td>200</td><td>OK</td><td>Standard success response</td></tr>
+                    <tr><td></td><td>201</td><td>Created</td><td>Resource successfully created (POST)</td></tr>
+                    <tr><td></td><td>204</td><td>No Content</td><td>Success with no response body</td></tr>
+                    <tr><td><strong>3xx</strong></td><td>301</td><td>Moved Permanently</td><td>URL permanently moved (SEO friendly)</td></tr>
+                    <tr><td></td><td>302</td><td>Found</td><td>Temporary redirect</td></tr>
+                    <tr><td></td><td>304</td><td>Not Modified</td><td>Cached version can be used</td></tr>
+                    <tr><td><strong>4xx</strong></td><td>400</td><td>Bad Request</td><td>Malformed request syntax</td></tr>
+                    <tr><td></td><td>401</td><td>Unauthorized</td><td>Authentication required</td></tr>
+                    <tr><td></td><td>403</td><td>Forbidden</td><td>Server refuses request</td></tr>
+                    <tr><td></td><td>404</td><td>Not Found</td><td>Resource does not exist</td></tr>
+                    <tr><td></td><td>429</td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+                    <tr><td><strong>5xx</strong></td><td>500</td><td>Internal Server Error</td><td>Generic server error</td></tr>
+                    <tr><td></td><td>502</td><td>Bad Gateway</td><td>Invalid response from upstream server</td></tr>
+                    <tr><td></td><td>503</td><td>Service Unavailable</td><td>Server temporarily overloaded</td></tr>
+                    <tr><td></td><td>504</td><td>Gateway Timeout</td><td>Upstream server timed out</td></tr>
+                </table>
+
+                <h3>HTTP Caching</h3>
+                <p>HTTP caching stores responses so future requests for the same resource can be served faster.</p>
+                <ul>
+                    <li><strong>Cache-Control</strong> – Controls how, when, and for how long responses can be cached</li>
+                    <li><strong>ETag</strong> – Helps detect if a cached resource has changed</li>
+                    <li><strong>Last-Modified</strong> – Timestamp-based cache validation</li>
+                </ul>
+
+                <h3>Content Negotiation</h3>
+                <p>The client and server negotiate the best representation of a resource:</p>
+                <table>
+                    <tr><th>Header</th><th>Purpose</th><th>Example</th></tr>
+                    <tr><td><code>Accept</code></td><td>Media type</td><td>text/html, application/json</td></tr>
+                    <tr><td><code>Accept-Language</code></td><td>Language</td><td>en-US, fr</td></tr>
+                    <tr><td><code>Accept-Encoding</code></td><td>Compression</td><td>gzip, br, deflate</td></tr>
+                </table>
+
+                <h3>Keep-Alive & Persistent Connections</h3>
+                <p>Keep-Alive keeps the TCP connection open after a request/response cycle, allowing multiple requests over the same connection. Introduced in HTTP/1.1 by default.</p>
+                <ul>
+                    <li><code>Connection: keep-alive</code> – Keep TCP connection open</li>
+                    <li><code>Keep-Alive: timeout=5</code> – Close if idle for 5 seconds</li>
+                    <li><code>Keep-Alive: max=100</code> – Close after 100 requests</li>
+                </ul>
+
+                <h3>Server-Sent Events (SSE)</h3>
+                <p><code>text/event-stream</code> allows the server to push real-time updates over a single persistent HTTP connection.</p>
+                <table>
+                    <tr><th>Header</th><th>Purpose</th></tr>
+                    <tr><td><code>Content-Type: text/event-stream</code></td><td>Response is a stream of events</td></tr>
+                    <tr><td><code>Cache-Control: no-cache</code></td><td>Prevents caching the event stream</td></tr>
+                    <tr><td><code>Connection: keep-alive</code></td><td>Keeps connection open for continuous updates</td></tr>
+                </table>
+            </section>
+
+            <!-- SSL/TLS -->
+            <section id="ssl-tls">
+                <h2>SSL, TLS & HTTPS</h2>
+                <p>SSL (Secure Sockets Layer) and TLS (Transport Layer Security) encrypt data sent over the internet, ensuring:</p>
+                <ul>
+                    <li><strong>Confidentiality</strong> – Data cannot be read by attackers</li>
+                    <li><strong>Integrity</strong> – Data cannot be tampered with</li>
+                    <li><strong>Authentication</strong> – Verifies server (and optionally client) identity</li>
+                </ul>
+
+                <table>
+                    <tr><th>Feature</th><th>SSL</th><th>TLS</th></tr>
+                    <tr><td>Developed</td><td>1990s</td><td>1999+ (successor of SSL)</td></tr>
+                    <tr><td>Security</td><td>Weak, outdated</td><td>Strong, modern encryption</td></tr>
+                    <tr><td>Versions</td><td>SSL 2.0 / 3.0</td><td>TLS 1.0 → TLS 1.3</td></tr>
+                    <tr><td>Performance</td><td>Slower handshakes</td><td>Faster and more secure</td></tr>
+                </table>
+                <p><strong>Note:</strong> TLS is the modern version of SSL. SSL is old and insecure; TLS 1.2/1.3 is standard today. TLS uses HTTPS to connect client to server.</p>
+
+                <h3>TLS handshake (simplified)</h3>
+                <ol>
+                    <li>Client hello – supported cipher suites and TLS version</li>
+                    <li>Server hello – chosen cipher + certificate chain</li>
+                    <li>Client verifies certificate (CA trust, hostname, expiry)</li>
+                    <li>Key exchange – both sides derive a shared session key</li>
+                    <li>Encrypted application data flows over that session</li>
+                </ol>
+                <p>TLS 1.3 cuts round trips and removes weak algorithms. In production, terminate TLS at a reverse proxy or load balancer and keep private keys off app servers when possible.</p>
+            </section>
+
+            <!-- 3. ROUTING -->
+            <section id="routing">
+                <h2>3) Routing</h2>
+                <p>Routing determines how an application responds to a client request at a specific URL path and HTTP method.</p>
+
+                <h3>Routing Flow</h3>
+                <ol>
+                    <li><strong>URL Matching</strong> – Check incoming path and method</li>
+                    <li><strong>Middleware / Preprocessing</strong> – Authenticate, validate, log</li>
+                    <li><strong>Call Handler / Controller</strong> – Execute the requested task</li>
+                    <li><strong>Return Response</strong> – Send data or error to client</li>
+                </ol>
+
+                <h3>Routing Types</h3>
+                <table>
+                    <tr><th>Type</th><th>Description</th><th>Example</th><th>Express Example</th></tr>
+                    <tr><td><strong>Static</strong></td><td>Fixed path</td><td>/about</td><td><code>app.get('/about', handler)</code></td></tr>
+                    <tr><td><strong>Dynamic</strong></td><td>Path parameters</td><td>/users/:id</td><td><code>app.get('/users/:id', handler)</code></td></tr>
+                    <tr><td><strong>Query</strong></td><td>Query parameters</td><td>/search?q=node</td><td><code>req.query.q</code></td></tr>
+                    <tr><td><strong>Nested</strong></td><td>Parent-child structure</td><td>/users/:id/posts/:postId</td><td><code>router.get('/:id/posts/:postId')</code></td></tr>
+                    <tr><td><strong>RESTful</strong></td><td>HTTP methods for resources</td><td>GET/POST/PUT/DELETE /users</td><td>Standard CRUD routes</td></tr>
+                    <tr><td><strong>Wildcard</strong></td><td>Match any pattern</td><td>*</td><td><code>app.get('*', notFound)</code></td></tr>
+                    <tr><td><strong>Versioned</strong></td><td>Multiple API versions</td><td>/v1/users, /v2/users</td><td>Avoid breaking clients</td></tr>
+                </table>
+
+                <h3>Route Versioning</h3>
+                <p>Maintaining multiple API versions so changes don't break existing clients.</p>
+                <ul>
+                    <li><strong>Backward compatibility</strong> – Old clients continue to work</li>
+                    <li><strong>New features</strong> – Introduce without breaking endpoints</li>
+                    <li><strong>Safe deprecation</strong> – Gradually retire old APIs</li>
+                </ul>
+            </section>
+
+            <!-- 4. SERIALIZATION -->
+            <section id="serialization">
+                <h2>4) Serialization & Deserialization</h2>
+                <p>Serialization converts objects into a storable/transmittable format. Deserialization is the inverse (string → object).</p>
+                <p><strong>Example:</strong> JSON encodes objects as strings. Serialization = object → string. Deserialization = string → object.</p>
+
+                <table>
+                    <tr><th>Format</th><th>Type</th><th>Use Case</th></tr>
+                    <tr><td>JSON</td><td>Text-based</td><td>REST APIs, web apps (most common)</td></tr>
+                    <tr><td>YAML</td><td>Text-based</td><td>Config files, CI/CD</td></tr>
+                    <tr><td>XML</td><td>Text-based</td><td>Legacy systems, SOAP</td></tr>
+                    <tr><td>Protobuf</td><td>Binary</td><td>gRPC, high-performance microservices</td></tr>
+                </table>
+            </section>
+
+            <!-- 5. AUTH -->
+            <section id="auth">
+                <h2>5) Authentication & Authorization</h2>
+
+                <div class="illustration">
+                    <img src="/images/backend/auth-vs-authorization.png" alt="Authentication identifies the user; authorization decides allowed actions by role and permission">
+                    <div class="illustration-caption">Authentication proves identity. Authorization decides what that identity is allowed to do.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="info-box">
+                        <h4>Authentication – "Who are you?"</h4>
+                        <ul>
+                            <li>Username & password</li>
+                            <li>OTP / MFA</li>
+                            <li>Biometric (fingerprint, face ID)</li>
+                            <li>OAuth (Google, GitHub login)</li>
+                            <li>JWT / Session-based login</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Authorization – "What can you do?"</h4>
+                        <ul>
+                            <li>Roles (ADMIN, USER)</li>
+                            <li>Permissions (READ, WRITE, DELETE)</li>
+                            <li>Policy-based access (RBAC, ABAC)</li>
+                            <li>Scopes (OAuth scopes)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>JWT in practice</h3>
+                    <p>A JWT has three Base64url parts: <strong>header</strong>.<strong>payload</strong>.<strong>signature</strong>. The server verifies the signature with a secret or public key, checks <code>exp</code>, then trusts claims like <code>sub</code> (user id) and roles. Prefer short-lived access tokens + refresh tokens; never put secrets or passwords in the payload (it is readable, only integrity-protected).</p>
+                </div>
+
+                <h3>Authentication Types</h3>
+                <table>
+                    <tr><th>Type</th><th>Stateful/Stateless</th><th>How It Works</th><th>Common Use</th></tr>
+                    <tr><td><strong>Session-based</strong></td><td>Stateful</td><td>Server stores session, sends session ID</td><td>Traditional web apps</td></tr>
+                    <tr><td><strong>JWT</strong></td><td>Stateless</td><td>Signed token sent with every request</td><td>SPAs, mobile, microservices</td></tr>
+                    <tr><td><strong>OAuth 2.0</strong></td><td>Stateless</td><td>Delegated authorization via access tokens</td><td>Social login, API access</td></tr>
+                    <tr><td><strong>API Key</strong></td><td>Stateless</td><td>Pre-generated key in header/query</td><td>Service-to-service</td></tr>
+                    <tr><td><strong>OpenID Connect</strong></td><td>Stateless</td><td>Identity layer on OAuth 2.0</td><td>Modern SSO, cloud apps</td></tr>
+                </table>
+
+                <h3>Auth Flow</h3>
+                <div class="diagram-box">
+User → Login (credentials) → Authentication ("Who are you?")
+    → Success → Token/Session Created (JWT / Session ID)
+    → Access Request (with token) → Authorization ("What can you do?")
+    → Check roles/permissions → Allowed/Denied → Protected Resource
+                </div>
+
+                <h3>Cryptography Basics</h3>
+                <table>
+                    <tr><th>Type</th><th>Description</th><th>Examples</th></tr>
+                    <tr><td><strong>Symmetric</strong></td><td>Same key for encrypt & decrypt. Fast.</td><td>AES, DES</td></tr>
+                    <tr><td><strong>Asymmetric</strong></td><td>Public key (shareable) + Private key (secret)</td><td>RSA, ECC</td></tr>
+                </table>
+
+                <h3>Security Attacks to Avoid</h3>
+                <div class="grid-2">
+                    <div class="info-box">
+                        <h4>Error Message Attacks</h4>
+                        <p>Attackers learn system behavior from different error messages.</p>
+                        <p>❌ "User does not exist" vs "Incorrect password"<br>
+                        ✅ Use generic: "Invalid credentials"</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Timing Attacks</h4>
+                        <p>Attackers infer info from response time differences.</p>
+                        <p>Username not found: 20ms<br>Password incorrect: 120ms<br>
+                        ✅ Use constant-time comparison</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VALIDATION -->
+            <section id="validation">
+                <h2>6) Validation & Transformation</h2>
+
+                <table>
+                    <tr><th>Aspect</th><th>Validation</th><th>Transformation</th></tr>
+                    <tr><td>Purpose</td><td>Ensure data is correct & safe</td><td>Convert data into usable form</td></tr>
+                    <tr><td>Question</td><td>"Is this data valid?"</td><td>"Is this data in the right shape?"</td></tr>
+                    <tr><td>Failure</td><td>Reject request (400)</td><td>Rarely fails (safe defaults)</td></tr>
+                    <tr><td>Example</td><td>Email format check</td><td>string → number</td></tr>
+                </table>
+
+                <h3>Transformation Examples</h3>
+                <table>
+                    <tr><th>Field</th><th>Before</th><th>After</th><th>Transformation</th></tr>
+                    <tr><td>email</td><td>"  LIJO@GMAIL.COM "</td><td>"lijo@gmail.com"</td><td>trim + lowercase</td></tr>
+                    <tr><td>age</td><td>"25"</td><td>25</td><td>string → number</td></tr>
+                    <tr><td>isActive</td><td>"true"</td><td>true</td><td>string → boolean</td></tr>
+                    <tr><td>createdAt</td><td>"2025-01-01"</td><td>Date object</td><td>string → Date</td></tr>
+                </table>
+
+                <h3>Validation Types</h3>
+                <table>
+                    <tr><th>Type</th><th>What Is Checked</th><th>Layer</th></tr>
+                    <tr><td>Input (Syntax)</td><td>Required fields, types, format</td><td>Middleware</td></tr>
+                    <tr><td>Schema</td><td>JSON schema, DTO, OpenAPI contract</td><td>Middleware</td></tr>
+                    <tr><td>Authentication</td><td>Token presence, signature, expiry</td><td>Auth Middleware</td></tr>
+                    <tr><td>Authorization</td><td>Roles, scopes, ownership</td><td>Auth Middleware / Service</td></tr>
+                    <tr><td>Business (Semantic)</td><td>Stock availability, age limits</td><td>Service</td></tr>
+                    <tr><td>Security</td><td>SQLi, XSS, CSRF, file type</td><td>Middleware / Gateway</td></tr>
+                </table>
+
+                <h3>Frontend vs Server-Side Validation</h3>
+                <table>
+                    <tr><th>Aspect</th><th>Frontend</th><th>Server-Side</th></tr>
+                    <tr><td>Purpose</td><td>Improve UX</td><td>Ensure security & integrity</td></tr>
+                    <tr><td>Trust level</td><td>❌ Not trusted</td><td>✅ Fully trusted</td></tr>
+                    <tr><td>Can be bypassed</td><td>Yes</td><td>No (mandatory)</td></tr>
+                    <tr><td>Security role</td><td>UX only</td><td>Security enforcement</td></tr>
+                </table>
+            </section>
+
+            <!-- MIDDLEWARE FLOW -->
+            <section id="middleware-flow">
+                <h2>7) Request Pipeline & Middleware</h2>
+                <p>Every HTTP request passes through a layered pipeline. Middleware runs at specific stages — global middleware wraps the entire app, while route-specific middleware runs only for matching paths.</p>
+
+                <div class="illustration">
+                    <img src="/images/backend/middleware-pipeline.png" alt="Request pipeline stages from client through security, auth, validation, controller, service, and database to response">
+                    <div class="illustration-caption">Think of middleware as a conveyor belt: each stage can enrich the request, reject it early, or pass it along.</div>
+                </div>
+
+                <div class="pipeline-diagram" role="img" aria-label="Backend request pipeline flow diagram">
+                    <div class="pipeline-diagram-header">
+                        <h3>Request → Response Pipeline</h3>
+                        <p>How a request flows through middleware, handlers, and back to the client</p>
+                    </div>
+
+                    <div class="pipeline-flow">
+                        <div class="pipeline-endpoint pipeline-endpoint--in">
+                            <span class="pipeline-endpoint-icon">📨</span>
+                            <span>Client Request</span>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--in">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">1</span>
+                                HIGH-IN Middleware <span style="opacity:.8;font-weight:600;">(global)</span>
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>Request ID / Trace ID</li>
+                                    <li>Helmet() – security headers</li>
+                                    <li>CORS (with preflight handling)</li>
+                                    <li>Global rate limiting</li>
+                                    <li>Request logging</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--parse">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">2</span>
+                                Body / Form / File Parsing
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>express.json()</li>
+                                    <li>express.urlencoded()</li>
+                                    <li>cookie-parser</li>
+                                    <li>multer (file uploads)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--auth">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">3</span>
+                                Authentication &amp; Session
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>JWT / Bearer token extraction</li>
+                                    <li>Session / cookie validation</li>
+                                    <li>Attach <code>req.user</code> or throw 401</li>
+                                </ul>
+                                <div class="pipeline-stage-note">❌ Fail → 401 Unauthorized</div>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--route">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">4</span>
+                                Router
+                            </div>
+                            <div class="pipeline-stage-body">
+                                app.use('/api/...', router) — matches path &amp; HTTP method
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--lower">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">5</span>
+                                LOWER Middleware <span style="opacity:.8;font-weight:600;">(route-specific)</span>
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>Route-specific rate limiting</li>
+                                    <li>Authorization / RBAC / permissions</li>
+                                    <li>Resource ownership check</li>
+                                </ul>
+                                <div class="pipeline-stage-note">❌ Fail → 403 Forbidden</div>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--validate">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">6</span>
+                                Input Validation &amp; Sanitization
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>Zod / Yup / Joi / express-validator</li>
+                                    <li>Strip XSS, normalize emails &amp; phones</li>
+                                </ul>
+                                <div class="pipeline-stage-note">❌ Fail → 400 Bad Request</div>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--transform">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">7</span>
+                                Transformation / DTO Mapping
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>Map to internal domain models</li>
+                                    <li>Apply defaults / enrich data</li>
+                                    <li>Strip unknown fields</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--controller">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">8</span>
+                                Controller
+                            </div>
+                            <div class="pipeline-stage-body">
+                                Thin handler — receives input, calls service, shapes output. No heavy business logic here.
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--service">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">9</span>
+                                Service
+                            </div>
+                            <div class="pipeline-stage-body">
+                                Core business logic, use-cases, transactions, and orchestration.
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--repo">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">10</span>
+                                Repository / Data Access
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>Database queries</li>
+                                    <li>Redis cache</li>
+                                    <li>S3 / external APIs</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--response">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">11</span>
+                                Response Transformation
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>DTO → JSON serialization</li>
+                                    <li>Remove sensitive fields</li>
+                                    <li>Response envelope formatting</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-stage pipeline-stage--out">
+                            <div class="pipeline-stage-header">
+                                <span class="pipeline-stage-num">12</span>
+                                HIGH-OUT Middleware
+                            </div>
+                            <div class="pipeline-stage-body">
+                                <ul>
+                                    <li>Compression (gzip / brotli)</li>
+                                    <li>Cache-Control, ETag headers</li>
+                                    <li>Response logging (status, size, duration)</li>
+                                    <li>Centralized error handler</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pipeline-arrow"><div class="pipeline-arrow-line"></div><div class="pipeline-arrow-head"></div></div>
+
+                        <div class="pipeline-endpoint pipeline-endpoint--out">
+                            <span class="pipeline-endpoint-icon">✅</span>
+                            <span>Client Response</span>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-legend">
+                        <div class="pipeline-legend-item"><span class="pipeline-legend-dot" style="background:#6366f1"></span> Inbound / Security</div>
+                        <div class="pipeline-legend-item"><span class="pipeline-legend-dot" style="background:#f59e0b"></span> Auth</div>
+                        <div class="pipeline-legend-item"><span class="pipeline-legend-dot" style="background:#ef4444"></span> Validation</div>
+                        <div class="pipeline-legend-item"><span class="pipeline-legend-dot" style="background:#10b981"></span> Business Logic</div>
+                        <div class="pipeline-legend-item"><span class="pipeline-legend-dot" style="background:#0f172a"></span> Outbound</div>
+                    </div>
+                </div>
+
+                <h3>Request Lifecycle Summary</h3>
+                <ol>
+                    <li><strong>Client Request</strong> – Headers, body, query/path params</li>
+                    <li><strong>Deserialization</strong> – JSON → native object</li>
+                    <li><strong>Validation</strong> – Required fields, types, formats → 400 if fail</li>
+                    <li><strong>Authentication / Authorization</strong> – → 401/403 if fail</li>
+                    <li><strong>Logging / Monitoring</strong> – Request ID, timestamp, user ID</li>
+                    <li><strong>Transformation</strong> – Trim, normalize, map fields</li>
+                    <li><strong>Controller</strong> – Route request, call service, handle status codes</li>
+                    <li><strong>Service</strong> – Core business logic, DB ops, external APIs</li>
+                    <li><strong>Serialization</strong> – Native object → JSON response</li>
+                </ol>
+
+                <p><strong>Request Context</strong> is a container that holds request-specific data and travels through the entire lifecycle—from middleware to controller to service and back.</p>
+            </section>
+
+            <!-- REST API -->
+            <section id="rest-api">
+                <h2>8) REST API</h2>
+                <p><strong>REST</strong> (Representational State Transfer) is an architectural style for designing scalable, stateless web services over HTTP. Introduced by Roy Fielding (2000).</p>
+
+                <div class="illustration">
+                    <img src="/images/backend/rest-api-crud.png" alt="REST CRUD operations on a Users resource: GET, POST, PUT, DELETE">
+                    <div class="illustration-caption">Resources are nouns; HTTP methods are verbs. One resource collection can support the full CRUD set.</div>
+                </div>
+
+                <div class="diagram-box">
+Client → HTTP Request (JSON) → API Endpoint
+    → Validation → Auth → Business Logic (Service) → API Response
+                </div>
+
+                <h3>Resource naming examples</h3>
+                <table>
+                    <tr><th>Action</th><th>Good</th><th>Avoid</th></tr>
+                    <tr><td>List users</td><td><code>GET /users</code></td><td><code>GET /getUsers</code></td></tr>
+                    <tr><td>Create user</td><td><code>POST /users</code></td><td><code>POST /createUser</code></td></tr>
+                    <tr><td>User's posts</td><td><code>GET /users/42/posts</code></td><td><code>GET /getUserPosts?id=42</code></td></tr>
+                    <tr><td>Filter</td><td><code>GET /users?role=admin&amp;page=1</code></td><td><code>GET /users/filter/admin</code></td></tr>
+                </table>
+
+                <h3>REST Methods</h3>
+                <table>
+                    <tr><th>Method</th><th>Action</th><th>Idempotent</th></tr>
+                    <tr><td>GET</td><td>Read resource</td><td>✅</td></tr>
+                    <tr><td>POST</td><td>Create resource</td><td>❌</td></tr>
+                    <tr><td>PUT</td><td>Replace resource</td><td>✅</td></tr>
+                    <tr><td>PATCH</td><td>Partial update</td><td>✅*</td></tr>
+                    <tr><td>DELETE</td><td>Remove resource</td><td>✅</td></tr>
+                </table>
+
+                <h3>Pagination, filtering, sorting</h3>
+                <ul>
+                    <li><strong>Offset</strong> – <code>?page=3&amp;limit=20</code> (simple; slow on huge tables)</li>
+                    <li><strong>Cursor</strong> – <code>?cursor=eyJpZCI6MTAwfQ&amp;limit=20</code> (stable for infinite scroll)</li>
+                    <li><strong>Sort</strong> – <code>?sort=-createdAt</code> (prefix <code>-</code> for descending)</li>
+                    <li><strong>Sparse fields</strong> – <code>?fields=id,name,email</code> (reduce payload size)</li>
+                </ul>
+
+                <h3>REST Design Best Practices</h3>
+                <ul>
+                    <li>Make it intuitive and consistent</li>
+                    <li>Provide sane defaults</li>
+                    <li>Avoid abbreviations in URLs</li>
+                    <li>Use nouns for resources (<code>/users</code>, not <code>/getUsers</code>)</li>
+                    <li>Use HTTP status codes correctly</li>
+                    <li>Version breaking changes (<code>/v1</code>, <code>/v2</code> or header-based)</li>
+                    <li>Return predictable error envelopes with a machine-readable <code>code</code></li>
+                </ul>
+            </section>
+
+            <!-- DATABASES -->
+            <section id="databases">
+                <h2>9) Databases</h2>
+                <p>A database stores data persistently (survives system restarts). Data is stored on HDD/SSD. Cache stores data in RAM for faster access.</p>
+
+                <div class="illustration">
+                    <img src="/images/backend/sql-vs-nosql.png" alt="Relational SQL tables with keys versus NoSQL document collections">
+                    <div class="illustration-caption">SQL shines with structured relations and transactions. NoSQL shines with flexible documents and horizontal scale patterns.</div>
+                </div>
+
+                <h3>DBMS Responsibilities</h3>
+                <div class="grid-2">
+                    <ul>
+                        <li>Data storage management</li>
+                        <li>Data retrieval (with indexes)</li>
+                        <li>CRUD operations</li>
+                        <li>Data security (auth & access control)</li>
+                        <li>Data integrity (PK, FK, Unique, Not Null)</li>
+                    </ul>
+                    <ul>
+                        <li>Concurrency control</li>
+                        <li>Transaction management (ACID)</li>
+                        <li>Backup and recovery</li>
+                        <li>Performance optimization</li>
+                        <li>Data abstraction</li>
+                    </ul>
+                </div>
+
+                <h3>Types of DBMS</h3>
+                <table>
+                    <tr><th>Type</th><th>Structure</th><th>Examples</th></tr>
+                    <tr><td><strong>Relational</strong></td><td>Tables, structured schema</td><td>MySQL, PostgreSQL</td></tr>
+                    <tr><td><strong>Non-relational</strong></td><td>Flexible schema, documents/key-value</td><td>MongoDB, Redis</td></tr>
+                </table>
+
+                <h3>ACID in one breath</h3>
+                <table>
+                    <tr><th>Letter</th><th>Meaning</th><th>Why it matters</th></tr>
+                    <tr><td><strong>A</strong></td><td>Atomicity</td><td>All-or-nothing commits (no half-written transfers)</td></tr>
+                    <tr><td><strong>C</strong></td><td>Consistency</td><td>Constraints and rules stay true after each transaction</td></tr>
+                    <tr><td><strong>I</strong></td><td>Isolation</td><td>Concurrent transactions do not corrupt each other</td></tr>
+                    <tr><td><strong>D</strong></td><td>Durability</td><td>Committed data survives crashes</td></tr>
+                </table>
+
+                <h3>Indexes & N+1</h3>
+                <p>Indexes make lookups fast (B-tree / hash) but slow writes and use disk. Always index foreign keys and common filter columns. Watch for the <strong>N+1 query problem</strong>: loading a list, then querying related rows one-by-one — fix with joins, <code>INCLUDE</code>, or batch loaders (DataLoader).</p>
+            </section>
+
+            <!-- CACHING -->
+            <section id="caching">
+                <h2>10) Caching</h2>
+                <p>Caching reduces processing effort by storing a subset of data in a faster location for easy access. It is temporary storage, typically in RAM.</p>
+
+                <div class="illustration">
+                    <img src="/images/backend/caching-layers.png" alt="Caching layers from browser and CDN through Redis application cache down to the database">
+                    <div class="illustration-caption">Requests try fast layers first. A cache HIT returns early; a MISS loads from the database and warms the cache with a TTL.</div>
+                </div>
+
+                <h3>Three Levels of Caching</h3>
+
+                <h4>1. Network Cache</h4>
+                <table>
+                    <tr><th>Type</th><th>Description</th><th>Examples</th></tr>
+                    <tr><td><strong>CDN</strong></td><td>Distributed servers cache static content closer to users</td><td>Cloudflare, CloudFront, Akamai</td></tr>
+                    <tr><td><strong>DNS Caching</strong></td><td>Stores resolved IP addresses to avoid repeated lookups</td><td>Browser → OS → ISP → Authoritative DNS</td></tr>
+                </table>
+
+                <h4>2. Hardware Level (CPU Cache)</h4>
+                <table>
+                    <tr><th>Level</th><th>Speed</th><th>Size</th><th>Scope</th></tr>
+                    <tr><td>L1</td><td>Fastest</td><td>Smallest</td><td>Private per core</td></tr>
+                    <tr><td>L2</td><td>Fast</td><td>Medium</td><td>Usually private per core</td></tr>
+                    <tr><td>L3</td><td>Slower</td><td>Largest</td><td>Shared across cores</td></tr>
+                </table>
+
+                <h4>3. Software / Application Level</h4>
+                <p>Stores frequently accessed data in memory to avoid expensive DB queries or API calls.</p>
+                <ul>
+                    <li><strong>Redis</strong> – Persistent, feature-rich in-memory store</li>
+                    <li><strong>Memcached</strong> – Simple, high-performance cache</li>
+                </ul>
+
+                <h3>Cache strategies</h3>
+                <table>
+                    <tr><th>Strategy</th><th>How it works</th><th>Best for</th></tr>
+                    <tr><td><strong>Cache-aside</strong></td><td>App checks cache; on miss, loads DB and fills cache</td><td>Most read-heavy APIs</td></tr>
+                    <tr><td><strong>Write-through</strong></td><td>Write to cache and DB together</td><td>Stronger read consistency</td></tr>
+                    <tr><td><strong>Write-behind</strong></td><td>Write cache first; flush to DB async</td><td>Very high write throughput</td></tr>
+                    <tr><td><strong>TTL + invalidation</strong></td><td>Expire keys or delete on update</td><td>Profiles, product pages, configs</td></tr>
+                </table>
+
+                <h3>Cache Flow</h3>
+                <div class="diagram-box">
+Request → Check cache (Redis/Memcached)
+    → Cache HIT → return immediately
+    → Cache MISS → fetch from DB → store in cache (with TTL) → return
+                </div>
+
+                <div class="info-box">
+                    <p><strong>Gotchas:</strong> stampede (many misses at once), stale data after updates, and caching personalized responses. Use locks/singleflight for hot keys, short TTLs for volatile data, and include user/tenant in the cache key when needed.</p>
+                </div>
+            </section>
+
+            <!-- BACKGROUND TASKS -->
+            <section id="background-tasks">
+                <h2>11) Background Tasks</h2>
+                <p>Any task not part of the request-response cycle.</p>
+
+                <div class="illustration">
+                    <img src="/images/backend/background-job-queue.png" alt="Producer API server enqueueing jobs to Redis or RabbitMQ for workers, with dead letter queue for failures">
+                    <div class="illustration-caption">Producers enqueue work; workers pull jobs asynchronously. Failed jobs retry, then land in a dead-letter queue.</div>
+                </div>
+
+                <h3>Why Background Tasks?</h3>
+                <ul>
+                    <li><strong>Latency Reduction</strong> – Return response immediately</li>
+                    <li><strong>Resource Management</strong> – Prevent heavy tasks from starving the server</li>
+                    <li><strong>Fault Tolerance</strong> – Automatic retries and dead-letter queues</li>
+                    <li><strong>Decoupling</strong> – Separate business logic from side effects</li>
+                </ul>
+
+                <h3>Common Examples</h3>
+                <ul>
+                    <li>Sending transactional emails or SMS</li>
+                    <li>Image resizing and video transcoding</li>
+                    <li>Generating large CSV/PDF reports</li>
+                    <li>Syncing data to search indexes (Elasticsearch)</li>
+                </ul>
+
+                <h3>Task Queue Architecture</h3>
+                <div class="diagram-box">
+Producer (app creates task) → Message Broker (Redis/RabbitMQ/SQS)
+    → Consumer/Worker (pulls & executes) → Completion signal
+                </div>
+
+                <h3>Task Types</h3>
+                <table>
+                    <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+                    <tr><td>One-off</td><td>Processed once</td><td>Password reset email</td></tr>
+                    <tr><td>Recurring</td><td>Fixed intervals (cron)</td><td>Weekly analytics report</td></tr>
+                    <tr><td>Chained</td><td>Sequential tasks</td><td>Upload → Transcode → Thumbnail → Notify</td></tr>
+                    <tr><td>Batch</td><td>Grouped operations</td><td>100 activity logs in one transaction</td></tr>
+                    <tr><td>Priority</td><td>Processed by importance</td><td>Security alert before newsletter</td></tr>
+                </table>
+
+                <h3>Best Practices</h3>
+                <ul>
+                    <li><strong>Idempotency</strong> – Process only once even on retry</li>
+                    <li><strong>Error Handling & Retries</strong> – Exponential backoff (1s, 5s, 30s)</li>
+                    <li><strong>Dead-letter Queues</strong> – Failed tasks after max retries</li>
+                    <li><strong>Visibility Timeouts</strong> – Prevent duplicate processing</li>
+                    <li><strong>Monitoring</strong> – Track queue depth and worker health</li>
+                </ul>
+
+                <h3>BullMQ Example (Node.js + Redis)</h3>
+                <div class="code-block"><span class="comment">// Producer: Adding a task</span>
+const { Queue, Worker } = require('bullmq');
+const emailQueue = new Queue('emails', { connection: { host: 'localhost', port: 6379 } });
+
+async function signupUser(user) {
+    await emailQueue.add('send-welcome', { email: user.email, name: user.name });
+    return { message: "Account created, email will be sent shortly." };
+}
+
+<span class="comment">// Consumer: Processing in background</span>
+const worker = new Worker('emails', async (job) => {
+    if (job.name === 'send-welcome') {
+        console.log(`Sending welcome email to ${job.data.email}...`);
+    }
+}, { connection: { host: 'localhost', port: 6379 } });</div>
+            </section>
+
+            <!-- ELASTICSEARCH -->
+            <section id="elasticsearch">
+                <h2>12) Elasticsearch</h2>
+                <p>A distributed, RESTful search and analytics engine built on Apache Lucene, designed for horizontal scalability and reliability.</p>
+
+                <h3>Why Elasticsearch?</h3>
+                <ul>
+                    <li><strong>Speed</strong> – Near real-time search and indexing</li>
+                    <li><strong>Full-Text Search</strong> – Fuzzy matching, stemming, relevance scoring</li>
+                    <li><strong>Scalability</strong> – Handle petabytes by adding nodes</li>
+                    <li><strong>Analytics</strong> – Powerful aggregation framework</li>
+                </ul>
+
+                <h3>Inverted Index</h3>
+                <p>A data structure that stores the locations of a specific term in a document collection. Enables fast full-text search.</p>
+                <p><strong>Example:</strong> User searches "iphne" → system returns "iPhone" results using fuzzy matching.</p>
+
+                <h3>Where it sits in a backend</h3>
+                <div class="diagram-box">
+Write path: App → Primary DB (source of truth) → async indexer → Elasticsearch
+Read path:  Search UI → Elasticsearch query → ranked hits → hydrate details from DB if needed
+                </div>
+                <p>Keep the primary database as source of truth. Index into Elasticsearch asynchronously (queue/worker) so API writes stay fast and search stays eventually consistent.</p>
+            </section>
+
+            <!-- ERROR HANDLING -->
+            <section id="error-handling">
+                <h2>13) Error Handling</h2>
+                <p>A process of identifying and fixing errors or exceptions in a system.</p>
+
+                <h3>Types of Errors</h3>
+                <table>
+                    <tr><th>Category</th><th>Examples</th></tr>
+                    <tr><td>Code Errors</td><td>Syntax, runtime, logical, semantic</td></tr>
+                    <tr><td>Infrastructure</td><td>Database, network, DNS, timeout, memory, disk</td></tr>
+                    <tr><td>Security</td><td>Authentication, authorization, permission</td></tr>
+                    <tr><td>Application</td><td>Validation, business logic, data integrity</td></tr>
+                    <tr><td>Operational</td><td>Rate limit, service outage, configuration</td></tr>
+                </table>
+
+                <h3>Suggested status mapping</h3>
+                <table>
+                    <tr><th>Situation</th><th>Status</th><th>Client message</th></tr>
+                    <tr><td>Invalid input</td><td>400</td><td>Field-level validation errors</td></tr>
+                    <tr><td>Missing/invalid token</td><td>401</td><td>Authentication required</td></tr>
+                    <tr><td>Authenticated but not allowed</td><td>403</td><td>Insufficient permissions</td></tr>
+                    <tr><td>Resource missing</td><td>404</td><td>Not found</td></tr>
+                    <tr><td>Conflict / duplicate</td><td>409</td><td>Already exists</td></tr>
+                    <tr><td>Unexpected failure</td><td>500</td><td>Generic message + request id</td></tr>
+                </table>
+
+                <h3>Error Handling Strategies</h3>
+                <ul>
+                    <li><strong>Centralized Error Handling</strong> – Global error handler middleware</li>
+                    <li><strong>Error Logging</strong> – Log for debugging and monitoring</li>
+                    <li><strong>Error Response</strong> – User-friendly, non-leaking messages</li>
+                    <li><strong>Error Classification</strong> – Categorize for better management</li>
+                    <li><strong>Error Recovery</strong> – Mechanisms to recover gracefully</li>
+                    <li><strong>Error Monitoring</strong> – Sentry, Datadog for patterns</li>
+                    <li><strong>Proactive Detection</strong> – Predict errors before they happen</li>
+                </ul>
+            </section>
+
+            <!-- API DESIGN -->
+            <section id="api-design">
+                <h2>14) API Design</h2>
+                <p>An <strong>API</strong> (Application Programming Interface) is a set of rules that allows software applications to communicate. It acts as a messenger between systems.</p>
+
+                <h3>API Roles in Architecture</h3>
+                <ul>
+                    <li><strong>Client-Server Communication</strong> – Interface between frontend and backend</li>
+                    <li><strong>Microservices</strong> – Independent services talk to each other</li>
+                    <li><strong>External Integrations</strong> – Third-party services (Stripe, Google Maps)</li>
+                    <li><strong>Abstraction</strong> – Hide internal implementation</li>
+                    <li><strong>Security</strong> – Enforce auth and access control</li>
+                </ul>
+
+                <h3>API Styles Comparison</h3>
+                <table>
+                    <tr><th>Style</th><th>Protocol</th><th>Data Format</th><th>Best For</th></tr>
+                    <tr><td><strong>REST</strong></td><td>HTTP/HTTPS</td><td>JSON, XML</td><td>CRUD operations, public APIs</td></tr>
+                    <tr><td><strong>GraphQL</strong></td><td>HTTP/HTTPS</td><td>JSON</td><td>Flexible data fetching, nested queries</td></tr>
+                    <tr><td><strong>gRPC</strong></td><td>HTTP/2</td><td>Protobuf (binary)</td><td>High-performance microservices</td></tr>
+                    <tr><td><strong>WebSocket / SSE</strong></td><td>WS / HTTP</td><td>JSON</td><td>Real-time updates, chat, notifications</td></tr>
+                </table>
+
+                <h3>Choosing Communication Patterns</h3>
+                <table>
+                    <tr><th>Need</th><th>Best Option</th><th>Tools</th></tr>
+                    <tr><td>Simple periodic task</td><td>Cron</td><td>node-cron, Agenda.js, AWS EventBridge</td></tr>
+                    <tr><td>Guaranteed delivery</td><td>Message Queue</td><td>RabbitMQ, Kafka, BullMQ, AWS SQS</td></tr>
+                    <tr><td>Broadcast updates</td><td>Pub/Sub</td><td>Redis Pub/Sub, Kafka, AWS SNS</td></tr>
+                    <tr><td>External system events</td><td>Webhooks</td><td>Express, Stripe, GitHub</td></tr>
+                    <tr><td>Real-time UI</td><td>WebSockets / SSE</td><td>Socket.IO, ws, EventSource</td></tr>
+                    <tr><td>Internal events</td><td>EventEmitter</td><td>Node.js EventEmitter, RxJS</td></tr>
+                    <tr><td>DB-driven status</td><td>Change Streams</td><td>MongoDB Change Streams, PostgreSQL LISTEN/NOTIFY</td></tr>
+                    <tr><td>Complex state flows</td><td>Workflow Engine</td><td>Temporal, AWS Step Functions</td></tr>
+                </table>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>

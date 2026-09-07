@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Data Structures - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📊 Python Data Structures</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📋 Lists</div>
+            <div class="sidebar-links">
+                <a href="#lists" class="sidebar-link">List Basics</a>
+                <a href="#list-methods" class="sidebar-link">List Methods</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📦 Tuples & Sets</div>
+            <div class="sidebar-links">
+                <a href="#tuples" class="sidebar-link">Tuples</a>
+                <a href="#sets" class="sidebar-link">Sets</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗂️ Dictionaries</div>
+            <div class="sidebar-links">
+                <a href="#dicts" class="sidebar-link">Dictionary Basics</a>
+                <a href="#dict-methods" class="sidebar-link">Dict Methods</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 Advanced</div>
+            <div class="sidebar-links">
+                <a href="#collections" class="sidebar-link">Collections Module</a>
+                <a href="#copying" class="sidebar-link">Copying & Mutability</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>📊 Python Data Structures</h1>
+            <p>Lists, Tuples, Sets, Dictionaries and the Collections Module</p>
+        </header>
+
+        <section id="lists">
+            <h2>📋 Lists</h2>
+            <p>Ordered, mutable sequences. The most versatile data structure in Python.</p>
+
+            <div class="code-block"># Creating lists
+fruits = ["apple", "banana", "cherry"]
+numbers = list(range(1, 6))       # [1, 2, 3, 4, 5]
+mixed = [1, "hello", 3.14, True]
+empty = []
+
+# Accessing
+fruits[0]       # "apple"
+fruits[-1]      # "cherry" (last item)
+fruits[1:3]     # ["banana", "cherry"]
+
+# Modifying
+fruits[0] = "apricot"
+fruits.append("date")
+fruits.insert(1, "blueberry")
+fruits.extend(["elderberry", "fig"])</div>
+        </section>
+
+        <section id="list-methods">
+            <h2>🔧 List Methods</h2>
+            <table>
+                <tr><th>Method</th><th>Description</th><th>Example</th></tr>
+                <tr><td><code>append(x)</code></td><td>Add item to end</td><td><code>lst.append(4)</code></td></tr>
+                <tr><td><code>extend(iter)</code></td><td>Add all items</td><td><code>lst.extend([5,6])</code></td></tr>
+                <tr><td><code>insert(i, x)</code></td><td>Insert at index</td><td><code>lst.insert(0, 0)</code></td></tr>
+                <tr><td><code>remove(x)</code></td><td>Remove first occurrence</td><td><code>lst.remove(3)</code></td></tr>
+                <tr><td><code>pop([i])</code></td><td>Remove & return item</td><td><code>lst.pop()</code></td></tr>
+                <tr><td><code>sort()</code></td><td>Sort in place</td><td><code>lst.sort(reverse=True)</code></td></tr>
+                <tr><td><code>reverse()</code></td><td>Reverse in place</td><td><code>lst.reverse()</code></td></tr>
+                <tr><td><code>index(x)</code></td><td>Find index of item</td><td><code>lst.index("a")</code></td></tr>
+                <tr><td><code>count(x)</code></td><td>Count occurrences</td><td><code>lst.count(1)</code></td></tr>
+                <tr><td><code>clear()</code></td><td>Remove all items</td><td><code>lst.clear()</code></td></tr>
+            </table>
+
+            <div class="code-block"># Useful built-in functions
+nums = [3, 1, 4, 1, 5, 9]
+len(nums)       # 6
+sum(nums)       # 23
+min(nums)       # 1
+max(nums)       # 9
+sorted(nums)    # [1, 1, 3, 4, 5, 9] (returns new list)
+any([0, 1, 0])  # True
+all([1, 1, 1])  # True
+
+# Unpacking
+first, *middle, last = [1, 2, 3, 4, 5]
+# first=1, middle=[2,3,4], last=5</div>
+        </section>
+
+        <section id="tuples">
+            <h2>📦 Tuples</h2>
+            <p>Ordered, <strong>immutable</strong> sequences. Great for fixed data and dictionary keys.</p>
+
+            <div class="code-block"># Creating tuples
+point = (10, 20)
+single = (42,)          # Note the comma!
+coords = 10, 20, 30     # Parentheses optional
+
+# Accessing (same as lists)
+point[0]    # 10
+point[-1]   # 20
+
+# Unpacking
+x, y = point
+
+# Named tuples (from collections)
+from collections import namedtuple
+User = namedtuple("User", ["id", "name", "email"])
+user = User(1, "Alice", "alice@example.com")
+print(user.name)  # "Alice"</div>
+
+            <div class="info-box">
+                <strong>💡 When to use tuples:</strong> Function return values, database records, coordinates, dictionary keys, and anywhere you need immutability.
+            </div>
+        </section>
+
+        <section id="sets">
+            <h2>🔵 Sets</h2>
+            <p>Unordered collections of <strong>unique</strong> elements. Fast membership testing.</p>
+
+            <div class="code-block"># Creating sets
+tags = {"python", "backend", "api"}
+unique = set([1, 2, 2, 3, 3])  # {1, 2, 3}
+
+# Operations
+tags.add("flask")
+tags.remove("api")       # KeyError if missing
+tags.discard("missing")  # No error if missing
+
+# Set math
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+a | b    # Union: {1, 2, 3, 4, 5, 6}
+a & b    # Intersection: {3, 4}
+a - b    # Difference: {1, 2}
+a ^ b    # Symmetric diff: {1, 2, 5, 6}
+
+# Membership (O(1) average)
+"python" in tags  # True</div>
+        </section>
+
+        <section id="dicts">
+            <h2>🗂️ Dictionaries</h2>
+            <p>Key-value mappings. Python's primary data structure for JSON-like data.</p>
+
+            <div class="code-block"># Creating dicts
+user = {"name": "Alice", "age": 30, "role": "admin"}
+user = dict(name="Bob", age=25)
+empty = {}
+
+# Accessing
+user["name"]              # "Alice"
+user.get("email", "N/A")  # "N/A" (safe, no KeyError)
+
+# Modifying
+user["email"] = "alice@example.com"
+user.update({"role": "superadmin", "active": True})
+del user["age"]
+
+# Iterating
+for key in user:
+    print(key, user[key])
+
+for key, value in user.items():
+    print(f"{key}: {value}")</div>
+        </section>
+
+        <section id="dict-methods">
+            <h2>🔧 Dictionary Methods</h2>
+            <table>
+                <tr><th>Method</th><th>Description</th></tr>
+                <tr><td><code>keys()</code></td><td>View of all keys</td></tr>
+                <tr><td><code>values()</code></td><td>View of all values</td></tr>
+                <tr><td><code>items()</code></td><td>View of (key, value) pairs</td></tr>
+                <tr><td><code>get(k, default)</code></td><td>Safe key access</td></tr>
+                <tr><td><code>pop(k)</code></td><td>Remove key and return value</td></tr>
+                <tr><td><code>popitem()</code></td><td>Remove and return last item</td></tr>
+                <tr><td><code>setdefault(k, v)</code></td><td>Get or set default value</td></tr>
+                <tr><td><code>update(other)</code></td><td>Merge another dict</td></tr>
+            </table>
+
+            <div class="code-block"># Merge dicts (Python 3.9+)
+defaults = {"theme": "dark", "lang": "en"}
+user_prefs = {"lang": "fr", "notifications": True}
+config = defaults | user_prefs
+# {"theme": "dark", "lang": "fr", "notifications": True}
+
+# Dict comprehension
+squares = {x: x**2 for x in range(6)}</div>
+        </section>
+
+        <section id="collections">
+            <h2>📚 Collections Module</h2>
+            <div class="code-block">from collections import defaultdict, Counter, deque, OrderedDict
+
+# defaultdict — auto-create missing keys
+word_count = defaultdict(int)
+for word in ["apple", "banana", "apple"]:
+    word_count[word] += 1
+# {"apple": 2, "banana": 1}
+
+# Counter — count hashable objects
+Counter("abracadabra")  # Counter({'a': 5, 'b': 2, ...})
+counts = Counter(["a", "b", "a", "c", "a"])
+counts.most_common(2)   # [('a', 3), ('b', 1)]
+
+# deque — double-ended queue (O(1) append/pop both ends)
+queue = deque([1, 2, 3])
+queue.appendleft(0)  # deque([0, 1, 2, 3])
+queue.pop()          # 3</div>
+        </section>
+
+        <section id="copying">
+            <h2>📋 Copying & Mutability</h2>
+            <div class="code-block">import copy
+
+# Shallow copy — new container, same inner objects
+original = [[1, 2], [3, 4]]
+shallow = original.copy()       # or list(original)
+shallow[0].append(99)
+# original is also changed: [[1, 2, 99], [3, 4]]
+
+# Deep copy — fully independent
+deep = copy.deepcopy(original)
+deep[0].append(100)
+# original unchanged</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Common Bug:</strong> Assigning <code>b = a</code> creates a reference, not a copy. Use <code>.copy()</code> or <code>copy.deepcopy()</code> for nested structures.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

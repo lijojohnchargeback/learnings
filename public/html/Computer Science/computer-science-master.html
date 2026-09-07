@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Fundamentals - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>💻 Computer Guide</h2>
+            <p>Complete Fundamentals</p>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Fundamentals</div>
+                <ul>
+                    <li><a href="#intro">🏠 Introduction</a></li>
+                    <li><a href="#generations">📅 Generations</a></li>
+                    <li><a href="#types">🖥️ Types of Computers</a></li>
+                    <li><a href="#hierarchy">🏗️ System Hierarchy</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Hardware</div>
+                <ul>
+                    <li><a href="#hardware">🔧 Components</a></li>
+                    <li><a href="#cpu">⚙️ CPU & Processing</a></li>
+                    <li><a href="#memory">💾 Memory & Storage</a></li>
+                    <li><a href="#registers">📋 Registers</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Software</div>
+                <ul>
+                    <li><a href="#os">🖱️ Operating Systems</a></li>
+                    <li><a href="#system-software">📦 System Software</a></li>
+                    <li><a href="#languages">💬 Programming Languages</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Architecture</div>
+                <ul>
+                    <li><a href="#organization">🏛️ Organization vs Architecture</a></li>
+                    <li><a href="#cycle">🔄 Instruction Cycle</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data & Networking</div>
+                <ul>
+                    <li><a href="#data">📊 Data Representation</a></li>
+                    <li><a href="#network">🌐 Networking</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>💻 Computer Fundamentals</h1>
+                <p>Complete Guide to Computer Science Basics</p>
+            </header>
+
+        <section id="intro">
+            <h2>🏠 Introduction to Computers</h2>
+            
+            <p>A <span class="highlight">computer</span> is an electronic device that takes input, processes it using software and hardware, stores it, and produces output.</p>
+
+            <h3>What is a Computer?</h3>
+            <div class="info-box">
+                <p><strong>Definition:</strong> A computer is a programmable electronic machine that can:</p>
+                <ul>
+                    <li>📥 <strong>Accept Input:</strong> Receive data from users or other sources</li>
+                    <li>⚙️ <strong>Process Data:</strong> Perform calculations and operations</li>
+                    <li>💾 <strong>Store Information:</strong> Save data for future use</li>
+                    <li>📤 <strong>Produce Output:</strong> Display or deliver results</li>
+                </ul>
+            </div>
+
+            <h3>The IPO Cycle (Input-Process-Output)</h3>
+            <div class="diagram-box">
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│    INPUT    │  →   │   PROCESS   │  →   │   STORAGE   │  →   │   OUTPUT    │
+│             │      │             │      │             │      │             │
+│  Keyboard   │      │     CPU     │      │   HDD/SSD   │      │   Monitor   │
+│  Mouse      │      │   Software  │      │     RAM     │      │   Printer   │
+│  Scanner    │      │     ALU     │      │             │      │   Speakers  │
+└─────────────┘      └─────────────┘      └─────────────┘      └─────────────┘
+            </div>
+
+            <h3>Key Computer Characteristics</h3>
+            <table>
+                <tr>
+                    <th>Characteristic</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Speed</strong></td>
+                    <td>Performs millions/billions of operations per second</td>
+                </tr>
+                <tr>
+                    <td><strong>Accuracy</strong></td>
+                    <td>Extremely precise; errors are usually human mistakes</td>
+                </tr>
+                <tr>
+                    <td><strong>Diligence</strong></td>
+                    <td>Works continuously without fatigue</td>
+                </tr>
+                <tr>
+                    <td><strong>Storage</strong></td>
+                    <td>Can store vast amounts of data</td>
+                </tr>
+                <tr>
+                    <td><strong>Versatility</strong></td>
+                    <td>Can perform many different tasks</td>
+                </tr>
+                <tr>
+                    <td><strong>Automation</strong></td>
+                    <td>Can work automatically with minimal supervision</td>
+                </tr>
+            </table>
+
+            <h3>Main Components</h3>
+            <div class="info-box">
+                <h4>Hardware (Physical Parts)</h4>
+                <ul>
+                    <li>🖥️ <strong>Input Devices:</strong> Keyboard, Mouse, Scanner, Microphone</li>
+                    <li>🖥️ <strong>Output Devices:</strong> Monitor, Printer, Speakers</li>
+                    <li>🖥️ <strong>Processing Unit:</strong> CPU (Brain of computer), RAM</li>
+                    <li>🖥️ <strong>Storage Devices:</strong> Hard Drive, SSD, USB Drive</li>
+                </ul>
+
+                <h4>Software (Programs/Instructions)</h4>
+                <ul>
+                    <li>💿 <strong>System Software:</strong> Operating Systems (Windows, macOS, Linux)</li>
+                    <li>💿 <strong>Application Software:</strong> Word processors, browsers, games</li>
+                </ul>
+            </div>
+
+            <h3>Basic Steps to Use a Computer</h3>
+            <ol>
+                <li><strong>Start the Computer:</strong> Press the power button</li>
+                <li><strong>Operating System Loads:</strong> System boots up</li>
+                <li><strong>Login:</strong> Enter username and password (if required)</li>
+                <li><strong>Use Applications:</strong> Open programs and work</li>
+                <li><strong>Save Work:</strong> Store documents to storage</li>
+                <li><strong>Shut Down Properly:</strong> Use OS shutdown option</li>
+            </ol>
+        </section>
+
+        <section id="generations">
+            <h2>📅 Generations of Computers</h2>
+
+            <table>
+                <tr>
+                    <th>Generation</th>
+                    <th>Period</th>
+                    <th>Technology</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>1st Generation</strong></td>
+                    <td>1940-1956</td>
+                    <td>Vacuum Tubes</td>
+                    <td>ENIAC, UNIVAC</td>
+                </tr>
+                <tr>
+                    <td><strong>2nd Generation</strong></td>
+                    <td>1956-1963</td>
+                    <td>Transistors</td>
+                    <td>IBM 1401, IBM 7094</td>
+                </tr>
+                <tr>
+                    <td><strong>3rd Generation</strong></td>
+                    <td>1964-1971</td>
+                    <td>Integrated Circuits (IC)</td>
+                    <td>IBM System/360, PDP-8</td>
+                </tr>
+                <tr>
+                    <td><strong>4th Generation</strong></td>
+                    <td>1971-Present</td>
+                    <td>Microprocessors (VLSI)</td>
+                    <td>Intel 4004, Personal Computers</td>
+                </tr>
+                <tr>
+                    <td><strong>5th Generation</strong></td>
+                    <td>Present & Beyond</td>
+                    <td>AI, Quantum Computing</td>
+                    <td>Supercomputers, AI Systems</td>
+                </tr>
+            </table>
+
+            <h3>Detailed Features by Generation</h3>
+
+            <h4>1st Generation (1940-1956): Vacuum Tubes</h4>
+            <div class="info-box">
+                <p><strong>Technology:</strong> Vacuum tubes for circuitry, magnetic drums for memory</p>
+                <p><strong>Programming:</strong> Machine language (binary)</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>❌ Very large in size and expensive</li>
+                    <li>❌ High electricity consumption and heat generation</li>
+                    <li>❌ Slow processing speed</li>
+                    <li>❌ Prone to frequent hardware failures</li>
+                    <li>✅ First programmable computers</li>
+                </ul>
+            </div>
+
+            <h4>2nd Generation (1956-1963): Transistors</h4>
+            <div class="info-box">
+                <p><strong>Technology:</strong> Transistors replaced vacuum tubes</p>
+                <p><strong>Programming:</strong> Assembly language</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>✅ Smaller, faster, and more reliable</li>
+                    <li>✅ More energy-efficient, less heat</li>
+                    <li>✅ Lower maintenance costs</li>
+                    <li>⚠️ Still expensive but more accessible</li>
+                </ul>
+            </div>
+
+            <h4>3rd Generation (1964-1971): Integrated Circuits</h4>
+            <div class="info-box">
+                <p><strong>Technology:</strong> Integrated Circuits (ICs) - multiple transistors on one chip</p>
+                <p><strong>Programming:</strong> High-level languages (FORTRAN, COBOL)</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>✅ Much smaller and more powerful</li>
+                    <li>✅ Increased reliability and reduced cost</li>
+                    <li>✅ Multiprogramming capability</li>
+                    <li>✅ Time-sharing systems began</li>
+                </ul>
+            </div>
+
+            <h4>4th Generation (1971-Present): Microprocessors</h4>
+            <div class="info-box">
+                <p><strong>Technology:</strong> Microprocessors (VLSI - Very Large Scale Integration)</p>
+                <p><strong>Programming:</strong> High-level languages (C, C++, Java, Python)</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>✅ Entire CPU on a single chip</li>
+                    <li>✅ Personal computers became common and affordable</li>
+                    <li>✅ GUI (Graphical User Interface) introduced</li>
+                    <li>✅ Networking and internet became widespread</li>
+                    <li>✅ Portable computers (laptops, tablets)</li>
+                </ul>
+            </div>
+
+            <h4>5th Generation (Present & Beyond): AI & Quantum</h4>
+            <div class="info-box">
+                <p><strong>Technology:</strong> ULSI (Ultra Large Scale Integration), AI, quantum computing, cloud</p>
+                <p><strong>Programming:</strong> AI frameworks, natural language processing</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>🚀 Focus on artificial intelligence and machine learning</li>
+                    <li>🚀 Parallel processing and quantum computing</li>
+                    <li>🚀 Highly portable and connected (smartphones, IoT)</li>
+                    <li>🚀 Natural language understanding</li>
+                    <li>🚀 Advanced robotics and expert systems</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="types">
+            <h2>🖥️ Types of Computers</h2>
+
+            <h3>Based on Size and Power</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Use Case</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>Supercomputer</strong></td>
+                    <td>Scientific simulations, weather forecasting</td>
+                    <td>IBM Summit, Fugaku</td>
+                </tr>
+                <tr>
+                    <td><strong>Mainframe</strong></td>
+                    <td>Large organizations, banks</td>
+                    <td>IBM Z-series</td>
+                </tr>
+                <tr>
+                    <td><strong>Minicomputer</strong></td>
+                    <td>Small to medium businesses</td>
+                    <td>PDP-11, VAX</td>
+                </tr>
+                <tr>
+                    <td><strong>Microcomputer (PC)</strong></td>
+                    <td>Personal use, offices</td>
+                    <td>Dell, MacBook, HP</td>
+                </tr>
+                <tr>
+                    <td><strong>Workstation</strong></td>
+                    <td>Engineering, graphic design</td>
+                    <td>High-performance PCs</td>
+                </tr>
+            </table>
+
+            <h3>Detailed Descriptions</h3>
+
+            <h4>1. Supercomputer</h4>
+            <div class="info-box">
+                <p><strong>Use:</strong> Scientific simulations, weather forecasting, quantum research, nuclear simulations</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>⚡ Extremely fast - trillions of calculations per second (petaflops, exaflops)</li>
+                    <li>⚡ Parallel processing with thousands of processors</li>
+                    <li>⚡ Used for complex computational problems</li>
+                </ul>
+                <p><strong>Examples:</strong> IBM Summit, Fugaku (Japan), Frontier (USA)</p>
+            </div>
+
+            <h4>2. Mainframe Computer</h4>
+            <div class="info-box">
+                <p><strong>Use:</strong> Large organizations, banks, insurance companies, government</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>🏢 Handles thousands of users simultaneously</li>
+                    <li>🏢 Very high reliability and storage capacity</li>
+                    <li>🏢 Processes massive amounts of data</li>
+                </ul>
+                <p><strong>Examples:</strong> IBM Z-series</p>
+            </div>
+
+            <h4>3. Minicomputer (Mid-range Computer)</h4>
+            <div class="info-box">
+                <p><strong>Use:</strong> Small to medium-sized businesses, departments</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>💼 Less powerful than mainframes</li>
+                    <li>💼 Multi-user support (10-100 users)</li>
+                    <li>💼 Moderate cost and size</li>
+                </ul>
+                <p><strong>Examples:</strong> PDP-11, VAX</p>
+            </div>
+
+            <h4>4. Microcomputer (Personal Computer)</h4>
+            <div class="info-box">
+                <p><strong>Use:</strong> General-purpose tasks - office work, gaming, education, entertainment</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>💻 Affordable and compact</li>
+                    <li>💻 Single-user or family use</li>
+                    <li>💻 Includes desktops, laptops, tablets</li>
+                </ul>
+                <p><strong>Examples:</strong> Dell desktop, MacBook, Lenovo ThinkPad, Surface Pro</p>
+            </div>
+
+            <h4>5. Workstation</h4>
+            <div class="info-box">
+                <p><strong>Use:</strong> Engineering, CAD/CAM, graphic design, video editing, 3D rendering</p>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>🎨 High-performance CPU and GPU</li>
+                    <li>🎨 Large RAM and storage</li>
+                    <li>🎨 Designed for complex applications</li>
+                </ul>
+                <p><strong>Examples:</strong> HP Z-series, Dell Precision</p>
+            </div>
+
+            <h3>Based on Purpose</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>General-Purpose</strong></td>
+                    <td>Perform various tasks (writing, browsing, programming)</td>
+                    <td>Laptops, desktops</td>
+                </tr>
+                <tr>
+                    <td><strong>Special-Purpose</strong></td>
+                    <td>Designed for specific tasks only</td>
+                    <td>ATMs, washing machines, traffic lights</td>
+                </tr>
+            </table>
+
+            <h3>Other Categories</h3>
+
+            <h4>Servers</h4>
+            <p><strong>Use:</strong> Provide services to other computers over a network</p>
+            <ul>
+                <li>🌐 Web servers (host websites)</li>
+                <li>🌐 File servers (store and share files)</li>
+                <li>🌐 Database servers (manage databases)</li>
+                <li>🌐 Mail servers (handle email)</li>
+            </ul>
+
+            <h4>Embedded Computers</h4>
+            <p><strong>Use:</strong> Embedded in other machines to control specific functions</p>
+            <ul>
+                <li>🔌 Smart TVs and home appliances</li>
+                <li>🔌 Microwave ovens</li>
+                <li>🔌 Automotive systems (cars)</li>
+                <li>🔌 Medical devices</li>
+            </ul>
+        </section>
+
+        <section id="hardware">
+            <h2>🔧 Computer Hardware</h2>
+
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Function</th>
+                </tr>
+                <tr>
+                    <td><strong>CPU (Central Processing Unit)</strong></td>
+                    <td>The "brain" - executes instructions</td>
+                </tr>
+                <tr>
+                    <td><strong>Motherboard</strong></td>
+                    <td>Main circuit board connecting all components</td>
+                </tr>
+                <tr>
+                    <td><strong>RAM (Random Access Memory)</strong></td>
+                    <td>Temporary memory for running programs</td>
+                </tr>
+                <tr>
+                    <td><strong>HDD/SSD</strong></td>
+                    <td>Permanent storage for OS, files, programs</td>
+                </tr>
+                <tr>
+                    <td><strong>GPU (Graphics Card)</strong></td>
+                    <td>Handles graphics rendering</td>
+                </tr>
+                <tr>
+                    <td><strong>Power Supply (PSU)</strong></td>
+                    <td>Converts AC to DC power</td>
+                </tr>
+                <tr>
+                    <td><strong>Input Devices</strong></td>
+                    <td>Keyboard, Mouse, Scanner</td>
+                </tr>
+                <tr>
+                    <td><strong>Output Devices</strong></td>
+                    <td>Monitor, Printer, Speakers</td>
+                </tr>
+            </table>
+
+            <h3>Computer Operation (IPO Cycle)</h3>
+            <div class="info-box">
+                <ul>
+                    <li>📥 <strong>Input:</strong> Enter data (keyboard, mouse)</li>
+                    <li>⚙️ <strong>Process:</strong> CPU processes data</li>
+                    <li>💾 <strong>Storage:</strong> Save data (HDD, SSD)</li>
+                    <li>📤 <strong>Output:</strong> Display result (monitor, printer)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="os">
+            <h2>🖱️ Operating Systems</h2>
+
+            <p>An <span class="highlight">Operating System (OS)</span> manages hardware and software resources and provides services for applications.</p>
+
+            <h3>Functions of OS</h3>
+            <ul>
+                <li>🔧 <strong>Resource Management:</strong> CPU, memory, I/O devices</li>
+                <li>🔧 <strong>Process Management:</strong> Creation, scheduling, termination</li>
+                <li>🔧 <strong>Memory Management:</strong> Allocation and deallocation</li>
+                <li>🔧 <strong>File Management:</strong> Create, delete, read, write files</li>
+                <li>🔧 <strong>Security:</strong> Authentication, authorization, encryption</li>
+                <li>🔧 <strong>Device Management:</strong> Control I/O devices</li>
+                <li>🔧 <strong>Networking:</strong> Data communication</li>
+            </ul>
+
+            <h3>Types of Operating Systems</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>Batch OS</strong></td>
+                    <td>Executes batches of jobs without interaction</td>
+                    <td>IBM OS/360</td>
+                </tr>
+                <tr>
+                    <td><strong>Time-Sharing OS</strong></td>
+                    <td>Multiple users share CPU time</td>
+                    <td>UNIX, Multics</td>
+                </tr>
+                <tr>
+                    <td><strong>Distributed OS</strong></td>
+                    <td>Manages group of independent computers</td>
+                    <td>LOCUS, Amoeba</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-Time OS (RTOS)</strong></td>
+                    <td>Responds to inputs immediately</td>
+                    <td>VxWorks, RTLinux</td>
+                </tr>
+                <tr>
+                    <td><strong>Network OS</strong></td>
+                    <td>Manages network resources</td>
+                    <td>Novell NetWare, Windows Server</td>
+                </tr>
+                <tr>
+                    <td><strong>Mobile OS</strong></td>
+                    <td>Designed for smartphones/tablets</td>
+                    <td>Android, iOS</td>
+                </tr>
+            </table>
+
+            <h3>Popular Operating Systems</h3>
+            <ul>
+                <li>💻 <strong>Windows:</strong> Most widely used desktop OS</li>
+                <li>💻 <strong>macOS:</strong> Apple's desktop OS</li>
+                <li>💻 <strong>Linux:</strong> Open-source, various distributions</li>
+                <li>📱 <strong>Android:</strong> Most popular mobile OS</li>
+                <li>📱 <strong>iOS:</strong> Apple's mobile OS</li>
+            </ul>
+        </section>
+
+        <section id="network">
+            <h2>🌐 Computer Networks</h2>
+
+            <p>A <span class="highlight">network</span> is a collection of interconnected devices that communicate and share resources.</p>
+
+            <h3>Types of Networks</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Coverage</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>PAN (Personal Area Network)</strong></td>
+                    <td>Personal space (~10m)</td>
+                    <td>Bluetooth devices</td>
+                </tr>
+                <tr>
+                    <td><strong>LAN (Local Area Network)</strong></td>
+                    <td>Building or campus</td>
+                    <td>Office network</td>
+                </tr>
+                <tr>
+                    <td><strong>MAN (Metropolitan Area Network)</strong></td>
+                    <td>City</td>
+                    <td>Cable TV network</td>
+                </tr>
+                <tr>
+                    <td><strong>WAN (Wide Area Network)</strong></td>
+                    <td>Country/World</td>
+                    <td>Internet</td>
+                </tr>
+            </table>
+
+            <h3>Network Components</h3>
+            <ul>
+                <li>🔌 <strong>Router:</strong> Connects different networks</li>
+                <li>🔌 <strong>Switch:</strong> Connects devices within same network</li>
+                <li>🔌 <strong>Modem:</strong> Connects network to Internet</li>
+                <li>🔌 <strong>NIC (Network Interface Card):</strong> Allows device to connect to network</li>
+            </ul>
+
+            <h3>Network Protocols</h3>
+            <ul>
+                <li>📡 <strong>TCP/IP:</strong> Core protocol of Internet</li>
+                <li>📡 <strong>HTTP/HTTPS:</strong> Web communication</li>
+                <li>📡 <strong>FTP:</strong> File transfer</li>
+                <li>📡 <strong>SMTP/IMAP/POP3:</strong> Email</li>
+            </ul>
+
+            <h3>Network Topologies</h3>
+            <ul>
+                <li>⭐ <strong>Bus:</strong> All devices on single cable</li>
+                <li>⭐ <strong>Star:</strong> All devices connect to central hub</li>
+                <li>⭐ <strong>Ring:</strong> Devices in circular configuration</li>
+                <li>⭐ <strong>Mesh:</strong> Every device connects to every other</li>
+            </ul>
+        </section>
+
+        <section id="languages">
+            <h2>💬 Programming Languages</h2>
+
+            <h3>Generations of Programming Languages</h3>
+            <table>
+                <tr>
+                    <th>Generation</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>1st Gen</strong></td>
+                    <td>Machine Language</td>
+                    <td>Binary code (0s and 1s)</td>
+                    <td>10110000 01100001</td>
+                </tr>
+                <tr>
+                    <td><strong>2nd Gen</strong></td>
+                    <td>Assembly Language</td>
+                    <td>Symbolic code (mnemonics)</td>
+                    <td>MOV A, B</td>
+                </tr>
+                <tr>
+                    <td><strong>3rd Gen</strong></td>
+                    <td>High-Level Language</td>
+                    <td>Human-readable</td>
+                    <td>C, Python, Java</td>
+                </tr>
+                <tr>
+                    <td><strong>4th Gen (4GL)</strong></td>
+                    <td>Very High-Level</td>
+                    <td>Task-oriented</td>
+                    <td>SQL, MATLAB</td>
+                </tr>
+                <tr>
+                    <td><strong>5th Gen (5GL)</strong></td>
+                    <td>Natural Language</td>
+                    <td>AI-based</td>
+                    <td>Prolog, LISP</td>
+                </tr>
+            </table>
+
+            <h3>Data Representation</h3>
+            <div class="info-box">
+                <h4>Number Systems:</h4>
+                <ul>
+                    <li><strong>Binary (Base 2):</strong> 0, 1 - Computer's native language</li>
+                    <li><strong>Decimal (Base 10):</strong> 0-9 - Human use</li>
+                    <li><strong>Octal (Base 8):</strong> 0-7</li>
+                    <li><strong>Hexadecimal (Base 16):</strong> 0-9, A-F</li>
+                </ul>
+
+                <h4>Data Units:</h4>
+                <ul>
+                    <li>Bit: Smallest unit (0 or 1)</li>
+                    <li>Nibble: 4 bits</li>
+                    <li>Byte: 8 bits</li>
+                    <li>Kilobyte (KB): ~1,024 bytes</li>
+                    <li>Megabyte (MB): ~1,024 KB</li>
+                    <li>Gigabyte (GB): ~1,024 MB</li>
+                    <li>Terabyte (TB): ~1,024 GB</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="hierarchy">
+            <h2>🏗️ Computer Level Hierarchy</h2>
+
+            <p>The <span class="highlight">Computer Level Hierarchy</span> breaks down a computer system into layers, from user interaction to physical hardware.</p>
+
+            <h3>The 7-Level Hierarchy</h3>
+            <table>
+                <tr>
+                    <th>Level</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Level 6</strong></td>
+                    <td>User Level</td>
+                    <td>Users interact with applications and programs</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 5</strong></td>
+                    <td>High-Level Language</td>
+                    <td>Python, Java, C++, JavaScript</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 4</strong></td>
+                    <td>Assembly Language</td>
+                    <td>Low-level instructions (MIPS, x86)</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 3</strong></td>
+                    <td>System Software</td>
+                    <td>OS, compilers, assemblers translate code</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 2</strong></td>
+                    <td>Instruction Set Architecture (ISA)</td>
+                    <td>CPU instructions set definition</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 1</strong></td>
+                    <td>Microarchitecture</td>
+                    <td>Internal CPU implementation (ALU, registers, buses)</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 0</strong></td>
+                    <td>Digital Logic</td>
+                    <td>Physical circuits: gates, transistors, flip-flops</td>
+                </tr>
+            </table>
+
+            <h3>Explanation of Each Level</h3>
+
+            <h4>Level 6: User Level</h4>
+            <p>Highest level where users interact with software (Word, browser, games)</p>
+
+            <h4>Level 5: High-Level Language Level</h4>
+            <p>Developers write programs using high-level languages that must be compiled or interpreted</p>
+
+            <h4>Level 4: Assembly Language Level</h4>
+            <p>Low-level, human-readable representation with one-to-one mapping to machine instructions</p>
+
+            <h4>Level 3: System Software Level</h4>
+            <p>Operating systems, compilers, linkers bridge high-level code and hardware</p>
+
+            <h4>Level 2: ISA Level</h4>
+            <p>Interface between software and hardware; defines registers, instructions, memory access</p>
+
+            <h4>Level 1: Microarchitecture Level</h4>
+            <p>Actual ISA implementation using ALU, registers, buses; handles pipelining and instruction decoding</p>
+
+            <h4>Level 0: Digital Logic Level</h4>
+            <p>Basic electronic circuits forming the foundation of all computing hardware</p>
+
+            <div class="info-box">
+                <h4>Why It Matters:</h4>
+                <ul>
+                    <li>✅ Helps understand how code becomes electrical signals</li>
+                    <li>✅ Aids in designing efficient software and hardware</li>
+                    <li>✅ Useful for debugging and performance optimization</li>
+                    <li>✅ Essential for system design and architecture</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="organization">
+            <h2>🏛️ Computer Organization vs Architecture</h2>
+
+            <h3>Computer Organization</h3>
+            <div class="info-box">
+                <p><strong>Definition:</strong> Deals with implementation details of how hardware components interact and execute instructions</p>
+                <p><strong>Focus:</strong> How the system is implemented</p>
+                <p><strong>Viewpoint:</strong> Hardware engineer's perspective</p>
+                <p><strong>Key Topics:</strong></p>
+                <ul>
+                    <li>Control Unit and ALU</li>
+                    <li>Data paths and control signals</li>
+                    <li>Registers and memory organization (cache, RAM, ROM)</li>
+                    <li>Input/Output mechanisms</li>
+                    <li>Instruction cycle (fetch, decode, execute)</li>
+                    <li>Microprogramming</li>
+                    <li>Bus structures (address, data, control buses)</li>
+                </ul>
+                <p><strong>Typical Questions:</strong></p>
+                <ul>
+                    <li>How is an instruction executed at hardware level?</li>
+                    <li>How do memory, ALU, and control units communicate?</li>
+                </ul>
+            </div>
+
+            <h3>Computer Architecture</h3>
+            <div class="info-box">
+                <p><strong>Definition:</strong> The design and behavior of a computer system as seen by a programmer</p>
+                <p><strong>Focus:</strong> How the system is designed and functions</p>
+                <p><strong>Viewpoint:</strong> Programmer's perspective</p>
+                <p><strong>Key Topics:</strong></p>
+                <ul>
+                    <li>Instruction Set Architecture (ISA)</li>
+                    <li>RISC vs. CISC design</li>
+                    <li>Pipelining and instruction-level parallelism</li>
+                    <li>Performance metrics (CPI, MIPS, FLOPS)</li>
+                    <li>Addressing modes</li>
+                    <li>Memory hierarchy and cache organization</li>
+                    <li>Multicore and parallel processing</li>
+                </ul>
+                <p><strong>Typical Questions:</strong></p>
+                <ul>
+                    <li>What operations does the computer support?</li>
+                    <li>How does architecture influence performance?</li>
+                </ul>
+            </div>
+
+            <h3>Key Differences</h3>
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Computer Organization</th>
+                    <th>Computer Architecture</th>
+                </tr>
+                <tr>
+                    <td><strong>Focus</strong></td>
+                    <td>How system is implemented</td>
+                    <td>How system is designed</td>
+                </tr>
+                <tr>
+                    <td><strong>Viewpoint</strong></td>
+                    <td>Hardware engineer</td>
+                    <td>Programmer</td>
+                </tr>
+                <tr>
+                    <td><strong>Concerned With</strong></td>
+                    <td>Internal hardware operation</td>
+                    <td>Instruction design & performance</td>
+                </tr>
+                <tr>
+                    <td><strong>Abstraction Level</strong></td>
+                    <td>Lower-level (implementation)</td>
+                    <td>Higher-level (interface & design)</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <h4>Study Tip:</h4>
+                <p>To understand a computer system completely:</p>
+                <ol>
+                    <li>Learn <strong>architecture first</strong> to understand what the computer is supposed to do</li>
+                    <li>Then study <strong>organization</strong> to see how it actually does it</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="cpu">
+            <h2>⚙️ CPU & Processing</h2>
+
+            <p>The <span class="highlight">Central Processing Unit (CPU)</span> is the brain of the computer that executes instructions.</p>
+
+            <h3>CPU Components</h3>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Function</th>
+                </tr>
+                <tr>
+                    <td><strong>Control Unit (CU)</strong></td>
+                    <td>Directs operations of the processor; fetches and decodes instructions</td>
+                </tr>
+                <tr>
+                    <td><strong>Arithmetic Logic Unit (ALU)</strong></td>
+                    <td>Performs arithmetic (+, -, ×, ÷) and logical (AND, OR, NOT) operations</td>
+                </tr>
+                <tr>
+                    <td><strong>Registers</strong></td>
+                    <td>Small, fast storage locations inside CPU</td>
+                </tr>
+                <tr>
+                    <td><strong>Cache Memory</strong></td>
+                    <td>Very fast memory between CPU and RAM (L1, L2, L3)</td>
+                </tr>
+                <tr>
+                    <td><strong>Buses</strong></td>
+                    <td>Pathways for data transfer (data bus, address bus, control bus)</td>
+                </tr>
+            </table>
+
+            <h3>CPU Performance Factors</h3>
+            <ul>
+                <li>⚡ <strong>Clock Speed:</strong> Measured in GHz (billion cycles/second)</li>
+                <li>⚡ <strong>Number of Cores:</strong> Dual-core, Quad-core, Octa-core</li>
+                <li>⚡ <strong>Cache Size:</strong> L1, L2, L3 cache</li>
+                <li>⚡ <strong>Architecture:</strong> RISC vs CISC</li>
+                <li>⚡ <strong>Thread Count:</strong> Hyper-threading, SMT</li>
+            </ul>
+
+            <h3>RISC vs CISC</h3>
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>RISC (Reduced Instruction Set)</th>
+                    <th>CISC (Complex Instruction Set)</th>
+                </tr>
+                <tr>
+                    <td><strong>Instructions</strong></td>
+                    <td>Simple, few instructions</td>
+                    <td>Complex, many instructions</td>
+                </tr>
+                <tr>
+                    <td><strong>Execution Time</strong></td>
+                    <td>One cycle per instruction</td>
+                    <td>Multiple cycles per instruction</td>
+                </tr>
+                <tr>
+                    <td><strong>Code Size</strong></td>
+                    <td>Larger program size</td>
+                    <td>Smaller program size</td>
+                </tr>
+                <tr>
+                    <td><strong>Examples</strong></td>
+                    <td>ARM, Apple M1/M2</td>
+                    <td>Intel x86, AMD</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="cycle">
+            <h2>🔄 Fetch-Decode-Execute Cycle</h2>
+
+            <p>Also called the <span class="highlight">Instruction Cycle</span>, this is the basic cycle through which a computer processes each instruction.</p>
+
+            <h3>The Four Stages</h3>
+
+            <h4>1. Fetch</h4>
+            <div class="info-box">
+                <p><strong>What happens:</strong> CPU retrieves the next instruction from RAM</p>
+                <p><strong>How:</strong></p>
+                <ul>
+                    <li>Program Counter (PC) holds address of next instruction</li>
+                    <li>Address sent to Memory Address Register (MAR)</li>
+                    <li>Instruction fetched into Memory Buffer Register (MBR)</li>
+                    <li>Moved to Instruction Register (IR)</li>
+                </ul>
+                <p><strong>Outcome:</strong> CPU has instruction ready to decode</p>
+            </div>
+
+            <h4>2. Decode</h4>
+            <div class="info-box">
+                <p><strong>What happens:</strong> Control Unit interprets the instruction</p>
+                <p><strong>How:</strong></p>
+                <ul>
+                    <li>Breaks instruction into: operation code (opcode) and operands</li>
+                    <li>Determines which units or registers are needed</li>
+                    <li>Example: `5 + 6` → separates data (5, 6) and instruction (+)</li>
+                </ul>
+                <p><strong>Outcome:</strong> CPU understands what to do and what data to use</p>
+            </div>
+
+            <h4>3. Execute</h4>
+            <div class="info-box">
+                <p><strong>What happens:</strong> Instruction is executed by appropriate CPU part</p>
+                <p><strong>How:</strong></p>
+                <ul>
+                    <li>Arithmetic operation → ALU performs it</li>
+                    <li>Memory operation → data read/written to memory</li>
+                    <li>Jump/branch → Program Counter (PC) updated</li>
+                </ul>
+                <p><strong>Outcome:</strong> Instruction completed; CPU moves to next one</p>
+            </div>
+
+            <h4>4. Store (Optional)</h4>
+            <div class="info-box">
+                <p><strong>What happens:</strong> Result stored in register or memory</p>
+            </div>
+
+            <h3>Instruction Cycle Summary</h3>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Action</th>
+                    <th>Components Used</th>
+                </tr>
+                <tr>
+                    <td><strong>Fetch</strong></td>
+                    <td>Get instruction from memory</td>
+                    <td>PC, MAR, MBR, IR</td>
+                </tr>
+                <tr>
+                    <td><strong>Decode</strong></td>
+                    <td>Understand the instruction</td>
+                    <td>Control Unit</td>
+                </tr>
+                <tr>
+                    <td><strong>Execute</strong></td>
+                    <td>Perform the instruction</td>
+                    <td>ALU, Registers, Memory</td>
+                </tr>
+                <tr>
+                    <td><strong>Store</strong></td>
+                    <td>Save the result</td>
+                    <td>Registers, Memory</td>
+                </tr>
+            </table>
+
+            <h3>Example</h3>
+            <div class="code-block">Instruction: ADD R1, R2, R3 (Add values in R2 and R3, store in R1)
+
+Step 1 (Fetch):   Get "ADD R1, R2, R3" from memory
+Step 2 (Decode):  Recognize as addition operation
+Step 3 (Execute): Perform R1 = R2 + R3 using ALU
+Step 4 (Store):   Result already in R1</div>
+
+            <h3>Instruction Cycle Diagram</h3>
+            <div class="diagram-box">
+        ┌───────────┐
+        │   START   │
+        └─────┬─────┘
+              │
+              ▼
+        ┌───────────┐
+        │   FETCH   │  ← PC points to next instruction
+        │           │  ← Instruction loaded into IR
+        └─────┬─────┘
+              │
+              ▼
+        ┌───────────┐
+        │  DECODE   │  ← CU interprets instruction
+        │           │  ← Identifies opcode & operands
+        └─────┬─────┘
+              │
+              ▼
+        ┌───────────┐
+        │  EXECUTE  │  ← ALU performs operation
+        │           │  ← Or memory access occurs
+        └─────┬─────┘
+              │
+              ▼
+        ┌───────────┐
+        │   STORE   │  ← Result saved (optional)
+        └─────┬─────┘
+              │
+              ▼
+     ┌────────────────┐
+     │ Repeat for next│
+     │  instruction   │
+     └────────────────┘
+            </div>
+        </section>
+
+        <section id="registers">
+            <h2>📋 Special Purpose Registers</h2>
+
+            <p><span class="highlight">Special Purpose Registers (SPRs)</span> are CPU registers that perform specific control or tracking functions during instruction execution.</p>
+
+            <h3>Common Special Purpose Registers</h3>
+            <table>
+                <tr>
+                    <th>Register</th>
+                    <th>Full Name</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td><strong>PC</strong></td>
+                    <td>Program Counter</td>
+                    <td>Holds address of next instruction to fetch</td>
+                </tr>
+                <tr>
+                    <td><strong>IR</strong></td>
+                    <td>Instruction Register</td>
+                    <td>Holds current instruction being executed</td>
+                </tr>
+                <tr>
+                    <td><strong>MAR</strong></td>
+                    <td>Memory Address Register</td>
+                    <td>Holds memory address to read from or write to</td>
+                </tr>
+                <tr>
+                    <td><strong>MBR/MDR</strong></td>
+                    <td>Memory Buffer/Data Register</td>
+                    <td>Holds data read from or to be written to memory</td>
+                </tr>
+                <tr>
+                    <td><strong>ACC</strong></td>
+                    <td>Accumulator</td>
+                    <td>Stores intermediate results of ALU operations</td>
+                </tr>
+                <tr>
+                    <td><strong>SR/FLAGS</strong></td>
+                    <td>Status Register</td>
+                    <td>Holds flags (Zero, Carry, Sign, Overflow)</td>
+                </tr>
+                <tr>
+                    <td><strong>SP</strong></td>
+                    <td>Stack Pointer</td>
+                    <td>Points to top of stack in memory</td>
+                </tr>
+                <tr>
+                    <td><strong>PSW</strong></td>
+                    <td>Program Status Word</td>
+                    <td>Combines status register and control info</td>
+                </tr>
+            </table>
+
+            <h3>Detailed Explanations</h3>
+
+            <h4>Program Counter (PC)</h4>
+            <ul>
+                <li>Automatically increments after each instruction</li>
+                <li>Controls the flow of execution</li>
+                <li>Can be modified by jump/branch instructions</li>
+            </ul>
+
+            <h4>Instruction Register (IR)</h4>
+            <ul>
+                <li>Holds current instruction after it's fetched</li>
+                <li>Sent to decoder for execution</li>
+                <li>Contains opcode and operands</li>
+            </ul>
+
+            <h4>Memory Address Register (MAR)</h4>
+            <ul>
+                <li>Used to access memory</li>
+                <li>Specifies WHERE in memory data is located</li>
+                <li>Connected to address bus</li>
+            </ul>
+
+            <h4>Memory Buffer Register (MBR/MDR)</h4>
+            <ul>
+                <li>Temporarily stores data being moved to/from memory</li>
+                <li>Connected to data bus</li>
+                <li>Acts as buffer between CPU and memory</li>
+            </ul>
+
+            <h4>Accumulator (ACC)</h4>
+            <ul>
+                <li>Core register for ALU operations</li>
+                <li>Stores immediate calculation results</li>
+                <li>Common in simple CPU architectures</li>
+            </ul>
+
+            <h4>Status Register (SR/FLAGS)</h4>
+            <div class="info-box">
+                <p><strong>Common Flags:</strong></p>
+                <ul>
+                    <li><strong>Zero (Z):</strong> Result is zero</li>
+                    <li><strong>Carry (C):</strong> Arithmetic overflow/carry out</li>
+                    <li><strong>Sign (S):</strong> Result is negative</li>
+                    <li><strong>Overflow (O):</strong> Signed overflow occurred</li>
+                    <li><strong>Parity (P):</strong> Even/odd number of 1s</li>
+                </ul>
+                <p>Used for branching and condition checking in programs</p>
+            </div>
+
+            <h4>Stack Pointer (SP)</h4>
+            <ul>
+                <li>Grows or shrinks as values pushed/popped from stack</li>
+                <li>Crucial in function calls and interrupts</li>
+                <li>Points to last item pushed onto stack</li>
+            </ul>
+
+            <h4>Program Status Word (PSW)</h4>
+            <ul>
+                <li>Combines PC, SR, and other control bits</li>
+                <li>Describes current state of processor</li>
+                <li>Saved during context switches</li>
+            </ul>
+
+            <h3>Register Summary Chart</h3>
+            <table>
+                <tr>
+                    <th>Abbreviation</th>
+                    <th>Function</th>
+                    <th>Category</th>
+                </tr>
+                <tr>
+                    <td>PC</td>
+                    <td>Controls instruction sequence</td>
+                    <td>Control Register</td>
+                </tr>
+                <tr>
+                    <td>IR</td>
+                    <td>Stores current instruction</td>
+                    <td>Control Register</td>
+                </tr>
+                <tr>
+                    <td>MAR</td>
+                    <td>Memory address handling</td>
+                    <td>Memory Access</td>
+                </tr>
+                <tr>
+                    <td>MBR/MDR</td>
+                    <td>Memory data handling</td>
+                    <td>Memory Access</td>
+                </tr>
+                <tr>
+                    <td>ACC</td>
+                    <td>Stores operation results</td>
+                    <td>ALU Register</td>
+                </tr>
+                <tr>
+                    <td>SR/FLAGS</td>
+                    <td>Holds condition flags</td>
+                    <td>Status Register</td>
+                </tr>
+                <tr>
+                    <td>SP</td>
+                    <td>Manages call stack</td>
+                    <td>Stack Management</td>
+                </tr>
+                <tr>
+                    <td>PSW</td>
+                    <td>Holds processor state</td>
+                    <td>Control & Status</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="memory">
+            <h2>💾 Memory & Storage</h2>
+
+            <h3>Types of Memory</h3>
+
+            <h4>1. Flash Memory</h4>
+            <div class="info-box">
+                <p><strong>Type:</strong> Non-volatile memory (retains data without power)</p>
+                <p><strong>Use:</strong> USB drives, SSDs, memory cards, smartphone storage</p>
+                <p><strong>Features:</strong> Can be electrically erased and reprogrammed</p>
+                <p><strong>Examples:</strong> USB pen drives, Solid State Drives, SD cards</p>
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>✅ Fast read/write speed</li>
+                    <li>✅ Rewritable multiple times</li>
+                    <li>✅ No moving parts (durable)</li>
+                    <li>✅ Low power consumption</li>
+                </ul>
+            </div>
+
+            <h4>2. ROM (Read-Only Memory)</h4>
+            <div class="info-box">
+                <p><strong>Type:</strong> Non-volatile memory with permanent or semi-permanent data</p>
+                <p><strong>Use:</strong> Stores system firmware or bootloader</p>
+                <p><strong>Types of ROM:</strong></p>
+                <ul>
+                    <li><strong>Masked ROM:</strong> Programmed at factory, cannot be changed</li>
+                    <li><strong>PROM:</strong> Programmable ROM - can be written once</li>
+                    <li><strong>EPROM:</strong> Erasable PROM - erased with UV light</li>
+                    <li><strong>EEPROM:</strong> Electrically erasable and programmable</li>
+                </ul>
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>✅ Retains data when power is off</li>
+                    <li>✅ Used for critical startup code</li>
+                </ul>
+                <p><strong>Limitations:</strong></p>
+                <ul>
+                    <li>❌ Limited or no ability to modify (except EEPROM)</li>
+                </ul>
+            </div>
+
+            <h4>3. Firmware</h4>
+            <div class="info-box">
+                <p><strong>Definition:</strong> Software permanently stored in ROM or flash memory</p>
+                <p><strong>Function:</strong> Controls basic hardware operations</p>
+                <p><strong>Use:</strong> Found in computers, printers, routers, smart TVs, smartphones</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>BIOS/UEFI firmware in PCs</li>
+                    <li>Embedded firmware in appliances and routers</li>
+                </ul>
+                <p><strong>Key Characteristics:</strong></p>
+                <ul>
+                    <li>✅ Bridges hardware and software</li>
+                    <li>✅ Stored in ROM or flash</li>
+                    <li>✅ Can sometimes be updated (firmware upgrade)</li>
+                </ul>
+            </div>
+
+            <h3>Relationship Summary</h3>
+            <table>
+                <tr>
+                    <th>Term</th>
+                    <th>What It Is</th>
+                    <th>Stored In</th>
+                    <th>Editable?</th>
+                </tr>
+                <tr>
+                    <td><strong>Flash Memory</strong></td>
+                    <td>Rewritable non-volatile storage</td>
+                    <td>EEPROM, SSD, USBs</td>
+                    <td>Yes, multiple times</td>
+                </tr>
+                <tr>
+                    <td><strong>ROM</strong></td>
+                    <td>Memory storing permanent code</td>
+                    <td>Factory-programmed chips</td>
+                    <td>No (or limited, like EEPROM)</td>
+                </tr>
+                <tr>
+                    <td><strong>Firmware</strong></td>
+                    <td>Software controlling hardware</td>
+                    <td>ROM or Flash Memory</td>
+                    <td>Sometimes (via update tools)</td>
+                </tr>
+            </table>
+
+            <h3>PC Memory Example</h3>
+            <ul>
+                <li>🔹 <strong>BIOS/UEFI</strong> = Firmware</li>
+                <li>🔹 Stored in <strong>Flash Memory</strong></li>
+                <li>🔹 Which is a type of <strong>ROM</strong></li>
+            </ul>
+        </section>
+
+        <section id="system-software">
+            <h2>📦 System Software</h2>
+
+            <p><span class="highlight">System software</span> is designed to run a computer's hardware and application programs.</p>
+
+            <h3>Types of System Software</h3>
+
+            <h4>1. Operating System (OS)</h4>
+            <div class="info-box">
+                <p><strong>Function:</strong> Manages computer hardware, software resources, and provides services for applications</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Windows (10, 11)</li>
+                    <li>macOS (Monterey, Ventura, Sonoma)</li>
+                    <li>Linux (Ubuntu, Fedora, Debian)</li>
+                    <li>Android</li>
+                    <li>iOS</li>
+                </ul>
+            </div>
+
+            <h4>2. Device Drivers</h4>
+            <div class="info-box">
+                <p><strong>Function:</strong> Allows OS to communicate with hardware devices</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Printer driver</li>
+                    <li>Graphics card driver (NVIDIA, AMD)</li>
+                    <li>Sound card driver</li>
+                    <li>USB driver</li>
+                    <li>Network adapter driver</li>
+                </ul>
+            </div>
+
+            <h4>3. Utility Software</h4>
+            <div class="info-box">
+                <p><strong>Function:</strong> Performs specific tasks to maintain the system</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Antivirus software (Norton, McAfee, Kaspersky)</li>
+                    <li>Disk cleanup tools</li>
+                    <li>File compression (WinRAR, 7-Zip)</li>
+                    <li>Backup software</li>
+                    <li>Disk defragmenter</li>
+                    <li>System monitors</li>
+                </ul>
+            </div>
+
+            <h4>4. Firmware (BIOS & UEFI)</h4>
+            <div class="info-box">
+                <p><strong>Function:</strong> Low-level software stored in motherboard; starts system and prepares it to load OS</p>
+                
+                <p><strong>🔹 BIOS (Basic Input/Output System)</strong></p>
+                <ul>
+                    <li>Legacy firmware interface</li>
+                    <li>Runs POST (Power-On Self Test)</li>
+                    <li>Uses MBR (Master Boot Record) for booting</li>
+                    <li>Keyboard-only interface</li>
+                    <li>Limited hardware support (usually under 2TB drives)</li>
+                    <li>Booting takes more time</li>
+                </ul>
+
+                <p><strong>🔹 UEFI (Unified Extensible Firmware Interface)</strong></p>
+                <ul>
+                    <li>Modern replacement for BIOS</li>
+                    <li>Supports larger drives (up to 9 ZB)</li>
+                    <li>Uses GPT (GUID Partition Table)</li>
+                    <li>Supports mouse and better graphics interface</li>
+                    <li>Secure boot support</li>
+                    <li>Faster boot times and better security</li>
+                </ul>
+                <p><strong>Note:</strong> Most modern computers use UEFI instead of BIOS</p>
+            </div>
+
+            <h4>5. Programming Language Translators</h4>
+            <div class="info-box">
+                <p><strong>Function:</strong> Convert high-level code into machine code for CPU execution</p>
+                <p><strong>Types & Examples:</strong></p>
+                <ul>
+                    <li><strong>Compiler:</strong> Translates entire program at once (C, Java Compiler)</li>
+                    <li><strong>Interpreter:</strong> Translates line-by-line (Python, JavaScript)</li>
+                    <li><strong>Assembler:</strong> Converts assembly language to machine code</li>
+                </ul>
+            </div>
+
+            <h4>6. System Management Software</h4>
+            <div class="info-box">
+                <p><strong>Function:</strong> Manages system operations and performance</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li>Task Manager</li>
+                    <li>System monitors</li>
+                    <li>Virtualization software (VMware, Hyper-V, VirtualBox)</li>
+                    <li>Performance analyzers</li>
+                </ul>
+            </div>
+
+            <h3>Summary Table</h3>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Function</th>
+                    <th>Examples</th>
+                </tr>
+                <tr>
+                    <td><strong>Operating System</strong></td>
+                    <td>Manages hardware & software</td>
+                    <td>Windows, Linux, Android</td>
+                </tr>
+                <tr>
+                    <td><strong>Device Drivers</strong></td>
+                    <td>Communicate with hardware</td>
+                    <td>Printer, graphics drivers</td>
+                </tr>
+                <tr>
+                    <td><strong>Utility Software</strong></td>
+                    <td>System maintenance</td>
+                    <td>Antivirus, Disk Cleanup</td>
+                </tr>
+                <tr>
+                    <td><strong>Firmware</strong></td>
+                    <td>Hardware control at low level</td>
+                    <td>BIOS, UEFI, router firmware</td>
+                </tr>
+                <tr>
+                    <td><strong>Language Translators</strong></td>
+                    <td>Code to machine language</td>
+                    <td>Compiler, Interpreter</td>
+                </tr>
+                <tr>
+                    <td><strong>System Management</strong></td>
+                    <td>Performance management</td>
+                    <td>VMware, Task Manager</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="data">
+            <h2>📊 Data Representation in Computers</h2>
+
+            <p>Computers do not understand letters or symbols directly. <span class="highlight">All data (text, images, sound, video) is represented in binary form (0s and 1s)</span>.</p>
+
+            <h3>1. Number Systems</h3>
+            <table>
+                <tr>
+                    <th>System</th>
+                    <th>Base</th>
+                    <th>Digits Used</th>
+                    <th>Use</th>
+                </tr>
+                <tr>
+                    <td><strong>Binary</strong></td>
+                    <td>2</td>
+                    <td>0, 1</td>
+                    <td>Main language of computers</td>
+                </tr>
+                <tr>
+                    <td><strong>Decimal</strong></td>
+                    <td>10</td>
+                    <td>0–9</td>
+                    <td>Used by humans</td>
+                </tr>
+                <tr>
+                    <td><strong>Octal</strong></td>
+                    <td>8</td>
+                    <td>0–7</td>
+                    <td>Short-hand for binary</td>
+                </tr>
+                <tr>
+                    <td><strong>Hexadecimal</strong></td>
+                    <td>16</td>
+                    <td>0–9, A–F</td>
+                    <td>Compact binary representation</td>
+                </tr>
+            </table>
+
+            <h3>2. Representation of Different Data Types</h3>
+
+            <h4>A. Numbers</h4>
+            <div class="info-box">
+                <p>Represented using binary numbers</p>
+                <p><strong>Example:</strong> Decimal 10 = Binary 1010</p>
+            </div>
+
+            <h4>B. Characters (Text)</h4>
+            <div class="info-box">
+                <p>Represented using character encoding schemes:</p>
+                <ul>
+                    <li><strong>ASCII</strong> (American Standard Code for Information Interchange)
+                        <br>Example: 'A' = 65 → Binary: 01000001</li>
+                    <li><strong>Unicode</strong> (Supports many languages globally)
+                        <br>Example: 'अ' = U+0905</li>
+                </ul>
+            </div>
+
+            <h4>C. Images</h4>
+            <div class="info-box">
+                <p>Represented using pixels, each pixel's color stored as binary</p>
+                <ul>
+                    <li><strong>File formats:</strong> JPEG, PNG, BMP, GIF</li>
+                    <li><strong>RGB Color Model:</strong> Each color uses 8 bits (1 byte) → 24 bits per pixel
+                        <br>Example: Red = (255, 0, 0), Blue = (0, 0, 255)</li>
+                </ul>
+            </div>
+
+            <h4>D. Audio</h4>
+            <div class="info-box">
+                <p>Stored as digital samples of sound waves</p>
+                <ul>
+                    <li><strong>Sample Rate:</strong> e.g., 44.1 kHz (CD quality)</li>
+                    <li><strong>Bit Depth:</strong> e.g., 16-bit, 24-bit</li>
+                    <li><strong>Formats:</strong> MP3, WAV, AAC, FLAC</li>
+                </ul>
+            </div>
+
+            <h4>E. Video</h4>
+            <div class="info-box">
+                <p>Combination of images (frames) + audio</p>
+                <ul>
+                    <li>Stored as compressed binary data streams</li>
+                    <li><strong>Formats:</strong> MP4, AVI, MKV, MOV</li>
+                    <li><strong>Frame Rate:</strong> 24fps, 30fps, 60fps</li>
+                </ul>
+            </div>
+
+            <h3>3. Units of Data</h3>
+            <table>
+                <tr>
+                    <th>Unit</th>
+                    <th>Size</th>
+                    <th>Equivalent</th>
+                </tr>
+                <tr>
+                    <td><strong>Bit</strong></td>
+                    <td>Smallest unit</td>
+                    <td>0 or 1</td>
+                </tr>
+                <tr>
+                    <td><strong>Nibble</strong></td>
+                    <td>4 bits</td>
+                    <td>Half byte</td>
+                </tr>
+                <tr>
+                    <td><strong>Byte</strong></td>
+                    <td>8 bits</td>
+                    <td>1 character</td>
+                </tr>
+                <tr>
+                    <td><strong>Kilobyte (KB)</strong></td>
+                    <td>≈ 1,024 bytes</td>
+                    <td>Small text file</td>
+                </tr>
+                <tr>
+                    <td><strong>Megabyte (MB)</strong></td>
+                    <td>≈ 1,024 KB</td>
+                    <td>MP3 song, photo</td>
+                </tr>
+                <tr>
+                    <td><strong>Gigabyte (GB)</strong></td>
+                    <td>≈ 1,024 MB</td>
+                    <td>HD movie, software</td>
+                </tr>
+                <tr>
+                    <td><strong>Terabyte (TB)</strong></td>
+                    <td>≈ 1,024 GB</td>
+                    <td>Large databases</td>
+                </tr>
+                <tr>
+                    <td><strong>Petabyte (PB)</strong></td>
+                    <td>≈ 1,024 TB</td>
+                    <td>Data centers</td>
+                </tr>
+            </table>
+
+            <h3>Why Is Data Representation Important?</h3>
+            <ul>
+                <li>✅ Enables storage, processing, and transmission of all data types</li>
+                <li>✅ Ensures accurate communication between hardware and software</li>
+                <li>✅ Allows efficient data compression and encoding</li>
+                <li>✅ Foundation for all digital technologies</li>
+            </ul>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking on a link (mobile only)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside (mobile only)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>
+

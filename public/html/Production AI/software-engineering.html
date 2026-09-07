@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Engineering — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧑‍💻 Software Engineering</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#python" class="sidebar-link">Python</a>
+                <a href="#js-ts" class="sidebar-link">JS / TypeScript</a>
+                <a href="#nodejs" class="sidebar-link">Node.js</a>
+                <a href="#apis" class="sidebar-link">APIs</a>
+                <a href="#databases" class="sidebar-link">Databases</a>
+                <a href="#git" class="sidebar-link">Git</a>
+                <a href="#linux" class="sidebar-link">Linux</a>
+                <a href="#testing" class="sidebar-link">Testing</a>
+                <a href="#microservices" class="sidebar-link">Microservices</a>
+                <a href="#distributed" class="sidebar-link">Distributed Systems</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧑‍💻 1. Software Engineering</h1>
+            <p>Step 1 of 12 — The foundation every Production AI Engineer needs before models, agents, or GPUs.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Why this comes first</h2>
+            <p><span class="highlight">Production AI is software engineering with models in the loop.</span> If you cannot ship an API, persist data, test it, and run it on Linux, you cannot ship RAG, agents, or LLMOps. Models fail in interesting ways; engineering is what keeps the product up.</p>
+
+            <div class="info-box">
+                <h3>What you will be able to do</h3>
+                <ul>
+                    <li>Write backend services in Python and Node.js</li>
+                    <li>Design REST/JSON APIs with auth, validation, and errors</li>
+                    <li>Store and query data in SQL and document databases</li>
+                    <li>Use Git, Linux, and tests as daily tools</li>
+                    <li>Reason about services, queues, and failure in distributed systems</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Python</td><td>You can build a CLI + FastAPI service without looking up basic syntax</td></tr>
+                <tr><td>2</td><td>JS / TypeScript</td><td>You can type APIs, handle async, and ship a small frontend or worker</td></tr>
+                <tr><td>3</td><td>Node.js</td><td>You can run an HTTP server, read env, and call other APIs</td></tr>
+                <tr><td>4</td><td>APIs</td><td>You can design resources, status codes, pagination, and auth</td></tr>
+                <tr><td>5</td><td>Databases</td><td>You can model tables/collections, write queries, and think about indexes</td></tr>
+                <tr><td>6</td><td>Git</td><td>You can branch, review diffs, and write useful commit messages</td></tr>
+                <tr><td>7</td><td>Linux</td><td>You can SSH, inspect logs, and run a process with systemd or Docker</td></tr>
+                <tr><td>8</td><td>Testing</td><td>You can write unit + API tests and mock external calls</td></tr>
+                <tr><td>9</td><td>Microservices</td><td>You can split a monolith at a real boundary and communicate over HTTP/queues</td></tr>
+                <tr><td>10</td><td>Distributed systems</td><td>You can explain consistency, retries, idempotency, and timeouts</td></tr>
+            </table>
+        </section>
+
+        <section id="python">
+            <h2>Python</h2>
+            <p>Primary language for ML, RAG, agents, and FastAPI backends. Learn syntax, typing, packaging, async, and how to structure a service — not just notebooks.</p>
+            <div class="code-block"># FastAPI skeleton you should be able to write from memory
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class AskRequest(BaseModel):
+    question: str
+    user_id: str
+
+@app.post("/ask")
+def ask(body: AskRequest):
+    if not body.question.strip():
+        raise HTTPException(status_code=400, detail="question required")
+    return {"answer": f"echo: {body.question}", "user_id": body.user_id}</div>
+            <div class="info-box">
+                <strong>Practice:</strong> venv, pip/poetry, type hints, dataclasses, logging, pytest, and a 3-file project (api / services / tests).
+            </div>
+        </section>
+
+        <section id="js-ts">
+            <h2>JavaScript / TypeScript</h2>
+            <p>Needed for AI apps (React/Next.js), tool UIs, and many agent SDKs. TypeScript is the production default — types catch contract bugs between frontend, APIs, and model JSON.</p>
+            <div class="code-block">type ChatMessage = { role: "user" | "assistant"; content: string };
+
+async function sendChat(messages: ChatMessage[]): Promise&lt;string&gt; {
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = (await res.json()) as { reply: string };
+  return data.reply;
+}</div>
+        </section>
+
+        <section id="nodejs">
+            <h2>Node.js</h2>
+            <p>Runtime for JS backends, MCP servers, and automation workers. Learn the event loop, streams, env config, and calling Python services over HTTP.</p>
+            <div class="code-block">import express from "express";
+
+const app = express();
+app.use(express.json());
+
+app.post("/tools/search", async (req, res) => {
+  const q = String(req.body.query ?? "");
+  // call vector search or Python RAG service
+  res.json({ results: [], query: q });
+});
+
+app.listen(3000);</div>
+        </section>
+
+        <section id="apis">
+            <h2>APIs</h2>
+            <p>Every LLM feature is an API: chat, retrieve, tool-call, evaluate. Design resources, not ad-hoc functions. Always define auth, validation, idempotency keys, and error shapes.</p>
+            <table>
+                <tr><th>Concern</th><th>Production rule</th></tr>
+                <tr><td>Contracts</td><td>JSON Schema / OpenAPI / Pydantic / Zod — never "whatever the model returns"</td></tr>
+                <tr><td>Auth</td><td>API keys or JWT at the edge; never put model keys in the browser</td></tr>
+                <tr><td>Errors</td><td>Stable codes: 400 validation, 401/403 auth, 404 missing, 429 rate limit, 500 unexpected</td></tr>
+                <tr><td>Versioning</td><td><code>/v1/...</code> when clients are external; additive changes only</td></tr>
+            </table>
+        </section>
+
+        <section id="databases">
+            <h2>Databases</h2>
+            <p>AI apps still need users, threads, traces, documents, and billing. Learn SQL first (PostgreSQL), then a document store (MongoDB). Vector DBs come later in RAG — they are not a replacement for your system of record.</p>
+            <div class="code-block">-- Typical AI product tables
+CREATE TABLE users (id uuid PRIMARY KEY, email text UNIQUE NOT NULL);
+CREATE TABLE threads (
+  id uuid PRIMARY KEY,
+  user_id uuid REFERENCES users(id),
+  created_at timestamptz DEFAULT now()
+);
+CREATE TABLE messages (
+  id uuid PRIMARY KEY,
+  thread_id uuid REFERENCES threads(id),
+  role text CHECK (role IN ('user', 'assistant', 'tool')),
+  content text NOT NULL,
+  tokens_in int, tokens_out int
+);</div>
+        </section>
+
+        <section id="git">
+            <h2>Git</h2>
+            <p>Production teams live in PRs. Learn branching, rebasing vs merge, .gitignore, conventional commits, and how to review diffs that include prompts, evals, and infra.</p>
+            <div class="code-block">git checkout -b feat/rag-rerank
+git add -p
+git commit -m "Add cross-encoder rerank step to retrieval pipeline"
+git push -u origin HEAD</div>
+        </section>
+
+        <section id="linux">
+            <h2>Linux</h2>
+            <p>Servers, containers, and GPU boxes are Linux. You need the shell, files, permissions, processes, logs, curl, and SSH. Docker comes in LLMOps; Linux is the base.</p>
+            <div class="code-block"># Inspect a running AI API
+curl -i http://127.0.0.1:8000/health
+journalctl -u my-api -n 100 --no-pager
+ss -tlnp | grep 8000
+tail -f /var/log/my-api/app.log</div>
+        </section>
+
+        <section id="testing">
+            <h2>Testing</h2>
+            <p>Model output is non-deterministic, so tests must split: deterministic code (chunking, tools, parsers) vs evals (quality). Start with pytest / Vitest on everything that is not an LLM.</p>
+            <div class="code-block">def test_rejects_empty_question(client):
+    r = client.post("/ask", json={"question": "  ", "user_id": "u1"})
+    assert r.status_code == 400
+
+def test_tool_schema_is_valid():
+    schema = load_tool("search_docs")
+    assert "query" in schema["parameters"]["properties"]</div>
+        </section>
+
+        <section id="microservices">
+            <h2>Microservices</h2>
+            <p>Split when a team or scaling axis needs it — not because a blog said so. Common AI split: API gateway, retrieval service, inference/worker, eval job. Communicate with HTTP or a queue; share a contract, not a database, unless you must.</p>
+            <div class="warning-box">
+                <strong>Rule:</strong> A chat app with one FastAPI process is not a failure. Premature microservices add latency around every LLM call.
+            </div>
+        </section>
+
+        <section id="distributed">
+            <h2>Distributed systems</h2>
+            <p>LLMs time out, GPUs OOM, and vendors rate-limit. You need timeouts, retries with jitter, idempotency, circuit breakers, and "at least once" vs "exactly once" thinking for tool side effects.</p>
+            <div class="code-block">import httpx
+
+async def call_model(prompt: str) -> str:
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        for attempt in range(3):
+            try:
+                r = await client.post(MODEL_URL, json={"prompt": prompt})
+                r.raise_for_status()
+                return r.json()["text"]
+            except httpx.TimeoutException:
+                if attempt == 2:
+                    raise</div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can ship a small authenticated API with a database and tests</li>
+                <li>You can deploy it (even locally with Docker) and debug it from the shell</li>
+                <li>You can explain what happens if a downstream call fails twice</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> AI / ML Fundamentals — so you know what a model is doing before you wrap it in an API.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

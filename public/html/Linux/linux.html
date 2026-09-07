@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🐧 Linux Guide</h2>
+            <p>Fundamentals & Commands</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">🏠 Introduction</a>
+                <a href="#os-comparison" class="sidebar-link">🆚 Linux vs Unix vs Windows</a>
+                <a href="#architecture" class="sidebar-link">🏗️ System Architecture</a>
+                <a href="#boot-process" class="sidebar-link">🚀 Boot Process</a>
+                <a href="#hardware" class="sidebar-link">🖥️ Hardware Components</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Remote Access</div>
+            <div class="sidebar-links">
+                <a href="#remote-access" class="sidebar-link">🌐 Remote Access Overview</a>
+                <a href="#ssh" class="sidebar-link">🔐 SSH (Secure Shell)</a>
+                <a href="#rdp" class="sidebar-link">🖥️ RDP (Windows)</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Commands</div>
+            <div class="sidebar-links">
+                <a href="#file-commands" class="sidebar-link">📁 File & Directory</a>
+                <a href="#system-monitoring" class="sidebar-link">📊 System Monitoring</a>
+                <a href="#network-commands" class="sidebar-link">🌐 Network</a>
+                <a href="#file-transfer" class="sidebar-link">📤 File Transfer</a>
+                <a href="#compression" class="sidebar-link">🗜️ Compression</a>
+                <a href="#permissions" class="sidebar-link">🔒 Permissions</a>
+                <a href="#text-processing" class="sidebar-link">📝 Text Processing</a>
+                <a href="#common-commands" class="sidebar-link">⌨️ Common Commands</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Reference</div>
+            <div class="sidebar-links">
+                <a href="#links" class="sidebar-link">🔗 Links & Shortcuts</a>
+                <a href="#best-practices" class="sidebar-link">✨ Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🐧 Linux Complete Guide</h1>
+                <p>Operating System Fundamentals, Architecture & Command-Line Mastery</p>
+            </header>
+
+            <!-- INTRODUCTION -->
+            <section id="intro">
+                <h2>📚 Introduction to Linux</h2>
+
+                <p><span class="highlight">Linux</span> is a family of open-source, Unix-like operating systems built on the Linux kernel. It powers servers, cloud infrastructure, containers, embedded devices, and developer workstations worldwide.</p>
+
+                <div class="info-box">
+                    <h3>Why Learn Linux?</h3>
+                    <ul>
+                        <li>✅ <strong>Server Dominance:</strong> Most web servers, databases, and cloud VMs run Linux</li>
+                        <li>✅ <strong>DevOps & Cloud:</strong> AWS, Docker, Kubernetes, and CI/CD pipelines rely on Linux</li>
+                        <li>✅ <strong>Security & Stability:</strong> Fine-grained permissions, process isolation, and long uptime</li>
+                        <li>✅ <strong>Free & Open Source:</strong> No licensing cost; full control over the system</li>
+                        <li>✅ <strong>Powerful CLI:</strong> Automate tasks, manage servers, and debug systems efficiently</li>
+                    </ul>
+                </div>
+
+                <h3>Popular Linux Distributions</h3>
+                <table>
+                    <tr>
+                        <th>Distribution</th>
+                        <th>Best For</th>
+                        <th>Package Manager</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Ubuntu</strong></td>
+                        <td>Beginners, desktops, cloud servers</td>
+                        <td><code>apt</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>CentOS / RHEL / Rocky</strong></td>
+                        <td>Enterprise servers</td>
+                        <td><code>yum</code> / <code>dnf</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Debian</strong></td>
+                        <td>Stable servers</td>
+                        <td><code>apt</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alpine</strong></td>
+                        <td>Docker containers (minimal size)</td>
+                        <td><code>apk</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Arch</strong></td>
+                        <td>Advanced users, rolling releases</td>
+                        <td><code>pacman</code></td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- OS COMPARISON -->
+            <section id="os-comparison">
+                <h2>🆚 Linux vs Unix vs Windows</h2>
+
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Linux</th>
+                        <th>Unix</th>
+                        <th>Windows</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Origin</strong></td>
+                        <td>1991, Linus Torvalds (Linux kernel)</td>
+                        <td>1970s, AT&amp;T Bell Labs</td>
+                        <td>Microsoft (1985+)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>License</strong></td>
+                        <td>Open source (GPL)</td>
+                        <td>Mix of proprietary & open (BSD)</td>
+                        <td>Proprietary</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Interface</strong></td>
+                        <td>CLI (Shell) + optional GUI</td>
+                        <td>CLI (Shell)</td>
+                        <td>GUI (Desktop) + PowerShell/CMD</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Remote Access</strong></td>
+                        <td>SSH (port 22)</td>
+                        <td>SSH</td>
+                        <td>RDP (port 3389)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Common Use</strong></td>
+                        <td>Servers, cloud, containers, IoT</td>
+                        <td>Legacy servers, macOS (BSD-based)</td>
+                        <td>Desktops, enterprise workstations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>File System</strong></td>
+                        <td>ext4, xfs, btrfs</td>
+                        <td>UFS, ZFS</td>
+                        <td>NTFS</td>
+                    </tr>
+                </table>
+
+                <div class="info-box premium">
+                    <h3>Key Takeaway</h3>
+                    <p><strong>Linux</strong> uses <span class="highlight">SSH</span> for secure remote command-line access. <strong>Windows</strong> uses <span class="highlight">RDP</span> for graphical remote desktop access. Both can also use VPN for secure network tunnels.</p>
+                </div>
+            </section>
+
+            <!-- ARCHITECTURE -->
+            <section id="architecture">
+                <h2>🏗️ Linux System Architecture</h2>
+
+                <p>Linux follows a layered architecture where each layer builds on the one below it. Understanding this stack is essential for troubleshooting and system administration.</p>
+
+                <h3>Layered Architecture</h3>
+                <div class="code-block"><span class="comment">// High-level flow (simplified)</span>
+User / Application
+        ↓
+    Shell (bash, zsh, sh)
+        ↓
+    System Calls
+        ↓
+    Kernel (core OS)
+        ↓
+    Hardware (CPU, RAM, Disk, NIC)</div>
+
+                <table>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td><strong>Kernel</strong></td>
+                        <td>Core of the OS. Manages CPU, memory, I/O devices, process scheduling, and communication between hardware and software.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td><strong>Shell</strong></td>
+                        <td>Command-line interface (CLI). Users type commands; shell interprets them and passes requests to the kernel.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td><strong>SSH</strong></td>
+                        <td>Secure Shell protocol. Encrypts remote login sessions so you can run shell commands on a remote machine safely.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td><strong>Remote Access</strong></td>
+                        <td>Ability to connect to a machine over a network (SSH, VPN, or tunnel) from a different physical location.</td>
+                    </tr>
+                </table>
+
+                <h3>Kernel Responsibilities</h3>
+                <ul>
+                    <li>🔹 <strong>Process Management:</strong> Create, schedule, and terminate processes</li>
+                    <li>🔹 <strong>Memory Management:</strong> Allocate RAM, virtual memory, swap</li>
+                    <li>🔹 <strong>Device Drivers:</strong> Interface with hardware (disk, network, GPU)</li>
+                    <li>🔹 <strong>File System:</strong> Manage files, directories, and permissions</li>
+                    <li>🔹 <strong>Networking:</strong> Handle TCP/IP stack, sockets, firewalls</li>
+                    <li>🔹 <strong>Security:</strong> User authentication, access control, SELinux/AppArmor</li>
+                </ul>
+
+                <h3>Shell Types</h3>
+                <table>
+                    <tr>
+                        <th>Shell</th>
+                        <th>Path</th>
+                        <th>Notes</th>
+                    </tr>
+                    <tr>
+                        <td><strong>bash</strong></td>
+                        <td><code>/bin/bash</code></td>
+                        <td>Default on most distros; scripting &amp; interactive use</td>
+                    </tr>
+                    <tr>
+                        <td><strong>sh</strong></td>
+                        <td><code>/bin/sh</code></td>
+                        <td>POSIX-compliant; often linked to dash or bash</td>
+                    </tr>
+                    <tr>
+                        <td><strong>zsh</strong></td>
+                        <td><code>/bin/zsh</code></td>
+                        <td>Modern features; default on macOS</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- BOOT PROCESS -->
+            <section id="boot-process">
+                <h2>🚀 Linux Boot Process</h2>
+
+                <p>When you power on a Linux machine, a sequence of programs runs before you reach a login prompt.</p>
+
+                <div class="code-block"><span class="comment">// Boot sequence</span>
+Power On
+  → Bootloader (GRUB)
+    → Kernel loads into memory
+      → Init (PID 1) starts
+        → Daemons start (systemd services)
+          → Shell / Login Manager
+            → User session (SSH or local terminal)</div>
+
+                <table>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Component</th>
+                        <th>Role</th>
+                    </tr>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td><strong>Bootloader (GRUB)</strong></td>
+                        <td>First program to run. Loads the kernel into RAM. Lets you choose OS/kernel at startup and supports recovery mode.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td><strong>Kernel</strong></td>
+                        <td>Initializes hardware, mounts root filesystem, starts the init process.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td><strong>Init (PID 1)</strong></td>
+                        <td>First user-space process. On modern systems, <code>systemd</code> is the init manager.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td><strong>Daemons</strong></td>
+                        <td>Background services (sshd, nginx, cron, networking) started by init.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td><strong>Shell / SSH</strong></td>
+                        <td>User logs in locally or remotely and gets a shell prompt.</td>
+                    </tr>
+                </table>
+
+                <h3>GRUB (GRand Unified Bootloader)</h3>
+                <p>GRUB is the most common bootloader on Linux. It reads configuration from <code>/boot/grub/grub.cfg</code> and presents a menu to select which kernel or OS to boot.</p>
+
+                <div class="code-block"><span class="comment"># View GRUB config</span>
+cat /boot/grub/grub.cfg
+
+<span class="comment"># Update GRUB after kernel changes (Debian/Ubuntu)</span>
+sudo update-grub
+
+<span class="comment"># Check boot logs</span>
+journalctl -b</div>
+            </section>
+
+            <!-- HARDWARE -->
+            <section id="hardware">
+                <h2>🖥️ Hardware Components</h2>
+
+                <p>The kernel directly manages these hardware resources. Knowing them helps when diagnosing performance or connectivity issues.</p>
+
+                <table>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                        <th>Linux Commands</th>
+                    </tr>
+                    <tr>
+                        <td><strong>CPU</strong></td>
+                        <td>Central Processing Unit — executes instructions and manages data flow between components.</td>
+                        <td><code>lscpu</code>, <code>top</code>, <code>htop</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>RAM (Memory)</strong></td>
+                        <td>Volatile memory for fast access by the CPU. Cleared on power off.</td>
+                        <td><code>free -h</code>, <code>vmstat</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage (HDD/SSD)</strong></td>
+                        <td>Non-volatile storage. HDD uses spinning disks; SSD uses flash for faster I/O.</td>
+                        <td><code>df -h</code>, <code>du -sh</code>, <code>lsblk</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>I/O Devices</strong></td>
+                        <td>Keyboards, mice, monitors, printers — peripherals for input/output.</td>
+                        <td><code>lsusb</code>, <code>lspci</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Network Interface (NIC)</strong></td>
+                        <td>Hardware for network connectivity — Ethernet (wired) or Wi-Fi (wireless). Built into motherboard or added as expansion card.</td>
+                        <td><code>ip addr</code>, <code>ifconfig</code>, <code>ethtool</code></td>
+                    </tr>
+                </table>
+
+                <div class="code-block"><span class="comment"># List block devices (disks, partitions)</span>
+lsblk
+
+<span class="comment"># List PCI devices (graphics, network cards)</span>
+lspci
+
+<span class="comment"># List USB devices</span>
+lsusb
+
+<span class="comment"># CPU info</span>
+lscpu</div>
+            </section>
+
+            <!-- REMOTE ACCESS -->
+            <section id="remote-access">
+                <h2>🌐 Remote Access Overview</h2>
+
+                <p><span class="highlight">Remote Access</span> is the ability to connect to a computer or network from a different location, typically over the internet.</p>
+
+                <table>
+                    <tr>
+                        <th>Method</th>
+                        <th>Platform</th>
+                        <th>Port</th>
+                        <th>Use Case</th>
+                    </tr>
+                    <tr>
+                        <td><strong>SSH</strong></td>
+                        <td>Linux, macOS, Windows (OpenSSH)</td>
+                        <td>22</td>
+                        <td>Secure command-line access, file transfer, tunneling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RDP</strong></td>
+                        <td>Windows (built-in)</td>
+                        <td>3389</td>
+                        <td>Graphical remote desktop for Windows servers/desktops</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VPN</strong></td>
+                        <td>Cross-platform</td>
+                        <td>Varies</td>
+                        <td>Encrypted tunnel to a private network</td>
+                    </tr>
+                </table>
+
+                <div class="info-box">
+                    <h3>Linux vs Windows Remote Access</h3>
+                    <ul>
+                        <li>🐧 <strong>Linux:</strong> Primarily uses <strong>SSH</strong> for text-based remote administration</li>
+                        <li>🪟 <strong>Windows:</strong> Primarily uses <strong>RDP</strong> for full graphical desktop access</li>
+                        <li>🔐 Both support VPN for secure network-level access</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SSH -->
+            <section id="ssh">
+                <h2>🔐 SSH (Secure Shell)</h2>
+
+                <p><span class="highlight">SSH</span> is a network protocol that provides encrypted remote login and command execution over an unsecured network.</p>
+
+                <div class="info-box">
+                    <h3>SSH Key Facts</h3>
+                    <ul>
+                        <li>🔹 <strong>Default Port:</strong> 22</li>
+                        <li>🔹 <strong>Encryption:</strong> All traffic (passwords, commands, data) is encrypted</li>
+                        <li>🔹 <strong>Authentication:</strong> Password or SSH key pair (public/private)</li>
+                        <li>🔹 <strong>Daemon:</strong> <code>sshd</code> runs on the server; client uses <code>ssh</code> command</li>
+                    </ul>
+                </div>
+
+                <h3>Basic SSH Usage</h3>
+                <div class="code-block"><span class="comment"># Connect to remote server</span>
+ssh username@192.168.1.100
+
+<span class="comment"># Connect on custom port</span>
+ssh -p 2222 username@hostname
+
+<span class="comment"># Run a single remote command</span>
+ssh user@server "df -h && free -m"
+
+<span class="comment"># Generate SSH key pair</span>
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+<span class="comment"># Copy public key to server (passwordless login)</span>
+ssh-copy-id user@server
+
+<span class="comment"># SSH config (~/.ssh/config) for shortcuts</span>
+Host myserver
+    HostName 192.168.1.100
+    User admin
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519</div>
+
+                <h3>SSH-Related Tools</h3>
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>ssh</strong></td>
+                        <td>Secure remote login</td>
+                        <td><code>ssh user@host</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>scp</strong></td>
+                        <td>Secure copy (files over SSH)</td>
+                        <td><code>scp file.txt user@host:/path/</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>sftp</strong></td>
+                        <td>Interactive secure file transfer</td>
+                        <td><code>sftp user@host</code></td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- RDP -->
+            <section id="rdp">
+                <h2>🖥️ RDP (Remote Desktop Protocol)</h2>
+
+                <p><span class="highlight">RDP</span> is a Microsoft proprietary protocol for graphical remote desktop access to Windows machines.</p>
+
+                <ul>
+                    <li>🔹 <strong>Default Port:</strong> 3389</li>
+                    <li>🔹 <strong>Built into Windows:</strong> Server and Pro editions include RDP server</li>
+                    <li>🔹 <strong>Cross-platform clients:</strong> Windows, macOS, Linux (Remmina, FreeRDP), mobile</li>
+                    <li>🔹 <strong>Use cases:</strong> Remote administration, technical support, remote work</li>
+                </ul>
+
+                <div class="info-box">
+                    <p>On Linux servers, you typically do <strong>not</strong> use RDP. Use SSH instead. RDP is relevant when you also manage Windows servers alongside Linux infrastructure.</p>
+                </div>
+            </section>
+
+            <!-- FILE COMMANDS -->
+            <section id="file-commands">
+                <h2>📁 File & Directory Commands</h2>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Full Name</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>pwd</code></td>
+                        <td>Print Working Directory</td>
+                        <td>Show current directory path</td>
+                        <td><code>pwd</code> → <code>/home/user</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cd</code></td>
+                        <td>Change Directory</td>
+                        <td>Navigate to a folder</td>
+                        <td><code>cd /var/log</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ls</code></td>
+                        <td>List</td>
+                        <td>List files and directories</td>
+                        <td><code>ls -la</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>mkdir</code></td>
+                        <td>Make Directory</td>
+                        <td>Create a new folder</td>
+                        <td><code>mkdir projects</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>rmdir</code></td>
+                        <td>Remove Directory</td>
+                        <td>Delete an empty folder</td>
+                        <td><code>rmdir old_folder</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>rm</code></td>
+                        <td>Remove</td>
+                        <td>Delete files or directories</td>
+                        <td><code>rm -rf folder/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cp</code></td>
+                        <td>Copy</td>
+                        <td>Copy files or directories</td>
+                        <td><code>cp -r src/ dest/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>mv</code></td>
+                        <td>Move</td>
+                        <td>Move or rename files</td>
+                        <td><code>mv old.txt new.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cat</code></td>
+                        <td>Concatenate</td>
+                        <td>Display file contents</td>
+                        <td><code>cat /etc/hosts</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>less</code> / <code>more</code></td>
+                        <td>—</td>
+                        <td>View large files page by page</td>
+                        <td><code>less /var/log/syslog</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>find</code></td>
+                        <td>—</td>
+                        <td>Search for files by name, type, size, date</td>
+                        <td><code>find / -name "*.log"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>locate</code></td>
+                        <td>—</td>
+                        <td>Fast file search using database</td>
+                        <td><code>locate nginx.conf</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>which</code></td>
+                        <td>—</td>
+                        <td>Show path of a command</td>
+                        <td><code>which python3</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ln</code></td>
+                        <td>Link</td>
+                        <td>Create hard or soft (symbolic) links</td>
+                        <td><code>ln -s /path/file link</code></td>
+                    </tr>
+                </table>
+
+                <h3>Practical Examples</h3>
+                <div class="code-block"><span class="comment"># List all files with details, including hidden</span>
+ls -la
+
+<span class="comment"># Copy folder and rename</span>
+cp -r one /home/onebk
+
+<span class="comment"># Find files modified in last 7 days</span>
+find /var/log -mtime -7 -type f
+
+<span class="comment"># Soft link (shortcut) vs hard link</span>
+ln -s /original/path shortcut      <span class="comment"># soft link</span>
+ln /original/file hardlink           <span class="comment"># hard link</span></div>
+            </section>
+
+            <!-- SYSTEM MONITORING -->
+            <section id="system-monitoring">
+                <h2>📊 System Monitoring Commands</h2>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>top</code></td>
+                        <td>Real-time view of running processes and resource usage</td>
+                        <td><code>top</code> — press <code>q</code> to quit</td>
+                    </tr>
+                    <tr>
+                        <td><code>htop</code></td>
+                        <td>Enhanced interactive process viewer</td>
+                        <td><code>htop</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ps</code></td>
+                        <td>Snapshot of current processes</td>
+                        <td><code>ps aux | grep nginx</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>free</code></td>
+                        <td>Memory usage (total, used, free, swap)</td>
+                        <td><code>free -h</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>df</code></td>
+                        <td>Disk space usage by filesystem</td>
+                        <td><code>df -h</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>du</code></td>
+                        <td>Disk usage of directories/files</td>
+                        <td><code>du -sh /var/log/*</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>iostat</code></td>
+                        <td>I/O statistics for devices and partitions</td>
+                        <td><code>iostat -x 1</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>uptime</code></td>
+                        <td>How long system has been running + load average</td>
+                        <td><code>uptime</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>uname</code></td>
+                        <td>System information (kernel, architecture)</td>
+                        <td><code>uname -a</code></td>
+                    </tr>
+                </table>
+
+                <div class="code-block"><span class="comment"># Check memory</span>
+free -h
+
+<span class="comment"># Check disk space</span>
+df -h
+
+<span class="comment"># Find what's using disk space in /var</span>
+du -sh /var/* | sort -rh | head -10
+
+<span class="comment"># List top CPU-consuming processes</span>
+ps aux --sort=-%cpu | head -10</div>
+            </section>
+
+            <!-- NETWORK COMMANDS -->
+            <section id="network-commands">
+                <h2>🌐 Network Commands</h2>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>ip addr</code></td>
+                        <td>Show network interface IP addresses (modern)</td>
+                        <td><code>ip addr show</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ifconfig</code></td>
+                        <td>Legacy network interface configuration</td>
+                        <td><code>ifconfig eth0</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ping</code></td>
+                        <td>Test connectivity to a host</td>
+                        <td><code>ping -c 4 google.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>traceroute</code></td>
+                        <td>Show route packets take to reach host</td>
+                        <td><code>traceroute google.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>netstat</code></td>
+                        <td>Network connections and listening ports</td>
+                        <td><code>netstat -tulpn</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ss</code></td>
+                        <td>Modern replacement for netstat</td>
+                        <td><code>ss -tulpn</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>nslookup</code></td>
+                        <td>Query DNS for hostname resolution</td>
+                        <td><code>nslookup google.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>dig</code></td>
+                        <td>Detailed DNS lookup</td>
+                        <td><code>dig google.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>whois</code></td>
+                        <td>Domain/IP registration information</td>
+                        <td><code>whois example.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>nmap</code></td>
+                        <td>Network port scanner</td>
+                        <td><code>nmap -sV 192.168.1.1</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>curl</code></td>
+                        <td>Transfer data via HTTP, FTP, etc.</td>
+                        <td><code>curl -I https://api.github.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>wget</code></td>
+                        <td>Download files from the web</td>
+                        <td><code>wget https://example.com/file.zip</code></td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- FILE TRANSFER -->
+            <section id="file-transfer">
+                <h2>📤 File Transfer Commands</h2>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Protocol</th>
+                        <th>Secure?</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>scp</code></td>
+                        <td>SSH</td>
+                        <td>✅ Yes</td>
+                        <td><code>scp file.txt user@host:/remote/path/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sftp</code></td>
+                        <td>SSH</td>
+                        <td>✅ Yes</td>
+                        <td><code>sftp user@host</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>rsync</code></td>
+                        <td>SSH / local</td>
+                        <td>✅ Yes (over SSH)</td>
+                        <td><code>rsync -avz ./local/ user@host:/remote/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>ftp</code></td>
+                        <td>FTP</td>
+                        <td>❌ No (use SFTP instead)</td>
+                        <td><code>ftp ftp.example.com</code></td>
+                    </tr>
+                </table>
+
+                <div class="code-block"><span class="comment"># Copy file to remote server</span>
+scp report.pdf user@192.168.1.10:/home/user/
+
+<span class="comment"># Copy entire directory recursively</span>
+scp -r ./project user@server:/opt/
+
+<span class="comment"># Sync local folder to remote (efficient, incremental)</span>
+rsync -avz --progress ./backup/ user@server:/backup/</div>
+            </section>
+
+            <!-- COMPRESSION -->
+            <section id="compression">
+                <h2>🗜️ Compression & Archive Commands</h2>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Action</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>tar</code></td>
+                        <td>Archive files (combine into one)</td>
+                        <td><code>tar -cvf archive.tar folder/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>tar + gzip</code></td>
+                        <td>Archive and compress</td>
+                        <td><code>tar -czvf archive.tar.gz folder/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>gzip</code></td>
+                        <td>Compress a single file</td>
+                        <td><code>gzip largefile.log</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>gunzip</code></td>
+                        <td>Decompress .gz file</td>
+                        <td><code>gunzip file.gz</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>bzip2</code></td>
+                        <td>Compress (better ratio, slower)</td>
+                        <td><code>bzip2 file.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>zip</code></td>
+                        <td>Create ZIP archive</td>
+                        <td><code>zip -r archive.zip folder/</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>unzip</code></td>
+                        <td>Extract ZIP archive</td>
+                        <td><code>unzip archive.zip</code></td>
+                    </tr>
+                </table>
+
+                <div class="code-block"><span class="comment"># Create compressed tarball</span>
+tar -czvf backup.tar.gz /home/user/documents
+
+<span class="comment"># Extract tarball</span>
+tar -xzvf backup.tar.gz
+
+<span class="comment"># tar flags: c=create, x=extract, z=gzip, v=verbose, f=file</span></div>
+            </section>
+
+            <!-- PERMISSIONS -->
+            <section id="permissions">
+                <h2>🔒 File Permissions</h2>
+
+                <p>Linux uses a permission model with three categories: <strong>Owner</strong>, <strong>Group</strong>, and <strong>Others</strong>. Each has read (r), write (w), and execute (x) permissions.</p>
+
+                <div class="code-block"><span class="comment"># Example: -rw-r--r--  1 user group  1024 Jan 1 12:00 file.txt</span>
+<span class="comment">#            │││ │││ │││</span>
+<span class="comment">#            │││ │││ └── Others: r-- (read only)</span>
+<span class="comment">#            │││ └────── Group:  r-- (read only)</span>
+<span class="comment">#            └──────── Owner:  rw- (read + write)</span></div>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>chmod</code></td>
+                        <td>Change file permissions</td>
+                        <td><code>chmod 755 script.sh</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>chown</code></td>
+                        <td>Change file owner</td>
+                        <td><code>chown user:group file.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>chgrp</code></td>
+                        <td>Change group ownership</td>
+                        <td><code>chgrp developers project/</code></td>
+                    </tr>
+                </table>
+
+                <h3>Numeric Permission Modes</h3>
+                <table>
+                    <tr>
+                        <th>Number</th>
+                        <th>Permission</th>
+                        <th>Meaning</th>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>r</td>
+                        <td>Read</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>w</td>
+                        <td>Write</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>x</td>
+                        <td>Execute</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>rwx</td>
+                        <td>4+2+1 = full access</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>r-x</td>
+                        <td>4+1 = read + execute</td>
+                    </tr>
+                    <tr>
+                        <td>644</td>
+                        <td>rw-r--r--</td>
+                        <td>Owner: rw, Group/Others: read only</td>
+                    </tr>
+                    <tr>
+                        <td>755</td>
+                        <td>rwxr-xr-x</td>
+                        <td>Owner: full, Group/Others: read + execute</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- TEXT PROCESSING -->
+            <section id="text-processing">
+                <h2>📝 Text Processing Commands</h2>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>grep</code></td>
+                        <td>Search for text patterns in files</td>
+                        <td><code>grep "error" /var/log/syslog</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sed</code></td>
+                        <td>Stream editor — find and replace text</td>
+                        <td><code>sed 's/old/new/g' file.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>awk</code></td>
+                        <td>Pattern scanning and column processing</td>
+                        <td><code>awk '{print $1}' file.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>sort</code></td>
+                        <td>Sort lines of text</td>
+                        <td><code>sort -n numbers.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>uniq</code></td>
+                        <td>Remove duplicate adjacent lines</td>
+                        <td><code>sort file | uniq</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cut</code></td>
+                        <td>Extract columns from lines</td>
+                        <td><code>cut -d',' -f1 data.csv</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>paste</code></td>
+                        <td>Merge lines from multiple files</td>
+                        <td><code>paste file1 file2</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>head</code></td>
+                        <td>First N lines of a file</td>
+                        <td><code>head -20 file.log</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>tail</code></td>
+                        <td>Last N lines of a file</td>
+                        <td><code>tail -f /var/log/nginx/access.log</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>wc</code></td>
+                        <td>Count lines, words, characters</td>
+                        <td><code>wc -l file.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>diff</code></td>
+                        <td>Compare two files line by line</td>
+                        <td><code>diff file1.txt file2.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>patch</code></td>
+                        <td>Apply a diff/patch file</td>
+                        <td><code>patch file.txt &lt; changes.patch</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>echo</code></td>
+                        <td>Print text to terminal</td>
+                        <td><code>echo "Hello World"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>tee</code></td>
+                        <td>Read stdin, write to stdout and file</td>
+                        <td><code>echo "log" | tee output.log</code></td>
+                    </tr>
+                </table>
+
+                <div class="code-block"><span class="comment"># Search recursively with line numbers</span>
+grep -rn "TODO" ./src/
+
+<span class="comment"># Follow log file in real time</span>
+tail -f /var/log/app.log
+
+<span class="comment"># Count unique IP addresses in access log</span>
+awk '{print $1}' access.log | sort | uniq -c | sort -rn | head</div>
+            </section>
+
+            <!-- COMMON COMMANDS -->
+            <section id="common-commands">
+                <h2>⌨️ Quick Reference — Common Commands</h2>
+
+                <p>A cheat sheet of the most frequently used commands for daily Linux work.</p>
+
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>What It Does</th>
+                    </tr>
+                    <tr><td><code>cd</code></td><td>Change directory</td></tr>
+                    <tr><td><code>pwd</code></td><td>Show current directory</td></tr>
+                    <tr><td><code>ls -la</code></td><td>List all files with details</td></tr>
+                    <tr><td><code>mkdir name</code></td><td>Create folder</td></tr>
+                    <tr><td><code>rm file</code></td><td>Delete file</td></tr>
+                    <tr><td><code>rm -rf dir</code></td><td>Delete folder and contents</td></tr>
+                    <tr><td><code>cp file dest</code></td><td>Copy file</td></tr>
+                    <tr><td><code>cp -r dir dest</code></td><td>Copy folder recursively</td></tr>
+                    <tr><td><code>mv old new</code></td><td>Move or rename</td></tr>
+                    <tr><td><code>cat file</code></td><td>View file contents</td></tr>
+                    <tr><td><code>less file</code></td><td>View large file page by page</td></tr>
+                    <tr><td><code>head file</code></td><td>First 10 lines</td></tr>
+                    <tr><td><code>tail file</code></td><td>Last 10 lines</td></tr>
+                    <tr><td><code>grep pattern file</code></td><td>Search text in file</td></tr>
+                    <tr><td><code>find / -name "*.conf"</code></td><td>Find files by name</td></tr>
+                    <tr><td><code>chmod 755 script.sh</code></td><td>Make script executable</td></tr>
+                    <tr><td><code>chown user:group file</code></td><td>Change ownership</td></tr>
+                    <tr><td><code>free -h</code></td><td>Check memory</td></tr>
+                    <tr><td><code>df -h</code></td><td>Check disk space</td></tr>
+                    <tr><td><code>du -sh *</code></td><td>Check folder sizes</td></tr>
+                    <tr><td><code>top</code></td><td>Monitor processes</td></tr>
+                    <tr><td><code>ps aux</code></td><td>List all processes</td></tr>
+                    <tr><td><code>ssh user@host</code></td><td>Remote login</td></tr>
+                    <tr><td><code>scp file user@host:/path</code></td><td>Copy file to remote</td></tr>
+                    <tr><td><code>tar -czvf a.tar.gz dir/</code></td><td>Compress folder</td></tr>
+                    <tr><td><code>tar -xzvf a.tar.gz</code></td><td>Extract archive</td></tr>
+                    <tr><td><code>zip -r a.zip dir/</code></td><td>Create zip archive</td></tr>
+                    <tr><td><code>unzip a.zip</code></td><td>Extract zip</td></tr>
+                    <tr><td><code>wc -l file</code></td><td>Count lines</td></tr>
+                    <tr><td><code>ln -s target link</code></td><td>Create shortcut (soft link)</td></tr>
+                    <tr><td><code>lsblk</code></td><td>List block devices</td></tr>
+                    <tr><td><code>lspci</code></td><td>List PCI devices</td></tr>
+                </table>
+            </section>
+
+            <!-- LINKS -->
+            <section id="links">
+                <h2>🔗 Links & Shortcuts</h2>
+
+                <h3>Hard Link vs Soft Link (Symbolic Link)</h3>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Hard Link</th>
+                        <th>Soft Link (Symlink)</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Command</strong></td>
+                        <td><code>ln source link</code></td>
+                        <td><code>ln -s source link</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Points to</strong></td>
+                        <td>Same inode (actual file data)</td>
+                        <td>Path to another file</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Works across filesystems</strong></td>
+                        <td>❌ No</td>
+                        <td>✅ Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Works on directories</strong></td>
+                        <td>❌ No</td>
+                        <td>✅ Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>If original deleted</strong></td>
+                        <td>Link still works</td>
+                        <td>Link breaks (dangling)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- BEST PRACTICES -->
+            <section id="best-practices">
+                <h2>✨ Best Practices</h2>
+
+                <div class="info-box">
+                    <h3>Linux Administration Tips</h3>
+                    <ul>
+                        <li>✅ <strong>Never run <code>rm -rf /</code></strong> — it will destroy your system</li>
+                        <li>✅ <strong>Use <code>sudo</code> carefully</strong> — only when root privileges are needed</li>
+                        <li>✅ <strong>Prefer SSH keys</strong> over passwords for remote access</li>
+                        <li>✅ <strong>Check before you delete</strong> — use <code>ls</code> to verify paths</li>
+                        <li>✅ <strong>Read man pages</strong> — <code>man command</code> for full documentation</li>
+                        <li>✅ <strong>Use tab completion</strong> — press Tab to auto-complete paths and commands</li>
+                        <li>✅ <strong>Pipe commands</strong> — chain tools: <code>cat file | grep error | wc -l</code></li>
+                        <li>✅ <strong>Back up before changes</strong> — especially config files in <code>/etc/</code></li>
+                    </ul>
+                </div>
+
+                <h3>Useful Shortcuts</h3>
+                <table>
+                    <tr>
+                        <th>Shortcut</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr><td><code>Ctrl + C</code></td><td>Cancel / stop current command</td></tr>
+                    <tr><td><code>Ctrl + D</code></td><td>Logout / end of input (EOF)</td></tr>
+                    <tr><td><code>Ctrl + L</code></td><td>Clear screen</td></tr>
+                    <tr><td><code>Ctrl + R</code></td><td>Search command history</td></tr>
+                    <tr><td><code>Tab</code></td><td>Auto-complete file/command names</td></tr>
+                    <tr><td><code>↑ / ↓</code></td><td>Navigate command history</td></tr>
+                    <tr><td><code>!!</code></td><td>Repeat last command</td></tr>
+                    <tr><td><code>!n</code></td><td>Run command number n from history</td></tr>
+                </table>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

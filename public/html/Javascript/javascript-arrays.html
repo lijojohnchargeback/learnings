@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Arrays - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📚 JavaScript Arrays</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Basics</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#creation" class="sidebar-link">Creating Arrays</a>
+                <a href="#characteristics" class="sidebar-link">Characteristics</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🛠️ Core Methods</div>
+            <div class="sidebar-links">
+                <a href="#add-remove" class="sidebar-link">Add/Remove</a>
+                <a href="#search" class="sidebar-link">Search Methods</a>
+                <a href="#concat" class="sidebar-link">concat()</a>
+                <a href="#copywithin" class="sidebar-link">copyWithin()</a>
+                <a href="#entries" class="sidebar-link">entries()</a>
+                <a href="#every" class="sidebar-link">every()</a>
+                <a href="#fill" class="sidebar-link">fill()</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Iteration</div>
+            <div class="sidebar-links">
+                <a href="#foreach" class="sidebar-link">forEach()</a>
+                <a href="#map" class="sidebar-link">map()</a>
+                <a href="#filter" class="sidebar-link">filter()</a>
+                <a href="#find" class="sidebar-link">find()</a>
+                <a href="#reduce" class="sidebar-link">reduce()</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">✂️ Manipulation</div>
+            <div class="sidebar-links">
+                <a href="#slice-splice" class="sidebar-link">slice vs splice</a>
+                <a href="#sort" class="sidebar-link">sort()</a>
+                <a href="#reverse" class="sidebar-link">reverse()</a>
+                <a href="#join" class="sidebar-link">join()</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🎯 Advanced</div>
+            <div class="sidebar-links">
+                <a href="#set" class="sidebar-link">Set Object</a>
+                <a href="#array-from" class="sidebar-link">Array.from()</a>
+                <a href="#array-types" class="sidebar-link">Array Types</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>📚 JavaScript Arrays</h1>
+            <p>Complete Guide to Arrays and Array Methods</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to Arrays</h2>
+            <p>In JavaScript, an <strong>Array</strong> is a global object that is used in the construction of arrays; which are high-level, list-like objects. Unlike arrays in languages like C, JavaScript arrays are <strong>dynamic</strong> and can store elements of different types within the same instance.</p>
+            
+            <div class="info-box">
+                <h3>The Array Mental Model</h3>
+                <p>Think of an array as a <strong>continuous sequence of memory slots</strong> where each slot is indexed. While JavaScript engines optimize "dense" arrays for performance, they are technically objects where the indices are just property names.</p>
+            </div>
+            
+            <div class="info-box">
+                <h3>Technical Summary</h3>
+                <ul>
+                    <li>📝 <strong>Indexed-Based:</strong> Access time is O(1) when the index is known.</li>
+                    <li>📝 <strong>Dynamic Sizing:</strong> Automatically reallocates memory as it grows.</li>
+                    <li>📝 <strong>Iterable:</strong> Implements the iterator protocol for use with <code>for...of</code>.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="characteristics">
+            <h2>🔑 High-Fidelity Characteristics</h2>
+            <p>To master arrays, you must understand their <strong>Object-based nature</strong> and how they interact with memory.</p>
+            <ul>
+                <li>✅ <strong>Zero-indexed:</strong> Direct memory offset access.</li>
+                <li>✅ <strong>Dynamic Pointer Tracking:</strong> The <code>length</code> property is not a count; it is an <strong>unsigned 32-bit integer</strong> that is always numerically greater than the highest index.</li>
+                <li>✅ <strong>Prototype Linkage:</strong> All arrays delegate to <code>Array.prototype</code>, granting access to the global method suite.</li>
+                <li>✅ <strong>Holey vs Packed:</strong> V8 optimizes arrays that have no gaps (Packed) significantly better than those with holes (Holey).</li>
+            </ul>
+        </section>
+
+        <section id="creation">
+            <h2>🔨 Creation Design Patterns</h2>
+            
+            <h3>Method 1: Array Literal (The Gold Standard)</h3>
+            <p><strong>Senior Perspective:</strong> Use literals for 99% of cases. They are declarative, easy for the engine to optimize as 'Packed' arrays, and avoid the "single argument" pitfall of the constructor.</p>
+            <p><strong>Definition:</strong> Using brackets <code>[]</code> is the most common and performant way to initialize an array. It creates a dense array with an immutable length at the split-second of creation.</p>
+            <div class="code-block">const fruits = ["Apple", "Banana", "Orange"];
+const numbers = [1, 2, 3, 4, 5];
+const mixed = [1, "hello", true, {name: "John"}];</div>
+
+            <h3>Method 2: Array Constructor via <code>new</code></h3>
+            <p><strong>Definition:</strong> Calling the <code>Array</code> class directly. While useful for creating specific lengths, it can lead to "Sparse Arrays" (holes in memory) if used incorrectly.</p>
+            <div class="code-block">const arr = new Array("Mango", "Grape");
+const reserved = new Array(5); // Creates 5 empty slots (Sparse Array)</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Memory Note:</strong> <code>new Array(5)</code> does not fill the array with <code>undefined</code>; it creates 5 <strong>holes</strong> in memory. Most array methods like <code>map()</code> will skip these holes.
+            </div>
+        </section>
+
+        <section id="add-remove">
+            <h2>➕➖ Stack & Queue Mechanics</h2>
+            <p>JavaScript arrays function as both **Stacks (LIFO)** and **Queues (FIFO)**.</p>
+            
+            <div class="info-box premium">
+                <h3>Performance Deep-Dive: Big O</h3>
+                <ul>
+                    <li><strong>push/pop:</strong> O(1) - Constant time. No elements need to be shifted.</li>
+                    <li><strong>shift/unshift:</strong> O(n) - Linear time. All remaining elements <strong>must be re-indexed</strong> in memory.</li>
+                </ul>
+                <p><em>Optimization Tip:</em> Avoid <code>unshift</code> in large loops; it's a major performance bottleneck.</p>
+            </div>
+
+        <section id="search">
+            <h2>🔍 Search & Transformation (Modern)</h2>
+            <div class="code-block">let fruits = ["Apple", "Banana", "Orange"];
+
+// Array.prototype.flat() - Flattening nested structures
+const nested = [1, [2, [3, 4]]];
+console.log(nested.flat(2)); // [1, 2, 3, 4]
+
+// Array.prototype.flatMap() - Map + Flat in one pass
+const phrases = ["hello world", "the news"];
+const words = phrases.flatMap(x => x.split(" ")); // ["hello", "world", "the", "news"]</div>
+
+            <div class="info-box premium">
+                <h3>TypedArrays: Low-Level Performance</h3>
+                <p>For high-performance graphics, audio processing, or large numeric datasets, JavaScript provides <strong>TypedArrays</strong>. Unlike standard arrays, these are <strong>fixed-length</strong> views over a raw memory buffer (<code>ArrayBuffer</code>), offering predictable performance and no garbage collection overhead for internal elements.</p>
+                <div class="code-block">const buffer = new ArrayBuffer(16); // 16 bytes
+const int32View = new Int32Array(buffer); // View as signed 32-bit integers</div>
+            </div>
+        </section>
+
+        <section id="concat">
+            <h2>🔗 concat() - Join Arrays</h2>
+            <p>The concat() method joins two or more arrays and returns a new array without changing existing arrays.</p>
+            <div class="code-block">const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const arr3 = [7, 8, 9];
+const joined = arr1.concat(arr2, arr3);
+console.log(joined); // [1, 2, 3, 4, 5, 6, 7, 8, 9]</div>
+        </section>
+
+        <section id="copywithin">
+            <h2>📋 copyWithin() - Copy Elements</h2>
+            <p>Copies array elements to another position, overwriting existing values.</p>
+            <div class="code-block">// Syntax: array.copyWithin(target, start, end)
+const arr = [1, 2, 3, 4, 5];
+arr.copyWithin(0, 3, 5); // Copy elements from index 3-5 to index 0
+console.log(arr); // [4, 5, 3, 4, 5]</div>
+        </section>
+
+        <section id="entries">
+            <h2>🔑 entries() - Key/Value Pairs</h2>
+            <p>Returns an Array Iterator with key/value pairs.</p>
+            <div class="code-block">const fruits = ["Banana", "Orange", "Apple"];
+const iterator = fruits.entries();
+
+for (let [index, value] of iterator) {
+    console.log(index, value);
+}
+// 0 "Banana"
+// 1 "Orange"
+// 2 "Apple"</div>
+        </section>
+
+        <section id="every">
+            <h2>✔️ every() - Test All Elements</h2>
+            <p>Returns true if all elements pass the test, false otherwise.</p>
+            <div class="code-block">const ages = [32, 33, 19, 40];
+const allAdults = ages.every(age => age >= 18);
+console.log(allAdults); // true
+
+const ages2 = [32, 33, 16, 40];
+const allAdults2 = ages2.every(age => age >= 18);
+console.log(allAdults2); // false</div>
+        </section>
+
+        <section id="fill">
+            <h2>🎨 fill() - Fill with Value</h2>
+            <p>Fills elements with a static value.</p>
+            <div class="code-block">// Syntax: array.fill(value, start, end)
+const arr = [1, 2, 3, 4, 5];
+arr.fill(0, 2, 4); // Fill with 0 from index 2 to 4
+console.log(arr); // [1, 2, 0, 0, 5]</div>
+        </section>
+
+        <section id="foreach">
+            <h2>🔄 forEach() - Declarative Iteration</h2>
+            <p><strong>Definition:</strong> A declarative method to iterate over elements. Unlike a <code>for</code> loop, <code>forEach</code> cannot be stopped with <code>break</code> or <code>continue</code> and it returns <code>undefined</code>.</p>
+            <div class="info-box">
+                <strong>When to avoid:</strong> If you need to stop early or transform data into a new array. Use <code>for...of</code> for stopping early, and <code>map()</code> for transformations.
+            </div>
+            <div class="code-block">const prices = [19.99, 29.99, 39.99];
+prices.forEach((price, index) => {
+    console.log(`Item ${index + 1}: $${price}`);
+});</div>
+        </section>
+
+        <section id="map">
+            <h2>🗺️ map() - Immutability & Transformation</h2>
+            <p><strong>Definition:</strong> Creates a <strong>shallow copy</strong> of your array, applying a transformation to every element. This follows functional programming principles where the original array remains untouched (Immutable).</p>
+            <div class="code-block">const prices = [10, 20, 30];
+const withTax = prices.map(price => price * 1.1);
+console.log(withTax); // [11, 22, 33]</div>
+        </section>
+
+        <section id="filter">
+            <h2>🔍 filter() - Select Elements</h2>
+            <p>Creates a new array with elements that pass the test.</p>
+            <div class="code-block">const ages = [15, 22, 17, 30, 16, 25];
+const adults = ages.filter(age => age >= 18);
+console.log(adults); // [22, 30, 25]
+
+// Remove duplicates
+const numbers = [1, 2, 3, 2, 4, 1, 5];
+const unique = numbers.filter((item, index, arr) => 
+    arr.indexOf(item) === index
+);
+console.log(unique); // [1, 2, 3, 4, 5]</div>
+        </section>
+
+        <section id="find">
+            <h2>🎯 find() & findIndex()</h2>
+            <p>find() returns the first element that passes the test. findIndex() returns its index.</p>
+            <div class="code-block">const users = [
+    {id: 1, name: "John"},
+    {id: 2, name: "Jane"},
+    {id: 3, name: "Bob"}
+];
+
+const user = users.find(u => u.id === 2);
+console.log(user); // {id: 2, name: "Jane"}
+
+const index = users.findIndex(u => u.name === "Bob");
+console.log(index); // 2</div>
+        </section>
+
+        <section id="reduce">
+            <h2>📊 reduce() - The Accumulator Pattern</h2>
+            <p><strong>The Mechanics:</strong> <code>reduce</code> transforms an array into <strong>literally anything</strong> (an object, a number, a string, or even a new array). It is the Swiss Army Knife of functional programming.</p>
+            
+            <div class="info-box">
+                <h4>Interview Tip: How it works</h4>
+                <p>The callback receives four arguments: <strong>Accumulator</strong> (the running total), <strong>Current Value</strong>, <strong>Current Index</strong>, and the <strong>Source Array</strong>.</p>
+            </div>
+
+            <div class="code-block">// Engineering Example: Complex Data Grouping
+const items = [
+    { category: 'tech', val: 100 },
+    { category: 'life', val: 50 },
+    { category: 'tech', val: 200 }
+];
+
+const totals = items.reduce((acc, item) => {
+    acc[item.category] = (acc[item.category] || 0) + item.val;
+    return acc;
+}, {}); // Result: { tech: 300, life: 50 }</div>
+        </section>
+
+        <section id="slice-splice">
+            <h2>✂️ slice() vs splice()</h2>
+            
+            <table>
+                <tr><th>Feature</th><th>slice()</th><th>splice()</th></tr>
+                <tr><td><strong>Mutates?</strong></td><td>❌ No</td><td>✅ Yes</td></tr>
+                <tr><td><strong>Purpose</strong></td><td>Extract portion</td><td>Add/remove elements</td></tr>
+                <tr><td><strong>Returns</strong></td><td>New array</td><td>Removed elements</td></tr>
+            </table>
+
+            <div class="code-block">// slice() - doesn't change original
+let fruits = ["Apple", "Banana", "Orange", "Mango"];
+let citrus = fruits.slice(2, 4);
+console.log(citrus); // ["Orange", "Mango"]
+console.log(fruits); // Original unchanged
+
+// splice() - modifies original
+let items = ["a", "b", "c", "d", "e"];
+let removed = items.splice(2, 2); // Remove 2 from index 2
+console.log(removed); // ["c", "d"]
+console.log(items);   // ["a", "b", "e"]
+
+// Insert with splice
+items.splice(2, 0, "x", "y"); // Insert at index 2
+console.log(items); // ["a", "b", "x", "y", "e"]</div>
+        </section>
+
+        <section id="sort">
+            <h2>🔢 sort() - Sort Array</h2>
+            <div class="code-block">// Sort numbers
+let numbers = [40, 100, 1, 5, 25];
+numbers.sort((a, b) => a - b); // Ascending
+console.log(numbers); // [1, 5, 25, 40, 100]
+
+numbers.sort((a, b) => b - a); // Descending
+console.log(numbers); // [100, 40, 25, 5, 1]
+
+// Sort strings
+let names = ["John", "Alice", "Bob"];
+names.sort();
+console.log(names); // ["Alice", "Bob", "John"]
+
+// Sort objects
+let products = [
+    {name: "Laptop", price: 1000},
+    {name: "Phone", price: 500},
+    {name: "Tablet", price: 750}
+];
+products.sort((a, b) => a.price - b.price);
+console.log(products); // Sorted by price</div>
+        </section>
+
+        <section id="reverse">
+            <h2>🔄 reverse() - Reverse Array</h2>
+            <div class="code-block">const numbers = [1, 2, 3, 4, 5];
+numbers.reverse();
+console.log(numbers); // [5, 4, 3, 2, 1]</div>
+        </section>
+
+        <section id="join">
+            <h2>🔗 join() - Array to String</h2>
+            <div class="code-block">const words = ["Hello", "World"];
+console.log(words.join(" "));  // "Hello World"
+console.log(words.join("-"));  // "Hello-World"
+
+const path = ["home", "user", "documents"];
+console.log(path.join("/"));   // "home/user/documents"</div>
+        </section>
+
+        <section id="set">
+            <h2>🎯 Set Object - Unique Values</h2>
+            <p>Set stores unique values and automatically removes duplicates.</p>
+            <div class="code-block">// Remove duplicates
+let numbers = [1, 2, 3, 2, 4, 1, 5];
+let unique = [...new Set(numbers)];
+console.log(unique); // [1, 2, 3, 4, 5]
+
+// Set operations
+let tags = new Set();
+tags.add("javascript");
+tags.add("python");
+tags.add("javascript"); // Duplicate, won't be added
+
+console.log(tags.size);          // 2
+console.log(tags.has("python")); // true
+
+tags.delete("python");
+console.log(tags.size);          // 1
+
+// Iterate
+tags.forEach(tag => console.log(tag));</div>
+        </section>
+
+        <section id="array-from">
+            <h2>🏭 Array.from() - Create Array</h2>
+            <p>Creates a new array from an iterable or array-like object.</p>
+            <div class="code-block">// From string
+const str = "hello";
+const chars = Array.from(str);
+console.log(chars); // ["h", "e", "l", "l", "o"]
+
+// Remove duplicates
+const numbers = [1, 2, 3, 3, 4, 4, 5];
+const unique = Array.from(new Set(numbers));
+console.log(unique); // [1, 2, 3, 4, 5]</div>
+        </section>
+
+        <section id="array-types">
+            <h2>📦 Array Types</h2>
+            
+            <h3>Dense Array</h3>
+            <p>Each element contains a value.</p>
+            <div class="code-block">const dense = [1, 2, 3, 4, 5];</div>
+
+            <h3>Sparse Array</h3>
+            <p>Some elements are missing (undefined).</p>
+            <div class="code-block">const sparse1 = [1, , , 4]; // Empty slots
+const sparse2 = new Array(5); // 5 empty slots
+const sparse3 = [1, 2, 3];
+sparse3.length = 5; // Creates empty slots</div>
+
+            <h3>Scalar Array</h3>
+            <p>Contains same data type.</p>
+            <div class="code-block">// Compare scalar arrays
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [1, 2, 3, 4, 5];
+const isEqual = arr1.length === arr2.length && 
+    arr1.every((val, idx) => val === arr2[idx]);
+console.log(isEqual); // true</div>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

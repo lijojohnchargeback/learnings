@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Strings - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📝 JavaScript Strings</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#creation" class="sidebar-link">Creating Strings</a>
+                <a href="#access" class="sidebar-link">Accessing Characters</a>
+                <a href="#immutable" class="sidebar-link">Immutability</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Modification</div>
+            <div class="sidebar-links">
+                <a href="#case" class="sidebar-link">Case Conversion</a>
+                <a href="#trim" class="sidebar-link">Trimming</a>
+                <a href="#replace" class="sidebar-link">Replacing</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">✂️ Extraction</div>
+            <div class="sidebar-links">
+                <a href="#slice" class="sidebar-link">Slicing</a>
+                <a href="#split" class="sidebar-link">Splitting</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔍 Search & Check</div>
+            <div class="sidebar-links">
+                <a href="#search" class="sidebar-link">Searching</a>
+                <a href="#check" class="sidebar-link">Checking</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">✨ Advanced</div>
+            <div class="sidebar-links">
+                <a href="#padding" class="sidebar-link">Padding & Repeat</a>
+                <a href="#template" class="sidebar-link">Template Literals</a>
+                <a href="#methods-summary" class="sidebar-link">Methods Summary</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>📝 JavaScript Strings</h1>
+            <p>Complete Guide to String Manipulation</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to Strings</h2>
+            
+            <p><span class="highlight">Strings are used for storing and manipulating text</span>. A string can contain zero or more characters within quotes.</p>
+
+            <h3>Real-World Examples</h3>
+            <div class="info-box">
+                <p>Strings are everywhere in programming:</p>
+                <ul>
+                    <li>👤 <strong>User names:</strong> "John Doe"</li>
+                    <li>📧 <strong>Email addresses:</strong> "user@example.com"</li>
+                    <li>🏠 <strong>Addresses:</strong> "123 Main St, New York"</li>
+                    <li>📱 <strong>Phone numbers:</strong> "+1-555-123-4567"</li>
+                    <li>📝 <strong>Messages:</strong> "Welcome to our application!"</li>
+                </ul>
+            </div>
+
+            <h3>String Characteristics</h3>
+            <ul>
+                <li>✅ <strong>Immutable:</strong> Cannot be changed once created</li>
+                <li>✅ <strong>Primitive Type:</strong> But has methods via wrapper object</li>
+                <li>✅ <strong>Unicode Support:</strong> Can contain any character</li>
+                <li>✅ <strong>Zero-indexed:</strong> First character is at position 0</li>
+            </ul>
+        </section>
+
+        <section id="creation">
+            <h2>🔨 Creating Strings</h2>
+
+            <h3>Method 1: String Literals (Recommended)</h3>
+            <div class="code-block"><span class="comment">// Single quotes</span>
+<span class="keyword">let</span> str1 = <span class="string">'Hello World'</span>;
+
+<span class="comment">// Double quotes</span>
+<span class="keyword">let</span> str2 = <span class="string">"Hello World"</span>;
+
+<span class="comment">// Both are equivalent</span>
+<span class="function">console</span>.<span class="function">log</span>(str1 === str2); <span class="comment">// true</span>
+
+<span class="comment">// When to use which?</span>
+<span class="keyword">let</span> quote1 = <span class="string">"He said, 'Hello!'"</span>; <span class="comment">// Single quotes inside</span>
+<span class="keyword">let</span> quote2 = <span class="string">'She said, "Hi!"'</span>;   <span class="comment">// Double quotes inside</span>
+</div>
+
+            <h3>Method 2: String Constructor</h3>
+            <div class="code-block"><span class="comment">// Using new String() (not recommended)</span>
+<span class="keyword">const</span> str1 = <span class="keyword">new</span> <span class="function">String</span>(<span class="string">"Hello"</span>);
+<span class="keyword">const</span> str2 = <span class="string">"Hello"</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">typeof</span> str1); <span class="comment">// "object"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="keyword">typeof</span> str2); <span class="comment">// "string"</span>
+</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Always use string literals (quotes) instead of the String constructor. The constructor creates an object, not a primitive string.
+            </div>
+        </section>
+
+        <section id="access">
+            <h2>🔍 Accessing Characters</h2>
+            
+            <p>Strings are <span class="highlight">zero-indexed</span>, meaning the first character is at position 0.</p>
+            
+            <div class="illustration">
+                <div class="illustration-title">📊 String Index Visualization</div>
+                <div class="string-visual">
+                    <h4 style="text-align: center; color: #f093fb; margin-bottom: 1rem;">String: "HELLO"</h4>
+                    <div class="char-boxes">
+                        <div class="char-box">
+                            <div class="char">H</div>
+                            <div class="index">[0]</div>
+                        </div>
+                        <div class="char-box">
+                            <div class="char">E</div>
+                            <div class="index">[1]</div>
+                        </div>
+                        <div class="char-box">
+                            <div class="char">L</div>
+                            <div class="index">[2]</div>
+                        </div>
+                        <div class="char-box">
+                            <div class="char">L</div>
+                            <div class="index">[3]</div>
+                        </div>
+                        <div class="char-box">
+                            <div class="char">O</div>
+                            <div class="index">[4]</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; display: inline-block;">
+                            <strong>length:</strong> 5 | <strong>First index:</strong> 0 | <strong>Last index:</strong> 4
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: center; color: #f093fb;">
+                        <p><strong>💡 Negative indices (ES2022):</strong> [-5] [-4] [-3] [-2] [-1]</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Use <code>.at(-1)</code> to access from the end!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"I am good person"</span>;
+
+<span class="comment">// 1. Bracket notation (most common)</span>
+<span class="function">console</span>.<span class="function">log</span>(text[<span class="number">0</span>]);   <span class="comment">// "I"</span>
+<span class="function">console</span>.<span class="function">log</span>(text[<span class="number">2</span>]);   <span class="comment">// "a"</span>
+
+<span class="comment">// 2. charAt() method</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">charAt</span>(<span class="number">0</span>));  <span class="comment">// "I"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">charAt</span>(<span class="number">2</span>));  <span class="comment">// "a"</span>
+
+<span class="comment">// 3. at() method (ES2022 - supports negative indices)</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">at</span>(<span class="number">0</span>));    <span class="comment">// "I"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">at</span>(-<span class="number">1</span>));   <span class="comment">// "n" (last character)</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">at</span>(-<span class="number">2</span>));   <span class="comment">// "o" (second to last)</span>
+
+<span class="comment">// 4. charCodeAt() - Get UTF-16 code</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">charCodeAt</span>(<span class="number">0</span>)); <span class="comment">// 73 (UTF-16 code for "I")</span>
+
+<span class="comment">// Loop through string</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < text.<span class="keyword">length</span>; i++) {
+    <span class="function">console</span>.<span class="function">log</span>(text[i]);
+}
+
+<span class="comment">// Modern way with for...of</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> char <span class="keyword">of</span> text) {
+    <span class="function">console</span>.<span class="function">log</span>(char);
+}
+</div>
+
+            <h3>String Length</h3>
+            <div class="code-block"><span class="keyword">let</span> message = <span class="string">"Hello, World!"</span>;
+<span class="function">console</span>.<span class="function">log</span>(message.<span class="keyword">length</span>); <span class="comment">// 13</span>
+
+<span class="comment">// Real example: Validate password length</span>
+<span class="keyword">function</span> <span class="function">isValidPassword</span>(password) {
+    <span class="keyword">return</span> password.<span class="keyword">length</span> >= <span class="number">8</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">isValidPassword</span>(<span class="string">"abc123"</span>));     <span class="comment">// false</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">isValidPassword</span>(<span class="string">"abc12345"</span>));  <span class="comment">// true</span>
+</div>
+        </section>
+
+        <section id="immutable">
+            <h2>🔒 String Immutability</h2>
+            
+            <p><span class="highlight">Strings are immutable</span> - once created, they cannot be changed. All string methods return NEW strings.</p>
+            
+            <div class="illustration">
+                <div class="illustration-title">🔒 Immutability Demonstration</div>
+                <div class="immutable-demo">
+                    <div class="flow-diagram">
+                        <div class="flow-step">
+                            <h4 style="color: #f093fb; margin-bottom: 0.5rem;">Original String</h4>
+                            <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 1.2rem; margin: 0.5rem 0;">
+                                "Hello"
+                            </div>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem;">Stored in memory</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step" style="border-color: #4caf50;">
+                            <h4 style="color: #4caf50; margin-bottom: 0.5rem;">.toUpperCase()</h4>
+                            <div style="background: #c8e6c9; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 1.2rem; margin: 0.5rem 0;">
+                                "HELLO"
+                            </div>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem;">New string created</p>
+                        </div>
+                    </div>
+                    <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;">
+                        <strong>⚠️ Key Point:</strong> Original string "Hello" remains unchanged in memory!
+                    </div>
+                </div>
+            </div>
+
+            <h3>Why Immutability Matters</h3>
+            <div class="info-box">
+                <ul>
+                    <li>✅ <strong>Predictability:</strong> Original values never change</li>
+                    <li>✅ <strong>Thread-safe:</strong> Safe for concurrent operations</li>
+                    <li>✅ <strong>Caching:</strong> Same strings can be reused</li>
+                    <li>✅ <strong>Security:</strong> Cannot be modified after creation</li>
+                </ul>
+            </div>
+
+            <div class="code-block"><span class="comment">// Strings are immutable</span>
+<span class="keyword">let</span> original = <span class="string">"Hello"</span>;
+<span class="keyword">let</span> upper = original.<span class="function">toUpperCase</span>();
+
+<span class="function">console</span>.<span class="function">log</span>(original); <span class="comment">// "Hello" (unchanged)</span>
+<span class="function">console</span>.<span class="function">log</span>(upper);    <span class="comment">// "HELLO" (new string)</span>
+
+<span class="comment">// You CANNOT modify individual characters</span>
+<span class="keyword">let</span> word = <span class="string">"Hello"</span>;
+word[<span class="number">0</span>] = <span class="string">"J"</span>; <span class="comment">// This doesn't work!</span>
+<span class="function">console</span>.<span class="function">log</span>(word); <span class="comment">// Still "Hello"</span>
+
+<span class="comment">// Instead, create a new string</span>
+word = <span class="string">"J"</span> + word.<span class="function">slice</span>(<span class="number">1</span>);
+<span class="function">console</span>.<span class="function">log</span>(word); <span class="comment">// "Jello"</span>
+</div>
+        </section>
+
+        <section id="case">
+            <h2>🔤 Case Conversion</h2>
+
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"Hello World"</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">toUpperCase</span>()); <span class="comment">// "HELLO WORLD"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">toLowerCase</span>()); <span class="comment">// "hello world"</span>
+
+<span class="comment">// Real example: Case-insensitive comparison</span>
+<span class="keyword">function</span> <span class="function">compareEmails</span>(email1, email2) {
+    <span class="keyword">return</span> email1.<span class="function">toLowerCase</span>() === email2.<span class="function">toLowerCase</span>();
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">compareEmails</span>(<span class="string">"User@Example.com"</span>, <span class="string">"user@example.com"</span>)); 
+<span class="comment">// true</span>
+</div>
+        </section>
+
+        <section id="trim">
+            <h2>✂️ Trimming Whitespace</h2>
+
+            <h3>trim(), trimStart(), trimEnd()</h3>
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"   Hello World   "</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">trim</span>());      <span class="comment">// "Hello World"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">trimStart</span>()); <span class="comment">// "Hello World   "</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">trimEnd</span>());   <span class="comment">// "   Hello World"</span>
+
+<span class="comment">// Real example: Validate input</span>
+<span class="keyword">function</span> <span class="function">validateUsername</span>(username) {
+    <span class="keyword">const</span> cleaned = username.<span class="function">trim</span>();
+    <span class="keyword">return</span> cleaned.<span class="keyword">length</span> >= <span class="number">3</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">validateUsername</span>(<span class="string">"  john  "</span>)); <span class="comment">// true</span>
+</div>
+        </section>
+
+        <section id="replace">
+            <h2>🔄 Replacing Text</h2>
+
+            <h3>replace() & replaceAll()</h3>
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"Please visit Microsoft and Microsoft!"</span>;
+
+<span class="comment">// Replace first occurrence</span>
+<span class="keyword">let</span> newText = text.<span class="function">replace</span>(<span class="string">"Microsoft"</span>, <span class="string">"Google"</span>);
+<span class="function">console</span>.<span class="function">log</span>(newText); 
+<span class="comment">// "Please visit Google and Microsoft!"</span>
+
+<span class="comment">// Replace all occurrences with regex /g flag</span>
+<span class="keyword">let</span> allReplaced = text.<span class="function">replace</span>(/Microsoft/g, <span class="string">"Google"</span>);
+<span class="function">console</span>.<span class="function">log</span>(allReplaced);
+<span class="comment">// "Please visit Google and Google!"</span>
+
+<span class="comment">// replaceAll() - ES2021 (cleaner than regex)</span>
+<span class="keyword">let</span> all = text.<span class="function">replaceAll</span>(<span class="string">"Microsoft"</span>, <span class="string">"Google"</span>);
+<span class="function">console</span>.<span class="function">log</span>(all);
+<span class="comment">// "Please visit Google and Google!"</span>
+
+<span class="comment">// Case-insensitive replace with /i flag</span>
+<span class="keyword">let</span> text2 = <span class="string">"Please visit MICROSOFT!"</span>;
+<span class="keyword">let</span> replaced = text2.<span class="function">replace</span>(/microsoft/i, <span class="string">"Google"</span>);
+<span class="function">console</span>.<span class="function">log</span>(replaced); <span class="comment">// "Please visit Google!"</span>
+
+<span class="comment">// Real example: Censor bad words</span>
+<span class="keyword">function</span> <span class="function">censorText</span>(text) {
+    <span class="keyword">return</span> text
+        .<span class="function">replace</span>(/badword1/gi, <span class="string">"***"</span>)
+        .<span class="function">replace</span>(/badword2/gi, <span class="string">"***"</span>);
+}
+</div>
+        </section>
+
+        <section id="slice">
+            <h2>📏 Slicing & Extraction</h2>
+
+            <h3>slice(), substring(), substr()</h3>
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"Hello World"</span>;
+
+<span class="comment">// slice(start, end) - extracts a portion</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">slice</span>(<span class="number">0</span>, <span class="number">5</span>));   <span class="comment">// "Hello"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">slice</span>(<span class="number">6</span>));      <span class="comment">// "World"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">slice</span>(-<span class="number">5</span>));     <span class="comment">// "World" (negative = from end)</span>
+
+<span class="comment">// substring(start, end) - similar to slice</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">substring</span>(<span class="number">0</span>, <span class="number">5</span>)); <span class="comment">// "Hello"</span>
+
+<span class="comment">// Real example: Get file extension</span>
+<span class="keyword">function</span> <span class="function">getFileExtension</span>(filename) {
+    <span class="keyword">const</span> lastDot = filename.<span class="function">lastIndexOf</span>(<span class="string">"."</span>);
+    <span class="keyword">return</span> filename.<span class="function">slice</span>(lastDot + <span class="number">1</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">getFileExtension</span>(<span class="string">"document.pdf"</span>)); <span class="comment">// "pdf"</span>
+</div>
+        </section>
+
+        <section id="split">
+            <h2>🔀 Splitting Strings</h2>
+
+            <h3>split() - String to Array</h3>
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"apple,banana,orange"</span>;
+<span class="keyword">let</span> fruits = text.<span class="function">split</span>(<span class="string">","</span>);
+<span class="function">console</span>.<span class="function">log</span>(fruits); <span class="comment">// ["apple", "banana", "orange"]</span>
+
+<span class="comment">// Split by space</span>
+<span class="keyword">let</span> sentence = <span class="string">"Hello World from JavaScript"</span>;
+<span class="keyword">let</span> words = sentence.<span class="function">split</span>(<span class="string">" "</span>);
+<span class="function">console</span>.<span class="function">log</span>(words); <span class="comment">// ["Hello", "World", "from", "JavaScript"]</span>
+
+<span class="comment">// Split into characters</span>
+<span class="keyword">let</span> name = <span class="string">"John"</span>;
+<span class="keyword">let</span> letters = name.<span class="function">split</span>(<span class="string">""</span>);
+<span class="function">console</span>.<span class="function">log</span>(letters); <span class="comment">// ["J", "o", "h", "n"]</span>
+
+<span class="comment">// Real example: Parse CSV data</span>
+<span class="keyword">function</span> <span class="function">parseCSV</span>(csvLine) {
+    <span class="keyword">return</span> csvLine.<span class="function">split</span>(<span class="string">","</span>).<span class="function">map</span>(item => item.<span class="function">trim</span>());
+}
+
+<span class="keyword">let</span> data = <span class="function">parseCSV</span>(<span class="string">"John, 30, Developer"</span>);
+<span class="function">console</span>.<span class="function">log</span>(data); <span class="comment">// ["John", "30", "Developer"]</span>
+</div>
+        </section>
+
+        <section id="search">
+            <h2>🔎 Searching in Strings</h2>
+
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"Hello World, Hello JavaScript"</span>;
+
+<span class="comment">// indexOf() - Find first occurrence</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">indexOf</span>(<span class="string">"Hello"</span>));      <span class="comment">// 0</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">indexOf</span>(<span class="string">"World"</span>));      <span class="comment">// 6</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">indexOf</span>(<span class="string">"Python"</span>));     <span class="comment">// -1 (not found)</span>
+
+<span class="comment">// lastIndexOf() - Find last occurrence</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">lastIndexOf</span>(<span class="string">"Hello"</span>));  <span class="comment">// 13</span>
+
+<span class="comment">// search() - Search with regex</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">search</span>(/world/i));      <span class="comment">// 6 (case-insensitive)</span>
+</div>
+        </section>
+
+        <section id="check">
+            <h2>✅ Checking Strings</h2>
+
+            <h3>includes(), startsWith(), endsWith()</h3>
+            <div class="code-block"><span class="keyword">let</span> text = <span class="string">"Hello World from JavaScript"</span>;
+
+<span class="comment">// Check if string contains</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">includes</span>(<span class="string">"World"</span>));      <span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">includes</span>(<span class="string">"Python"</span>));     <span class="comment">// false</span>
+
+<span class="comment">// Check if starts with</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">startsWith</span>(<span class="string">"Hello"</span>));   <span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">startsWith</span>(<span class="string">"World"</span>));   <span class="comment">// false</span>
+
+<span class="comment">// Check if ends with</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">endsWith</span>(<span class="string">"JavaScript"</span>)); <span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">endsWith</span>(<span class="string">"World"</span>));      <span class="comment">// false</span>
+
+<span class="comment">// Real example: Check email domain</span>
+<span class="keyword">function</span> <span class="function">isGmailAddress</span>(email) {
+    <span class="keyword">return</span> email.<span class="function">toLowerCase</span>().<span class="function">endsWith</span>(<span class="string">"@gmail.com"</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">isGmailAddress</span>(<span class="string">"user@gmail.com"</span>));    <span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">isGmailAddress</span>(<span class="string">"user@yahoo.com"</span>));    <span class="comment">// false</span>
+</div>
+        </section>
+
+        <section id="padding">
+            <h2>📐 Padding & Repeating</h2>
+
+            <h3>repeat(), padStart(), padEnd()</h3>
+            <div class="code-block"><span class="comment">// repeat() - Repeat string</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Ha"</span>.<span class="function">repeat</span>(<span class="number">3</span>));        <span class="comment">// "HaHaHa"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"*"</span>.<span class="function">repeat</span>(<span class="number">10</span>));         <span class="comment">// "**********"</span>
+
+<span class="comment">// padStart() - Pad from start</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"5"</span>.<span class="function">padStart</span>(<span class="number">3</span>, <span class="string">"0"</span>));   <span class="comment">// "005"</span>
+
+<span class="comment">// padEnd() - Pad from end</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"5"</span>.<span class="function">padEnd</span>(<span class="number">3</span>, <span class="string">"0"</span>));     <span class="comment">// "500"</span>
+
+<span class="comment">// Real example: Format credit card</span>
+<span class="keyword">function</span> <span class="function">formatCardNumber</span>(last4) {
+    <span class="keyword">return</span> <span class="string">"**** **** **** "</span> + last4.<span class="function">padStart</span>(<span class="number">4</span>, <span class="string">"0"</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">formatCardNumber</span>(<span class="string">"1234"</span>)); 
+<span class="comment">// "**** **** **** 1234"</span>
+</div>
+        </section>
+
+        <section id="methods-summary">
+            <h2>📋 String Methods Summary</h2>
+            
+            <p>Quick reference guide to all essential string methods:</p>
+            
+            <div class="method-grid">
+                <div class="method-card">
+                    <h4>🔍 Accessing</h4>
+                    <div class="method-tag">charAt(index)</div>
+                    <div class="method-tag">at(index)</div>
+                    <div class="method-tag">[index]</div>
+                    <div class="method-tag">charCodeAt()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Access individual characters by position</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>✂️ Extracting</h4>
+                    <div class="method-tag">slice()</div>
+                    <div class="method-tag">substring()</div>
+                    <div class="method-tag">substr()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Extract portions of strings</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>🔤 Case</h4>
+                    <div class="method-tag">toUpperCase()</div>
+                    <div class="method-tag">toLowerCase()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Convert string case</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>✅ Searching</h4>
+                    <div class="method-tag">indexOf()</div>
+                    <div class="method-tag">lastIndexOf()</div>
+                    <div class="method-tag">search()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Find positions of substrings</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>🔎 Checking</h4>
+                    <div class="method-tag">includes()</div>
+                    <div class="method-tag">startsWith()</div>
+                    <div class="method-tag">endsWith()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Check string content</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>🔄 Modifying</h4>
+                    <div class="method-tag">replace()</div>
+                    <div class="method-tag">replaceAll()</div>
+                    <div class="method-tag">trim()</div>
+                    <div class="method-tag">trimStart()</div>
+                    <div class="method-tag">trimEnd()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Transform string content</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>🔀 Splitting</h4>
+                    <div class="method-tag">split()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Convert string to array</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>📐 Formatting</h4>
+                    <div class="method-tag">padStart()</div>
+                    <div class="method-tag">padEnd()</div>
+                    <div class="method-tag">repeat()</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Format string output</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4>➕ Combining</h4>
+                    <div class="method-tag">concat()</div>
+                    <div class="method-tag">+ operator</div>
+                    <div class="method-tag">Template literals</div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Join strings together</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>💡 Remember:</strong></p>
+                <ul>
+                    <li>All string methods return <strong>new strings</strong> (strings are immutable)</li>
+                    <li>Strings are zero-indexed (first character is at position 0)</li>
+                    <li>Most methods accept negative indices to count from the end</li>
+                    <li>Use template literals for modern string interpolation</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="template">
+            <h2>✨ Template Literals (ES6)</h2>
+
+            <p><span class="highlight">Template literals</span> provide an elegant way to work with strings, supporting multi-line strings and embedded expressions.</p>
+
+            <h3>Basic Syntax</h3>
+            <div class="code-block"><span class="comment">// Old way (concatenation)</span>
+<span class="keyword">let</span> name = <span class="string">"John"</span>;
+<span class="keyword">let</span> age = <span class="number">30</span>;
+<span class="keyword">let</span> message = <span class="string">"Hello, my name is "</span> + name + <span class="string">" and I am "</span> + age + <span class="string">" years old."</span>;
+
+<span class="comment">// New way (template literals)</span>
+<span class="keyword">let</span> message2 = <span class="string">`Hello, my name is ${name} and I am ${age} years old.`</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(message2);
+</div>
+
+            <h3>Multi-line Strings</h3>
+            <div class="code-block"><span class="comment">// Old way (with \n)</span>
+<span class="keyword">let</span> text1 = <span class="string">"Line 1\nLine 2\nLine 3"</span>;
+
+<span class="comment">// New way (template literals)</span>
+<span class="keyword">let</span> text2 = <span class="string">`Line 1
+Line 2
+Line 3`</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(text2);
+</div>
+
+            <h3>Expression Evaluation</h3>
+            <div class="code-block"><span class="keyword">let</span> price = <span class="number">100</span>;
+<span class="keyword">let</span> tax = <span class="number">0.08</span>;
+
+<span class="keyword">let</span> message = <span class="string">`Total: $${(price * (1 + tax)).toFixed(2)}`</span>;
+<span class="function">console</span>.<span class="function">log</span>(message); <span class="comment">// "Total: $108.00"</span>
+
+<span class="comment">// Real example: Generate HTML</span>
+<span class="keyword">function</span> <span class="function">createUserCard</span>(user) {
+    <span class="keyword">return</span> <span class="string">`
+        &lt;div class="user-card"&gt;
+            &lt;h2&gt;${user.name}&lt;/h2&gt;
+            &lt;p&gt;Email: ${user.email}&lt;/p&gt;
+            &lt;p&gt;Age: ${user.age}&lt;/p&gt;
+        &lt;/div&gt;
+    `</span>;
+}
+
+<span class="keyword">let</span> user = { name: <span class="string">"John"</span>, email: <span class="string">"john@example.com"</span>, age: <span class="number">30</span> };
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">createUserCard</span>(user));
+</div>
+        </section>
+
+    </div>
+    
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        // Highlight active section on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

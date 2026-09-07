@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Built-in Methods - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🔧 JS Methods</h2>
+            <p>Built-in Methods</p>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Core Methods</div>
+                <ul>
+                    <li><a href="#math">📐 Math Methods</a></li>
+                    <li><a href="#number">🔢 Number Methods</a></li>
+                    <li><a href="#date">📅 Date Methods</a></li>
+                    <li><a href="#string">📝 String Methods</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Structures</div>
+                <ul>
+                    <li><a href="#array">🗂️ Array Methods</a></li>
+                    <li><a href="#object">📦 Object Methods</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Advanced</div>
+                <ul>
+                    <li><a href="#json">🔄 JSON Methods</a></li>
+                    <li><a href="#console">🖥️ Console Methods</a></li>
+                    <li><a href="#global">🌐 Global Methods</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Reference</div>
+                <ul>
+                    <li><a href="#cheatsheet">📋 Quick Reference</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🔧 JavaScript Built-in Methods</h1>
+                <p>Comprehensive Reference for Math, Number, Date, String, Array & More</p>
+            </header>
+
+        <section id="math">
+            <h2>📐 Math Methods</h2>
+            
+            <p>The <span class="highlight">Math object</span> provides mathematical constants and functions.</p>
+
+            <h3>abs() - Absolute Value</h3>
+            <p>Returns the absolute value of a number (always positive)</p>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">abs</span>(<span class="number">7.25</span>));   <span class="comment">// 7.25</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">abs</span>(-<span class="number">7.25</span>));  <span class="comment">// 7.25</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">abs</span>(<span class="keyword">null</span>));   <span class="comment">// 0</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">abs</span>(<span class="number">2</span> - <span class="number">3</span>));  <span class="comment">// 1</span>
+
+<span class="comment">// Real example: Calculate price difference</span>
+<span class="keyword">function</span> <span class="function">priceDifference</span>(price1, price2) {
+    <span class="keyword">return</span> <span class="function">Math</span>.<span class="function">abs</span>(price1 - price2);
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">priceDifference</span>(<span class="number">50</span>, <span class="number">75</span>)); <span class="comment">// 25</span>
+</div>
+
+            <h3>ceil() - Round Up</h3>
+            <p>Rounds a number upward to the nearest integer</p>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">ceil</span>(<span class="number">0.60</span>));  <span class="comment">// 1</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">ceil</span>(<span class="number">0.40</span>));  <span class="comment">// 1</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">ceil</span>(<span class="number">5.1</span>));   <span class="comment">// 6</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">ceil</span>(-<span class="number">5.9</span>)); <span class="comment">// -5</span>
+
+<span class="comment">// Real example: Calculate number of pages</span>
+<span class="keyword">function</span> <span class="function">calculatePages</span>(totalItems, itemsPerPage) {
+    <span class="keyword">return</span> <span class="function">Math</span>.<span class="function">ceil</span>(totalItems / itemsPerPage);
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">calculatePages</span>(<span class="number">100</span>, <span class="number">15</span>)); <span class="comment">// 7 pages</span>
+</div>
+
+            <h3>floor() - Round Down</h3>
+            <p>Rounds a number downward to the nearest integer</p>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">floor</span>(<span class="number">0.60</span>));  <span class="comment">// 0</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">floor</span>(<span class="number">5.9</span>));   <span class="comment">// 5</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">floor</span>(-<span class="number">5.1</span>)); <span class="comment">// -6</span>
+
+<span class="comment">// Real example: Calculate discount tiers</span>
+<span class="keyword">function</span> <span class="function">getDiscountTier</span>(totalSpent) {
+    <span class="keyword">return</span> <span class="function">Math</span>.<span class="function">floor</span>(totalSpent / <span class="number">100</span>); <span class="comment">// $100 per tier</span>
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">getDiscountTier</span>(<span class="number">450</span>)); <span class="comment">// Tier 4</span>
+</div>
+
+            <h3>round() - Round to Nearest</h3>
+            <p>Rounds to the nearest integer</p>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">round</span>(<span class="number">2.60</span>));  <span class="comment">// 3</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">round</span>(<span class="number">2.50</span>));  <span class="comment">// 3</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">round</span>(<span class="number">2.49</span>));  <span class="comment">// 2</span>
+
+<span class="comment">// Real example: Round rating</span>
+<span class="keyword">function</span> <span class="function">displayRating</span>(rating) {
+    <span class="keyword">return</span> <span class="function">Math</span>.<span class="function">round</span>(rating) + <span class="string">" stars"</span>;
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">displayRating</span>(<span class="number">4.7</span>)); <span class="comment">// "5 stars"</span>
+</div>
+
+            <h3>max() & min() - Find Maximum/Minimum</h3>
+            <div class="code-block"><span class="comment">// max() - Returns highest value</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">max</span>(<span class="number">5</span>, <span class="number">10</span>));              <span class="comment">// 10</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">max</span>(<span class="number">0</span>, <span class="number">150</span>, <span class="number">30</span>, <span class="number">20</span>));    <span class="comment">// 150</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">max</span>(...[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));   <span class="comment">// 3 (spread array)</span>
+
+<span class="comment">// min() - Returns lowest value</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">min</span>(<span class="number">5</span>, <span class="number">10</span>));              <span class="comment">// 5</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">min</span>(<span class="number">0</span>, <span class="number">150</span>, <span class="number">30</span>, <span class="number">20</span>));    <span class="comment">// 0</span>
+
+<span class="comment">// Real example: Find cheapest product</span>
+<span class="keyword">const</span> prices = [<span class="number">29.99</span>, <span class="number">19.99</span>, <span class="number">39.99</span>, <span class="number">15.99</span>];
+<span class="keyword">const</span> cheapest = <span class="function">Math</span>.<span class="function">min</span>(...prices);
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">`Lowest price: $${cheapest}`</span>); <span class="comment">// $15.99</span>
+</div>
+
+            <h3>pow() - Power/Exponentiation</h3>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">pow</span>(<span class="number">2</span>, <span class="number">3</span>));   <span class="comment">// 8 (2³)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">pow</span>(<span class="number">3</span>, <span class="number">3</span>));   <span class="comment">// 27 (3³)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">pow</span>(<span class="number">2</span>, <span class="number">4</span>));   <span class="comment">// 16 (2⁴)</span>
+
+<span class="comment">// Real example: Calculate compound interest</span>
+<span class="keyword">function</span> <span class="function">compoundInterest</span>(principal, rate, years) {
+    <span class="keyword">return</span> principal * <span class="function">Math</span>.<span class="function">pow</span>(<span class="number">1</span> + rate, years);
+}
+<span class="keyword">const</span> result = <span class="function">compoundInterest</span>(<span class="number">1000</span>, <span class="number">0.05</span>, <span class="number">10</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">`Future value: $${result.toFixed(2)}`</span>);
+</div>
+
+            <h3>random() - Random Number</h3>
+            <div class="code-block"><span class="comment">// Returns random number between 0 and 1</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">random</span>()); <span class="comment">// e.g., 0.8764</span>
+
+<span class="comment">// Random between 0 and 10</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">random</span>() * <span class="number">10</span>);
+
+<span class="comment">// Random integer between 1 and 10</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">floor</span>(<span class="function">Math</span>.<span class="function">random</span>() * <span class="number">10</span>) + <span class="number">1</span>);
+
+<span class="comment">// Real example: Generate random ID</span>
+<span class="keyword">function</span> <span class="function">generateId</span>() {
+    <span class="keyword">return</span> <span class="function">Math</span>.<span class="function">floor</span>(<span class="function">Math</span>.<span class="function">random</span>() * <span class="number">1000000</span>);
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">`User ID: ${generateId()}`</span>);
+
+<span class="comment">// Random element from array</span>
+<span class="keyword">const</span> colors = [<span class="string">"red"</span>, <span class="string">"blue"</span>, <span class="string">"green"</span>, <span class="string">"yellow"</span>];
+<span class="keyword">const</span> randomColor = colors[<span class="function">Math</span>.<span class="function">floor</span>(<span class="function">Math</span>.<span class="function">random</span>() * colors.<span class="keyword">length</span>)];
+<span class="function">console</span>.<span class="function">log</span>(randomColor);
+</div>
+
+            <h3>sqrt() - Square Root</h3>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">sqrt</span>(<span class="number">9</span>));   <span class="comment">// 3</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">sqrt</span>(<span class="number">64</span>));  <span class="comment">// 8</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">sqrt</span>(-<span class="number">9</span>)); <span class="comment">// NaN (not a number)</span>
+
+<span class="comment">// Real example: Calculate distance</span>
+<span class="keyword">function</span> <span class="function">distance</span>(x1, y1, x2, y2) {
+    <span class="keyword">return</span> <span class="function">Math</span>.<span class="function">sqrt</span>(<span class="function">Math</span>.<span class="function">pow</span>(x2 - x1, <span class="number">2</span>) + <span class="function">Math</span>.<span class="function">pow</span>(y2 - y1, <span class="number">2</span>));
+}
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">distance</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>)); <span class="comment">// 5</span>
+</div>
+
+            <h3>trunc() - Remove Decimal</h3>
+            <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">trunc</span>(<span class="number">4.9</span>));   <span class="comment">// 4</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">trunc</span>(-<span class="number">4.9</span>));  <span class="comment">// -4</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Math</span>.<span class="function">trunc</span>(<span class="number">4.1</span>));   <span class="comment">// 4</span>
+</div>
+        </section>
+
+        <section id="number">
+            <h2>🔢 Number Methods</h2>
+
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><code>isFinite()</code></td>
+                    <td>Checks if value is finite number</td>
+                    <td><code>Number.isFinite(123) // true</code></td>
+                </tr>
+                <tr>
+                    <td><code>isInteger()</code></td>
+                    <td>Checks if value is integer</td>
+                    <td><code>Number.isInteger(123) // true</code></td>
+                </tr>
+                <tr>
+                    <td><code>isNaN()</code></td>
+                    <td>Checks if value is NaN</td>
+                    <td><code>Number.isNaN(NaN) // true</code></td>
+                </tr>
+                <tr>
+                    <td><code>parseInt()</code></td>
+                    <td>Parses string to integer</td>
+                    <td><code>parseInt("123") // 123</code></td>
+                </tr>
+                <tr>
+                    <td><code>parseFloat()</code></td>
+                    <td>Parses string to float</td>
+                    <td><code>parseFloat("12.34") // 12.34</code></td>
+                </tr>
+                <tr>
+                    <td><code>toFixed()</code></td>
+                    <td>Formats number with decimals</td>
+                    <td><code>(3.14159).toFixed(2) // "3.14"</code></td>
+                </tr>
+                <tr>
+                    <td><code>toString()</code></td>
+                    <td>Converts number to string</td>
+                    <td><code>(123).toString() // "123"</code></td>
+                </tr>
+            </table>
+
+            <h3>Real-World Examples</h3>
+            <div class="code-block"><span class="comment">// Validate and format price</span>
+<span class="keyword">function</span> <span class="function">formatPrice</span>(value) {
+    <span class="keyword">if</span> (!<span class="function">Number</span>.<span class="function">isFinite</span>(value)) {
+        <span class="keyword">return</span> <span class="string">"Invalid price"</span>;
+    }
+    <span class="keyword">return</span> <span class="string">`$${value.toFixed(2)}`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">formatPrice</span>(<span class="number">29.99</span>));    <span class="comment">// "$29.99"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">formatPrice</span>(<span class="number">19.9</span>));     <span class="comment">// "$19.90"</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">formatPrice</span>(<span class="string">"abc"</span>));   <span class="comment">// "Invalid price"</span>
+
+<span class="comment">// Parse user input</span>
+<span class="keyword">function</span> <span class="function">calculateTotal</span>(inputValue) {
+    <span class="keyword">const</span> num = <span class="function">parseFloat</span>(inputValue);
+    <span class="keyword">if</span> (<span class="function">Number</span>.<span class="function">isNaN</span>(num)) {
+        <span class="keyword">return</span> <span class="string">"Please enter a valid number"</span>;
+    }
+    <span class="keyword">return</span> num * <span class="number">1.08</span>; <span class="comment">// Add 8% tax</span>
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">calculateTotal</span>(<span class="string">"100"</span>));  <span class="comment">// 108</span>
+</div>
+        </section>
+
+        <section id="date">
+            <h2>📅 Date Methods</h2>
+            
+            <p>The <span class="highlight">Date object</span> works with dates and times.</p>
+
+            <h3>Creating Dates</h3>
+            <div class="code-block"><span class="comment">// Current date and time</span>
+<span class="keyword">const</span> now = <span class="keyword">new</span> <span class="function">Date</span>();
+<span class="function">console</span>.<span class="function">log</span>(now);
+
+<span class="comment">// Specific date</span>
+<span class="keyword">const</span> birthday = <span class="keyword">new</span> <span class="function">Date</span>(<span class="string">"2000-01-15"</span>);
+<span class="keyword">const</span> meeting = <span class="keyword">new</span> <span class="function">Date</span>(<span class="number">2025</span>, <span class="number">0</span>, <span class="number">15</span>, <span class="number">10</span>, <span class="number">30</span>); <span class="comment">// Jan 15, 2025 10:30</span>
+</div>
+
+            <h3>Get Methods</h3>
+            <div class="code-block"><span class="keyword">const</span> date = <span class="keyword">new</span> <span class="function">Date</span>();
+
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getFullYear</span>());  <span class="comment">// 2024</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getMonth</span>());      <span class="comment">// 0-11 (0 = January)</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getDate</span>());       <span class="comment">// 1-31 (day of month)</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getDay</span>());        <span class="comment">// 0-6 (0 = Sunday)</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getHours</span>());      <span class="comment">// 0-23</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getMinutes</span>());    <span class="comment">// 0-59</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getSeconds</span>());    <span class="comment">// 0-59</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">getTime</span>());       <span class="comment">// Milliseconds since 1970</span>
+</div>
+
+            <h3>Format Methods</h3>
+            <div class="code-block"><span class="keyword">const</span> date = <span class="keyword">new</span> <span class="function">Date</span>();
+
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">toString</span>());           <span class="comment">// Full date string</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">toDateString</span>());      <span class="comment">// "Mon Jan 01 2024"</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">toTimeString</span>());      <span class="comment">// "10:30:00 GMT+0000"</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">toISOString</span>());       <span class="comment">// "2024-01-01T10:30:00.000Z"</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">toLocaleDateString</span>()); <span class="comment">// "1/1/2024" (locale)</span>
+<span class="function">console</span>.<span class="function">log</span>(date.<span class="function">toLocaleTimeString</span>()); <span class="comment">// "10:30:00 AM"</span>
+</div>
+
+            <h3>Real-World Examples</h3>
+            <div class="code-block"><span class="comment">// Calculate age</span>
+<span class="keyword">function</span> <span class="function">calculateAge</span>(birthDate) {
+    <span class="keyword">const</span> birth = <span class="keyword">new</span> <span class="function">Date</span>(birthDate);
+    <span class="keyword">const</span> today = <span class="keyword">new</span> <span class="function">Date</span>();
+    <span class="keyword">let</span> age = today.<span class="function">getFullYear</span>() - birth.<span class="function">getFullYear</span>();
+    <span class="keyword">const</span> monthDiff = today.<span class="function">getMonth</span>() - birth.<span class="function">getMonth</span>();
+    
+    <span class="keyword">if</span> (monthDiff < <span class="number">0</span> || (monthDiff === <span class="number">0</span> && today.<span class="function">getDate</span>() < birth.<span class="function">getDate</span>())) {
+        age--;
+    }
+    
+    <span class="keyword">return</span> age;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">calculateAge</span>(<span class="string">"2000-01-15"</span>)); <span class="comment">// Current age</span>
+
+<span class="comment">// Format date for display</span>
+<span class="keyword">function</span> <span class="function">formatDate</span>(date) {
+    <span class="keyword">const</span> months = [<span class="string">"Jan"</span>, <span class="string">"Feb"</span>, <span class="string">"Mar"</span>, <span class="string">"Apr"</span>, <span class="string">"May"</span>, <span class="string">"Jun"</span>,
+                    <span class="string">"Jul"</span>, <span class="string">"Aug"</span>, <span class="string">"Sep"</span>, <span class="string">"Oct"</span>, <span class="string">"Nov"</span>, <span class="string">"Dec"</span>];
+    
+    <span class="keyword">const</span> d = <span class="keyword">new</span> <span class="function">Date</span>(date);
+    <span class="keyword">return</span> <span class="string">`${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">formatDate</span>(<span class="keyword">new</span> <span class="function">Date</span>())); <span class="comment">// "Dec 30, 2024"</span>
+
+<span class="comment">// Days until event</span>
+<span class="keyword">function</span> <span class="function">daysUntil</span>(eventDate) {
+    <span class="keyword">const</span> today = <span class="keyword">new</span> <span class="function">Date</span>();
+    <span class="keyword">const</span> event = <span class="keyword">new</span> <span class="function">Date</span>(eventDate);
+    <span class="keyword">const</span> diff = event - today;
+    <span class="keyword">const</span> days = <span class="function">Math</span>.<span class="function">ceil</span>(diff / (<span class="number">1000</span> * <span class="number">60</span> * <span class="number">60</span> * <span class="number">24</span>));
+    <span class="keyword">return</span> days;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">`Days until New Year: ${daysUntil("2025-01-01")}`</span>);
+</div>
+
+            <h3>Common Use Cases</h3>
+            <div class="info-box">
+                <ul>
+                    <li>📅 <strong>Display current date/time:</strong> User dashboard, blog posts</li>
+                    <li>⏰ <strong>Calculate time differences:</strong> Shipping estimates, event countdowns</li>
+                    <li>🎂 <strong>Age calculation:</strong> User registration, age verification</li>
+                    <li>📊 <strong>Date filtering:</strong> Reports, analytics, date pickers</li>
+                    <li>⏱️ <strong>Timestamps:</strong> Activity logs, chat messages, file metadata</li>
+                </ul>
+            </div>
+
+            <h3>Date Set Methods</h3>
+            <p>Modify dates and times:</p>
+            <div class="code-block"><span class="keyword">const</span> date = <span class="keyword">new</span> <span class="function">Date</span>();
+
+<span class="comment">// Set specific parts of date</span>
+date.<span class="function">setFullYear</span>(<span class="number">2025</span>);
+date.<span class="function">setMonth</span>(<span class="number">11</span>); <span class="comment">// December (0-indexed)</span>
+date.<span class="function">setDate</span>(<span class="number">25</span>);
+date.<span class="function">setHours</span>(<span class="number">12</span>);
+date.<span class="function">setMinutes</span>(<span class="number">30</span>);
+date.<span class="function">setSeconds</span>(<span class="number">0</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(date); <span class="comment">// Christmas 2025 at 12:30 PM</span>
+
+<span class="comment">// Set using timestamp</span>
+date.<span class="function">setTime</span>(<span class="number">1000000000000</span>);
+
+<span class="comment">// UTC versions</span>
+date.<span class="function">setUTCFullYear</span>(<span class="number">2025</span>);
+date.<span class="function">setUTCMonth</span>(<span class="number">0</span>);</div>
+        </section>
+
+        <section id="string">
+            <h2>📝 String Methods</h2>
+
+            <p>The <span class="highlight">String object</span> provides methods for text manipulation.</p>
+
+            <h3>Case Conversion</h3>
+            <div class="method-grid">
+                <div class="method-card">
+                    <h4>toUpperCase()</h4>
+                    <p>Converts string to uppercase</p>
+                    <div class="code-block"><span class="keyword">const</span> text = <span class="string">"hello world"</span>;
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">toUpperCase</span>());
+<span class="comment">// "HELLO WORLD"</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>toLowerCase()</h4>
+                    <p>Converts string to lowercase</p>
+                    <div class="code-block"><span class="keyword">const</span> text = <span class="string">"HELLO WORLD"</span>;
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">toLowerCase</span>());
+<span class="comment">// "hello world"</span></div>
+                </div>
+            </div>
+
+            <h3>Search & Extract</h3>
+            <div class="method-grid">
+                <div class="method-card">
+                    <h4>indexOf()</h4>
+                    <p>Returns position of first occurrence</p>
+                    <div class="code-block"><span class="keyword">const</span> text = <span class="string">"Hello World"</span>;
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">indexOf</span>(<span class="string">"World"</span>));
+<span class="comment">// 6</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">indexOf</span>(<span class="string">"xyz"</span>));
+<span class="comment">// -1 (not found)</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>lastIndexOf()</h4>
+                    <p>Returns position of last occurrence</p>
+                    <div class="code-block"><span class="keyword">const</span> text = <span class="string">"Hello World, World"</span>;
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">lastIndexOf</span>(<span class="string">"World"</span>));
+<span class="comment">// 13</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>includes()</h4>
+                    <p>Checks if string contains substring</p>
+                    <div class="code-block"><span class="keyword">const</span> text = <span class="string">"JavaScript"</span>;
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">includes</span>(<span class="string">"Script"</span>));
+<span class="comment">// true</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>startsWith() / endsWith()</h4>
+                    <p>Checks start or end of string</p>
+                    <div class="code-block"><span class="keyword">const</span> url = <span class="string">"https://example.com"</span>;
+<span class="function">console</span>.<span class="function">log</span>(url.<span class="function">startsWith</span>(<span class="string">"https"</span>));
+<span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(url.<span class="function">endsWith</span>(<span class="string">".com"</span>));
+<span class="comment">// true</span></div>
+                </div>
+            </div>
+
+            <h3>Extract Substrings</h3>
+            <div class="code-block"><span class="keyword">const</span> text = <span class="string">"JavaScript Programming"</span>;
+
+<span class="comment">// slice(start, end) - extracts part</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">slice</span>(<span class="number">0</span>, <span class="number">10</span>)); <span class="comment">// "JavaScript"</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">slice</span>(-<span class="number">11</span>));    <span class="comment">// "Programming"</span>
+
+<span class="comment">// substring(start, end) - similar to slice</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">substring</span>(<span class="number">0</span>, <span class="number">10</span>)); <span class="comment">// "JavaScript"</span>
+
+<span class="comment">// substr(start, length) - deprecated</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">substr</span>(<span class="number">0</span>, <span class="number">10</span>)); <span class="comment">// "JavaScript"</span>
+
+<span class="comment">// charAt(index) - get character at position</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">charAt</span>(<span class="number">0</span>)); <span class="comment">// "J"</span>
+
+<span class="comment">// charCodeAt(index) - get character code</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">charCodeAt</span>(<span class="number">0</span>)); <span class="comment">// 74</span></div>
+
+            <h3>Modify & Transform</h3>
+            <div class="code-block"><span class="comment">// replace() - replace first occurrence</span>
+<span class="keyword">const</span> text = <span class="string">"Hello World, World"</span>;
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">replace</span>(<span class="string">"World"</span>, <span class="string">"JS"</span>));
+<span class="comment">// "Hello JS, World"</span>
+
+<span class="comment">// replaceAll() - replace all occurrences</span>
+<span class="function">console</span>.<span class="function">log</span>(text.<span class="function">replaceAll</span>(<span class="string">"World"</span>, <span class="string">"JS"</span>));
+<span class="comment">// "Hello JS, JS"</span>
+
+<span class="comment">// split() - convert string to array</span>
+<span class="keyword">const</span> csv = <span class="string">"apple,banana,orange"</span>;
+<span class="function">console</span>.<span class="function">log</span>(csv.<span class="function">split</span>(<span class="string">","</span>));
+<span class="comment">// ["apple", "banana", "orange"]</span>
+
+<span class="comment">// trim() - remove whitespace</span>
+<span class="keyword">const</span> messy = <span class="string">"  hello  "</span>;
+<span class="function">console</span>.<span class="function">log</span>(messy.<span class="function">trim</span>());      <span class="comment">// "hello"</span>
+<span class="function">console</span>.<span class="function">log</span>(messy.<span class="function">trimStart</span>()); <span class="comment">// "hello  "</span>
+<span class="function">console</span>.<span class="function">log</span>(messy.<span class="function">trimEnd</span>());   <span class="comment">// "  hello"</span>
+
+<span class="comment">// repeat() - repeat string</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"*"</span>.<span class="function">repeat</span>(<span class="number">5</span>)); <span class="comment">// "*****"</span>
+
+<span class="comment">// padStart() / padEnd() - pad string</span>
+<span class="keyword">const</span> num = <span class="string">"5"</span>;
+<span class="function">console</span>.<span class="function">log</span>(num.<span class="function">padStart</span>(<span class="number">3</span>, <span class="string">"0"</span>)); <span class="comment">// "005"</span>
+<span class="function">console</span>.<span class="function">log</span>(num.<span class="function">padEnd</span>(<span class="number">3</span>, <span class="string">"0"</span>));   <span class="comment">// "500"</span></div>
+
+            <h3>Real-World String Examples</h3>
+            <div class="code-block"><span class="comment">// Email validation</span>
+<span class="keyword">function</span> <span class="function">isValidEmail</span>(email) {
+    <span class="keyword">return</span> email.<span class="function">includes</span>(<span class="string">"@"</span>) && email.<span class="function">includes</span>(<span class="string">"."</span>);
+}
+
+<span class="comment">// Format phone number</span>
+<span class="keyword">function</span> <span class="function">formatPhone</span>(phone) {
+    <span class="keyword">const</span> cleaned = phone.<span class="function">replace</span>(<span class="string">/\D/g</span>, <span class="string">""</span>);
+    <span class="keyword">return</span> <span class="string">`(${cleaned.slice(0,3)}) ${cleaned.slice(3,6)}-${cleaned.slice(6)}`</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">formatPhone</span>(<span class="string">"1234567890"</span>));
+<span class="comment">// "(123) 456-7890"</span>
+
+<span class="comment">// Capitalize words</span>
+<span class="keyword">function</span> <span class="function">capitalize</span>(str) {
+    <span class="keyword">return</span> str.<span class="function">split</span>(<span class="string">" "</span>)
+        .<span class="function">map</span>(word => word.<span class="function">charAt</span>(<span class="number">0</span>).<span class="function">toUpperCase</span>() + word.<span class="function">slice</span>(<span class="number">1</span>))
+        .<span class="function">join</span>(<span class="string">" "</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">capitalize</span>(<span class="string">"hello world"</span>));
+<span class="comment">// "Hello World"</span></div>
+        </section>
+
+        <section id="array">
+            <h2>🗂️ Array Methods</h2>
+
+            <p>Essential methods for working with arrays.</p>
+
+            <h3>Add/Remove Elements</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Description</th>
+                    <th>Mutates?</th>
+                </tr>
+                <tr>
+                    <td><code>push()</code></td>
+                    <td>Add to end</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><code>pop()</code></td>
+                    <td>Remove from end</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><code>unshift()</code></td>
+                    <td>Add to beginning</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><code>shift()</code></td>
+                    <td>Remove from beginning</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><code>splice()</code></td>
+                    <td>Add/remove at any position</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><code>slice()</code></td>
+                    <td>Extract portion</td>
+                    <td>❌ No</td>
+                </tr>
+            </table>
+
+            <h3>Iteration Methods</h3>
+            <div class="code-block"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+
+<span class="comment">// forEach() - execute function for each element</span>
+numbers.<span class="function">forEach</span>(num => <span class="function">console</span>.<span class="function">log</span>(num * <span class="number">2</span>));
+
+<span class="comment">// map() - transform array (returns new array)</span>
+<span class="keyword">const</span> doubled = numbers.<span class="function">map</span>(num => num * <span class="number">2</span>);
+<span class="comment">// [2, 4, 6, 8, 10]</span>
+
+<span class="comment">// filter() - filter elements (returns new array)</span>
+<span class="keyword">const</span> evens = numbers.<span class="function">filter</span>(num => num % <span class="number">2</span> === <span class="number">0</span>);
+<span class="comment">// [2, 4]</span>
+
+<span class="comment">// find() - find first matching element</span>
+<span class="keyword">const</span> found = numbers.<span class="function">find</span>(num => num > <span class="number">3</span>);
+<span class="comment">// 4</span>
+
+<span class="comment">// findIndex() - find index of first match</span>
+<span class="keyword">const</span> index = numbers.<span class="function">findIndex</span>(num => num > <span class="number">3</span>);
+<span class="comment">// 3</span>
+
+<span class="comment">// some() - check if any element passes test</span>
+<span class="keyword">const</span> hasEven = numbers.<span class="function">some</span>(num => num % <span class="number">2</span> === <span class="number">0</span>);
+<span class="comment">// true</span>
+
+<span class="comment">// every() - check if all elements pass test</span>
+<span class="keyword">const</span> allPositive = numbers.<span class="function">every</span>(num => num > <span class="number">0</span>);
+<span class="comment">// true</span>
+
+<span class="comment">// reduce() - reduce array to single value</span>
+<span class="keyword">const</span> sum = numbers.<span class="function">reduce</span>((total, num) => total + num, <span class="number">0</span>);
+<span class="comment">// 15</span></div>
+
+            <h3>Other Useful Methods</h3>
+            <div class="code-block"><span class="keyword">const</span> arr = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">5</span>];
+
+<span class="comment">// sort() - sort array (mutates)</span>
+arr.<span class="function">sort</span>((a, b) => a - b);
+<span class="comment">// [1, 1, 3, 4, 5]</span>
+
+<span class="comment">// reverse() - reverse array (mutates)</span>
+arr.<span class="function">reverse</span>();
+<span class="comment">// [5, 4, 3, 1, 1]</span>
+
+<span class="comment">// concat() - join arrays</span>
+<span class="keyword">const</span> arr2 = [<span class="number">6</span>, <span class="number">7</span>];
+<span class="keyword">const</span> joined = arr.<span class="function">concat</span>(arr2);
+
+<span class="comment">// join() - convert to string</span>
+<span class="function">console</span>.<span class="function">log</span>(arr.<span class="function">join</span>(<span class="string">", "</span>));
+<span class="comment">// "5, 4, 3, 1, 1"</span>
+
+<span class="comment">// includes() - check if element exists</span>
+<span class="function">console</span>.<span class="function">log</span>(arr.<span class="function">includes</span>(<span class="number">3</span>));
+<span class="comment">// true</span>
+
+<span class="comment">// indexOf() - find first index</span>
+<span class="function">console</span>.<span class="function">log</span>(arr.<span class="function">indexOf</span>(<span class="number">1</span>));
+<span class="comment">// 3</span>
+
+<span class="comment">// flat() - flatten nested arrays</span>
+<span class="keyword">const</span> nested = [<span class="number">1</span>, [<span class="number">2</span>, [<span class="number">3</span>, <span class="number">4</span>]]];
+<span class="function">console</span>.<span class="function">log</span>(nested.<span class="function">flat</span>(<span class="number">2</span>));
+<span class="comment">// [1, 2, 3, 4]</span></div>
+        </section>
+
+        <section id="object">
+            <h2>📦 Object Methods</h2>
+
+            <p>Methods for working with objects.</p>
+
+            <div class="method-grid">
+                <div class="method-card">
+                    <h4>Object.keys()</h4>
+                    <p>Returns array of object's keys</p>
+                    <div class="code-block"><span class="keyword">const</span> user = {
+  name: <span class="string">"John"</span>,
+  age: <span class="number">30</span>
+};
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">Object</span>.<span class="function">keys</span>(user));
+<span class="comment">// ["name", "age"]</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Object.values()</h4>
+                    <p>Returns array of object's values</p>
+                    <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Object</span>.<span class="function">values</span>(user));
+<span class="comment">// ["John", 30]</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Object.entries()</h4>
+                    <p>Returns array of [key, value] pairs</p>
+                    <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">Object</span>.<span class="function">entries</span>(user));
+<span class="comment">// [["name", "John"], ["age", 30]]</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Object.assign()</h4>
+                    <p>Copy properties to target object</p>
+                    <div class="code-block"><span class="keyword">const</span> target = { a: <span class="number">1</span> };
+<span class="keyword">const</span> source = { b: <span class="number">2</span> };
+
+<span class="function">Object</span>.<span class="function">assign</span>(target, source);
+<span class="comment">// { a: 1, b: 2 }</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Object.freeze()</h4>
+                    <p>Make object immutable</p>
+                    <div class="code-block"><span class="keyword">const</span> obj = { x: <span class="number">1</span> };
+<span class="function">Object</span>.<span class="function">freeze</span>(obj);
+
+obj.x = <span class="number">2</span>; <span class="comment">// No effect</span>
+<span class="function">console</span>.<span class="function">log</span>(obj.x); <span class="comment">// 1</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Object.seal()</h4>
+                    <p>Prevent adding/removing properties</p>
+                    <div class="code-block"><span class="keyword">const</span> obj = { x: <span class="number">1</span> };
+<span class="function">Object</span>.<span class="function">seal</span>(obj);
+
+obj.x = <span class="number">2</span>; <span class="comment">// OK</span>
+obj.y = <span class="number">3</span>; <span class="comment">// No effect</span></div>
+                </div>
+            </div>
+
+            <h3>hasOwnProperty() & in operator</h3>
+            <div class="code-block"><span class="keyword">const</span> obj = { name: <span class="string">"John"</span>, age: <span class="number">30</span> };
+
+<span class="comment">// Check if property exists</span>
+<span class="function">console</span>.<span class="function">log</span>(obj.<span class="function">hasOwnProperty</span>(<span class="string">"name"</span>)); <span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"name"</span> <span class="keyword">in</span> obj);              <span class="comment">// true</span></div>
+        </section>
+
+        <section id="json">
+            <h2>🔄 JSON Methods</h2>
+
+            <p>Convert between JavaScript objects and JSON strings.</p>
+
+            <div class="method-grid">
+                <div class="method-card">
+                    <h4>JSON.stringify()</h4>
+                    <p>Convert object to JSON string</p>
+                    <div class="code-block"><span class="keyword">const</span> user = {
+  name: <span class="string">"John"</span>,
+  age: <span class="number">30</span>,
+  active: <span class="keyword">true</span>
+};
+
+<span class="keyword">const</span> json = <span class="function">JSON</span>.<span class="function">stringify</span>(user);
+<span class="function">console</span>.<span class="function">log</span>(json);
+<span class="comment">// '{"name":"John","age":30,"active":true}'</span>
+
+<span class="comment">// With indentation (pretty print)</span>
+<span class="keyword">const</span> pretty = <span class="function">JSON</span>.<span class="function">stringify</span>(user, <span class="keyword">null</span>, <span class="number">2</span>);
+<span class="function">console</span>.<span class="function">log</span>(pretty);</div>
+                </div>
+
+                <div class="method-card">
+                    <h4>JSON.parse()</h4>
+                    <p>Convert JSON string to object</p>
+                    <div class="code-block"><span class="keyword">const</span> jsonStr = <span class="string">'{"name":"John","age":30}'</span>;
+
+<span class="keyword">const</span> obj = <span class="function">JSON</span>.<span class="function">parse</span>(jsonStr);
+<span class="function">console</span>.<span class="function">log</span>(obj.name); <span class="comment">// "John"</span>
+<span class="function">console</span>.<span class="function">log</span>(obj.age);  <span class="comment">// 30</span></div>
+                </div>
+            </div>
+
+            <h3>Real-World Usage</h3>
+            <div class="code-block"><span class="comment">// Store in localStorage</span>
+<span class="keyword">const</span> userData = { id: <span class="number">1</span>, name: <span class="string">"John"</span> };
+localStorage.<span class="function">setItem</span>(<span class="string">"user"</span>, <span class="function">JSON</span>.<span class="function">stringify</span>(userData));
+
+<span class="comment">// Retrieve from localStorage</span>
+<span class="keyword">const</span> stored = <span class="function">JSON</span>.<span class="function">parse</span>(localStorage.<span class="function">getItem</span>(<span class="string">"user"</span>));
+<span class="function">console</span>.<span class="function">log</span>(stored.name);
+
+<span class="comment">// Send to API</span>
+<span class="function">fetch</span>(<span class="string">"/api/users"</span>, {
+  method: <span class="string">"POST"</span>,
+  headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
+  body: <span class="function">JSON</span>.<span class="function">stringify</span>(userData)
+});</div>
+        </section>
+
+        <section id="console">
+            <h2>🖥️ Console Methods</h2>
+
+            <p>Debugging and logging methods.</p>
+
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><code>console.log()</code></td>
+                    <td>General logging</td>
+                    <td><code>console.log("Hello");</code></td>
+                </tr>
+                <tr>
+                    <td><code>console.error()</code></td>
+                    <td>Error messages (red)</td>
+                    <td><code>console.error("Error!");</code></td>
+                </tr>
+                <tr>
+                    <td><code>console.warn()</code></td>
+                    <td>Warning messages (yellow)</td>
+                    <td><code>console.warn("Warning!");</code></td>
+                </tr>
+                <tr>
+                    <td><code>console.table()</code></td>
+                    <td>Display as table</td>
+                    <td><code>console.table([{a:1}, {a:2}]);</code></td>
+                </tr>
+                <tr>
+                    <td><code>console.time()</code></td>
+                    <td>Start timer</td>
+                    <td><code>console.time("test");</code></td>
+                </tr>
+                <tr>
+                    <td><code>console.timeEnd()</code></td>
+                    <td>End timer</td>
+                    <td><code>console.timeEnd("test");</code></td>
+                </tr>
+                <tr>
+                    <td><code>console.clear()</code></td>
+                    <td>Clear console</td>
+                    <td><code>console.clear();</code></td>
+                </tr>
+            </table>
+
+            <h3>Advanced Console Usage</h3>
+            <div class="code-block"><span class="comment">// Group logs</span>
+<span class="function">console</span>.<span class="function">group</span>(<span class="string">"User Info"</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Name: John"</span>);
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Age: 30"</span>);
+<span class="function">console</span>.<span class="function">groupEnd</span>();
+
+<span class="comment">// Measure performance</span>
+<span class="function">console</span>.<span class="function">time</span>(<span class="string">"loop"</span>);
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">1000000</span>; i++) {
+  <span class="comment">// some operation</span>
+}
+<span class="function">console</span>.<span class="function">timeEnd</span>(<span class="string">"loop"</span>);
+
+<span class="comment">// Display array as table</span>
+<span class="keyword">const</span> users = [
+  { name: <span class="string">"John"</span>, age: <span class="number">30</span> },
+  { name: <span class="string">"Jane"</span>, age: <span class="number">25</span> }
+];
+<span class="function">console</span>.<span class="function">table</span>(users);</div>
+        </section>
+
+        <section id="global">
+            <h2>🌐 Global Methods</h2>
+
+            <p>Global JavaScript functions available everywhere.</p>
+
+            <div class="method-grid">
+                <div class="method-card">
+                    <h4>parseInt()</h4>
+                    <p>Parse string to integer</p>
+                    <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">parseInt</span>(<span class="string">"123"</span>));
+<span class="comment">// 123</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">parseInt</span>(<span class="string">"123.45"</span>));
+<span class="comment">// 123</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">parseInt</span>(<span class="string">"FF"</span>, <span class="number">16</span>));
+<span class="comment">// 255 (hex)</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>parseFloat()</h4>
+                    <p>Parse string to float</p>
+                    <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">parseFloat</span>(<span class="string">"123.45"</span>));
+<span class="comment">// 123.45</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">parseFloat</span>(<span class="string">"3.14px"</span>));
+<span class="comment">// 3.14</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>isNaN()</h4>
+                    <p>Check if value is NaN</p>
+                    <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">isNaN</span>(<span class="string">"hello"</span>));
+<span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">isNaN</span>(<span class="number">123</span>));
+<span class="comment">// false</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>isFinite()</h4>
+                    <p>Check if value is finite number</p>
+                    <div class="code-block"><span class="function">console</span>.<span class="function">log</span>(<span class="function">isFinite</span>(<span class="number">123</span>));
+<span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">isFinite</span>(<span class="keyword">Infinity</span>));
+<span class="comment">// false</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>encodeURIComponent()</h4>
+                    <p>Encode string for URL</p>
+                    <div class="code-block"><span class="keyword">const</span> str = <span class="string">"Hello World!"</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">encodeURIComponent</span>(str));
+<span class="comment">// "Hello%20World%21"</span></div>
+                </div>
+
+                <div class="method-card">
+                    <h4>decodeURIComponent()</h4>
+                    <p>Decode URL-encoded string</p>
+                    <div class="code-block"><span class="keyword">const</span> encoded = <span class="string">"Hello%20World%21"</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">decodeURIComponent</span>(encoded));
+<span class="comment">// "Hello World!"</span></div>
+                </div>
+            </div>
+
+            <h3>Timers</h3>
+            <div class="code-block"><span class="comment">// setTimeout() - execute after delay</span>
+<span class="keyword">const</span> timeoutId = <span class="function">setTimeout</span>(() => {
+  <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Executed after 2 seconds"</span>);
+}, <span class="number">2000</span>);
+
+<span class="comment">// clearTimeout() - cancel timeout</span>
+<span class="function">clearTimeout</span>(timeoutId);
+
+<span class="comment">// setInterval() - execute repeatedly</span>
+<span class="keyword">const</span> intervalId = <span class="function">setInterval</span>(() => {
+  <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Executed every second"</span>);
+}, <span class="number">1000</span>);
+
+<span class="comment">// clearInterval() - cancel interval</span>
+<span class="function">clearInterval</span>(intervalId);</div>
+        </section>
+
+        <section id="cheatsheet">
+            <h2>📋 Quick Reference Cheatsheet</h2>
+
+            <h3>Most Common Methods</h3>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Method</th>
+                    <th>Quick Example</th>
+                </tr>
+                <tr>
+                    <td rowspan="3"><strong>Math</strong></td>
+                    <td><code>Math.round()</code></td>
+                    <td><code>Math.round(4.7) // 5</code></td>
+                </tr>
+                <tr>
+                    <td><code>Math.random()</code></td>
+                    <td><code>Math.random() // 0-1</code></td>
+                </tr>
+                <tr>
+                    <td><code>Math.max()</code></td>
+                    <td><code>Math.max(1,2,3) // 3</code></td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>String</strong></td>
+                    <td><code>.split()</code></td>
+                    <td><code>"a,b".split(",") // ["a","b"]</code></td>
+                </tr>
+                <tr>
+                    <td><code>.includes()</code></td>
+                    <td><code>"hello".includes("ll") // true</code></td>
+                </tr>
+                <tr>
+                    <td rowspan="3"><strong>Array</strong></td>
+                    <td><code>.map()</code></td>
+                    <td><code>[1,2].map(x => x*2) // [2,4]</code></td>
+                </tr>
+                <tr>
+                    <td><code>.filter()</code></td>
+                    <td><code>[1,2,3].filter(x => x>1) // [2,3]</code></td>
+                </tr>
+                <tr>
+                    <td><code>.find()</code></td>
+                    <td><code>[1,2,3].find(x => x>1) // 2</code></td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>Object</strong></td>
+                    <td><code>Object.keys()</code></td>
+                    <td><code>Object.keys({a:1}) // ["a"]</code></td>
+                </tr>
+                <tr>
+                    <td><code>Object.values()</code></td>
+                    <td><code>Object.values({a:1}) // [1]</code></td>
+                </tr>
+            </table>
+
+            <h3>Method Chaining Example</h3>
+            <div class="code-block"><span class="comment">// Combining multiple methods</span>
+<span class="keyword">const</span> users = [
+  { name: <span class="string">"John"</span>, age: <span class="number">30</span>, active: <span class="keyword">true</span> },
+  { name: <span class="string">"Jane"</span>, age: <span class="number">25</span>, active: <span class="keyword">false</span> },
+  { name: <span class="string">"Bob"</span>, age: <span class="number">35</span>, active: <span class="keyword">true</span> }
+];
+
+<span class="comment">// Get names of active users, uppercase</span>
+<span class="keyword">const</span> activeNames = users
+  .<span class="function">filter</span>(user => user.active)
+  .<span class="function">map</span>(user => user.name.<span class="function">toUpperCase</span>())
+  .<span class="function">sort</span>();
+
+<span class="function">console</span>.<span class="function">log</span>(activeNames);
+<span class="comment">// ["BOB", "JOHN"]</span></div>
+
+            <div class="info-box">
+                <p><strong>💡 Pro Tips:</strong></p>
+                <ul>
+                    <li>✅ Use <code>map()</code> for transforming arrays</li>
+                    <li>✅ Use <code>filter()</code> for selecting elements</li>
+                    <li>✅ Use <code>reduce()</code> for aggregating values</li>
+                    <li>✅ Use <code>find()</code> instead of <code>filter()[0]</code></li>
+                    <li>✅ Chain methods for cleaner code</li>
+                    <li>⚠️ Be aware which methods mutate the original (push, pop, splice, sort, reverse)</li>
+                    <li>⚠️ Use <code>slice()</code> or spread operator <code>[...arr]</code> to avoid mutation</li>
+                </ul>
+            </div>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking on a link (mobile only)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside (mobile only)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>
+

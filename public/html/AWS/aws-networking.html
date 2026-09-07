@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Networking - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🌐 AWS Networking</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#osi-model" class="sidebar-link">OSI Model</a>
+                <a href="#tcp-ip" class="sidebar-link">TCP/IP Model</a>
+                <a href="#ip-addressing" class="sidebar-link">IP Addressing</a>
+                <a href="#protocols" class="sidebar-link">Protocols</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">☁️ VPC</div>
+            <div class="sidebar-links">
+                <a href="#vpc" class="sidebar-link">VPC Basics</a>
+                <a href="#subnets" class="sidebar-link">Subnets</a>
+                <a href="#routing" class="sidebar-link">Routing</a>
+                <a href="#security" class="sidebar-link">Security</a>
+                <a href="#vpc-features" class="sidebar-link">Advanced Features</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚖️ Load Balancing</div>
+            <div class="sidebar-links">
+                <a href="#alb" class="sidebar-link">ALB</a>
+                <a href="#nlb" class="sidebar-link">NLB</a>
+                <a href="#gwlb" class="sidebar-link">GWLB</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 Other Services</div>
+            <div class="sidebar-links">
+                <a href="#auto-scaling" class="sidebar-link">Auto Scaling</a>
+                <a href="#route53" class="sidebar-link">Route 53</a>
+                <a href="#vpn" class="sidebar-link">VPN</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>🌐 AWS Networking</h1>
+            <p>Complete Guide to VPC, Load Balancers, Route 53 & More</p>
+        </header>
+
+        <section id="osi-model">
+            <h2>🧱 OSI Model (7 Layers)</h2>
+
+            <table>
+                <tr><th>Layer</th><th>Name</th><th>Function</th><th>Examples</th></tr>
+                <tr>
+                    <td><strong>7</strong></td>
+                    <td>Application</td>
+                    <td>Network services to apps</td>
+                    <td>HTTP, FTP, SMTP, DNS</td>
+                </tr>
+                <tr>
+                    <td><strong>6</strong></td>
+                    <td>Presentation</td>
+                    <td>Data translation, encryption, compression</td>
+                    <td>SSL/TLS, JPEG, PNG</td>
+                </tr>
+                <tr>
+                    <td><strong>5</strong></td>
+                    <td>Session</td>
+                    <td>Session management</td>
+                    <td>RPC, NetBIOS</td>
+                </tr>
+                <tr>
+                    <td><strong>4</strong></td>
+                    <td>Transport</td>
+                    <td>Reliable data transfer, flow control</td>
+                    <td>TCP (reliable), UDP (fast)</td>
+                </tr>
+                <tr>
+                    <td><strong>3</strong></td>
+                    <td>Network</td>
+                    <td>Routing packets between networks</td>
+                    <td>IP, ICMP</td>
+                </tr>
+                <tr>
+                    <td><strong>2</strong></td>
+                    <td>Data Link</td>
+                    <td>Error detection/correction, framing</td>
+                    <td>Ethernet, PPP</td>
+                </tr>
+                <tr>
+                    <td><strong>1</strong></td>
+                    <td>Physical</td>
+                    <td>Raw bit transmission</td>
+                    <td>Cables, USB, Wi-Fi</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="tcp-ip">
+            <h2>🔗 TCP/IP Model (4 Layers)</h2>
+
+            <table>
+                <tr><th>Layer</th><th>OSI Equivalent</th><th>Protocols</th></tr>
+                <tr>
+                    <td><strong>Application</strong></td>
+                    <td>Layers 5-7</td>
+                    <td>HTTP, FTP, DNS, SMTP</td>
+                </tr>
+                <tr>
+                    <td><strong>Transport</strong></td>
+                    <td>Layer 4</td>
+                    <td>TCP, UDP</td>
+                </tr>
+                <tr>
+                    <td><strong>Internet</strong></td>
+                    <td>Layer 3</td>
+                    <td>IP, ICMP</td>
+                </tr>
+                <tr>
+                    <td><strong>Network Access</strong></td>
+                    <td>Layers 1-2</td>
+                    <td>Ethernet, MAC</td>
+                </tr>
+            </table>
+
+            <h3>OSI vs TCP/IP</h3>
+            <table>
+                <tr><th>Feature</th><th>OSI Model</th><th>TCP/IP Model</th></tr>
+                <tr>
+                    <td><strong>Layers</strong></td>
+                    <td>7</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td><strong>Use</strong></td>
+                    <td>Theoretical/Teaching</td>
+                    <td>Practical/Real-world</td>
+                </tr>
+                <tr>
+                    <td><strong>Protocol Support</strong></td>
+                    <td>Protocol-independent</td>
+                    <td>Built around TCP/IP</td>
+                </tr>
+            </table>
+
+            <h3>TCP vs UDP</h3>
+            <table>
+                <tr><th>Feature</th><th>TCP</th><th>UDP</th></tr>
+                <tr>
+                    <td><strong>Connection</strong></td>
+                    <td>Connection-oriented (3-way handshake)</td>
+                    <td>Connectionless</td>
+                </tr>
+                <tr>
+                    <td><strong>Reliability</strong></td>
+                    <td>Reliable (acknowledgments, retransmission)</td>
+                    <td>No delivery guarantee</td>
+                </tr>
+                <tr>
+                    <td><strong>Ordering</strong></td>
+                    <td>Ordered packet delivery</td>
+                    <td>No ordering</td>
+                </tr>
+                <tr>
+                    <td><strong>Speed</strong></td>
+                    <td>Slower but reliable</td>
+                    <td>Faster, lower overhead</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Cases</strong></td>
+                    <td>HTTP/HTTPS, FTP, SSH, Email</td>
+                    <td>DNS, Video streaming, Gaming, VoIP</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="ip-addressing">
+            <h2>📍 IP Addressing & Subnetting</h2>
+
+            <h3>Private IP Classes</h3>
+            <table>
+                <tr><th>Class</th><th>Range</th><th>Subnet Mask</th><th>Addresses</th><th>Use Case</th></tr>
+                <tr>
+                    <td><strong>Class A</strong></td>
+                    <td>10.0.0.0/8</td>
+                    <td>255.0.0.0</td>
+                    <td>~16.7M</td>
+                    <td>Large networks</td>
+                </tr>
+                <tr>
+                    <td><strong>Class B</strong></td>
+                    <td>172.16.0.0/12</td>
+                    <td>255.240.0.0</td>
+                    <td>~1M</td>
+                    <td>Medium networks</td>
+                </tr>
+                <tr>
+                    <td><strong>Class C</strong></td>
+                    <td>192.168.0.0/16</td>
+                    <td>255.255.0.0</td>
+                    <td>~65K</td>
+                    <td>Small networks/home</td>
+                </tr>
+            </table>
+
+            <h3>CIDR (Classless Inter-Domain Routing)</h3>
+            <p>CIDR notation: <span class="highlight">&lt;IP&gt;/&lt;Prefix&gt;</span> (e.g., 192.168.10.0/24)</p>
+
+            <table>
+                <tr><th>CIDR</th><th>Subnet Mask</th><th># Hosts</th></tr>
+                <tr><td>/8</td><td>255.0.0.0</td><td>~16.7M</td></tr>
+                <tr><td>/16</td><td>255.255.0.0</td><td>~65,000</td></tr>
+                <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
+                <tr><td>/30</td><td>255.255.255.252</td><td>2</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Formula:</strong> Total hosts = 2<sup>n</sup> - 2 (subtract network and broadcast addresses)
+            </div>
+        </section>
+
+        <section id="protocols">
+            <h2>🔌 Key Protocols</h2>
+
+            <h3>DNS (Domain Name System)</h3>
+            <p>Translates domain names to IP addresses</p>
+            <ul>
+                <li><strong>A:</strong> Maps domain to IPv4</li>
+                <li><strong>AAAA:</strong> Maps domain to IPv6</li>
+                <li><strong>CNAME:</strong> Alias to another domain</li>
+                <li><strong>MX:</strong> Mail server</li>
+                <li><strong>TXT:</strong> Text data (verification)</li>
+                <li><strong>NS:</strong> Name servers</li>
+                <li><strong>SOA:</strong> Administrative info</li>
+            </ul>
+
+            <h3>Well-Known Ports</h3>
+            <table>
+                <tr><th>Port</th><th>Protocol</th><th>Use</th></tr>
+                <tr><td>20/21</td><td>FTP</td><td>File Transfer</td></tr>
+                <tr><td>22</td><td>SSH</td><td>Secure Shell</td></tr>
+                <tr><td>25</td><td>SMTP</td><td>Email</td></tr>
+                <tr><td>53</td><td>DNS</td><td>Domain Name System</td></tr>
+                <tr><td>80</td><td>HTTP</td><td>Web Traffic</td></tr>
+                <tr><td>443</td><td>HTTPS</td><td>Secure Web</td></tr>
+                <tr><td>3306</td><td>MySQL</td><td>Database</td></tr>
+                <tr><td>3389</td><td>RDP</td><td>Remote Desktop</td></tr>
+                <tr><td>5432</td><td>PostgreSQL</td><td>Database</td></tr>
+                <tr><td>27017</td><td>MongoDB</td><td>Database</td></tr>
+            </table>
+        </section>
+
+        <section id="vpc">
+            <h2>☁️ AWS VPC (Virtual Private Cloud)</h2>
+
+            <p>VPC is a <span class="highlight">logically isolated network</span> within AWS cloud.</p>
+
+            <h3>Network Flow Examples</h3>
+            <div class="code-block">Public:  Load Balancer → Internet Gateway → VPC → Route Table → Subnet → EC2
+Private: Load Balancer → Internet Gateway → VPC → Route Table → Subnet → NAT Gateway → Private EC2</div>
+        </section>
+
+        <section id="subnets">
+            <h2>🔲 Subnets</h2>
+
+            <p>Subnets segment VPC by <span class="highlight">security and operational needs</span>.</p>
+
+            <ul>
+                <li><strong>Public Subnet:</strong> Has route to Internet Gateway</li>
+                <li><strong>Private Subnet:</strong> No direct internet access</li>
+                <li>Each subnet in one Availability Zone</li>
+                <li>Can have custom IP ranges within VPC CIDR</li>
+            </ul>
+        </section>
+
+        <section id="routing">
+            <h2>🛣️ Routing</h2>
+
+            <h3>Route Tables</h3>
+            <ul>
+                <li>Define routing rules for VPC traffic</li>
+                <li><strong>Main Route Table:</strong> Default for all subnets</li>
+                <li><strong>Custom Route Tables:</strong> Override main table</li>
+                <li>Associate with subnets</li>
+            </ul>
+
+            <h3>Internet Gateway (IGW)</h3>
+            <ul>
+                <li>Enables VPC-to-internet communication</li>
+                <li>Horizontally scaled, redundant, highly available</li>
+                <li>Attach to VPC</li>
+            </ul>
+
+            <h3>NAT Gateway</h3>
+            <ul>
+                <li>Private subnet outbound internet access</li>
+                <li>No inbound traffic from internet</li>
+                <li>Create in public subnet</li>
+                <li>Update private subnet route table</li>
+            </ul>
+        </section>
+
+        <section id="security">
+            <h2>🔒 Security</h2>
+
+            <h3>Security Groups vs Network ACLs</h3>
+            <table>
+                <tr><th>Feature</th><th>Security Groups</th><th>Network ACLs</th></tr>
+                <tr>
+                    <td><strong>Level</strong></td>
+                    <td>Instance</td>
+                    <td>Subnet</td>
+                </tr>
+                <tr>
+                    <td><strong>State</strong></td>
+                    <td>Stateful</td>
+                    <td>Stateless</td>
+                </tr>
+                <tr>
+                    <td><strong>Rules</strong></td>
+                    <td>Allow only</td>
+                    <td>Allow & Deny</td>
+                </tr>
+                <tr>
+                    <td><strong>Return Traffic</strong></td>
+                    <td>Auto-allowed</td>
+                    <td>Must be explicit</td>
+                </tr>
+                <tr>
+                    <td><strong>Evaluation</strong></td>
+                    <td>All rules</td>
+                    <td>Top to bottom</td>
+                </tr>
+            </table>
+
+            <h3>Bastion Host</h3>
+            <p>Secure jump server for accessing private subnet instances</p>
+        </section>
+
+        <section id="vpc-features">
+            <h2>✨ VPC Advanced Features</h2>
+
+            <h3>VPC Endpoints</h3>
+            <ul>
+                <li>Private AWS service access without internet gateway</li>
+                <li><strong>Gateway Endpoints:</strong> S3, DynamoDB</li>
+                <li><strong>Interface Endpoints:</strong> Other services (SNS, SQS, etc.)</li>
+            </ul>
+
+            <h3>VPC Peering</h3>
+            <ul>
+                <li>Connect two VPCs</li>
+                <li>No overlapping IP addresses</li>
+                <li>Update route tables in both VPCs</li>
+                <li>One VPC sends request, other accepts</li>
+            </ul>
+
+            <h3>VPC Flow Logs</h3>
+            <ul>
+                <li>Captures IP traffic metadata</li>
+                <li>Logs: source/dest IPs, ports, protocol, action</li>
+                <li>Destinations: CloudWatch, S3, Kinesis</li>
+                <li>Use: Security analysis, troubleshooting</li>
+            </ul>
+
+            <h3>AWS Transit Gateway</h3>
+            <ul>
+                <li>Hub-and-spoke network connecting multiple VPCs</li>
+                <li>Simplifies complex VPC peering</li>
+                <li>Transitive routing support</li>
+                <li>Multi-account support via AWS RAM</li>
+            </ul>
+
+            <h3>AWS Direct Connect</h3>
+            <ul>
+                <li>Dedicated private connection to AWS</li>
+                <li>Lower latency, higher bandwidth (up to 100 Gbps)</li>
+                <li>More consistent than VPN</li>
+                <li>Use: Enterprise hybrid cloud</li>
+            </ul>
+
+            <h3>AWS PrivateLink</h3>
+            <ul>
+                <li>Private connectivity between VPCs and services</li>
+                <li>Traffic doesn't traverse internet</li>
+                <li>Access across accounts or AWS Marketplace</li>
+            </ul>
+        </section>
+
+        <section id="alb">
+            <h2>⚖️ Application Load Balancer (ALB)</h2>
+
+            <p>Operates at <span class="highlight">Layer 7 (Application)</span> for HTTP/HTTPS traffic.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Path-based Routing:</strong> /api/aws/*, /api/azure/*</li>
+                <li><strong>Host-based Routing:</strong> api.example.com</li>
+                <li>WebSocket, HTTP/2 support</li>
+                <li>Sticky sessions</li>
+                <li>60-second timeout</li>
+            </ul>
+
+            <h3>Target Types</h3>
+            <ul>
+                <li>EC2 instances</li>
+                <li>Lambda functions</li>
+                <li>IP addresses</li>
+            </ul>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Microservices architectures</li>
+                <li>Containerized applications</li>
+                <li>Advanced routing requirements</li>
+            </ul>
+        </section>
+
+        <section id="nlb">
+            <h2>🚀 Network Load Balancer (NLB)</h2>
+
+            <p>Operates at <span class="highlight">Layer 4 (Transport)</span> for TCP/UDP traffic.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li>Ultra-low latency</li>
+                <li>Millions of requests per second</li>
+                <li>Static IP support</li>
+                <li>Preserves source IP</li>
+                <li>No timeout</li>
+                <li>Cross-zone disabled by default</li>
+            </ul>
+
+            <h3>ALB vs NLB</h3>
+            <table>
+                <tr><th>Feature</th><th>ALB</th><th>NLB</th></tr>
+                <tr>
+                    <td><strong>Layer</strong></td>
+                    <td>Layer 7 (Application)</td>
+                    <td>Layer 4 (Transport)</td>
+                </tr>
+                <tr>
+                    <td><strong>Protocol</strong></td>
+                    <td>HTTP/HTTPS</td>
+                    <td>TCP/UDP</td>
+                </tr>
+                <tr>
+                    <td><strong>Routing</strong></td>
+                    <td>Path/Host-based</td>
+                    <td>Port-based</td>
+                </tr>
+                <tr>
+                    <td><strong>Timeout</strong></td>
+                    <td>60 seconds</td>
+                    <td>No timeout</td>
+                </tr>
+                <tr>
+                    <td><strong>Static IP</strong></td>
+                    <td>No</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Source IP</strong></td>
+                    <td>Not preserved</td>
+                    <td>Preserved</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="gwlb">
+            <h2>🛡️ Gateway Load Balancer (GWLB)</h2>
+
+            <p>Combines <span class="highlight">transparent gateway + load balancer</span>.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Deploy/scale virtual appliances</li>
+                <li>Firewalls, IDS/IPS</li>
+                <li>Examples: Palo Alto, Checkpoint, Fortinet</li>
+                <li>VPC Ingress/Egress routing</li>
+            </ul>
+        </section>
+
+        <section id="auto-scaling">
+            <h2>📈 AWS Auto Scaling</h2>
+
+            <p>Automatically adjusts <span class="highlight">EC2 instance count</span> based on demand.</p>
+
+            <h3>Scaling Types</h3>
+            <ul>
+                <li><strong>Vertical:</strong> Increase instance size</li>
+                <li><strong>Horizontal:</strong> Add/remove instances</li>
+            </ul>
+
+            <h3>Components</h3>
+            <ul>
+                <li><strong>Launch Template:</strong> AMI, instance type, security groups, IAM role, user data</li>
+                <li><strong>Auto Scaling Group:</strong> Min/max instances, scaling policies, health checks</li>
+            </ul>
+
+            <h3>Scaling Policies</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Manual</strong></td>
+                    <td>User-controlled adjustments</td>
+                </tr>
+                <tr>
+                    <td><strong>Scheduled</strong></td>
+                    <td>Scale at specific times</td>
+                </tr>
+                <tr>
+                    <td><strong>Dynamic - Simple</strong></td>
+                    <td>Single metric (CPU, network)</td>
+                </tr>
+                <tr>
+                    <td><strong>Dynamic - Step</strong></td>
+                    <td>Incremental based on severity</td>
+                </tr>
+                <tr>
+                    <td><strong>Predictive</strong></td>
+                    <td>ML-based future demand prediction</td>
+                </tr>
+            </table>
+
+            <h3>Maintenance Policies</h3>
+            <ul>
+                <li><strong>Launch Before Terminate:</strong> Zero-downtime updates</li>
+                <li><strong>Terminate and Launch:</strong> Brief downtime</li>
+                <li><strong>Custom Behavior:</strong> User-defined rules</li>
+            </ul>
+        </section>
+
+        <section id="route53">
+            <h2>🌍 AWS Route 53 (DNS Service)</h2>
+
+            <p>Scalable and highly available <span class="highlight">DNS web service</span>.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Domain registration and management</li>
+                <li>DNS Routing: Simple, weighted, latency-based, geolocation, failover</li>
+                <li>Health Checks: Monitor resources, route away from unhealthy</li>
+                <li>Traffic Flow: Visual editor for complex routing</li>
+                <li>DNS Failover: Auto-redirect to backup</li>
+                <li>DNSSEC: Protection against DNS spoofing</li>
+                <li>Private Hosted Zones: VPC internal DNS</li>
+            </ul>
+
+            <h3>Integrations</h3>
+            <ul>
+                <li>CloudFront (CDN)</li>
+                <li>S3 (static sites)</li>
+                <li>ELB, API Gateway</li>
+                <li>CloudWatch, VPC</li>
+            </ul>
+
+            <h3>Advanced</h3>
+            <ul>
+                <li><strong>Route 53 Resolver:</strong> Recursive DNS for VPC & on-premises</li>
+                <li><strong>Application Recovery Controller:</strong> Automated failover/recovery</li>
+            </ul>
+        </section>
+
+        <section id="vpn">
+            <h2>🔐 VPN (Virtual Private Network)</h2>
+
+            <p>Secure connection between networks over the internet.</p>
+
+            <h3>Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Site-to-Site VPN</strong></td>
+                    <td>Connects two VPCs or on-premises to VPC</td>
+                </tr>
+                <tr>
+                    <td><strong>Client VPN</strong></td>
+                    <td>Remote client device to VPC</td>
+                </tr>
+            </table>
+
+            <h3>Components</h3>
+            <ul>
+                <li><strong>Customer Gateway:</strong> Customer-side device/software</li>
+                <li><strong>Virtual Private Gateway:</strong> AWS side, attached to VPC</li>
+                <li><strong>Client VPN Endpoint:</strong> Managed VPN for remote access</li>
+            </ul>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

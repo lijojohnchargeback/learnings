@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Objects - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📦 JavaScript Objects</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Basics</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#access" class="sidebar-link">Property Access</a>
+                <a href="#creation" class="sidebar-link">Object Creation</a>
+                <a href="#this-keyword" class="sidebar-link">The this Keyword</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🧩 Working With Data</div>
+            <div class="sidebar-links">
+                <a href="#destructuring" class="sidebar-link">Destructuring &amp; Spread</a>
+                <a href="#checking" class="sidebar-link">Checking Properties</a>
+                <a href="#cloning" class="sidebar-link">Cloning Objects</a>
+                <a href="#json" class="sidebar-link">JSON</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🎓 Classes</div>
+            <div class="sidebar-links">
+                <a href="#classes" class="sidebar-link">ES6 Classes</a>
+                <a href="#inheritance" class="sidebar-link">Inheritance</a>
+                <a href="#static" class="sidebar-link">Static Members</a>
+                <a href="#private" class="sidebar-link">Private Fields</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔧 Methods &amp; Internals</div>
+            <div class="sidebar-links">
+                <a href="#call-apply-bind" class="sidebar-link">Call / Apply / Bind</a>
+                <a href="#object-methods" class="sidebar-link">Object Methods</a>
+                <a href="#accessors" class="sidebar-link">Getters / Setters</a>
+                <a href="#descriptors" class="sidebar-link">Property Descriptors</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗺️ Advanced</div>
+            <div class="sidebar-links">
+                <a href="#prototype" class="sidebar-link">Prototypes</a>
+                <a href="#map" class="sidebar-link">Map &amp; WeakMap</a>
+                <a href="#proxy" class="sidebar-link">Proxy &amp; Reflect</a>
+                <a href="#for-loops" class="sidebar-link">for...in vs for...of</a>
+                <a href="#errors" class="sidebar-link">Error Types</a>
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>📦 JavaScript Objects</h1>
+            <p>Complete Guide to Objects, Classes, Prototypes, and Modern Object APIs</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to Objects</h2>
+            <p>An <span class="highlight">object is a collection of properties</span> — named key-value pairs that can hold data or functions (methods). Almost everything non-primitive in JavaScript is an object: arrays, functions, dates, errors, and even modules. Primitives (string, number, boolean, null, undefined, symbol, bigint) are not objects, though some of them get a temporary object wrapper when you call methods like <code>"hi".toUpperCase()</code>.</p>
+
+            <div class="info-box">
+                <h3>Value vs Reference</h3>
+                <p>Primitives are copied <strong>by value</strong>. Objects are copied <strong>by reference</strong>: the variable stores a pointer to a heap location. Two variables can point at the same object, so a change through one is visible through the other.</p>
+            </div>
+
+            <div class="code-block">let a = 10;
+let b = a;
+b = 20;
+console.log(a); // 10  — primitives are independent copies
+
+const user1 = { name: "Sam" };
+const user2 = user1;   // same object in memory
+user2.name = "Alex";
+console.log(user1.name); // "Alex" — both variables share one object
+
+console.log(user1 === user2);           // true  (same reference)
+console.log({ name: "Sam" } === { name: "Sam" }); // false (two objects)</div>
+
+            <div class="info-box">
+                <h3>Real-World Analogy: Car</h3>
+                <ul>
+                    <li><strong>Properties:</strong> Static attributes like color, brand, model, and year.</li>
+                    <li><strong>Methods:</strong> Dynamic behaviors like start(), stop(), and accelerate().</li>
+                </ul>
+            </div>
+
+            <h3>Why Use Objects?</h3>
+            <ul>
+                <li>✅ <strong>Organize data:</strong> Group related fields instead of loose variables.</li>
+                <li>✅ <strong>Model the real world:</strong> Users, products, orders, configs.</li>
+                <li>✅ <strong>Reuse behavior:</strong> Share methods through prototypes or classes.</li>
+                <li>✅ <strong>Pass structured data:</strong> APIs, function options, React props.</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ typeof quirks:</strong> <code>typeof null</code> is <code>"object"</code> (a long-standing language bug). Arrays and functions are objects too: <code>typeof [] === "object"</code> and <code>typeof function(){} === "function"</code>. Use <code>Array.isArray(value)</code> to detect arrays, and <code>value === null</code> to detect null.
+            </div>
+
+            <div class="code-block">const user = {
+    firstName: "John",
+    lastName: "Doe",
+    age: 30,
+    email: "john@example.com",
+    address: {
+        city: "Austin",
+        zip: "78701"
+    },
+
+    // Method shorthand (ES6)
+    getFullName() {
+        return this.firstName + " " + this.lastName;
+    },
+
+    // Computed property name (ES6)
+    ["last_login_" + Date.now()]: new Date()
+};
+
+console.log(user.getFullName());     // "John Doe"
+console.log(user.address.city);      // "Austin"</div>
+        </section>
+
+        <section id="access">
+            <h2>🔑 Property Access</h2>
+            <p>You can read and write properties with <strong>dot notation</strong> or <strong>bracket notation</strong>. Dot notation is cleaner when the key is a valid identifier. Brackets are required for dynamic keys, keys with spaces, or keys that start with a number.</p>
+
+            <div class="code-block">const book = {
+    title: "Clean Code",
+    "page count": 464,
+    2024: "reprint"
+};
+
+console.log(book.title);           // dot — identifier keys
+console.log(book["page count"]);   // brackets — space in the key
+console.log(book[2024]);           // brackets — numeric-looking key
+
+const field = "title";
+console.log(book[field]);          // "Clean Code" — dynamic key
+
+book.author = "Robert Martin";     // add
+book.title = "Clean Code (2e)";    // update
+delete book[2024];                 // remove</div>
+
+            <h3>Optional chaining and defaults</h3>
+            <p><code>?.</code> stops evaluation if the left side is <code>null</code> or <code>undefined</code>, instead of throwing. Combine it with <code>??</code> (nullish coalescing) when you want a fallback only for nullish values — not for <code>0</code> or <code>""</code>.</p>
+
+            <div class="code-block">const order = { customer: { name: "Lina" } };
+
+console.log(order.customer?.name);     // "Lina"
+console.log(order.shipping?.city);     // undefined (no throw)
+console.log(order.shipping?.city ?? "N/A"); // "N/A"
+
+// Optional call — only runs if the method exists
+order.notify?.("shipped");</div>
+
+            <div class="tip-box">
+                <strong>Tip:</strong> Prefer <code>obj?.prop</code> over long <code>obj &amp;&amp; obj.prop</code> chains. Do not overuse it to hide missing data you should have validated at the API boundary.
+            </div>
+        </section>
+
+        <section id="creation">
+            <h2>🔨 Object Creation Methods</h2>
+            <p>JavaScript gives you several ways to create objects. Pick the pattern that matches how many instances you need and whether they should share behavior.</p>
+
+            <h3>1. Object Literal (Most Common)</h3>
+            <p>A comma-separated list of name-value pairs in curly braces. Fast, readable, and the right default for a single object or a config.</p>
+            <div class="info-box">
+                <strong>Why use it?</strong>
+                <ul>
+                    <li>✅ Zero ceremony: no constructor call.</li>
+                    <li>✅ Easy for engines to optimize.</li>
+                    <li>✅ Supports shorthand, methods, and computed keys.</li>
+                </ul>
+            </div>
+            <div class="code-block">const name = "Hyundai";
+const year = 2007;
+
+const car = {
+    name,          // shorthand for name: name
+    year,
+    show() {
+        console.log(`${this.name} manufactured in ${this.year}`);
+    }
+};
+
+car.color = "blue";
+car.show();</div>
+
+            <h3>2. Object Constructor</h3>
+            <p>Uses the built-in <code>Object()</code> constructor. Works, but a literal is usually clearer.</p>
+            <div class="code-block">const car = new Object();
+car.color = "green";
+car.brand = "Honda";
+car.year = 2024;
+
+delete car.color;
+console.log("color" in car); // false</div>
+
+            <h3>3. Object.create() (Prototypal Inheritance)</h3>
+            <p>Creates a new object whose prototype is an existing object. You only specify what is different from the parent — this is <strong>differential inheritance</strong>.</p>
+
+            <div class="code-block">const person = {
+    showDetails() {
+        return `${this.name} - ${this.email}`;
+    }
+};
+
+const john = Object.create(person);
+john.name = "John";
+john.email = "john@gmail.com";
+console.log(john.showDetails());
+
+// Second argument: property descriptors at creation time
+const admin = Object.create(person, {
+    role: {
+        value: "superuser",
+        writable: false,
+        enumerable: true,
+        configurable: false
+    }
+});
+console.log(admin.role); // "superuser"
+admin.role = "guest";    // ignored in sloppy mode; TypeError in strict mode</div>
+
+            <div class="tip-box">
+                <strong>Empty dictionary:</strong> <code>Object.create(null)</code> makes an object with <em>no</em> prototype. It has no inherited methods like <code>toString</code>, which is useful for a pure key-value map — but prefer <code>Map</code> for that job in modern code.
+            </div>
+
+            <h3>4. Constructor Function (Classical Pattern)</h3>
+            <p>A regular function used as a blueprint. Calling it with <code>new</code> runs a four-step lifecycle.</p>
+            <div class="info-box">
+                <strong>The <code>new</code> keyword lifecycle:</strong>
+                <ol>
+                    <li>Create a new empty object <code>{}</code>.</li>
+                    <li>Set that object's prototype to the function's <code>.prototype</code>.</li>
+                    <li>Bind <code>this</code> to the new object and run the function body.</li>
+                    <li>Return the object (unless the function returns a different object).</li>
+                </ol>
+            </div>
+            <div class="code-block">function Employee(name, email, age) {
+    this.name = name;
+    this.email = email;
+    this.age = age;
+}
+
+const sam = new Employee("Sam", "sam@gmail.com", 20);
+console.log(sam instanceof Employee); // true
+
+function Mobile(name, price) {
+    this.name = name;
+    this.price = price;
+    this.profile = function () {
+        console.log(`${this.name} costs $${this.price}`);
+    };
+}
+
+const phone = new Mobile("iPhone", 999);
+phone.profile();</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Forgot <code>new</code>?</strong> In sloppy mode <code>this</code> becomes the global object and you pollute <code>window</code>. In modules / strict mode, <code>this</code> is <code>undefined</code> and the assignment throws. Classes always require <code>new</code>.
+            </div>
+
+            <h3>5. Constructor with Prototype Delegation</h3>
+            <p>Put methods on <code>Constructor.prototype</code> so every instance shares <strong>one</strong> function in memory instead of copying it per object.</p>
+            <div class="code-block">function Student(name, email, classes) {
+    this.name = name;
+    this.email = email;
+    this.class = classes;
+}
+
+Student.prototype.login = function (date) {
+    this.date = date;
+    return `${this.name} logged on ${this.date}`;
+};
+
+const jane = new Student("Jane", "jane@gmail.com", 4);
+console.log(jane.login("2024-01-15"));
+console.log(jane.hasOwnProperty("login")); // false — it lives on the prototype</div>
+
+            <h3>6. Factory Function Pattern</h3>
+            <p>A function that returns a new object without <code>new</code>. Closures give you real privacy, and you avoid most <code>this</code> binding bugs.</p>
+            <div class="info-box">
+                <strong>Structural benefits:</strong>
+                <ul>
+                    <li>✅ <strong>Encapsulation:</strong> Private variables via closures.</li>
+                    <li>✅ <strong>No <code>this</code> surprises:</strong> The object is returned explicitly.</li>
+                    <li>✅ <strong>Composition:</strong> Easier to mix behaviors than deep class trees.</li>
+                </ul>
+            </div>
+            <div class="code-block">function createTeam(name, players) {
+    let score = 0; // private via closure
+
+    return {
+        teamName: name,
+        players,
+        addPoint() {
+            score += 1;
+            return score;
+        },
+        message() {
+            return `${name} has ${players} players and ${score} points`;
+        }
+    };
+}
+
+const myTeam = createTeam("Champions", 20);
+myTeam.addPoint();
+console.log(myTeam.message());
+console.log(myTeam.score); // undefined — not exposed</div>
+        </section>
+
+        <section id="this-keyword">
+            <h2>🎯 The <code>this</code> Keyword in Objects</h2>
+            <p><code>this</code> is not the object where the function was <em>defined</em>. It is set by <em>how the function is called</em> (except arrow functions, which inherit <code>this</code> from the enclosing scope).</p>
+
+            <table>
+                <tr><th>Call style</th><th>What <code>this</code> is</th></tr>
+                <tr><td><code>obj.method()</code></td><td>The object before the dot</td></tr>
+                <tr><td><code>fn()</code> (sloppy)</td><td>Global object (<code>window</code>)</td></tr>
+                <tr><td><code>fn()</code> (strict / modules)</td><td><code>undefined</code></td></tr>
+                <tr><td><code>new Fn()</code></td><td>The newly created instance</td></tr>
+                <tr><td><code>fn.call(obj)</code> / <code>apply</code> / <code>bind</code></td><td>The object you pass in</td></tr>
+                <tr><td>Arrow function</td><td>Lexical <code>this</code> from the parent scope</td></tr>
+            </table>
+
+            <div class="code-block">const counter = {
+    count: 0,
+    inc() {
+        this.count += 1;
+        return this.count;
+    },
+    // Arrow as a method is usually wrong: no own this
+    brokenInc: () => {
+        // this is NOT counter
+        return this.count;
+    }
+};
+
+console.log(counter.inc()); // 1
+
+const detached = counter.inc;
+// detached(); // TypeError in strict mode — this is undefined
+
+setTimeout(counter.inc, 0); // loses this unless you bind it
+setTimeout(() => counter.inc(), 0); // safe
+setTimeout(counter.inc.bind(counter), 0); // also safe</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Passing a method as a callback</strong> detaches it from the object. Bind it, wrap it in an arrow, or use a class field arrow if you truly need auto-bound methods (at the cost of one function per instance).
+            </div>
+        </section>
+
+        <section id="destructuring">
+            <h2>📦 Destructuring, Spread, and Rest</h2>
+            <p>These syntax features let you unpack, copy, and merge objects without listing every property by hand.</p>
+
+            <h3>Destructuring</h3>
+            <div class="code-block">const product = {
+    id: 12,
+    title: "Keyboard",
+    price: 79,
+    meta: { sku: "KB-12", stock: 8 }
+};
+
+const { title, price } = product;
+const { title: name, price: cost = 0 } = product; // rename + default
+const { meta: { sku } } = product;                // nested
+
+function format({ title, price }) {
+    return `${title}: $${price}`;
+}
+console.log(format(product));</div>
+
+            <h3>Spread and rest</h3>
+            <div class="code-block">const base = { role: "user", active: true };
+const extra = { name: "Dev", active: false };
+
+const merged = { ...base, ...extra, id: 1 };
+// extra.active wins — later keys overwrite earlier ones
+console.log(merged); // { role: "user", active: false, name: "Dev", id: 1 }
+
+const { id, ...publicFields } = merged;
+console.log(publicFields); // everything except id</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Spread is a shallow copy.</strong> Nested objects are still shared. Mutating <code>copy.address.city</code> also changes the original. See Cloning Objects below.
+            </div>
+        </section>
+
+        <section id="checking">
+            <h2>🔎 Checking Properties</h2>
+            <p>There are several ways to ask “does this object have this key?” They disagree on inherited properties and on keys whose value is <code>undefined</code>.</p>
+
+            <table>
+                <tr><th>Check</th><th>Own keys</th><th>Inherited keys</th><th>Notes</th></tr>
+                <tr><td><code>"key" in obj</code></td><td>Yes</td><td>Yes</td><td>True even if value is <code>undefined</code></td></tr>
+                <tr><td><code>obj.hasOwnProperty("key")</code></td><td>Yes</td><td>No</td><td>Can break on objects with no prototype</td></tr>
+                <tr><td><code>Object.hasOwn(obj, "key")</code></td><td>Yes</td><td>No</td><td>Preferred modern check</td></tr>
+                <tr><td><code>obj.key !== undefined</code></td><td>Maybe</td><td>Maybe</td><td>Wrong if the stored value is actually <code>undefined</code></td></tr>
+            </table>
+
+            <div class="code-block">const animal = { eats: true };
+const rabbit = Object.create(animal);
+rabbit.jumps = true;
+rabbit.color = undefined;
+
+console.log("eats" in rabbit);              // true  (inherited)
+console.log(Object.hasOwn(rabbit, "eats")); // false
+console.log(Object.hasOwn(rabbit, "jumps")); // true
+console.log(Object.hasOwn(rabbit, "color")); // true  (key exists)
+console.log(rabbit.color !== undefined);    // false — misleading</div>
+        </section>
+
+        <section id="cloning">
+            <h2>🧬 Cloning Objects</h2>
+            <p>Copying an object is one of the most common sources of bugs. Decide whether you need a <strong>shallow</strong> clone (top-level keys only) or a <strong>deep</strong> clone (nested objects too).</p>
+
+            <div class="code-block">const original = {
+    name: "Sam",
+    tags: ["js", "web"],
+    address: { city: "Austin" }
+};
+
+// Shallow copies — nested objects are shared
+const copy1 = { ...original };
+const copy2 = Object.assign({}, original);
+
+copy1.name = "Alex";
+console.log(original.name); // "Sam" — top-level primitive is safe
+
+copy1.address.city = "Dallas";
+console.log(original.address.city); // "Dallas" — nested object was shared
+
+// Deep clone (modern browsers / Node 17+)
+const deep = structuredClone(original);
+deep.address.city = "Miami";
+console.log(original.address.city); // still "Dallas"
+
+// JSON clone — loses functions, undefined, Date, Map, Symbol keys
+const jsonClone = JSON.parse(JSON.stringify(original));</div>
+
+            <div class="info-box premium">
+                <h3>When to use which clone</h3>
+                <ul>
+                    <li><strong>Spread / Object.assign:</strong> Flat configs, props, Redux-style updates of one level.</li>
+                    <li><strong>structuredClone:</strong> Nested data, Dates, Maps, Sets, ArrayBuffers. Cannot clone functions or DOM nodes.</li>
+                    <li><strong>JSON.parse(JSON.stringify):</strong> Simple JSON-safe data only. Dates become strings.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="json">
+            <h2>📄 JSON and Objects</h2>
+            <p>JSON is a <strong>data format</strong>, not a JavaScript object. <code>JSON.stringify</code> turns a value into a string for storage or a network request. <code>JSON.parse</code> turns that string back into data.</p>
+
+            <div class="code-block">const payload = {
+    id: 7,
+    title: "Notebook",
+    inStock: true,
+    created: new Date("2024-01-15"),
+    skip: undefined,
+    toJSON() {
+        return { id: this.id, title: this.title };
+    }
+};
+
+const text = JSON.stringify(payload);
+console.log(text); // '{"id":7,"title":"Notebook"}' — toJSON wins
+
+const parsed = JSON.parse(text);
+console.log(parsed.title); // "Notebook"
+
+// Pretty print + pick keys
+JSON.stringify(payload, ["id", "title"], 2);
+
+// Reviver — restore types while parsing
+const withDate = JSON.parse(
+    '{"when":"2024-01-15T00:00:00.000Z"}',
+    (key, value) => key === "when" ? new Date(value) : value
+);</div>
+
+            <div class="warning-box">
+                <strong>JSON cannot represent:</strong> <code>undefined</code>, functions, <code>Symbol</code> keys, <code>Infinity</code>, circular references. <code>JSON.stringify</code> throws on cycles. Dates stringify as ISO strings, not Date objects.
+            </div>
+        </section>
+
+        <section id="classes">
+            <h2>🎓 ES6 Classes</h2>
+            <p><span class="highlight">Classes are templates for creating objects</span>. They are syntactic sugar over constructor functions and prototypes, with a cleaner syntax and a few extra rules.</p>
+
+            <div class="info-box">
+                <strong>Technical nuances:</strong>
+                <ul>
+                    <li>✅ <strong>Not hoisted like functions:</strong> A class declaration sits in the Temporal Dead Zone until it is evaluated. You cannot <code>new</code> it before the declaration.</li>
+                    <li>✅ <strong>Always strict:</strong> The class body runs in <code>'use strict'</code>.</li>
+                    <li>✅ <strong>Methods live on the prototype:</strong> Instances share one copy of each method.</li>
+                    <li>✅ <strong>Must use <code>new</code>:</strong> Calling a class as a plain function throws <code>TypeError</code>.</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>The <code>prototype</code> vs <code>__proto__</code> confusion</h4>
+                <ul>
+                    <li><strong><code>prototype</code>:</strong> A property on a <strong>constructor function / class</strong>. Instances created with <code>new</code> get that object as their prototype.</li>
+                    <li><strong><code>[[Prototype]]</code> / <code>__proto__</code>:</strong> The internal link on an <strong>instance</strong> to its prototype. Prefer <code>Object.getPrototypeOf(obj)</code> over <code>__proto__</code>.</li>
+                </ul>
+            </div>
+
+            <h3>Basic class</h3>
+            <div class="code-block">class House {
+    owner = "unknown"; // public field — per instance
+
+    constructor(name, email, age) {
+        this.name = name;
+        this.email = email;
+        this.age = age;
+    }
+
+    getFullName() {
+        return `${this.name} - ${this.email}`;
+    }
+
+    describe() {
+        return `${this.getFullName()} (owner: ${this.owner})`;
+    }
+}
+
+const home = new House("Ada", "ada@mail.com", 36);
+console.log(home.getFullName());
+console.log(home instanceof House); // true
+console.log(typeof House);          // "function"</div>
+
+            <h3>Class expressions</h3>
+            <div class="code-block">const Cart = class {
+    constructor() {
+        this.items = [];
+    }
+    add(item) {
+        this.items.push(item);
+    }
+};
+
+const cart = new Cart();
+cart.add({ sku: "A1", qty: 2 });</div>
+        </section>
+
+        <section id="inheritance">
+            <h2>🔗 Inheritance with extends and super</h2>
+            <p>Inheritance lets a class reuse another class's fields and methods. <code>extends</code> sets up the prototype link. <code>super</code> calls the parent constructor or a parent method.</p>
+
+            <div class="code-block">class Person {
+    constructor(name) {
+        this.name = name;
+    }
+
+    introduce() {
+        return `${this.name} is a person`;
+    }
+}
+
+class Teacher extends Person {
+    constructor(name, email, phone) {
+        super(name); // must run before using this
+        this.email = email;
+        this.phone = phone;
+    }
+
+    introduce() {
+        return `${super.introduce()} and teaches via ${this.email}`;
+    }
+
+    fullDetails() {
+        return `${this.name} - ${this.email} - ${this.phone}`;
+    }
+}
+
+const sara = new Teacher("Sara", "sara@gmail.com", "901871771");
+console.log(sara.introduce());
+console.log(sara.fullDetails());
+console.log(sara instanceof Teacher); // true
+console.log(sara instanceof Person);  // true</div>
+
+            <div class="warning-box">
+                <strong>⚠️ <code>super()</code> first:</strong> In a subclass constructor you must call <code>super(...)</code> before you touch <code>this</code>. Forgetting it throws <code>ReferenceError</code>. If the child has no constructor, the engine calls the parent constructor for you.
+            </div>
+
+            <div class="tip-box">
+                <strong>Prefer composition for deep trees.</strong> One or two levels of <code>extends</code> is fine. Past that, mix small objects or helper functions instead of <code>AdminManagerUserBase</code> pyramids.
+            </div>
+        </section>
+
+        <section id="static">
+            <h2>⚡ Static Methods and Fields</h2>
+            <p>Static members are <span class="highlight">called on the class, not on instances</span>. They are stored on the constructor function itself. Use them for utilities, factories, and values shared by the type — not by each object.</p>
+
+            <div class="info-box">
+                <strong>When to use:</strong>
+                <ul>
+                    <li>✅ Utility functions (<code>Math.max</code>, <code>Array.from</code>)</li>
+                    <li>✅ Factory / parse methods (<code>User.fromJson</code>)</li>
+                    <li>✅ Shared constants and caches</li>
+                </ul>
+            </div>
+
+            <div class="code-block">class Calculator {
+    static version = "1.0.0";
+
+    static add(a, b) {
+        return a + b;
+    }
+
+    static multiply(a, b) {
+        return a * b;
+    }
+}
+
+console.log(Calculator.add(5, 3));      // 8
+console.log(Calculator.multiply(5, 3)); // 15
+console.log(Calculator.version);        // "1.0.0"
+
+const calc = new Calculator();
+// calc.add(1, 2); // TypeError — static methods are not on the instance
+
+class User {
+    constructor(name) {
+        this.name = name;
+    }
+
+    static fromJson(json) {
+        const data = JSON.parse(json);
+        return new User(data.name);
+    }
+}
+
+const u = User.fromJson('{"name":"Kai"}');
+console.log(u.name); // "Kai"</div>
+        </section>
+
+        <section id="private">
+            <h2>🔒 Private Fields and Methods</h2>
+            <p>ES2022 private class features start with <code>#</code>. Unlike the <code>_name</code> convention (only a style agreement), <code>#name</code> is <strong>enforced by the engine</strong>. Outside code cannot read, write, or even detect the field with <code>in</code> in the usual way.</p>
+
+            <div class="code-block">class BankAccount {
+    #balance = 0;
+    static #bankCode = "X9";
+
+    constructor(owner, opening = 0) {
+        this.owner = owner;
+        this.#balance = opening;
+    }
+
+    #assertAmount(amount) {
+        if (amount &lt;= 0) throw new RangeError("Amount must be positive");
+    }
+
+    deposit(amount) {
+        this.#assertAmount(amount);
+        this.#balance += amount;
+        return this.#balance;
+    }
+
+    get balance() {
+        return this.#balance;
+    }
+
+    static getBankCode() {
+        return BankAccount.#bankCode;
+    }
+}
+
+const acct = new BankAccount("Lijo", 100);
+acct.deposit(50);
+console.log(acct.balance);          // 150
+console.log(BankAccount.getBankCode());
+// console.log(acct.#balance);      // SyntaxError
+// console.log(acct.balance = 0);   // no setter — ignored / error in strict</div>
+
+            <div class="info-box premium">
+                <h3>Hard privacy vs closures</h3>
+                <p><code>#fields</code> are per-instance and checked at runtime (a “brand check”). Factory closures also hide data, but each method is a new function. Classes with private fields keep methods on the prototype and still hide state.</p>
+            </div>
+        </section>
+
+        <section id="call-apply-bind">
+            <h2>📞 Call, Apply, and Bind</h2>
+            <p>These three methods set <code>this</code> manually so you can reuse a function with different objects.</p>
+
+            <h3>call() — arguments listed one by one</h3>
+            <div class="code-block">const person1 = { firstName: "Akash", lastName: "John" };
+const person2 = { firstName: "Sachin", lastName: "Tendulkar" };
+
+function printFullName(hometown, state) {
+    console.log(`${this.firstName} ${this.lastName} from ${hometown}, ${state}`);
+}
+
+printFullName.call(person1, "Bangalore", "Karnataka");
+printFullName.call(person2, "Mumbai", "Maharashtra");</div>
+
+            <h3>apply() — arguments as an array</h3>
+            <div class="code-block">printFullName.apply(person1, ["Bangalore", "Karnataka"]);
+printFullName.apply(person2, ["Mumbai", "Maharashtra"]);
+
+const nums = [3, 9, 1, 14];
+console.log(Math.max.apply(null, nums)); // older pattern
+console.log(Math.max(...nums));          // modern equivalent</div>
+
+            <h3>bind() — returns a new function</h3>
+            <p><code>bind</code> does not run the function. It returns a bound function you can pass to <code>setTimeout</code>, event listeners, or React callbacks.</p>
+            <div class="code-block">const later = printFullName.bind(person2, "Mumbai", "Maharashtra");
+later(); // still uses person2 as this
+
+const greetMumbai = printFullName.bind(person2, "Mumbai");
+greetMumbai("Maharashtra"); // partial application</div>
+
+            <table>
+                <tr><th>Method</th><th>Arguments</th><th>Runs now?</th><th>Returns</th></tr>
+                <tr><td><code>call()</code></td><td>Comma-separated</td><td>Yes</td><td>Function result</td></tr>
+                <tr><td><code>apply()</code></td><td>Array</td><td>Yes</td><td>Function result</td></tr>
+                <tr><td><code>bind()</code></td><td>Comma-separated</td><td>No</td><td>New function</td></tr>
+            </table>
+        </section>
+
+        <section id="object-methods">
+            <h2>🔧 Built-in Object Methods</h2>
+            <p>The <code>Object</code> constructor exposes static helpers for listing keys, merging, locking, and converting objects.</p>
+
+            <h3>Object.keys(), values(), entries(), fromEntries()</h3>
+            <div class="code-block">const person = { name: "John", age: 30, city: "New York" };
+
+console.log(Object.keys(person));    // ["name", "age", "city"]
+console.log(Object.values(person));  // ["John", 30, "New York"]
+console.log(Object.entries(person)); // [["name","John"], ["age",30], ...]
+
+const doubled = Object.fromEntries(
+    Object.entries({ a: 1, b: 2 }).map(([k, v]) => [k, v * 2])
+);
+console.log(doubled); // { a: 2, b: 4 }</div>
+
+            <div class="tip-box">
+                These helpers list <strong>own enumerable string keys</strong>. They skip inherited keys, Symbol keys, and non-enumerable properties. Use <code>Object.getOwnPropertySymbols</code> or <code>Reflect.ownKeys</code> when you need everything.
+            </div>
+
+            <h3>Object.assign() — merge (shallow)</h3>
+            <div class="code-block">const target = { a: 1, b: 2 };
+const source = { b: 4, c: 5 };
+
+Object.assign(target, source);
+console.log(target); // { a: 1, b: 4, c: 5 } — target was mutated
+
+const merged = Object.assign({}, target, source); // safer copy
+const also = { ...target, ...source };            // same idea with spread</div>
+
+            <h3>Object.is() — same-value comparison</h3>
+            <p><code>===</code> treats <code>+0</code> and <code>-0</code> as equal, and treats <code>NaN</code> as not equal to itself. <code>Object.is</code> does the opposite for those two cases.</p>
+            <div class="code-block">console.log(NaN === NaN);          // false
+console.log(Object.is(NaN, NaN));  // true
+console.log(+0 === -0);            // true
+console.log(Object.is(+0, -0));    // false</div>
+
+            <h3>Locking objects: freeze, seal, preventExtensions</h3>
+            <table>
+                <tr><th>API</th><th>Add keys</th><th>Delete keys</th><th>Change values</th></tr>
+                <tr><td><code>Object.preventExtensions</code></td><td>No</td><td>Yes</td><td>Yes</td></tr>
+                <tr><td><code>Object.seal</code></td><td>No</td><td>No</td><td>Yes</td></tr>
+                <tr><td><code>Object.freeze</code></td><td>No</td><td>No</td><td>No</td></tr>
+            </table>
+
+            <div class="code-block">const frozen = { prop: 42 };
+Object.freeze(frozen);
+frozen.prop = 33;          // silent fail, or TypeError in strict mode
+console.log(frozen.prop);  // 42
+console.log(Object.isFrozen(frozen)); // true
+
+const sealed = { property1: 42 };
+Object.seal(sealed);
+sealed.property1 = 33;     // allowed
+delete sealed.property1;   // fails
+console.log(Object.isSealed(sealed)); // true
+
+const limited = { name: "John" };
+Object.preventExtensions(limited);
+limited.age = 30;          // fails
+limited.name = "Jane";     // works
+delete limited.name;       // works
+console.log(Object.isExtensible(limited)); // false</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Freeze is shallow.</strong> Nested objects inside a frozen parent can still be mutated. Freeze each level, or treat the data as immutable by convention (spread updates) instead of relying on <code>Object.freeze</code> for deep safety.
+            </div>
+        </section>
+
+        <section id="accessors">
+            <h2>🎯 Getters and Setters</h2>
+            <p>Accessors look like data properties but run a function. Use them to validate writes, format reads, or compute a value on the fly without exposing internal fields.</p>
+
+            <div class="info-box">
+                <strong>Benefits:</strong>
+                <ul>
+                    <li>✅ Hide internal storage (<code>_price</code> or <code>#price</code>)</li>
+                    <li>✅ Validate before assignment</li>
+                    <li>✅ Compute values only when read</li>
+                    <li>✅ Offer read-only or write-only surfaces</li>
+                </ul>
+            </div>
+
+            <div class="code-block">class Product {
+    constructor(name, price) {
+        this._name = name;
+        this._price = price;
+    }
+
+    get price() {
+        return `$${this._price}`;
+    }
+
+    set price(value) {
+        if (value &lt;= 0) {
+            throw new Error("Price must be greater than zero");
+        }
+        this._price = value;
+    }
+
+    get name() {
+        return this._name;
+    }
+}
+
+const p = new Product("Laptop", 1000);
+console.log(p.price); // "$1000"
+p.price = 1200;
+console.log(p.price); // "$1200"
+
+const account = {
+    _n: "Kai",
+    get displayName() {
+        return this._n.toUpperCase();
+    }
+};
+console.log(account.displayName); // "KAI"</div>
+        </section>
+
+        <section id="descriptors">
+            <h2>🛠️ Property Descriptors</h2>
+            <p>Every own property is more than a key and a value. It has attributes that control writing, listing, and deletion. Data properties have <code>value</code> + <code>writable</code>. Accessor properties have <code>get</code> / <code>set</code> instead.</p>
+
+            <table>
+                <tr><th>Attribute</th><th>Default (literals)</th><th>Meaning</th></tr>
+                <tr><td><code>value</code></td><td>the assigned value</td><td>Stored data</td></tr>
+                <tr><td><code>writable</code></td><td><code>true</code></td><td>Can assign a new value</td></tr>
+                <tr><td><code>enumerable</code></td><td><code>true</code></td><td>Shows up in <code>for...in</code> and <code>Object.keys</code></td></tr>
+                <tr><td><code>configurable</code></td><td><code>true</code></td><td>Can delete or redefine the property</td></tr>
+            </table>
+
+            <div class="code-block">const obj = { visible: 1 };
+
+console.log(Object.getOwnPropertyDescriptor(obj, "visible"));
+// { value: 1, writable: true, enumerable: true, configurable: true }
+
+Object.defineProperty(obj, "id", {
+    value: 99,
+    writable: false,
+    enumerable: false,
+    configurable: false
+});
+
+console.log(obj.id);              // 99
+console.log(Object.keys(obj));    // ["visible"] — id is hidden
+obj.id = 100;                     // ignored (or TypeError in strict)
+console.log(obj.id);              // 99
+
+Object.defineProperties(obj, {
+    label: {
+        get() { return `item-${this.visible}`; }
+    }
+});
+console.log(obj.label); // "item-1"</div>
+        </section>
+
+        <section id="prototype">
+            <h2>🔗 Prototypes and Delegation</h2>
+            <p>Every object has an internal <strong>[[Prototype]]</strong> link. When a property is missing, the engine walks that chain. This is how shared methods work — not by copying functions onto every instance.</p>
+
+            <div class="info-box premium">
+                <h3>The prototype chain</h3>
+                <ol>
+                    <li>Look on the object itself. Found? Use it.</li>
+                    <li>Otherwise look on <code>Object.getPrototypeOf(obj)</code>.</li>
+                    <li>Keep walking until a property is found or the chain ends at <code>null</code>.</li>
+                    <li>If nothing matches, the result is <code>undefined</code>.</li>
+                </ol>
+            </div>
+
+            <div class="code-block">const animal = { eats: true, walk() { return "walking"; } };
+const rabbit = { jumps: true };
+
+Object.setPrototypeOf(rabbit, animal);
+console.log(rabbit.eats);  // true — delegated
+console.log(rabbit.walk()); // "walking"
+
+console.log(Object.getPrototypeOf(rabbit) === animal); // true
+console.log(animal.isPrototypeOf(rabbit));             // true
+
+function Dog(name) {
+    this.name = name;
+}
+Dog.prototype.bark = function () {
+    return `${this.name} says woof`;
+};
+
+const rex = new Dog("Rex");
+console.log(rex.bark());
+console.log(Object.getPrototypeOf(rex) === Dog.prototype); // true</div>
+
+            <div class="warning-box">
+                <strong>Avoid <code>__proto__</code> in application code.</strong> It exists for compatibility. Use <code>Object.getPrototypeOf</code> / <code>Object.setPrototypeOf</code>, or set the prototype at creation time with <code>Object.create</code>. Changing prototypes on live objects is also slow.
+            </div>
+        </section>
+
+        <section id="map">
+            <h2>🗺️ Map and WeakMap</h2>
+            <p>A <code>Map</code> is a collection of key-value pairs designed for frequent add/lookup/delete. Unlike a plain object, keys can be <strong>any value</strong> — objects, functions, numbers — and insertion order is guaranteed.</p>
+
+            <table>
+                <tr><th>Topic</th><th>Object</th><th>Map</th></tr>
+                <tr><td>Key types</td><td>Strings and Symbols</td><td>Any value, including objects</td></tr>
+                <tr><td>Size</td><td>Manual (<code>Object.keys</code>)</td><td><code>map.size</code></td></tr>
+                <tr><td>Order</td><td>Integer keys then insertion</td><td>Insertion order</td></tr>
+                <tr><td>Iteration</td><td>Need <code>Object.entries</code></td><td>Directly iterable</td></tr>
+                <tr><td>Prototype keys</td><td>Can clash with <code>toString</code> etc.</td><td>No inherited keys</td></tr>
+                <tr><td>JSON</td><td>Native stringify/parse</td><td>Needs a custom conversion</td></tr>
+            </table>
+
+            <div class="code-block">const scores = new Map();
+const user = { id: 1 };
+
+scores.set("kai", 12);
+scores.set(user, 99);
+scores.set("kai", 15); // update existing key
+
+console.log(scores.get("kai")); // 15
+console.log(scores.has(user));  // true
+console.log(scores.size);       // 2
+
+for (const [key, value] of scores) {
+    console.log(key, value);
+}
+
+scores.delete("kai");
+scores.clear();
+
+// Build from pairs
+const fromPairs = new Map([
+    ["html", 1],
+    ["css", 2]
+]);</div>
+
+            <div class="info-box premium">
+                <h3>WeakMap for memory hygiene</h3>
+                <p>A <strong>WeakMap</strong> only accepts objects as keys and holds them weakly. If nothing else points at that object, it can be garbage-collected — the WeakMap entry disappears with it. Keys are not enumerable (no <code>.size</code>, no iteration). Use WeakMap for private metadata, caches, or DOM-node state that should not keep the node alive.</p>
+            </div>
+
+            <div class="code-block">const privateData = new WeakMap();
+
+class Session {
+    constructor(id) {
+        privateData.set(this, { id, openedAt: Date.now() });
+    }
+
+    get id() {
+        return privateData.get(this).id;
+    }
+}
+
+const s = new Session("abc");
+console.log(s.id); // "abc"
+// When s is no longer referenced, its WeakMap entry can be collected</div>
+        </section>
+
+        <section id="proxy">
+            <h2>🎭 Proxy and Reflect</h2>
+            <p>A <code>Proxy</code> wraps a target object and intercepts operations: read, write, <code>in</code>, <code>delete</code>, function calls, and more. <code>Reflect</code> provides the default implementation of those same operations so traps can forward cleanly.</p>
+
+            <div class="code-block">const target = { message: "hello", count: 1 };
+
+const handler = {
+    get(obj, prop, receiver) {
+        if (prop in obj) {
+            return Reflect.get(obj, prop, receiver);
+        }
+        return "Default Value";
+    },
+    set(obj, prop, value, receiver) {
+        if (prop === "count" &amp;&amp; value &lt; 0) {
+            throw new RangeError("count cannot be negative");
+        }
+        return Reflect.set(obj, prop, value, receiver);
+    },
+    has(obj, prop) {
+        return prop !== "secret" &amp;&amp; Reflect.has(obj, prop);
+    }
+};
+
+const proxy = new Proxy(target, handler);
+console.log(proxy.message); // "hello"
+console.log(proxy.missing); // "Default Value"
+proxy.count = 4;
+// proxy.count = -1;        // RangeError</div>
+
+            <div class="tip-box">
+                <strong>Common uses:</strong> validation, logging, reactive state (Vue), default values, and wrapping APIs. Keep traps small — a Proxy on a hot path is slower than a plain object.
+            </div>
+        </section>
+
+        <section id="for-loops">
+            <h2>🔄 for...in vs for...of</h2>
+            <p><code>for...in</code> walks <strong>enumerable property keys</strong> (including inherited ones). <code>for...of</code> walks <strong>iterable values</strong> — arrays, strings, Maps, Sets, and anything with <code>Symbol.iterator</code>.</p>
+
+            <table>
+                <tr><th>Feature</th><th>for...in</th><th>for...of</th></tr>
+                <tr><td><strong>Yields</strong></td><td>Keys (strings)</td><td>Values</td></tr>
+                <tr><td><strong>Best with</strong></td><td>Plain objects</td><td>Arrays, Maps, Sets, strings</td></tr>
+                <tr><td><strong>Inherited keys</strong></td><td>Yes (usually unwanted)</td><td>No</td></tr>
+                <tr><td><strong>Works on plain objects?</strong></td><td>Yes</td><td>No (objects are not iterable)</td></tr>
+            </table>
+
+            <div class="code-block">const arr = ["a", "b", "c"];
+arr.extra = "newValue";
+
+for (const key in arr) {
+    console.log(key); // "0", "1", "2", "extra"
+}
+
+for (const value of arr) {
+    console.log(value); // "a", "b", "c"
+}
+
+const user = { name: "Sam", role: "dev" };
+
+// Safer object loops
+for (const key of Object.keys(user)) {
+    console.log(key, user[key]);
+}
+
+for (const [key, value] of Object.entries(user)) {
+    console.log(key, value);
+}
+
+// If you must use for...in, skip inherited keys
+for (const key in user) {
+    if (Object.hasOwn(user, key)) {
+        console.log(key);
+    }
+}</div>
+        </section>
+
+        <section id="errors">
+            <h2>⚠️ JavaScript Errors</h2>
+            <p>Errors are objects. They carry a <code>name</code>, a <code>message</code>, and a <code>stack</code>. Throwing and catching them is how you recover from invalid data, missing references, and failed I/O.</p>
+
+            <h3>Built-in error types</h3>
+            <div class="code-block">// RangeError — value outside an allowed range
+const checkRange = (num) =&gt; {
+    if (num &lt; 30) throw new RangeError("Wrong number");
+    return true;
+};
+
+// ReferenceError — unknown variable
+// console.log(x);
+
+// TypeError — value is the wrong type
+const num = 15;
+// num.split("");
+
+// SyntaxError — invalid source (usually at parse time)
+// const func = () =&gt; console.log("hello") }
+
+// URIError — bad encodeURI / decodeURI input
+// decodeURI("%sdfk");</div>
+
+            <h3>try / catch / finally and custom errors</h3>
+            <div class="code-block">class ValidationError extends Error {
+    constructor(message, field) {
+        super(message);
+        this.name = "ValidationError";
+        this.field = field;
+    }
+}
+
+function createUser(data) {
+    if (!data.email) {
+        throw new ValidationError("email is required", "email");
+    }
+    return { ...data };
+}
+
+try {
+    createUser({ name: "Sam" });
+} catch (error) {
+    console.log(error.name);    // ValidationError
+    console.log(error.message); // email is required
+    console.log(error.field);   // email
+    console.log(error.stack);
+} finally {
+    console.log("always runs");
+}</div>
+        </section>
+
+        <section id="best-practices">
+            <h2>📌 Object Best Practices</h2>
+            <ul>
+                <li>✅ Use object literals for one-off data and configs.</li>
+                <li>✅ Use classes (or factories) when you need many instances with shared methods.</li>
+                <li>✅ Prefer <code>const</code> for object bindings — the binding is fixed, the contents can still change.</li>
+                <li>✅ Copy before you mutate shared state (<code>{ ...obj, key: next }</code>).</li>
+                <li>✅ Use <code>Object.hasOwn</code> or <code>Object.keys</code> instead of raw <code>for...in</code>.</li>
+                <li>✅ Use <code>Map</code> when keys are not strings, or when you add and delete keys often.</li>
+                <li>✅ Keep <code>this</code> methods attached, or bind them before passing as callbacks.</li>
+                <li>✅ Do not use objects as deep-cloneable dumps of functions and Dates — pick <code>structuredClone</code> or a serializer.</li>
+            </ul>
+
+            <div class="info-box">
+                <h3>Quick decision guide</h3>
+                <ul>
+                    <li><strong>Need a record of named fields?</strong> Object literal.</li>
+                    <li><strong>Need many similar instances?</strong> Class or factory.</li>
+                    <li><strong>Need a dictionary with unknown keys?</strong> <code>Map</code> (or <code>Object.create(null)</code>).</li>
+                    <li><strong>Need hidden instance data?</strong> <code>#fields</code> or a WeakMap.</li>
+                    <li><strong>Need to intercept reads/writes?</strong> Proxy.</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth &lt;= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos &gt;= sectionTop &amp;&amp; sectionTop + sectionHeight &gt; scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

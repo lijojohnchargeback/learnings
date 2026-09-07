@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postman - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📮 Postman Complete Guide</h1>
+            <p>API Testing, Development & Automation</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#methods">HTTP Methods</a></li>
+                <li><a href="#collections">Collections</a></li>
+                <li><a href="#testing">Testing</a></li>
+                <li><a href="#automation">Automation</a></li>
+                <li><a href="#status">Status Codes</a></li>
+            </ul>
+        </nav>
+
+        <section id="intro">
+            <h2>📚 Introduction to Postman</h2>
+            
+            <p><span class="highlight">Postman</span> is a powerful API development and testing tool that simplifies the process of building, testing, and documenting APIs.</p>
+
+            <div class="info-box">
+                <h3>What is Postman?</h3>
+                <ul>
+                    <li>✅ <strong>API Testing Platform:</strong> Test REST, SOAP, and GraphQL APIs</li>
+                    <li>✅ <strong>Collaboration Tool:</strong> Share collections with team members</li>
+                    <li>✅ <strong>Automation:</strong> Run automated tests and monitor APIs</li>
+                    <li>✅ <strong>Documentation:</strong> Auto-generate API documentation</li>
+                </ul>
+            </div>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li>🔹 <strong>Collections:</strong> Group related API requests</li>
+                <li>🔹 <strong>Environments:</strong> Manage variables for different setups</li>
+                <li>🔹 <strong>Tests:</strong> Write automated tests using JavaScript</li>
+                <li>🔹 <strong>Mock Servers:</strong> Simulate API responses</li>
+                <li>🔹 <strong>Monitoring:</strong> Schedule API tests</li>
+            </ul>
+        </section>
+
+        <section id="methods">
+            <h2>🌐 HTTP Methods</h2>
+
+            <h3>GET Method</h3>
+            <p><span class="highlight">GET</span> is used to retrieve data from a server. It should not modify server data.</p>
+            
+            <div class="info-box">
+                <p><strong>Real-World Use Cases:</strong></p>
+                <ul>
+                    <li>📖 Fetching user profile information</li>
+                    <li>📖 Loading product lists from e-commerce site</li>
+                    <li>📖 Getting weather data from API</li>
+                </ul>
+            </div>
+
+            <h4>Query Parameters</h4>
+            <p>Query params (query strings) help filter data. They start after <code>?</code> and use <code>&</code> to separate multiple params.</p>
+            
+            <div class="code-block"><span class="comment">// GET with query parameters</span>
+GET https://api.example.com/products?category=electronics&price_max=1000
+
+<span class="comment">// Multiple query parameters</span>
+GET https://api.example.com/users?role=admin&status=active&page=2
+
+<span class="comment">// Real example: Search GitHub repositories</span>
+GET https://api.github.com/search/repositories?q=javascript&sort=stars</div>
+
+            <h4>Path Variables</h4>
+            <p>Path variables are part of the URL path and typically represent specific resources (IDs).</p>
+            
+            <div class="code-block"><span class="comment">// GET with path variable (user ID)</span>
+GET https://api.example.com/users/12345
+
+<span class="comment">// GET product by ID</span>
+GET https://api.example.com/products/987
+
+<span class="comment">// GET order details</span>
+GET https://api.example.com/orders/ORD-2024-001</div>
+
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Query Parameters</th>
+                    <th>Path Variables</th>
+                </tr>
+                <tr>
+                    <td><strong>Format</strong></td>
+                    <td>?key=value&key2=value2</td>
+                    <td>/users/123</td>
+                </tr>
+                <tr>
+                    <td><strong>Required</strong></td>
+                    <td>Optional</td>
+                    <td>Mandatory</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Case</strong></td>
+                    <td>Filtering, sorting, pagination</td>
+                    <td>Identifying specific resources</td>
+                </tr>
+            </table>
+
+            <h3>POST Method</h3>
+            <p><span class="highlight">POST</span> is used to send data to create a new resource on the server.</p>
+            
+            <div class="code-block"><span class="comment">// POST - Create new user</span>
+POST https://api.example.com/users
+Content-Type: application/json
+
+{
+    <span class="string">"name"</span>: <span class="string">"John Doe"</span>,
+    <span class="string">"email"</span>: <span class="string">"john@example.com"</span>,
+    <span class="string">"age"</span>: <span class="number">30</span>
+}
+
+<span class="comment">// Real example: Create new order</span>
+POST https://api.example.com/orders
+{
+    <span class="string">"userId"</span>: <span class="number">123</span>,
+    <span class="string">"items"</span>: [
+        {<span class="string">"productId"</span>: <span class="number">456</span>, <span class="string">"quantity"</span>: <span class="number">2</span>},
+        {<span class="string">"productId"</span>: <span class="number">789</span>, <span class="string">"quantity"</span>: <span class="number">1</span>}
+    ],
+    <span class="string">"totalAmount"</span>: <span class="number">299.99</span>
+}</div>
+
+            <h3>PUT vs PATCH</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>PUT</th>
+                    <th>PATCH</th>
+                </tr>
+                <tr>
+                    <td><strong>Purpose</strong></td>
+                    <td>Replace entire resource</td>
+                    <td>Update specific fields</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Sent</strong></td>
+                    <td>Complete object</td>
+                    <td>Only changed fields</td>
+                </tr>
+                <tr>
+                    <td><strong>Example</strong></td>
+                    <td>Replace user profile</td>
+                    <td>Update user email only</td>
+                </tr>
+            </table>
+
+            <div class="code-block"><span class="comment">// PUT - Replace entire user</span>
+PUT https://api.example.com/users/123
+{
+    <span class="string">"name"</span>: <span class="string">"John Smith"</span>,
+    <span class="string">"email"</span>: <span class="string">"john.smith@example.com"</span>,
+    <span class="string">"age"</span>: <span class="number">31</span>,
+    <span class="string">"address"</span>: <span class="string">"123 Main St"</span>
+}
+
+<span class="comment">// PATCH - Update only email</span>
+PATCH https://api.example.com/users/123
+{
+    <span class="string">"email"</span>: <span class="string">"newemail@example.com"</span>
+}</div>
+
+            <h3>DELETE Method</h3>
+            <div class="code-block"><span class="comment">// DELETE - Remove user</span>
+DELETE https://api.example.com/users/123
+
+<span class="comment">// DELETE - Remove product from cart</span>
+DELETE https://api.example.com/cart/items/456</div>
+
+            <h3>HEAD Method</h3>
+            <p>HEAD is used to check if an API is working without getting the response body.</p>
+            
+            <div class="code-block"><span class="comment">// HEAD - Check if resource exists</span>
+HEAD https://api.example.com/users/123
+
+<span class="comment">// Response: Only headers, no body
+// Status: 200 OK means user exists</span></div>
+        </section>
+
+        <section id="collections">
+            <h2>📁 Collections & Variables</h2>
+
+            <h3>What is a Collection?</h3>
+            <p>A <span class="highlight">collection</span> is a group of related API requests organized together.</p>
+
+            <div class="info-box">
+                <p><strong>Benefits of Collections:</strong></p>
+                <ul>
+                    <li>✅ Organize requests by feature or module</li>
+                    <li>✅ Share with team members</li>
+                    <li>✅ Run all requests together</li>
+                    <li>✅ Export and version control</li>
+                </ul>
+            </div>
+
+            <h3>Variables in Postman</h3>
+            
+            <h4>1. Collection Variables</h4>
+            <p>Variables scoped to a specific collection</p>
+            
+            <div class="code-block"><span class="comment">// Set collection variable in Tests tab</span>
+pm.<span class="function">collectionVariables</span>.<span class="function">set</span>(<span class="string">"userId"</span>, <span class="number">12345</span>);
+
+<span class="comment">// Get collection variable</span>
+<span class="keyword">const</span> userId = pm.<span class="function">collectionVariables</span>.<span class="function">get</span>(<span class="string">"userId"</span>);
+
+<span class="comment">// Use in URL: {{userId}}</span>
+GET https://api.example.com/users/{{userId}}</div>
+
+            <h4>2. Environment Variables</h4>
+            <p>Variables for different environments (dev, staging, production)</p>
+            
+            <div class="code-block"><span class="comment">// Set environment variable</span>
+pm.<span class="function">environment</span>.<span class="function">set</span>(<span class="string">"baseUrl"</span>, <span class="string">"https://api.example.com"</span>);
+pm.<span class="function">environment</span>.<span class="function">set</span>(<span class="string">"apiKey"</span>, <span class="string">"secret-key-123"</span>);
+
+<span class="comment">// Get environment variable</span>
+<span class="keyword">const</span> baseUrl = pm.<span class="function">environment</span>.<span class="function">get</span>(<span class="string">"baseUrl"</span>);
+
+<span class="comment">// Use in request</span>
+GET {{baseUrl}}/users
+Headers:
+  Authorization: Bearer {{apiKey}}</div>
+
+            <h4>3. Global Variables</h4>
+            <div class="code-block"><span class="comment">// Set global variable</span>
+pm.<span class="function">globals</span>.<span class="function">set</span>(<span class="string">"token"</span>, <span class="string">"eyJhbGc..."</span>);
+
+<span class="comment">// Get global variable</span>
+<span class="keyword">const</span> token = pm.<span class="function">globals</span>.<span class="function">get</span>(<span class="string">"token"</span>);
+
+<span class="comment">// Clear variable</span>
+pm.<span class="function">globals</span>.<span class="function">unset</span>(<span class="string">"token"</span>);</div>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Security Best Practice:</strong></p>
+                <p>Never store passwords in <strong>Initial Value</strong> - they are visible to anyone with access to the collection. Use <strong>Current Value</strong> instead, which is local to your machine.</p>
+            </div>
+        </section>
+
+        <section id="testing">
+            <h2>🧪 API Testing</h2>
+
+            <h3>Types of Testing</h3>
+            
+            <h4>1. Unit Testing</h4>
+            <p>Testing individual components in isolation</p>
+            <div class="info-box">
+                <p>Test each API endpoint separately to ensure it works correctly</p>
+            </div>
+
+            <h4>2. Integration Testing</h4>
+            <p>Testing combined components working together</p>
+
+            <h4>3. End-to-End Testing</h4>
+            <p>Testing complete user workflows from start to finish</p>
+            
+            <div class="code-block"><span class="comment">// E2E Example: User Registration Flow
+// 1. Register user
+// 2. Login with credentials
+// 3. Get user profile
+// 4. Update profile
+// 5. Delete account</span></div>
+
+            <h3>Writing Tests in Postman</h3>
+
+            <h4>Status Code Testing</h4>
+            <div class="code-block"><span class="comment">// Test 200 OK status</span>
+pm.<span class="function">test</span>(<span class="string">"Status code is 200"</span>, <span class="keyword">function</span>() {
+    pm.<span class="function">response</span>.<span class="function">to</span>.<span class="function">have</span>.<span class="function">status</span>(<span class="number">200</span>);
+});
+
+<span class="comment">// Alternative syntax</span>
+pm.<span class="function">test</span>(<span class="string">"Status is 200"</span>, () => {
+    pm.<span class="function">expect</span>(pm.response.code).<span class="function">to</span>.<span class="function">equal</span>(<span class="number">200</span>);
+});
+
+<span class="comment">// Test multiple status codes</span>
+pm.<span class="function">test</span>(<span class="string">"Status is 201 or 202"</span>, () => {
+    pm.<span class="function">expect</span>(pm.response.code).<span class="function">to</span>.<span class="function">be</span>.<span class="function">oneOf</span>([<span class="number">201</span>, <span class="number">202</span>]);
+});</div>
+
+            <h4>Response Body Testing</h4>
+            <div class="code-block"><span class="comment">// Get response as JSON</span>
+<span class="keyword">const</span> response = pm.<span class="function">response</span>.<span class="function">json</span>();
+
+<span class="comment">// Test response type</span>
+pm.<span class="function">test</span>(<span class="string">"Response is an object"</span>, () => {
+    pm.<span class="function">expect</span>(response).<span class="function">to</span>.<span class="function">be</span>.<span class="function">an</span>(<span class="string">"object"</span>);
+});
+
+pm.<span class="function">test</span>(<span class="string">"Users is an array"</span>, () => {
+    pm.<span class="function">expect</span>(response.users).<span class="function">to</span>.<span class="function">be</span>.<span class="function">an</span>(<span class="string">"array"</span>);
+});
+
+<span class="comment">// Test field values</span>
+pm.<span class="function">test</span>(<span class="string">"Status is true"</span>, () => {
+    pm.<span class="function">expect</span>(response.status).<span class="function">to</span>.<span class="function">be</span>.<span class="function">true</span>;
+});
+
+pm.<span class="function">test</span>(<span class="string">"Job status is completed"</span>, () => {
+    pm.<span class="function">expect</span>(response.job_status).<span class="function">to</span>.<span class="function">eql</span>(<span class="string">"Completed"</span>);
+});</div>
+
+            <h4>Response Time Testing</h4>
+            <div class="code-block"><span class="comment">// Test response time</span>
+pm.<span class="function">test</span>(<span class="string">"Response time is less than 500ms"</span>, () => {
+    pm.<span class="function">expect</span>(pm.response.responseTime).<span class="function">to</span>.<span class="function">be</span>.<span class="function">below</span>(<span class="number">500</span>);
+});</div>
+
+            <h4>Real-World Testing Example</h4>
+            <div class="code-block"><span class="comment">// Complete test suite for user API</span>
+pm.<span class="function">test</span>(<span class="string">"User API Tests"</span>, () => {
+    <span class="keyword">const</span> response = pm.<span class="function">response</span>.<span class="function">json</span>();
+    
+    <span class="comment">// Status check</span>
+    pm.<span class="function">response</span>.<span class="function">to</span>.<span class="function">have</span>.<span class="function">status</span>(<span class="number">200</span>);
+    
+    <span class="comment">// Structure validation</span>
+    pm.<span class="function">expect</span>(response).<span class="function">to</span>.<span class="function">have</span>.<span class="function">property</span>(<span class="string">"data"</span>);
+    pm.<span class="function">expect</span>(response.data).<span class="function">to</span>.<span class="function">be</span>.<span class="function">an</span>(<span class="string">"object"</span>);
+    
+    <span class="comment">// Field validation</span>
+    pm.<span class="function">expect</span>(response.data.email).<span class="function">to</span>.<span class="function">include</span>(<span class="string">"@"</span>);
+    pm.<span class="function">expect</span>(response.data.age).<span class="function">to</span>.<span class="function">be</span>.<span class="function">above</span>(<span class="number">18</span>);
+    
+    <span class="comment">// Save user ID for next request</span>
+    pm.<span class="function">collectionVariables</span>.<span class="function">set</span>(<span class="string">"userId"</span>, response.data.id);
+});</div>
+        </section>
+
+        <section id="automation">
+            <h2>🤖 Automation & Runner</h2>
+
+            <h3>Collection Runner</h3>
+            <p>Run entire collections automatically to test multiple requests sequentially.</p>
+
+            <div class="info-box">
+                <p><strong>Use Cases:</strong></p>
+                <ul>
+                    <li>🔄 Run regression tests</li>
+                    <li>🔄 Test with different data sets</li>
+                    <li>🔄 Validate complete workflows</li>
+                    <li>🔄 Generate test reports</li>
+                </ul>
+            </div>
+
+            <h3>Postman CLI (Newman)</h3>
+            <div class="code-block"><span class="comment"># Install Newman</span>
+npm install -g newman
+
+<span class="comment"># Run collection</span>
+newman run collection.json
+
+<span class="comment"># Run with environment</span>
+newman run collection.json -e environment.json
+
+<span class="comment"># Generate HTML report</span>
+newman run collection.json -r html</div>
+        </section>
+
+        <section id="status">
+            <h2>📊 HTTP Status Codes</h2>
+
+            <h3>1xx - Informational</h3>
+            <table>
+                <tr>
+                    <th>Code</th>
+                    <th>Message</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><strong>100</strong></td>
+                    <td>Continue</td>
+                    <td>Request received, continue with request</td>
+                </tr>
+                <tr>
+                    <td><strong>101</strong></td>
+                    <td>Switching Protocols</td>
+                    <td>Server switching protocols</td>
+                </tr>
+            </table>
+
+            <h3>2xx - Success</h3>
+            <table>
+                <tr>
+                    <th>Code</th>
+                    <th>Message</th>
+                    <th>When to Use</th>
+                </tr>
+                <tr>
+                    <td><strong>200</strong></td>
+                    <td>OK</td>
+                    <td>Successful GET, PUT, PATCH</td>
+                </tr>
+                <tr>
+                    <td><strong>201</strong></td>
+                    <td>Created</td>
+                    <td>Resource successfully created (POST)</td>
+                </tr>
+                <tr>
+                    <td><strong>204</strong></td>
+                    <td>No Content</td>
+                    <td>Successful DELETE</td>
+                </tr>
+            </table>
+
+            <h3>3xx - Redirection</h3>
+            <table>
+                <tr>
+                    <th>Code</th>
+                    <th>Message</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><strong>301</strong></td>
+                    <td>Moved Permanently</td>
+                    <td>Resource permanently moved</td>
+                </tr>
+                <tr>
+                    <td><strong>303</strong></td>
+                    <td>See Other</td>
+                    <td>Response found at different URL</td>
+                </tr>
+            </table>
+
+            <h3>4xx - Client Errors</h3>
+            <table>
+                <tr>
+                    <th>Code</th>
+                    <th>Message</th>
+                    <th>Common Cause</th>
+                </tr>
+                <tr>
+                    <td><strong>400</strong></td>
+                    <td>Bad Request</td>
+                    <td>Invalid request format/data</td>
+                </tr>
+                <tr>
+                    <td><strong>401</strong></td>
+                    <td>Unauthorized</td>
+                    <td>Missing or invalid authentication</td>
+                </tr>
+                <tr>
+                    <td><strong>403</strong></td>
+                    <td>Forbidden</td>
+                    <td>Authenticated but no permission</td>
+                </tr>
+                <tr>
+                    <td><strong>404</strong></td>
+                    <td>Not Found</td>
+                    <td>Resource doesn't exist</td>
+                </tr>
+            </table>
+
+            <h3>5xx - Server Errors</h3>
+            <table>
+                <tr>
+                    <th>Code</th>
+                    <th>Message</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><strong>500</strong></td>
+                    <td>Internal Server Error</td>
+                    <td>Server encountered an error</td>
+                </tr>
+                <tr>
+                    <td><strong>502</strong></td>
+                    <td>Bad Gateway</td>
+                    <td>Invalid response from upstream</td>
+                </tr>
+                <tr>
+                    <td><strong>503</strong></td>
+                    <td>Service Unavailable</td>
+                    <td>Server temporarily unavailable</td>
+                </tr>
+            </table>
+        </section>
+
+    </div>
+</body>
+</html>
+

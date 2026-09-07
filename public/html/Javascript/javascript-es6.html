@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript ES6+ Features - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🚀 JavaScript ES6+</h2>
+            <p>Modern JavaScript Features</p>
+        </div>
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">BASICS</div>
+                <ul>
+                    <li><a href="#intro"><span class="icon">📚</span> Introduction</a></li>
+                    <li><a href="#variables"><span class="icon">📦</span> Variables (var/let/const)</a></li>
+                    <li><a href="#scope"><span class="icon">🔍</span> Scope & Shadowing</a></li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">CORE FEATURES</div>
+                <ul>
+                    <li><a href="#arrow"><span class="icon">➡️</span> Arrow Functions</a></li>
+                    <li><a href="#template"><span class="icon">📝</span> Template Literals</a></li>
+                    <li><a href="#spread"><span class="icon">🌟</span> Spread Operator</a></li>
+                    <li><a href="#rest"><span class="icon">📊</span> Rest Parameters</a></li>
+                    <li><a href="#default"><span class="icon">🎯</span> Default Parameters</a></li>
+                    <li><a href="#enhanced"><span class="icon">✨</span> Enhanced Objects</a></li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">ADVANCED</div>
+                <ul>
+                    <li><a href="#destructuring"><span class="icon">📦</span> Destructuring</a></li>
+                    <li><a href="#promises"><span class="icon">🎯</span> Promises</a></li>
+                    <li><a href="#async"><span class="icon">⚡</span> Async/Await</a></li>
+                    <li><a href="#classes"><span class="icon">🎓</span> Classes</a></li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">JAVASCRIPT INTERNALS</div>
+                <ul>
+                    <li><a href="#execution"><span class="icon">⚙️</span> Execution Model</a></li>
+                    <li><a href="#event-loop"><span class="icon">🔄</span> Event Loop</a></li>
+                    <li><a href="#modules"><span class="icon">📦</span> Modules</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>🚀 JavaScript ES6+ Features</h1>
+            <p>Modern JavaScript Features and Best Practices</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 Introduction to ES6</h2>
+            
+            <p><span class="highlight">ES6 (ECMAScript 2015)</span> introduced major improvements to JavaScript, making it more powerful and easier to write.</p>
+
+            <h3>What is ES6?</h3>
+            <div class="info-box">
+                <p>ES6 is the <strong>6th edition of ECMAScript</strong>, released in June 2015. It brought revolutionary changes to JavaScript:</p>
+                <ul>
+                    <li>✅ New syntax for common patterns</li>
+                    <li>✅ Better tools for large applications</li>
+                    <li>✅ Support for Object-Oriented Programming</li>
+                    <li>✅ Improved asynchronous programming</li>
+                </ul>
+            </div>
+
+            <h3>Browser Support</h3>
+            <p>Modern browsers support ES6+, but you can use <strong>Babel</strong> to transpile ES6 to ES5 for older browsers.</p>
+        </section>
+
+        <section id="variables">
+            <h2>📦 var, let, and const</h2>
+
+            <div class="info-box premium">
+                <h3>Under the Hood: The TDZ</h3>
+                <p>While <code>var</code> is initialized with <code>undefined</code> during the creation phase of the Execution Context, <code>let</code> and <code>const</code> variables are placed in the <strong>Temporal Dead Zone</strong>. They exist in memory but are marked as "uninitialized," making any access attempt throw a <code>ReferenceError</code>.</p>
+            </div>
+
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>var</th>
+                    <th>let</th>
+                    <th>const</th>
+                </tr>
+                <tr>
+                    <td><strong>Scope</strong></td>
+                    <td>Function/Global</td>
+                    <td>Block</td>
+                    <td>Block</td>
+                </tr>
+                <tr>
+                    <td><strong>Initialization</strong></td>
+                    <td><code>undefined</code></td>
+                    <td>None (TDZ)</td>
+                    <td>None (TDZ)</td>
+                </tr>
+                <tr>
+                    <td><strong>Redeclaration</strong></td>
+                    <td>✅ Possible</td>
+                    <td>❌ SyntaxError</td>
+                    <td>❌ SyntaxError</td>
+                </tr>
+            </table>
+
+            <div class="code-block"><span class="comment">// const ensures reference immutability, not value immutability</span>
+<span class="keyword">const</span> config = { port: 8080 };
+config.port = 3000; <span class="comment">// ✅ Legal</span>
+<span class="comment">// config = {}; // ❌ TypeError: Assignment to constant variable</span></div>
+        </section>
+
+        <section id="scope">
+            <h2>🔍 Scope & Shadowing</h2>
+            
+            <p><span class="highlight">Scope</span> defines the accessibility of variables in different parts of your code.</p>
+            
+            <h3>Types of Scope</h3>
+            
+            <div class="illustration">
+                <div class="illustration-title">🌍 Scope Hierarchy Visualization</div>
+                <div class="scope-visualization">
+                    <div class="scope-box global">
+                        <span class="scope-tag" style="color: #f093fb;">🌍 Global Scope</span>
+                        <div class="code-block"><span class="keyword">var</span> globalVar = <span class="string">"I'm global"</span>;
+<span class="keyword">const</span> globalConst = <span class="string">"Also global"</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(globalVar); <span class="comment">// Accessible everywhere ✅</span></div>
+                        
+                        <div class="scope-box function">
+                            <span class="scope-tag" style="color: #f5576c;">🔧 Function Scope</span>
+                            <div class="code-block"><span class="keyword">function</span> <span class="function">myFunction</span>() {
+    <span class="keyword">var</span> functionVar = <span class="string">"I'm in function"</span>;
+    <span class="function">console</span>.<span class="function">log</span>(globalVar);    <span class="comment">// ✅ Can access</span>
+    <span class="function">console</span>.<span class="function">log</span>(functionVar); <span class="comment">// ✅ Can access</span>
+}</div>
+                            
+                            <div class="scope-box block">
+                                <span class="scope-tag" style="color: #ff9800;">📦 Block Scope (let/const)</span>
+                                <div class="code-block"><span class="keyword">if</span> (<span class="keyword">true</span>) {
+    <span class="keyword">let</span> blockVar = <span class="string">"I'm in block"</span>;
+    <span class="function">console</span>.<span class="function">log</span>(globalVar);    <span class="comment">// ✅ Can access</span>
+    <span class="function">console</span>.<span class="function">log</span>(functionVar); <span class="comment">// ✅ Can access</span>
+    <span class="function">console</span>.<span class="function">log</span>(blockVar);    <span class="comment">// ✅ Can access</span>
+}
+<span class="function">console</span>.<span class="function">log</span>(blockVar); <span class="comment">// ❌ ReferenceError!</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 1rem; color: #f093fb; font-weight: bold;">
+                    Inner scopes can access outer scopes, but not vice versa! ⬆️
+                </p>
+            </div>
+            
+            <h3>Variable Shadowing</h3>
+            <p><span class="highlight">Shadowing</span> occurs when a variable in an inner scope has the same name as a variable in an outer scope.</p>
+            
+            <h4>✅ Legal Shadowing</h4>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">test</span>() {
+    <span class="keyword">let</span> x = <span class="number">10</span>; <span class="comment">// Outer scope</span>
+    
+    <span class="keyword">if</span> (<span class="keyword">true</span>) {
+        <span class="keyword">let</span> x = <span class="number">20</span>; <span class="comment">// Shadows outer 'x' ✅</span>
+        <span class="function">console</span>.<span class="function">log</span>(x); <span class="comment">// 20</span>
+    }
+    
+    <span class="function">console</span>.<span class="function">log</span>(x); <span class="comment">// 10 (outer x unchanged)</span>
+}
+
+<span class="comment">// let can shadow var</span>
+<span class="keyword">var</span> a = <span class="number">10</span>;
+<span class="keyword">function</span> <span class="function">example</span>() {
+    <span class="keyword">let</span> a = <span class="number">20</span>; <span class="comment">// ✅ Legal</span>
+    <span class="function">console</span>.<span class="function">log</span>(a); <span class="comment">// 20</span>
+}
+</div>
+            
+            <h4>❌ Illegal Shadowing</h4>
+            <div class="code-block"><span class="comment">// var cannot shadow let (crosses boundary)</span>
+<span class="keyword">function</span> <span class="function">illegalExample</span>() {
+    <span class="keyword">let</span> x = <span class="number">10</span>;
+    
+    <span class="keyword">if</span> (<span class="keyword">true</span>) {
+        <span class="keyword">var</span> x = <span class="number">20</span>; <span class="comment">// ❌ SyntaxError!</span>
+        <span class="comment">// var is function-scoped, tries to redeclare let</span>
+    }
+}
+</div>
+            
+            <div class="warning-box">
+                <p><strong>⚠️ Illegal Shadowing Rules:</strong></p>
+                <ul>
+                    <li><code>var</code> cannot shadow <code>let</code> or <code>const</code> in the same function scope</li>
+                    <li>This prevents accidental redeclaration issues</li>
+                    <li>Always check scope boundaries when using different variable keywords</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="arrow">
+            <h2>➡️ Arrow Functions</h2>
+            <p>Shorter syntax for functions, with lexical <code>this</code> binding</p>
+            <div class="code-block"><span class="comment">// Traditional function</span>
+<span class="keyword">function</span> <span class="function">add</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="comment">// Arrow function</span>
+<span class="keyword">const</span> add = (a, b) => a + b;
+
+<span class="comment">// Multiple lines need curly braces</span>
+<span class="keyword">const</span> calculate = (a, b) => {
+    <span class="keyword">const</span> sum = a + b;
+    <span class="keyword">return</span> sum * <span class="number">2</span>;
+};
+
+<span class="comment">// Real example: Array operations</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="keyword">const</span> doubled = numbers.<span class="function">map</span>(n => n * <span class="number">2</span>);
+<span class="keyword">const</span> evens = numbers.<span class="function">filter</span>(n => n % <span class="number">2</span> === <span class="number">0</span>);
+<span class="function">console</span>.<span class="function">log</span>(doubled); <span class="comment">// [2, 4, 6, 8, 10]</span>
+<span class="function">console</span>.<span class="function">log</span>(evens);   <span class="comment">// [2, 4]</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>🔑 Key Characteristics:</strong></p>
+                <ul>
+                    <li>✅ <strong>Lexical <code>this</code> binding:</strong> Arrow functions don't have their own <code>this</code></li>
+                    <li>✅ <strong>Shorter syntax:</strong> Perfect for callbacks and array methods</li>
+                    <li>❌ <strong>Cannot be used as constructors:</strong> No <code>new</code> keyword</li>
+                    <li>❌ <strong>No <code>arguments</code> object:</strong> Use rest parameters instead</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="template">
+            <h2>📝 Template Literals</h2>
+            <p>String interpolation and multi-line strings</p>
+            <div class="code-block"><span class="comment">// Old way</span>
+<span class="keyword">const</span> name = <span class="string">"John"</span>;
+<span class="keyword">const</span> age = <span class="number">30</span>;
+<span class="keyword">const</span> message1 = <span class="string">"Hello, my name is "</span> + name + <span class="string">" and I am "</span> + age;
+
+<span class="comment">// New way with template literals</span>
+<span class="keyword">const</span> message2 = <span class="string">`Hello, my name is ${name} and I am ${age}`</span>;
+
+<span class="comment">// Multi-line strings</span>
+<span class="keyword">const</span> html = <span class="string">`
+    &lt;div class="card"&gt;
+        &lt;h2&gt;${name}&lt;/h2&gt;
+        &lt;p&gt;Age: ${age}&lt;/p&gt;
+    &lt;/div&gt;
+`</span>;
+
+<span class="comment">// Expressions inside</span>
+<span class="keyword">const</span> price = <span class="number">100</span>;
+<span class="keyword">const</span> total = <span class="string">`Total: $${(price * 1.08).toFixed(2)}`</span>;
+</div>
+            
+            <div class="info-box">
+                <p><strong>💡 Benefits:</strong></p>
+                <ul>
+                    <li>✅ Easy string interpolation with <code>${}</code></li>
+                    <li>✅ Multi-line strings without <code>\n</code></li>
+                    <li>✅ Embed expressions directly</li>
+                    <li>✅ Better readability than concatenation</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="spread">
+            <h2>🌟 Spread Operator (...)</h2>
+            <p>Expand arrays and objects</p>
+            <div class="code-block"><span class="comment">// Array spreading</span>
+<span class="keyword">const</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="keyword">const</span> arr2 = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];
+<span class="keyword">const</span> combined = [...arr1, ...arr2];
+<span class="function">console</span>.<span class="function">log</span>(combined); <span class="comment">// [1, 2, 3, 4, 5, 6]</span>
+
+<span class="comment">// Copy array</span>
+<span class="keyword">const</span> original = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="keyword">const</span> copy = [...original];
+
+<span class="comment">// Object spreading</span>
+<span class="keyword">const</span> user = { name: <span class="string">"John"</span>, age: <span class="number">30</span> };
+<span class="keyword">const</span> updatedUser = { ...user, age: <span class="number">31</span>, city: <span class="string">"NYC"</span> };
+<span class="function">console</span>.<span class="function">log</span>(updatedUser);
+<span class="comment">// {name: "John", age: 31, city: "NYC"}</span>
+
+<span class="comment">// Real example: Merge settings</span>
+<span class="keyword">const</span> defaultSettings = { theme: <span class="string">"light"</span>, fontSize: <span class="number">14</span> };
+<span class="keyword">const</span> userSettings = { fontSize: <span class="number">16</span> };
+<span class="keyword">const</span> finalSettings = { ...defaultSettings, ...userSettings };
+<span class="function">console</span>.<span class="function">log</span>(finalSettings); <span class="comment">// {theme: "light", fontSize: 16}</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>🎯 Common Use Cases:</strong></p>
+                <ul>
+                    <li>✅ Combining arrays</li>
+                    <li>✅ Copying arrays/objects (shallow copy)</li>
+                    <li>✅ Merging objects with overrides</li>
+                    <li>✅ Passing array elements as function arguments</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="rest">
+            <h2>📊 Rest Parameters</h2>
+            <p>Collect multiple elements into an array</p>
+            <div class="code-block"><span class="comment">// Rest parameters</span>
+<span class="keyword">function</span> <span class="function">sum</span>(...numbers) {
+    <span class="keyword">return</span> numbers.<span class="function">reduce</span>((total, num) => total + num, <span class="number">0</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">sum</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>));          <span class="comment">// 6</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">sum</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>));   <span class="comment">// 15</span>
+
+<span class="comment">// Real example: Logger</span>
+<span class="keyword">function</span> <span class="function">logMessage</span>(level, ...messages) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`[${level}]`</span>, ...messages);
+}
+
+<span class="function">logMessage</span>(<span class="string">"ERROR"</span>, <span class="string">"Failed to load"</span>, <span class="string">"user data"</span>);
+</div>
+            
+            <div class="warning-box">
+                <p><strong>📌 Spread vs Rest:</strong></p>
+                <ul>
+                    <li><strong>Spread (...):</strong> Expands an array/object → <code>[...arr]</code></li>
+                    <li><strong>Rest (...):</strong> Collects arguments into an array → <code>function(...args)</code></li>
+                    <li>Same syntax, opposite purposes!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="default">
+            <h2>🎯 Default Parameters</h2>
+            <div class="code-block"><span class="comment">// Old way</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name) {
+    name = name || <span class="string">"Guest"</span>;
+    <span class="keyword">return</span> <span class="string">`Hello, ${name}`</span>;
+}
+
+<span class="comment">// ES6 way</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name = <span class="string">"Guest"</span>) {
+    <span class="keyword">return</span> <span class="string">`Hello, ${name}`</span>;
+}
+
+<span class="comment">// Real example: API request</span>
+<span class="keyword">function</span> <span class="function">fetchData</span>(url, method = <span class="string">"GET"</span>, timeout = <span class="number">5000</span>) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Fetching ${url} with ${method}, timeout: ${timeout}ms`</span>);
+}
+
+<span class="function">fetchData</span>(<span class="string">"/api/users"</span>); <span class="comment">// Uses defaults</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>✅ Benefits:</strong></p>
+                <ul>
+                    <li>Cleaner function signatures</li>
+                    <li>Avoid <code>|| operator</code> issues with falsy values</li>
+                    <li>Can use expressions as defaults</li>
+                    <li>Better readability and maintainability</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="enhanced">
+            <h2>✨ Enhanced Object Literals</h2>
+            <div class="code-block"><span class="keyword">const</span> name = <span class="string">"John"</span>;
+<span class="keyword">const</span> age = <span class="number">30</span>;
+
+<span class="comment">// Old way</span>
+<span class="keyword">const</span> person1 = {
+    name: name,
+    age: age,
+    greet: <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="string">"Hello"</span>;
+    }
+};
+
+<span class="comment">// ES6 way</span>
+<span class="keyword">const</span> person2 = {
+    name,
+    age,
+    <span class="function">greet</span>() {
+        <span class="keyword">return</span> <span class="string">"Hello"</span>;
+    }
+};
+</div>
+        </section>
+
+        <section id="destructuring">
+            <h2>📦 Destructuring</h2>
+
+            <h3>Array Destructuring</h3>
+            <div class="code-block"><span class="comment">// Extract values from array</span>
+<span class="keyword">const</span> colors = [<span class="string">"red"</span>, <span class="string">"green"</span>, <span class="string">"blue"</span>];
+<span class="keyword">const</span> [first, second, third] = colors;
+<span class="function">console</span>.<span class="function">log</span>(first);  <span class="comment">// "red"</span>
+
+<span class="comment">// Skip elements</span>
+<span class="keyword">const</span> [, , third] = colors;
+<span class="function">console</span>.<span class="function">log</span>(third); <span class="comment">// "blue"</span>
+
+<span class="comment">// Default values</span>
+<span class="keyword">const</span> [a, b, c, d = <span class="string">"default"</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="function">console</span>.<span class="function">log</span>(d); <span class="comment">// "default"</span>
+
+<span class="comment">// Real example: Swap variables</span>
+<span class="keyword">let</span> x = <span class="number">1</span>, y = <span class="number">2</span>;
+[x, y] = [y, x];
+<span class="function">console</span>.<span class="function">log</span>(x, y); <span class="comment">// 2, 1</span>
+</div>
+
+            <h3>Object Destructuring</h3>
+            <div class="code-block"><span class="comment">// Extract properties</span>
+<span class="keyword">const</span> user = {
+    name: <span class="string">"John"</span>,
+    age: <span class="number">30</span>,
+    email: <span class="string">"john@example.com"</span>
+};
+
+<span class="keyword">const</span> { name, age } = user;
+<span class="function">console</span>.<span class="function">log</span>(name, age); <span class="comment">// "John", 30</span>
+
+<span class="comment">// Rename variables</span>
+<span class="keyword">const</span> { name: userName, age: userAge } = user;
+<span class="function">console</span>.<span class="function">log</span>(userName); <span class="comment">// "John"</span>
+
+<span class="comment">// Default values</span>
+<span class="keyword">const</span> { name, age, country = <span class="string">"USA"</span> } = user;
+<span class="function">console</span>.<span class="function">log</span>(country); <span class="comment">// "USA"</span>
+
+<span class="comment">// Real example: Function parameters</span>
+<span class="keyword">function</span> <span class="function">displayUser</span>({ name, age, email }) {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">`${name}, ${age}, ${email}`</span>);
+}
+
+<span class="function">displayUser</span>(user);
+</div>
+        </section>
+
+        <section id="promises">
+            <h2>🎯 Promises</h2>
+
+            <p><span class="highlight">Promises</span> represent the eventual completion (or failure) of an asynchronous operation.</p>
+
+            <h3>Promise States</h3>
+            
+            <div class="illustration">
+                <div class="illustration-title">🎯 Promise State Transitions</div>
+                <div class="promise-states">
+                    <div class="state-box pending">
+                        <div class="state-icon">⏳</div>
+                        <div class="state-label" style="color: #ff9800;">Pending</div>
+                        <p>Initial state<br/>Operation in progress</p>
+                    </div>
+                    <div class="arrow-flow">→</div>
+                    <div class="state-box fulfilled">
+                        <div class="state-icon">✅</div>
+                        <div class="state-label" style="color: #4caf50;">Fulfilled</div>
+                        <p>Operation successful<br/>Data available via <code>.then()</code></p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    <div class="arrow-flow" style="transform: rotate(90deg); display: inline-block;">→</div>
+                </div>
+                <div class="promise-states" style="justify-content: center;">
+                    <div class="state-box rejected">
+                        <div class="state-icon">❌</div>
+                        <div class="state-label" style="color: #f44336;">Rejected</div>
+                        <p>Operation failed<br/>Error caught via <code>.catch()</code></p>
+                    </div>
+                </div>
+                <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <strong>📌 Important:</strong> Once settled (fulfilled/rejected), a promise cannot change state!
+                </div>
+            </div>
+
+            <h3>Creating Promises</h3>
+            <div class="code-block"><span class="comment">// Basic promise</span>
+<span class="keyword">const</span> promise = <span class="keyword">new</span> <span class="function">Promise</span>((resolve, reject) => {
+    <span class="keyword">const</span> success = <span class="keyword">true</span>;
+    
+    <span class="keyword">if</span> (success) {
+        <span class="function">resolve</span>(<span class="string">"Operation successful!"</span>);
+    } <span class="keyword">else</span> {
+        <span class="function">reject</span>(<span class="string">"Operation failed!"</span>);
+    }
+});
+
+promise
+    .<span class="function">then</span>(result => <span class="function">console</span>.<span class="function">log</span>(result))
+    .<span class="function">catch</span>(error => <span class="function">console</span>.<span class="function">error</span>(error));
+
+<span class="comment">// Real example: Fetch user data</span>
+<span class="keyword">function</span> <span class="function">fetchUser</span>(userId) {
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="function">Promise</span>((resolve, reject) => {
+        <span class="function">setTimeout</span>(() => {
+            <span class="keyword">if</span> (userId > <span class="number">0</span>) {
+                <span class="function">resolve</span>({ id: userId, name: <span class="string">"John Doe"</span> });
+            } <span class="keyword">else</span> {
+                <span class="function">reject</span>(<span class="string">"Invalid user ID"</span>);
+            }
+        }, <span class="number">1000</span>);
+    });
+}
+
+<span class="function">fetchUser</span>(<span class="number">1</span>)
+    .<span class="function">then</span>(user => <span class="function">console</span>.<span class="function">log</span>(user))
+    .<span class="function">catch</span>(error => <span class="function">console</span>.<span class="function">error</span>(error));
+</div>
+
+            <h3>Promise Methods</h3>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>Promise.all()</h4>
+                    <div class="feature-item"><strong>Behavior:</strong> All must succeed</div>
+                    <div class="feature-item"><strong>Rejects:</strong> When ANY fails</div>
+                    <div class="feature-item"><strong>Returns:</strong> Array of all values</div>
+                    <div class="feature-item"><strong>Use Case:</strong> Dependent tasks</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>Promise.allSettled()</h4>
+                    <div class="feature-item"><strong>Behavior:</strong> Wait for all</div>
+                    <div class="feature-item"><strong>Rejects:</strong> Never rejects</div>
+                    <div class="feature-item"><strong>Returns:</strong> Array of objects</div>
+                    <div class="feature-item"><strong>Use Case:</strong> Independent tasks</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>Promise.race()</h4>
+                    <div class="feature-item"><strong>Behavior:</strong> First to settle</div>
+                    <div class="feature-item"><strong>Rejects:</strong> If first rejects</div>
+                    <div class="feature-item"><strong>Returns:</strong> First result</div>
+                    <div class="feature-item"><strong>Use Case:</strong> Timeout logic</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>Promise.any()</h4>
+                    <div class="feature-item"><strong>Behavior:</strong> First success</div>
+                    <div class="feature-item"><strong>Rejects:</strong> If all fail</div>
+                    <div class="feature-item"><strong>Returns:</strong> First fulfilled</div>
+                    <div class="feature-item"><strong>Use Case:</strong> Fastest API</div>
+                </div>
+            </div>
+            
+            <h4>Detailed Examples</h4>
+            <div class="code-block"><span class="comment">// 1. Promise.all() - All must succeed</span>
+<span class="keyword">const</span> p1 = <span class="function">Promise</span>.<span class="function">resolve</span>(<span class="number">3</span>);
+<span class="keyword">const</span> p2 = <span class="function">Promise</span>.<span class="function">resolve</span>(<span class="number">42</span>);
+<span class="keyword">const</span> p3 = <span class="keyword">new</span> <span class="function">Promise</span>((resolve) => <span class="function">setTimeout</span>(resolve, <span class="number">100</span>, <span class="string">'foo'</span>));
+
+<span class="function">Promise</span>.<span class="function">all</span>([p1, p2, p3])
+    .<span class="function">then</span>(values => <span class="function">console</span>.<span class="function">log</span>(values)); <span class="comment">// [3, 42, "foo"]</span>
+
+<span class="comment">// If one fails, entire Promise.all() fails</span>
+<span class="keyword">const</span> p4 = <span class="function">Promise</span>.<span class="function">reject</span>(<span class="string">"error"</span>);
+<span class="function">Promise</span>.<span class="function">all</span>([p1, p4, p3])
+    .<span class="function">catch</span>(error => <span class="function">console</span>.<span class="function">log</span>(error)); <span class="comment">// "error"</span>
+
+<span class="comment">// 2. Promise.allSettled() - Wait for all, never rejects</span>
+<span class="function">Promise</span>.<span class="function">allSettled</span>([p1, p4, p3])
+    .<span class="function">then</span>(results => <span class="function">console</span>.<span class="function">log</span>(results));
+<span class="comment">// [{status: "fulfilled", value: 3},
+//  {status: "rejected", reason: "error"},
+//  {status: "fulfilled", value: "foo"}]</span>
+
+<span class="comment">// 3. Promise.race() - First to finish (resolve OR reject)</span>
+<span class="keyword">const</span> fast = <span class="keyword">new</span> <span class="function">Promise</span>((resolve) => <span class="function">setTimeout</span>(resolve, <span class="number">100</span>, <span class="string">'fast'</span>));
+<span class="keyword">const</span> slow = <span class="keyword">new</span> <span class="function">Promise</span>((resolve) => <span class="function">setTimeout</span>(resolve, <span class="number">500</span>, <span class="string">'slow'</span>));
+
+<span class="function">Promise</span>.<span class="function">race</span>([fast, slow])
+    .<span class="function">then</span>(value => <span class="function">console</span>.<span class="function">log</span>(value)); <span class="comment">// "fast"</span>
+
+<span class="comment">// 4. Promise.any() - First successful resolution</span>
+<span class="keyword">const</span> rejected = <span class="function">Promise</span>.<span class="function">reject</span>(<span class="string">'Error'</span>);
+<span class="keyword">const</span> delayed = <span class="keyword">new</span> <span class="function">Promise</span>((resolve) => <span class="function">setTimeout</span>(resolve, <span class="number">200</span>, <span class="string">'success'</span>));
+
+<span class="function">Promise</span>.<span class="function">any</span>([rejected, delayed])
+    .<span class="function">then</span>(value => <span class="function">console</span>.<span class="function">log</span>(value)); <span class="comment">// "success"</span>
+</div>
+
+            <h3>Promise Chaining</h3>
+            <p>Execute a sequence of asynchronous tasks one after another:</p>
+            
+            <div class="illustration">
+                <div class="illustration-title">🔗 Promise Chaining Flow</div>
+                <div class="timeline-flow">
+                    <div class="timeline-step">
+                        <div class="timeline-circle">1</div>
+                        <strong>fetch()</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Initial request</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-circle">2</div>
+                        <strong>.then()</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Process data</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-circle">3</div>
+                        <strong>.then()</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Return new promise</p>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-circle">4</div>
+                        <strong>.then()</strong>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Final result</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <div style="background: #fff3e0; padding: 0.75rem; border-radius: 8px; display: inline-block;">
+                        <strong>⚠️ .catch()</strong> catches errors from any step above
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-block"><span class="comment">// Sequential async operations</span>
+<span class="keyword">new</span> <span class="function">Promise</span>((resolve, reject) => {
+    <span class="function">setTimeout</span>(() => <span class="function">resolve</span>(<span class="number">1</span>), <span class="number">1000</span>);
+})
+.<span class="function">then</span>(result => {
+    <span class="function">console</span>.<span class="function">log</span>(result); <span class="comment">// 1</span>
+    <span class="keyword">return</span> result * <span class="number">2</span>;
+})
+.<span class="function">then</span>(result => {
+    <span class="function">console</span>.<span class="function">log</span>(result); <span class="comment">// 2</span>
+    <span class="keyword">return</span> result * <span class="number">3</span>;
+})
+.<span class="function">then</span>(result => {
+    <span class="function">console</span>.<span class="function">log</span>(result); <span class="comment">// 6</span>
+    <span class="keyword">return</span> result * <span class="number">4</span>;
+})
+.<span class="function">then</span>(result => {
+    <span class="function">console</span>.<span class="function">log</span>(result); <span class="comment">// 24</span>
+});
+
+<span class="comment">// Real-world example: User data flow</span>
+<span class="function">fetchUser</span>(<span class="number">1</span>)
+    .<span class="function">then</span>(user => {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"User:"</span>, user);
+        <span class="keyword">return</span> <span class="function">fetchUserPosts</span>(user.id);
+    })
+    .<span class="function">then</span>(posts => {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Posts:"</span>, posts);
+        <span class="keyword">return</span> <span class="function">fetchComments</span>(posts[<span class="number">0</span>].id);
+    })
+    .<span class="function">then</span>(comments => {
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Comments:"</span>, comments);
+    })
+    .<span class="function">catch</span>(error => {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Error:"</span>, error);
+    });
+</div>
+            
+            <h3>Promise Rules</h3>
+            <div class="info-box">
+                <p><strong>📜 Promise Contract:</strong></p>
+                <ul>
+                    <li>✅ A promise supplies a standard-compliant <code>.then()</code> method</li>
+                    <li>✅ A pending promise may transition into either fulfilled or rejected</li>
+                    <li>✅ A fulfilled or rejected promise is <strong>settled</strong> and cannot change state</li>
+                    <li>✅ Once settled, the value/reason must not change</li>
+                </ul>
+            </div>
+            
+            <h3>Error Handling</h3>
+            <div class="code-block"><span class="comment">// Multiple .catch() for different errors</span>
+<span class="function">fetchData</span>()
+    .<span class="function">then</span>(data => <span class="function">processData</span>(data))
+    .<span class="function">catch</span>(error => {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Fetch error:"</span>, error);
+        <span class="keyword">return</span> <span class="string">"default data"</span>; <span class="comment">// Recover from error</span>
+    })
+    .<span class="function">then</span>(data => <span class="function">displayData</span>(data))
+    .<span class="function">catch</span>(error => {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Display error:"</span>, error);
+    });
+
+<span class="comment">// Ignore promise errors safely</span>
+<span class="keyword">await</span> promise.<span class="function">catch</span>((e) => <span class="keyword">void</span> e);
+</div>
+        </section>
+
+        <section id="async">
+            <h2>⚡ Async/Await</h2>
+
+            <p><span class="highlight">Async/await</span> is syntactic sugar over Promises, making asynchronous code look synchronous.</p>
+
+            <h3>Basic Syntax</h3>
+            <div class="code-block"><span class="comment">// Async function</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">fetchData</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"/api/data"</span>);
+        <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+        <span class="keyword">return</span> data;
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Error:"</span>, error);
+    }
+}
+
+<span class="comment">// Using the async function</span>
+<span class="function">fetchData</span>().<span class="function">then</span>(data => <span class="function">console</span>.<span class="function">log</span>(data));
+
+<span class="comment">// Or with await (inside async function)</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">main</span>() {
+    <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="function">fetchData</span>();
+    <span class="function">console</span>.<span class="function">log</span>(data);
+}
+</div>
+
+            <h3>Real-World Example</h3>
+            <div class="code-block"><span class="comment">// E-commerce checkout flow</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">checkout</span>(userId, cartId) {
+    <span class="keyword">try</span> {
+        <span class="comment">// Step 1: Validate cart</span>
+        <span class="keyword">const</span> cart = <span class="keyword">await</span> <span class="function">validateCart</span>(cartId);
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Cart validated"</span>);
+        
+        <span class="comment">// Step 2: Process payment</span>
+        <span class="keyword">const</span> payment = <span class="keyword">await</span> <span class="function">processPayment</span>(userId, cart.total);
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Payment processed"</span>);
+        
+        <span class="comment">// Step 3: Create order</span>
+        <span class="keyword">const</span> order = <span class="keyword">await</span> <span class="function">createOrder</span>(userId, cart, payment);
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Order created"</span>);
+        
+        <span class="comment">// Step 4: Send confirmation</span>
+        <span class="keyword">await</span> <span class="function">sendConfirmationEmail</span>(userId, order);
+        
+        <span class="keyword">return</span> order;
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Checkout failed:"</span>, error);
+        <span class="keyword">throw</span> error;
+    }
+}
+
+<span class="comment">// Multiple parallel requests</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">loadDashboard</span>() {
+    <span class="keyword">const</span> [user, stats, notifications] = <span class="keyword">await</span> <span class="function">Promise</span>.<span class="function">all</span>([
+        <span class="function">fetchUser</span>(),
+        <span class="function">fetchStats</span>(),
+        <span class="function">fetchNotifications</span>()
+    ]);
+    
+    <span class="keyword">return</span> { user, stats, notifications };
+}
+</div>
+
+            <h3>Error Handling</h3>
+            <div class="code-block"><span class="comment">// Try-catch for error handling</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">fetchUserData</span>(userId) {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`/api/users/${userId}`</span>);
+        
+        <span class="keyword">if</span> (!response.ok) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">`HTTP error! status: ${response.status}`</span>);
+        }
+        
+        <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+        <span class="keyword">return</span> data;
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">console</span>.<span class="function">error</span>(<span class="string">"Failed to fetch user:"</span>, error);
+        <span class="keyword">return</span> <span class="keyword">null</span>;
+    }
+}
+</div>
+        </section>
+
+        <section id="classes">
+            <h2>🎓 ES6 Classes</h2>
+
+            <p><span class="highlight">Classes</span> provide a cleaner syntax for creating objects and implementing inheritance.</p>
+
+            <h3>Basic Class</h3>
+            <div class="code-block"><span class="keyword">class</span> <span class="function">Person</span> {
+    <span class="function">constructor</span>(name, age) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.age = age;
+    }
+    
+    <span class="function">greet</span>() {
+        <span class="keyword">return</span> <span class="string">`Hello, I'm ${this.name}`</span>;
+    }
+    
+    <span class="function">haveBirthday</span>() {
+        <span class="keyword">this</span>.age++;
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">`Happy ${this.age}th birthday!`</span>);
+    }
+}
+
+<span class="keyword">const</span> john = <span class="keyword">new</span> <span class="function">Person</span>(<span class="string">"John"</span>, <span class="number">30</span>);
+<span class="function">console</span>.<span class="function">log</span>(john.<span class="function">greet</span>()); <span class="comment">// "Hello, I'm John"</span>
+john.<span class="function">haveBirthday</span>(); <span class="comment">// "Happy 31th birthday!"</span>
+</div>
+
+            <h3>Inheritance</h3>
+            <div class="code-block"><span class="keyword">class</span> <span class="function">Employee</span> <span class="keyword">extends</span> <span class="function">Person</span> {
+    <span class="function">constructor</span>(name, age, jobTitle, salary) {
+        <span class="keyword">super</span>(name, age); <span class="comment">// Call parent constructor</span>
+        <span class="keyword">this</span>.jobTitle = jobTitle;
+        <span class="keyword">this</span>.salary = salary;
+    }
+    
+    <span class="function">getDetails</span>() {
+        <span class="keyword">return</span> <span class="string">`${this.name}, ${this.jobTitle}, $${this.salary}`</span>;
+    }
+    
+    <span class="function">greet</span>() {
+        <span class="keyword">return</span> <span class="string">`${super.greet()}, I'm a ${this.jobTitle}`</span>;
+    }
+}
+
+<span class="keyword">const</span> emp = <span class="keyword">new</span> <span class="function">Employee</span>(<span class="string">"Jane"</span>, <span class="number">28</span>, <span class="string">"Developer"</span>, <span class="number">80000</span>);
+<span class="function">console</span>.<span class="function">log</span>(emp.<span class="function">greet</span>());
+<span class="comment">// "Hello, I'm Jane, I'm a Developer"</span>
+</div>
+
+            <h3>Static Methods</h3>
+            <div class="code-block"><span class="keyword">class</span> <span class="function">MathUtils</span> {
+    <span class="keyword">static</span> <span class="function">add</span>(a, b) {
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="keyword">static</span> <span class="function">multiply</span>(a, b) {
+        <span class="keyword">return</span> a * b;
+    }
+}
+
+<span class="comment">// Call without creating instance</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">MathUtils</span>.<span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>));      <span class="comment">// 8</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">MathUtils</span>.<span class="function">multiply</span>(<span class="number">4</span>, <span class="number">5</span>)); <span class="comment">// 20</span>
+</div>
+
+            <div class="info-box">
+                <p><strong>💡 When to Use Classes:</strong></p>
+                <ul>
+                    <li>✅ Creating multiple similar objects</li>
+                    <li>✅ Need inheritance/polymorphism</li>
+                    <li>✅ Organizing related functionality</li>
+                    <li>✅ Building libraries/frameworks</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="execution">
+            <h2>⚙️ JavaScript Execution Model</h2>
+            
+            <p>JavaScript is a <span class="highlight">single-threaded</span>, <span class="highlight">non-blocking</span>, <span class="highlight">asynchronous</span> programming language.</p>
+            
+            <h3>Key Characteristics</h3>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>Single-Threaded</h4>
+                    <div class="feature-item">One call stack</div>
+                    <div class="feature-item">One task at a time</div>
+                    <div class="feature-item">Main thread executes code</div>
+                    <div class="feature-item">Runtime is single-threaded</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>Non-Blocking</h4>
+                    <div class="feature-item">Async operations don't block</div>
+                    <div class="feature-item">Uses Web APIs</div>
+                    <div class="feature-item">Callbacks/Promises</div>
+                    <div class="feature-item">Event Loop manages flow</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>Asynchronous</h4>
+                    <div class="feature-item">Doesn't wait for completion</div>
+                    <div class="feature-item">Multiple operations in progress</div>
+                    <div class="feature-item">Callbacks execute later</div>
+                    <div class="feature-item">Improves performance</div>
+                </div>
+            </div>
+            
+            <h3>Memory Organization</h3>
+            
+            <div class="illustration">
+                <div class="illustration-title">🧠 JavaScript Memory Model</div>
+                <div class="execution-context" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                    <div class="context-box" style="flex: 1; min-width: 300px; background: white; border: 3px solid #f093fb; border-radius: 12px; padding: 2rem;">
+                        <h4 style="color: #f093fb; text-align: center; margin-bottom: 1rem;">📚 Call Stack (LIFO)</h4>
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                            <strong>Purpose:</strong> Track function execution
+                        </div>
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                            <strong>Structure:</strong> Stack (Last In, First Out)
+                        </div>
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                            <strong>Contains:</strong> Execution contexts
+                        </div>
+                        <div class="code-block" style="margin-top: 1rem;"><span class="comment">// Call stack visualization</span>
+[Global Context]
+  ↑ [main()]
+    ↑ [helper()]
+      ↑ [calculate()]</div>
+                    </div>
+                    <div class="context-box" style="flex: 1; min-width: 300px; background: white; border: 3px solid #f5576c; border-radius: 12px; padding: 2rem;">
+                        <h4 style="color: #f5576c; text-align: center; margin-bottom: 1rem;">💾 Heap Memory</h4>
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                            <strong>Purpose:</strong> Store objects & data
+                        </div>
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                            <strong>Structure:</strong> Unstructured region
+                        </div>
+                        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                            <strong>Contains:</strong> Variables, objects, arrays
+                        </div>
+                        <div class="code-block" style="margin-top: 1rem;"><span class="comment">// Heap stores objects</span>
+<span class="keyword">const</span> user = {
+  name: <span class="string">"John"</span>,
+  age: <span class="number">30</span>
+};</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Execution Context</h3>
+            <div class="info-box">
+                <p><strong>Two Components of Execution Context:</strong></p>
+                <ul>
+                    <li><strong>Memory Component (Variable Environment):</strong> Stores variables and functions</li>
+                    <li><strong>Code Component (Thread of Execution):</strong> Executes code line by line</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Two Phases:</strong></p>
+                <ul>
+                    <li><strong>Creation Phase:</strong> Allocate space, functions take as-is, variables = undefined</li>
+                    <li><strong>Execution Phase:</strong> Assign values to variables, invoke functions</li>
+                </ul>
+            </div>
+            
+            <h3>Synchronous vs Asynchronous</h3>
+            <div class="code-block"><span class="comment">// Synchronous - Blocks execution</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Start"</span>);
+
+<span class="keyword">function</span> <span class="function">syncTask</span>() {
+    <span class="comment">// Heavy computation blocks everything</span>
+    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">1000000000</span>; i++) {}
+    <span class="keyword">return</span> <span class="string">"Done"</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">syncTask</span>()); <span class="comment">// Blocks until done</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"End"</span>);
+
+<span class="comment">// Asynchronous - Non-blocking</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Start"</span>);
+
+<span class="function">setTimeout</span>(() => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Async Task"</span>);
+}, <span class="number">2000</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"End"</span>); <span class="comment">// Doesn't wait!</span>
+
+<span class="comment">// Output: Start → End → (2s later) → Async Task</span>
+</div>
+        </section>
+
+        <section id="event-loop">
+            <h2>🔄 Event Loop</h2>
+            
+            <p>The <span class="highlight">Event Loop</span> is the mechanism that enables JavaScript's asynchronous behavior despite being single-threaded.</p>
+            
+            <div class="illustration">
+                <div class="illustration-title">🔄 Event Loop Architecture</div>
+                <div style="background: white; padding: 2rem; border-radius: 12px;">
+                    <div class="timeline-flow" style="flex-direction: column; align-items: stretch;">
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 0.5rem 0;">
+                            <strong style="font-size: 1.2rem;">1️⃣ Call Stack</strong>
+                            <p style="margin-top: 0.5rem;">Executes synchronous code</p>
+                        </div>
+                        <div style="text-align: center; font-size: 2rem; color: #f093fb;">↓</div>
+                        <div style="background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 0.5rem 0;">
+                            <strong style="font-size: 1.2rem;">2️⃣ Web APIs</strong>
+                            <p style="margin-top: 0.5rem;">setTimeout, fetch, DOM events<br/>(Multi-threaded capabilities)</p>
+                        </div>
+                        <div style="text-align: center; font-size: 2rem; color: #f093fb;">↓</div>
+                        <div style="background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 0.5rem 0;">
+                            <strong style="font-size: 1.2rem;">3️⃣ Callback Queue</strong>
+                            <p style="margin-top: 0.5rem;">Waits for call stack to empty</p>
+                        </div>
+                        <div style="text-align: center; font-size: 2rem; color: #f093fb;">↓</div>
+                        <div style="background: linear-gradient(135deg, #2196f3 0%, #3f51b5 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 0.5rem 0;">
+                            <strong style="font-size: 1.2rem;">4️⃣ Event Loop</strong>
+                            <p style="margin-top: 0.5rem;">Pushes callback to call stack when empty</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>How setTimeout Works</h3>
+            <div class="code-block"><span class="comment">// Step-by-step breakdown</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"Start"</span>); <span class="comment">// 1. Executes immediately</span>
+
+<span class="function">setTimeout</span>(() => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">"Timeout"</span>); <span class="comment">// 4. Executes after call stack is empty</span>
+}, <span class="number">0</span>); <span class="comment">// 2. Sent to Web API</span>
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"End"</span>); <span class="comment">// 3. Executes immediately</span>
+
+<span class="comment">// Output: Start → End → Timeout</span>
+<span class="comment">// Even with 0ms delay, setTimeout is async!</span>
+</div>
+            
+            <div class="info-box">
+                <p><strong>🔑 Event Loop Steps:</strong></p>
+                <ol>
+                    <li><strong>Call Stack:</strong> <code>setTimeout()</code> is called</li>
+                    <li><strong>Web API:</strong> Timer runs in separate thread</li>
+                    <li><strong>Callback Queue:</strong> After delay, callback enters queue</li>
+                    <li><strong>Event Loop:</strong> When call stack is empty, moves callback to stack</li>
+                    <li><strong>Execute:</strong> Callback function runs</li>
+                </ol>
+            </div>
+            
+            <h3>Microtasks vs Macrotasks</h3>
+            <div class="code-block"><span class="comment">// Microtasks (higher priority)</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"1. Sync"</span>);
+
+<span class="function">setTimeout</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"2. Macrotask"</span>), <span class="number">0</span>);
+
+<span class="function">Promise</span>.<span class="function">resolve</span>().<span class="function">then</span>(() => <span class="function">console</span>.<span class="function">log</span>(<span class="string">"3. Microtask"</span>));
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="string">"4. Sync"</span>);
+
+<span class="comment">// Output: 1. Sync → 4. Sync → 3. Microtask → 2. Macrotask</span>
+<span class="comment">// Microtasks (Promises) execute before Macrotasks (setTimeout)</span>
+</div>
+            
+            <div class="warning-box">
+                <p><strong>⚠️ Important Concepts:</strong></p>
+                <ul>
+                    <li><strong>Microtasks:</strong> Promises, queueMicrotask()</li>
+                    <li><strong>Macrotasks:</strong> setTimeout, setInterval, setImmediate</li>
+                    <li><strong>Priority:</strong> Microtasks execute before Macrotasks</li>
+                    <li><strong>Blocking:</strong> Long-running code blocks the event loop</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="modules">
+            <h2>📦 Modules (Import/Export)</h2>
+            
+            <p>ES6 modules allow you to split code into reusable files with <span class="highlight">import</span> and <span class="highlight">export</span>.</p>
+            
+            <h3>Export Types</h3>
+            
+            <h4>1. Named Exports</h4>
+            <div class="code-block"><span class="comment">// utils.js - Multiple named exports</span>
+<span class="keyword">export</span> <span class="keyword">const</span> PI = <span class="number">3.14159</span>;
+
+<span class="keyword">export</span> <span class="keyword">function</span> <span class="function">add</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="keyword">export</span> <span class="keyword">class</span> <span class="function">Calculator</span> {
+    <span class="function">multiply</span>(a, b) {
+        <span class="keyword">return</span> a * b;
+    }
+}
+
+<span class="comment">// Or export all at once</span>
+<span class="keyword">const</span> name = <span class="string">"John"</span>;
+<span class="keyword">const</span> age = <span class="number">30</span>;
+<span class="keyword">export</span> { name, age };
+</div>
+            
+            <h4>2. Default Export</h4>
+            <div class="code-block"><span class="comment">// user.js - One default export per file</span>
+<span class="keyword">export default</span> <span class="keyword">class</span> <span class="function">User</span> {
+    <span class="function">constructor</span>(name) {
+        <span class="keyword">this</span>.name = name;
+    }
+}
+
+<span class="comment">// or</span>
+<span class="keyword">const</span> config = { theme: <span class="string">"dark"</span> };
+<span class="keyword">export default</span> config;
+</div>
+            
+            <h3>Import Types</h3>
+            
+            <h4>1. Named Imports</h4>
+            <div class="code-block"><span class="comment">// Importing specific exports</span>
+<span class="keyword">import</span> { PI, add, Calculator } <span class="keyword">from</span> <span class="string">'./utils.js'</span>;
+
+<span class="function">console</span>.<span class="function">log</span>(PI); <span class="comment">// 3.14159</span>
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">add</span>(<span class="number">2</span>, <span class="number">3</span>)); <span class="comment">// 5</span>
+
+<span class="comment">// Rename imports</span>
+<span class="keyword">import</span> { add <span class="keyword">as</span> sum } <span class="keyword">from</span> <span class="string">'./utils.js'</span>;
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">sum</span>(<span class="number">5</span>, <span class="number">5</span>)); <span class="comment">// 10</span>
+
+<span class="comment">// Import all</span>
+<span class="keyword">import</span> * <span class="keyword">as</span> utils <span class="keyword">from</span> <span class="string">'./utils.js'</span>;
+<span class="function">console</span>.<span class="function">log</span>(utils.PI);
+<span class="function">console</span>.<span class="function">log</span>(utils.<span class="function">add</span>(<span class="number">1</span>, <span class="number">2</span>));
+</div>
+            
+            <h4>2. Default Import</h4>
+            <div class="code-block"><span class="comment">// Can use any name</span>
+<span class="keyword">import</span> User <span class="keyword">from</span> <span class="string">'./user.js'</span>;
+<span class="keyword">import</span> MyUser <span class="keyword">from</span> <span class="string">'./user.js'</span>; <span class="comment">// Same thing, different name</span>
+
+<span class="keyword">const</span> user = <span class="keyword">new</span> <span class="function">User</span>(<span class="string">"John"</span>);
+</div>
+            
+            <h4>3. Mixed Import</h4>
+            <div class="code-block"><span class="comment">// Import both default and named exports</span>
+<span class="keyword">import</span> User, { PI, add } <span class="keyword">from</span> <span class="string">'./utils.js'</span>;
+</div>
+            
+            <h3>Benefits of Modules</h3>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>🎯 Maintainability</h4>
+                    <div class="feature-item">Organize code logically</div>
+                    <div class="feature-item">Easier to debug</div>
+                    <div class="feature-item">Clear dependencies</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>♻️ Reusability</h4>
+                    <div class="feature-item">Share code across files</div>
+                    <div class="feature-item">DRY principle</div>
+                    <div class="feature-item">Build libraries</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>🔒 Encapsulation</h4>
+                    <div class="feature-item">Private by default</div>
+                    <div class="feature-item">Export only public API</div>
+                    <div class="feature-item">Prevent naming conflicts</div>
+                </div>
+                <div class="comparison-card">
+                    <h4>⚡ Performance</h4>
+                    <div class="feature-item">Tree shaking</div>
+                    <div class="feature-item">Lazy loading</div>
+                    <div class="feature-item">Code splitting</div>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>📝 Module Best Practices:</strong></p>
+                <ul>
+                    <li>✅ Use named exports for utilities and multiple exports</li>
+                    <li>✅ Use default export for main component/class</li>
+                    <li>✅ Keep modules focused and single-purpose</li>
+                    <li>✅ Avoid circular dependencies</li>
+                    <li>✅ Use consistent file naming conventions</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+    
+    <script>
+        // Sidebar toggle for mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking on a link (mobile)
+        const sidebarLinks = sidebar.querySelectorAll('a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 968) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+        
+        // Active link highlighting
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

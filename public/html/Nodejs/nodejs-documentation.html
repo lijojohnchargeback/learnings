@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete Node.js Guide for 2026 — Node 24 LTS, Node 26, native TypeScript, fetch, SQLite, permissions, streams, and production patterns.">
+    <meta name="keywords" content="Node.js, Node 26, TypeScript, V8, Event Loop, Streams, ESM, sqlite, permission model, fetch, backend">
+    <title>Node.js Complete Guide - Documentation</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">⬢ Node.js Guide</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#versions" class="sidebar-link">Versions &amp; LTS</a>
+                <a href="#v8" class="sidebar-link">Architecture</a>
+                <a href="#event-loop" class="sidebar-link">Event Loop</a>
+                <a href="#global" class="sidebar-link">Globals &amp; Process</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📦 Modules</div>
+            <div class="sidebar-links">
+                <a href="#modules" class="sidebar-link">CJS &amp; ESM</a>
+                <a href="#core-modules" class="sidebar-link">Core Modules</a>
+                <a href="#packages" class="sidebar-link">npm, pnpm, yarn</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Async &amp; I/O</div>
+            <div class="sidebar-links">
+                <a href="#http-server" class="sidebar-link">HTTP Server</a>
+                <a href="#web-apis" class="sidebar-link">fetch &amp; Web APIs</a>
+                <a href="#streams" class="sidebar-link">Streams</a>
+                <a href="#events" class="sidebar-link">Events</a>
+                <a href="#buffers" class="sidebar-link">Buffers</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">✨ Modern Node</div>
+            <div class="sidebar-links">
+                <a href="#typescript" class="sidebar-link">Native TypeScript</a>
+                <a href="#testing" class="sidebar-link">Built-in Test Runner</a>
+                <a href="#sqlite" class="sidebar-link">node:sqlite</a>
+                <a href="#permissions" class="sidebar-link">Permission Model</a>
+                <a href="#sea" class="sidebar-link">Single Executables</a>
+                <a href="#tooling" class="sidebar-link">Watch, .env, Temporal</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚡ Scale &amp; Runtime</div>
+            <div class="sidebar-links">
+                <a href="#concurrency" class="sidebar-link">Workers &amp; Cluster</a>
+                <a href="#child-process" class="sidebar-link">Child Processes</a>
+                <a href="#frameworks" class="sidebar-link">Frameworks</a>
+                <a href="#runtimes" class="sidebar-link">Node vs Deno vs Bun</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🚀 Production</div>
+            <div class="sidebar-links">
+                <a href="#performance" class="sidebar-link">Performance</a>
+                <a href="#diagnostics" class="sidebar-link">Diagnostics</a>
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <div class="node-logo">⬢</div>
+            <h1>Node.js Complete Guide</h1>
+            <p>JavaScript and TypeScript runtime for servers, CLIs, and APIs — updated for Node.js 24 LTS and Node.js 26</p>
+        </header>
+
+        <div class="content">
+            <section id="intro">
+                <h2>1) Introduction to Node.js</h2>
+
+                <div class="example-box">
+                    <h3>What is Node.js?</h3>
+                    <p><strong>Node.js</strong> is an open-source, cross-platform JavaScript runtime that runs outside the browser. It is not a language and not a web framework. It is the engine that lets you write servers, CLIs, build tools, and workers in JavaScript or TypeScript.</p>
+
+                    <div class="grid-3">
+                        <div class="feature-card card-blue">
+                            <h4>🚀 Runtime, not a framework</h4>
+                            <p>Executes JS/TS with V8. Express, Fastify, and Nest sit on top of it.</p>
+                        </div>
+                        <div class="feature-card card-green">
+                            <h4>⚡ V8 + libuv</h4>
+                            <p>V8 compiles JavaScript. libuv owns the event loop, thread pool, and OS I/O.</p>
+                        </div>
+                        <div class="feature-card card-purple">
+                            <h4>🔄 Event-driven I/O</h4>
+                            <p>One thread handles thousands of connections by never blocking on disk or network.</p>
+                        </div>
+                        <div class="feature-card card-orange">
+                            <h4>🌐 Server-side JS</h4>
+                            <p>Same language as the browser, plus filesystem, sockets, processes, and crypto.</p>
+                        </div>
+                        <div class="feature-card card-teal">
+                            <h4>📦 npm ecosystem</h4>
+                            <p>The largest package registry — plus first-party modules like <code>node:test</code> and <code>node:sqlite</code>.</p>
+                        </div>
+                        <div class="feature-card card-pink">
+                            <h4>🧑‍💻 Created by Ryan Dahl</h4>
+                            <p>Released in 2009. In 2026 it ships native TypeScript, fetch, WebSocket, and Temporal.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Why teams still choose Node.js</h3>
+                    <div class="grid-2">
+                        <div class="feature-card card-blue">
+                            <h4>✅ One language</h4>
+                            <p>Share types, validation, and business rules between the API and the frontend.</p>
+                        </div>
+                        <div class="feature-card card-green">
+                            <h4>✅ Fast at I/O</h4>
+                            <p>Non-blocking sockets and streams are the default, not an add-on.</p>
+                        </div>
+                        <div class="feature-card card-purple">
+                            <h4>✅ Web-standard APIs</h4>
+                            <p><code>fetch</code>, <code>WebSocket</code>, <code>AbortController</code>, <code>Blob</code>, and Temporal work without polyfills.</p>
+                        </div>
+                        <div class="feature-card card-orange">
+                            <h4>✅ Real-time friendly</h4>
+                            <p>Chat, live dashboards, and collaborative tools fit the event-driven model.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>When to use Node.js</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Use case</th>
+                                <th>Why Node fits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>I/O-bound APIs</strong></td>
+                                <td>Database calls, HTTP proxies, file uploads — the event loop stays free while I/O completes.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Streaming</strong></td>
+                                <td>Video, logs, CSV exports, and AI token streams without loading everything into RAM.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Real-time apps</strong></td>
+                                <td>WebSockets and SSE keep many idle connections cheap.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tooling &amp; CLIs</strong></td>
+                                <td>Build tools, code generators, and scripts. Native TypeScript means <code>node app.ts</code> just works.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BFF / SPA backends</strong></td>
+                                <td>JSON APIs, session gateways, and GraphQL layers in the same language as the UI.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning">
+                        <strong>When not to use Node.js as the only process:</strong>
+                        <ul>
+                            <li>Heavy CPU work (image codecs, ML inference, huge JSON transforms) will stall the event loop.</li>
+                            <li>Offload that work to Worker Threads, a child process, or a dedicated service.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="versions">
+                <h2>2) Versions, LTS, and the 2026 runtime</h2>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-modern.png" alt="Modern Node.js features: native TypeScript, fetch, test runner, sqlite, permission model, and single executable apps">
+                    <div class="illustration-caption">Node 24 and 26 made TypeScript, SQLite, permissions, and web APIs first-class — no extra toolchain required.</div>
+                </div>
+
+                <p>As of September 2026, Node.js no longer ships two majors every year. <strong>Node 26 is the last biannual major</strong>. From Node 27 onward, there is one major per year and every release is LTS.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Status (Sep 2026)</th>
+                            <th>Use it for</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Node.js 26</strong></td>
+                            <td>Current → LTS in October 2026 (EOL April 2029)</td>
+                            <td>New projects. Native TypeScript, Temporal on by default, Undici 8 <code>fetch</code>, V8 14.6.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Node.js 24</strong></td>
+                            <td>Active LTS (EOL April 2028)</td>
+                            <td>Production default until 26 is LTS. Type stripping, <code>node:sqlite</code>, <code>--permission</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Node.js 22</strong></td>
+                            <td>Maintenance LTS (EOL April 2027)</td>
+                            <td>Existing apps. Plan the jump to 24 or 26 before 22 leaves maintenance.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Node.js 20</strong></td>
+                            <td>End of life (April 2026)</td>
+                            <td>Do not start here. Upgrade for security patches.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box premium">
+                    <h3>What “modern Node” means in practice</h3>
+                    <ul>
+                        <li><strong>Run TypeScript directly:</strong> <code>node server.ts</code> — type annotations are stripped at load time.</li>
+                        <li><strong>No dotenv package required:</strong> <code>node --env-file=.env server.js</code></li>
+                        <li><strong>No Jest required for unit tests:</strong> <code>node --test</code> with <code>node:test</code> and <code>node:assert</code></li>
+                        <li><strong>No better-sqlite3 for local DBs:</strong> <code>import { DatabaseSync } from 'node:sqlite'</code></li>
+                        <li><strong>No node-fetch:</strong> global <code>fetch</code>, <code>Headers</code>, <code>FormData</code>, <code>WebSocket</code></li>
+                    </ul>
+                </div>
+
+                <pre><code># Check what you actually have
+node -v
+npm -v
+
+# Use a version manager in real projects
+nvm install 24
+nvm use 24
+
+# Or fnm / n / Volta
+fnm install 26
+fnm use 26</code></pre>
+            </section>
+
+            <section id="v8">
+                <h2>3) Internal architecture</h2>
+
+                <p>Node.js is a <strong>JavaScript facade</strong> over C++ systems. V8 executes your code. libuv talks to the operating system. Bindings glue the two together.</p>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-architecture.png" alt="Node.js architecture stack: application, bindings, V8 engine, libuv event loop and thread pool, operating system">
+                    <div class="illustration-caption">Your app never talks to the kernel directly. V8 runs JS; libuv owns I/O, timers, and the thread pool.</div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>The architectural bridge: libuv</h3>
+                    <p>While <strong>V8</strong> compiles JavaScript to machine code, <strong>libuv</strong> (C++) manages the event loop, the thread pool, and a portable API for files, DNS, networking, and child processes.</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>Why one thread can serve 10,000 connections</h3>
+                    <p>Classic thread-per-request servers pay for a stack and context switch on every client. Node registers a callback and moves on. The kernel notifies libuv when the socket or file is ready. CPU work still needs extra threads — that is what Worker Threads are for.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>Architecture components</h3>
+                    <div class="grid-2">
+                        <div class="feature-card card-blue">
+                            <h4>1. V8 Engine</h4>
+                            <ul>
+                                <li>Google's open-source JS engine</li>
+                                <li>Parses, compiles (Ignition + TurboFan), GC</li>
+                                <li>Same family as Chrome — Node 26 tracks V8 14.6</li>
+                                <li>Embeddable; Node is one embedder</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card card-green">
+                            <h4>2. libuv</h4>
+                            <ul>
+                                <li>Event loop and thread pool</li>
+                                <li>Async TCP/UDP, pipes, TTY</li>
+                                <li>File system ops via the pool</li>
+                                <li>Cross-platform OS abstraction</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4>3. Other native pieces</h4>
+                    <div class="grid-4">
+                        <div class="feature-card card-purple">
+                            <h4>llhttp</h4>
+                            <p>HTTP parsing (successor to http-parser)</p>
+                        </div>
+                        <div class="feature-card card-orange">
+                            <h4>c-ares / uv</h4>
+                            <p>DNS resolution</p>
+                        </div>
+                        <div class="feature-card card-teal">
+                            <h4>OpenSSL</h4>
+                            <p>TLS, hashes, certificates</p>
+                        </div>
+                        <div class="feature-card card-pink">
+                            <h4>zlib / sqlite</h4>
+                            <p>Compression and built-in SQLite</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Browser vs Node.js</h3>
+                    <div class="comparison">
+                        <div class="comparison-item">
+                            <h4>Browser</h4>
+                            <ul>
+                                <li><code>window</code> / <code>document</code></li>
+                                <li>DOM and Web APIs</li>
+                                <li>No raw filesystem</li>
+                                <li>CORS and sandbox</li>
+                            </ul>
+                            <pre><code>console.log(window);
+document.querySelector('h1');</code></pre>
+                        </div>
+                        <div class="comparison-item">
+                            <h4>Node.js</h4>
+                            <ul>
+                                <li><code>globalThis</code> / <code>process</code></li>
+                                <li>fs, net, http, sqlite</li>
+                                <li>Child processes and workers</li>
+                                <li>Same fetch / URL / WebSocket</li>
+                            </ul>
+                            <pre><code>console.log(globalThis);
+console.log(process.versions);</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="event-loop">
+                <h2>4) The event loop</h2>
+
+                <p>The event loop is how Node.js does non-blocking I/O: it offloads work to the kernel (or the libuv thread pool) and runs your callbacks when results are ready.</p>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-event-loop.png" alt="Node.js event loop phases: timers, pending callbacks, idle prepare, poll, check, close callbacks, plus microtask queue">
+                    <div class="illustration-caption">Each loop turn walks six phases. After every phase, nextTick and Promise microtasks drain first.</div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>Microtask order: nextTick vs Promises</h3>
+                    <ol>
+                        <li><strong>process.nextTick()</strong> — runs immediately after the current operation, before the next phase.</li>
+                        <li><strong>Promise.then / queueMicrotask</strong> — after nextTick, still before the next phase.</li>
+                    </ol>
+                    <p>Recursive <code>nextTick</code> can starve I/O: the loop never reaches poll. Prefer Promises for application code.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>The six phases</h3>
+                    <div class="grid-3">
+                        <div class="feature-card card-orange">
+                            <h4>1. Timers</h4>
+                            <p><code>setTimeout</code> and <code>setInterval</code> callbacks whose delay has elapsed</p>
+                        </div>
+                        <div class="feature-card card-blue">
+                            <h4>2. Pending callbacks</h4>
+                            <p>Deferred I/O callbacks (for example some TCP errors)</p>
+                        </div>
+                        <div class="feature-card card-purple">
+                            <h4>3. Idle, prepare</h4>
+                            <p>Internal libuv bookkeeping</p>
+                        </div>
+                        <div class="feature-card card-green">
+                            <h4>4. Poll</h4>
+                            <p>Retrieve new I/O events — the phase that does most of the work</p>
+                        </div>
+                        <div class="feature-card card-teal">
+                            <h4>5. Check</h4>
+                            <p><code>setImmediate</code> callbacks</p>
+                        </div>
+                        <div class="feature-card card-red">
+                            <h4>6. Close callbacks</h4>
+                            <p><code>socket.on('close')</code> and similar</p>
+                        </div>
+                    </div>
+
+                    <pre><code>console.log('1. Start');
+
+setTimeout(() =&gt; console.log('2. setTimeout'), 0);
+setImmediate(() =&gt; console.log('3. setImmediate'));
+process.nextTick(() =&gt; console.log('4. nextTick'));
+Promise.resolve().then(() =&gt; console.log('5. Promise'));
+
+console.log('6. End');
+
+// Typical order:
+// 1. Start
+// 6. End
+// 4. nextTick
+// 5. Promise
+// then timers vs check (2 vs 3) depending on context</code></pre>
+                </div>
+
+                <div class="example-box">
+                    <h3>Thread pool</h3>
+                    <p>libuv keeps a pool (default <strong>4</strong> threads, max 1024 via <code>UV_THREADPOOL_SIZE</code>) for work the kernel cannot do asynchronously on every OS: most <code>fs</code> calls, <code>crypto</code> (pbkdf2, scrypt, randomBytes), <code>zlib</code>, and some DNS lookups.</p>
+                    <pre><code>// Set before any I/O — typically in the shell, not mid-request
+process.env.UV_THREADPOOL_SIZE = '8';</code></pre>
+                    <div class="warning">
+                        <h3>Do not block the event loop</h3>
+                        <ul>
+                            <li>Avoid <code>readFileSync</code> / <code>pbkdf2Sync</code> on the request path</li>
+                            <li>Move heavy CPU to <code>worker_threads</code></li>
+                            <li>Watch huge <code>JSON.parse</code> and catastrophic regexes</li>
+                        </ul>
+                        <pre><code>import { readFile } from 'node:fs/promises';
+
+const data = await readFile('large-file.txt', 'utf8');</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="global">
+                <h2>5) Globals and the process object</h2>
+                <div class="example-box">
+                    <p>Browsers expose <code>window</code>. Node exposes <code>globalThis</code> (and the legacy <code>global</code> alias). Prefer <code>globalThis</code> so isomorphic code stays portable.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>API</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>process</code></td><td>PID, env, argv, versions, cwd, signals, exit</td></tr>
+                            <tr><td><code>console</code></td><td>stdout / stderr logging</td></tr>
+                            <tr><td><code>setTimeout</code> / <code>setImmediate</code></td><td>Timers and check-phase callbacks</td></tr>
+                            <tr><td><code>fetch</code> / <code>WebSocket</code></td><td>Web-standard HTTP and sockets</td></tr>
+                            <tr><td><code>URL</code>, <code>URLPattern</code>, <code>Blob</code></td><td>Web platform primitives</td></tr>
+                            <tr><td><code>structuredClone</code></td><td>Deep clone without JSON round-trip</td></tr>
+                            <tr><td><code>__dirname</code> / <code>__filename</code></td><td>CJS only — in ESM use <code>import.meta.filename</code></td></tr>
+                        </tbody>
+                    </table>
+                    <pre><code>console.log(process.version);
+console.log(process.versions.v8);
+console.log(process.platform);
+console.log(process.env.NODE_ENV);
+
+process.on('unhandledRejection', (reason) =&gt; {
+    console.error('Unhandled rejection:', reason);
+});</code></pre>
+                </div>
+            </section>
+
+            <section id="modules">
+                <h2>6) Modules: CommonJS and ESM</h2>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-modules.png" alt="CommonJS require versus ES Modules import in Node.js with core, local, and npm packages">
+                    <div class="illustration-caption">CommonJS still works. New code should use ES modules — Node can also <code>require()</code> many ESM packages.</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Three kinds of modules</h3>
+                    <div class="grid-3">
+                        <div class="feature-card card-blue">
+                            <h4>📦 Core</h4>
+                            <p><code>node:fs</code>, <code>node:http</code>, <code>node:path</code>, <code>node:sqlite</code></p>
+                        </div>
+                        <div class="feature-card card-green">
+                            <h4>📝 Local</h4>
+                            <p>Your <code>./lib/auth.js</code> files</p>
+                        </div>
+                        <div class="feature-card card-purple">
+                            <h4>🌐 Packages</h4>
+                            <p>Installed from npm / pnpm / yarn</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>ES modules (recommended)</h3>
+                    <p>Set <code>"type": "module"</code> in <code>package.json</code>, or use <code>.mjs</code> / <code>.mts</code> extensions. ESM gives you top-level <code>await</code>, static analysis, and the same syntax as the browser.</p>
+                    <pre><code>// package.json
+{ "type": "module" }
+
+// math.js
+export const add = (a, b) =&gt; a + b;
+export default function subtract(a, b) {
+    return a - b;
+}
+
+// app.js
+import subtract, { add } from './math.js';
+import { readFile } from 'node:fs/promises';
+
+const text = await readFile('./readme.txt', 'utf8');
+console.log(add(2, 3), text);</code></pre>
+                    <div class="tip">
+                        <strong>Always prefix core modules with <code>node:</code></strong> — <code>import fs from 'node:fs'</code> makes it obvious you are not pulling an npm package named <code>fs</code>.
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>CommonJS (still everywhere)</h3>
+                    <pre><code>// math.cjs
+function add(a, b) { return a + b; }
+module.exports = { add };
+
+// app.cjs
+const { add } = require('./math.cjs');
+const path = require('node:path');</code></pre>
+                    <p>On Node 22+, <code>require()</code> can load many ESM graphs. Mixed packages still bite — prefer one module system per project.</p>
+                    <pre><code>// ESM equivalent of __dirname
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Node 20.11+ / 22+
+console.log(import.meta.dirname);
+console.log(import.meta.filename);</code></pre>
+                </div>
+            </section>
+
+            <section id="core-modules">
+                <h2>7) Core modules you will actually use</h2>
+
+                <div class="grid-4">
+                    <div class="feature-card card-orange"><h4>💻 node:os</h4><p>CPUs, memory, platform</p></div>
+                    <div class="feature-card card-blue"><h4>📁 node:fs</h4><p>Files, dirs, watchers, glob</p></div>
+                    <div class="feature-card card-green"><h4>🛤️ node:path</h4><p>Join and parse paths</p></div>
+                    <div class="feature-card card-purple"><h4>🌐 node:http / https</h4><p>Servers and low-level HTTP</p></div>
+                </div>
+
+                <h3>os</h3>
+                <div class="example-box">
+                    <pre><code>import os from 'node:os';
+
+os.cpus().length;
+os.totalmem();
+os.freemem();
+os.platform(); // 'win32' | 'linux' | 'darwin'
+os.homedir();</code></pre>
+                </div>
+
+                <h3>fs / promises</h3>
+                <div class="example-box">
+                    <pre><code>import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
+
+await mkdir('data', { recursive: true });
+await writeFile('data/hello.txt', 'hi', 'utf8');
+const text = await readFile('data/hello.txt', 'utf8');
+
+for await (const file of glob('src/**/*.ts')) {
+    console.log(file);
+}</code></pre>
+                    <div class="warning">
+                        <strong>Production:</strong> use the promise or stream APIs. Sync methods belong in boot scripts and CLIs, not request handlers.
+                    </div>
+                </div>
+
+                <h3>path</h3>
+                <div class="example-box">
+                    <pre><code>import path from 'node:path';
+
+path.join('users', 'docs', 'file.txt');
+path.resolve('docs', 'file.txt');
+path.extname('app.ts'); // '.ts'
+path.parse('/tmp/app.ts');</code></pre>
+                </div>
+
+                <h3>url, crypto, util</h3>
+                <div class="example-box">
+                    <pre><code>import { createHash, randomUUID } from 'node:crypto';
+import { styleText } from 'node:util';
+
+const id = randomUUID();
+const sha = createHash('sha256').update('secret').digest('hex');
+console.log(styleText('green', `ok ${id}`));</code></pre>
+                </div>
+            </section>
+
+            <section id="packages">
+                <h2>8) Package managers</h2>
+                <div class="example-box">
+                    <p>npm ships with Node. pnpm and yarn are common in monorepos. Pick one and lock the version with Corepack.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tool</th>
+                                <th>Strength</th>
+                                <th>Lockfile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>npm</strong></td>
+                                <td>Default, universal</td>
+                                <td><code>package-lock.json</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>pnpm</strong></td>
+                                <td>Content-addressable store, strict node_modules, fast monorepos</td>
+                                <td><code>pnpm-lock.yaml</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>yarn</strong></td>
+                                <td>Workspaces, Plug'n'Play option</td>
+                                <td><code>yarn.lock</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre><code>npm init -y
+npm install fastify
+npm install -D typescript
+
+# Run a package.json script without npm
+node --run dev
+
+# Security
+npm audit
+npm audit fix</code></pre>
+                </div>
+            </section>
+
+            <section id="http-server">
+                <h2>9) HTTP servers</h2>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-http-server.png" alt="HTTP request lifecycle from browser through Node server, router, middleware, handler, database, and JSON response">
+                    <div class="illustration-caption">A request is just bytes on a socket. Node parses HTTP, your code decides the status and body, then the response streams back.</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Built-in http</h3>
+                    <pre><code>import http from 'node:http';
+
+const server = http.createServer((req, res) =&gt; {
+    if (req.method === 'GET' &amp;&amp; req.url === '/health') {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+        return;
+    }
+    res.writeHead(404);
+    res.end();
+});
+
+server.listen(3000, () =&gt; {
+    console.log('http://localhost:3000');
+});</code></pre>
+                    <p>For real APIs, use Fastify or Express — they handle routing, validation, and plugins. The built-in module is what those frameworks wrap.</p>
+                </div>
+            </section>
+
+            <section id="web-apis">
+                <h2>10) fetch, WebSocket, and web standards</h2>
+                <div class="example-box">
+                    <p>Node’s HTTP client is <strong>Undici</strong>. Global <code>fetch</code> is stable. Node 26 ships Undici 8 with stricter header validation — malformed header names now throw.</p>
+                    <pre><code>const ac = new AbortController();
+const timer = setTimeout(() =&gt; ac.abort(), 5_000);
+
+const res = await fetch('https://api.github.com/repos/nodejs/node', {
+    headers: { 'user-agent': 'learning-docs' },
+    signal: AbortSignal.timeout(5_000),
+});
+clearTimeout(timer);
+
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const repo = await res.json();
+console.log(repo.stargazers_count);
+
+const ws = new WebSocket('wss://echo.websocket.org');
+ws.addEventListener('open', () =&gt; ws.send('hello'));
+ws.addEventListener('message', (event) =&gt; console.log(event.data));</code></pre>
+                    <div class="grid-3">
+                        <div class="feature-card card-blue">
+                            <h4>Headers / FormData / Blob</h4>
+                            <p>Same constructors as the browser for multipart uploads and binary bodies.</p>
+                        </div>
+                        <div class="feature-card card-green">
+                            <h4>AbortSignal.timeout</h4>
+                            <p>Built-in request deadlines without rolling your own timer.</p>
+                        </div>
+                        <div class="feature-card card-purple">
+                            <h4>URLPattern</h4>
+                            <p>Match routes with a web-standard pattern API.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="streams">
+                <h2>11) Streams</h2>
+
+                <p>Streams move data in chunks so a 2 GB file never sits entirely in RAM. Use them for files, HTTP bodies, compression, and pipes between processes.</p>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-streams.png" alt="Node.js stream pipeline from readable source through transform gzip to writable destination and HTTP response">
+                    <div class="illustration-caption">Readable → Transform → Writable. <code>pipeline()</code> wires them together and handles backpressure and errors.</div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>Backpressure</h3>
+                    <p>If the source is faster than the destination, memory grows until the process dies. Backpressure is the writable side saying “pause.” <code>pipe()</code> and <code>pipeline()</code> do this for you. Manual <code>'data'</code> listeners do not, unless you pause/resume yourself.</p>
+                </div>
+
+                <div class="grid-4">
+                    <div class="feature-card card-blue"><h4>📥 Readable</h4><p><code>createReadStream</code>, HTTP request</p></div>
+                    <div class="feature-card card-green"><h4>📤 Writable</h4><p><code>createWriteStream</code>, HTTP response</p></div>
+                    <div class="feature-card card-purple"><h4>🔄 Duplex</h4><p>Sockets — both directions</p></div>
+                    <div class="feature-card card-orange"><h4>✨ Transform</h4><p>gzip, crypto, parsers</p></div>
+                </div>
+
+                <div class="example-box">
+                    <pre><code>import { createReadStream, createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream/promises';
+import { createGzip } from 'node:zlib';
+
+await pipeline(
+    createReadStream('app.log'),
+    createGzip(),
+    createWriteStream('app.log.gz'),
+);</code></pre>
+                    <h4>HTTP file download without buffering</h4>
+                    <pre><code>import http from 'node:http';
+import { createReadStream } from 'node:fs';
+
+http.createServer((req, res) =&gt; {
+    res.writeHead(200, { 'content-type': 'video/mp4' });
+    createReadStream('movie.mp4').pipe(res);
+}).listen(3000);</code></pre>
+                </div>
+            </section>
+
+            <section id="events">
+                <h2>12) Events and EventEmitter</h2>
+                <div class="example-box">
+                    <p>Node is event-driven. HTTP servers, streams, and many core objects inherit <code>EventEmitter</code>.</p>
+                    <pre><code>import { EventEmitter } from 'node:events';
+
+class OrderBus extends EventEmitter {}
+const bus = new OrderBus();
+
+bus.on('paid', ({ id }) =&gt; console.log('receipt', id));
+bus.once('paid', () =&gt; console.log('first payment only'));
+bus.emit('paid', { id: 'ord_1' });
+
+bus.on('error', (err) =&gt; console.error(err));</code></pre>
+                    <table>
+                        <thead>
+                            <tr><th>Method</th><th>Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>on</code> / <code>off</code></td><td>Subscribe / unsubscribe</td></tr>
+                            <tr><td><code>once</code></td><td>Fire a single time</td></tr>
+                            <tr><td><code>emit</code></td><td>Dispatch</td></tr>
+                            <tr><td><code>listenerCount</code></td><td>Debug leaks</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="tip">Always handle the <code>error</code> event on emitters. An unhandled <code>error</code> can crash the process.</div>
+                </div>
+            </section>
+
+            <section id="buffers">
+                <h2>13) Buffers</h2>
+                <div class="example-box">
+                    <p>A <code>Buffer</code> is a fixed-size chunk of binary memory outside the V8 heap. Streams, TCP, and files all speak buffers (or <code>Uint8Array</code>).</p>
+                    <pre><code>const buf = Buffer.from('Hello World', 'utf8');
+buf.toString('utf8');
+buf.toString('hex');
+
+const empty = Buffer.alloc(16);          // zero-filled, safe
+const fast = Buffer.allocUnsafe(16);     // may contain old memory
+
+Buffer.concat([buf, Buffer.from('!')]);</code></pre>
+                    <p>Prefer <code>Buffer.alloc</code> over <code>allocUnsafe</code> unless you immediately overwrite every byte. <code>Uint8Array</code> and <code>Buffer</code> are interchangeable in most modern APIs.</p>
+                </div>
+            </section>
+
+            <section id="typescript">
+                <h2>14) Native TypeScript</h2>
+                <div class="example-box">
+                    <p>Node strips type syntax at load time. On Node 24+ / 26 you run <code>.ts</code> files with no flags. This is <strong>type stripping</strong>, not a full TypeScript compiler — enums, namespaces, and parameter properties need a build step (or were covered by the removed <code>--experimental-transform-types</code> flag).</p>
+                    <pre><code>// server.ts
+type User = { id: string; name: string };
+
+export function greet(user: User): string {
+    return `hello ${user.name}`;
+}
+
+console.log(greet({ id: '1', name: 'Ada' }));
+
+// Run
+// node server.ts</code></pre>
+                    <div class="info-box">
+                        <h3>What works without tsc</h3>
+                        <ul>
+                            <li>Interfaces, type aliases, generics, <code>as</code> assertions</li>
+                            <li><code>import type</code> / <code>export type</code></li>
+                            <li><code>.mts</code> / <code>.cts</code> module variants</li>
+                        </ul>
+                        <h3>What still needs a compiler</h3>
+                        <ul>
+                            <li>TypeScript <code>enum</code> and <code>namespace</code></li>
+                            <li>Decorators that emit runtime code (NestJS-style)</li>
+                            <li>JSX / TSX</li>
+                        </ul>
+                    </div>
+                    <p>Keep <code>tsc --noEmit</code> (or <code>typescript-eslint</code>) in CI so types are still checked. Node will not type-check for you — it only erases types and runs the leftover JavaScript.</p>
+                </div>
+            </section>
+
+            <section id="testing">
+                <h2>15) Built-in test runner</h2>
+                <div class="example-box">
+                    <p><code>node:test</code> plus <code>node:assert/strict</code> replaces Jest for a large class of unit and integration tests. Watch mode re-runs on save.</p>
+                    <pre><code>// math.test.ts
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { add } from './math.ts';
+
+test('adds two numbers', () =&gt; {
+    assert.equal(add(2, 3), 5);
+});
+
+test('async fetch mock', async (t) =&gt; {
+    t.mock.method(globalThis, 'fetch', async () =&gt; {
+        return new Response(JSON.stringify({ ok: true }), {
+            headers: { 'content-type': 'application/json' },
+        });
+    });
+    const res = await fetch('https://example.com');
+    assert.equal((await res.json()).ok, true);
+});</code></pre>
+                    <pre><code>node --test
+node --test --watch
+node --test --test-reporter=spec
+node --experimental-test-coverage</code></pre>
+                </div>
+            </section>
+
+            <section id="sqlite">
+                <h2>16) Built-in SQLite</h2>
+                <div class="example-box">
+                    <p><code>node:sqlite</code> is a zero-dependency, <strong>synchronous</strong> SQLite driver. Stable on Node 24 and 26. Perfect for CLIs, local caches, test fixtures, and single-process apps. It will block the event loop on large queries — do not use it as a busy multi-tenant primary database on the request thread.</p>
+                    <pre><code>import { DatabaseSync } from 'node:sqlite';
+
+const db = new DatabaseSync('app.db'); // or ':memory:'
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL
+  );
+`);
+
+const insert = db.prepare('INSERT INTO users (email) VALUES (?)');
+insert.run('ada@example.com');
+
+const row = db.prepare('SELECT * FROM users WHERE email = ?')
+    .get('ada@example.com');
+console.log(row);
+
+db.close();</code></pre>
+                    <div class="tip">
+                        Named parameters work too: <code>VALUES ($email)</code> with <code>.run({ $email: 'ada@example.com' })</code>. Wrap related writes in <code>BEGIN</code> / <code>COMMIT</code>.
+                    </div>
+                </div>
+            </section>
+
+            <section id="permissions">
+                <h2>17) Permission model</h2>
+                <div class="example-box">
+                    <p>Start Node with <code>--permission</code> and the process cannot touch the filesystem, network, child processes, workers, inspector, native addons, WASI, or FFI unless you allow them. This is the right default for untrusted plugins and locked-down CLIs.</p>
+                    <pre><code>node --permission --allow-fs-read=./data --allow-net app.js
+
+# Common allow flags
+# --allow-fs-read=...
+# --allow-fs-write=...
+# --allow-net
+# --allow-child-process
+# --allow-worker
+# --allow-addons</code></pre>
+                    <pre><code>if (!process.permission.has('fs.read', './data/config.json')) {
+    throw new Error('missing fs.read for config');
+}</code></pre>
+                    <div class="warning">
+                        The model restricts <code>node:fs</code>. Other modules (including <code>node:sqlite</code>) can still reach disk. Existing file descriptors also bypass checks. Treat it as defense in depth, not a sandbox VM.
+                    </div>
+                </div>
+            </section>
+
+            <section id="sea">
+                <h2>18) Single executable applications</h2>
+                <div class="example-box">
+                    <p>SEA bundles a Node binary and a blob of your app into <strong>one executable</strong> — useful for internal CLIs and machines where you do not want a separate Node install.</p>
+                    <pre><code>// sea-config.json
+{
+  "main": "bundle.js",
+  "output": "sea-prep.blob",
+  "disableExperimentalSEAWarning": true
+}</code></pre>
+                    <pre><code>node --experimental-sea-config sea-config.json
+# Then inject the blob into a copied node binary with postject
+# (platform-specific — see the official SEA tutorial)</code></pre>
+                    <p>You still need to bundle dependencies first (esbuild / rollup). Native addons are the hard part — SEA shines for dependency-light tools.</p>
+                </div>
+            </section>
+
+            <section id="tooling">
+                <h2>19) Watch mode, .env files, and Temporal</h2>
+                <div class="example-box">
+                    <h3>--watch</h3>
+                    <pre><code>node --watch server.ts
+node --watch --watch-path=./src server.ts</code></pre>
+                    <h3>--env-file</h3>
+                    <pre><code># .env
+PORT=3000
+DATABASE_URL=postgres://localhost:5432/app
+
+node --env-file=.env --env-file=.env.local server.ts
+console.log(process.env.PORT);</code></pre>
+                    <h3>Temporal (Node 26 default)</h3>
+                    <p>The Temporal API is on by default in Node 26 — timezone-safe dates without the <code>Date</code> footguns.</p>
+                    <pre><code>const instant = Temporal.Now.instant();
+const zoned = instant.toZonedDateTimeISO('Asia/Kolkata');
+const tomorrow = zoned.add({ days: 1 });
+console.log(tomorrow.toString());</code></pre>
+                    <h3>REPL</h3>
+                    <p>Type <code>node</code> with no file for a Read-Eval-Print-Loop. Useful for probing APIs. <code>.exit</code> leaves. For debugging production, prefer <code>node --inspect</code>.</p>
+                </div>
+            </section>
+
+            <section id="concurrency">
+                <h2>20) Worker threads and cluster</h2>
+
+                <div class="illustration">
+                    <img src="/images/nodejs/nodejs-concurrency.png" alt="Three Node.js concurrency models: event loop, worker threads sharing memory, and clustered processes sharing a port">
+                    <div class="illustration-caption">I/O stays on the event loop. CPU goes to workers. Multiple processes (cluster or a process manager) use every core for HTTP.</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>When to use which</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tool</th>
+                                <th>Isolation</th>
+                                <th>Best for</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Event loop</strong></td>
+                                <td>None — one thread</td>
+                                <td>Sockets, DB, files</td>
+                            </tr>
+                            <tr>
+                                <td><strong>worker_threads</strong></td>
+                                <td>Same process, shared memory optional</td>
+                                <td>CPU: hashing, image, parsing</td>
+                            </tr>
+                            <tr>
+                                <td><strong>cluster / PM2</strong></td>
+                                <td>Separate processes</td>
+                                <td>Use all cores for an HTTP server</td>
+                            </tr>
+                            <tr>
+                                <td><strong>child_process</strong></td>
+                                <td>Separate process, any binary</td>
+                                <td>ffmpeg, shells, other languages</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Worker Threads</h3>
+                    <pre><code>// main.ts
+import { Worker } from 'node:worker_threads';
+
+const worker = new Worker(new URL('./hash-worker.ts', import.meta.url));
+worker.postMessage({ password: 'secret' });
+worker.on('message', console.log);
+
+// hash-worker.ts
+import { parentPort } from 'node:worker_threads';
+import { scryptSync } from 'node:crypto';
+
+parentPort.on('message', ({ password }) =&gt; {
+    const hash = scryptSync(password, 'salt', 64).toString('hex');
+    parentPort.postMessage(hash);
+});</code></pre>
+
+                    <h3>cluster</h3>
+                    <pre><code>import cluster from 'node:cluster';
+import http from 'node:http';
+import os from 'node:os';
+
+if (cluster.isPrimary) {
+    for (let i = 0; i &lt; os.availableParallelism(); i++) cluster.fork();
+    cluster.on('exit', () =&gt; cluster.fork());
+} else {
+    http.createServer((_req, res) =&gt; res.end('ok')).listen(8000);
+}</code></pre>
+                    <p>In production, many teams skip <code>cluster</code> and run several containers behind a load balancer, or use PM2 / systemd.</p>
+                </div>
+            </section>
+
+            <section id="child-process">
+                <h2>21) Child processes</h2>
+                <div class="example-box">
+                    <pre><code>import { execFile, spawn, fork } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const execFileAsync = promisify(execFile);
+const { stdout } = await execFileAsync('node', ['-v']);
+
+const ls = spawn('git', ['status', '--short']);
+ls.stdout.on('data', (chunk) =&gt; process.stdout.write(chunk));
+
+const worker = fork('./job.js');
+worker.send({ type: 'start' });
+worker.on('message', console.log);</code></pre>
+                    <p>Prefer <code>execFile</code> / <code>spawn</code> with an argument array over <code>exec</code> with a shell string — it avoids shell injection. <code>fork</code> is spawn specialized for another Node process with an IPC channel.</p>
+                </div>
+            </section>
+
+            <section id="frameworks">
+                <h2>22) Frameworks: Express, Fastify, Nest</h2>
+                <div class="example-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Framework</th>
+                                <th>Character</th>
+                                <th>Reach for it when</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Express</strong></td>
+                                <td>Minimal, middleware-centric, huge ecosystem</td>
+                                <td>Simple APIs, existing codebases, maximum tutorials</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fastify</strong></td>
+                                <td>Schema-first, very fast JSON, plugins, logging built in</td>
+                                <td>New HTTP APIs that care about throughput and validation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NestJS</strong></td>
+                                <td>Opinionated, decorators, DI, modules</td>
+                                <td>Large teams that want Angular-like structure</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre><code>import Fastify from 'fastify';
+
+const app = Fastify({ logger: true });
+
+app.get('/health', async () =&gt; ({ ok: true }));
+
+app.post('/users', {
+    schema: {
+        body: {
+            type: 'object',
+            required: ['email'],
+            properties: { email: { type: 'string', format: 'email' } },
+        },
+    },
+}, async (req) =&gt; ({ email: req.body.email }));
+
+await app.listen({ port: 3000 });</code></pre>
+                </div>
+            </section>
+
+            <section id="runtimes">
+                <h2>23) Node.js vs Deno vs Bun</h2>
+                <div class="example-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Node.js</th>
+                                <th>Deno</th>
+                                <th>Bun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Engine</strong></td>
+                                <td>V8</td>
+                                <td>V8</td>
+                                <td>JavaScriptCore</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Compatibility</strong></td>
+                                <td>The npm standard</td>
+                                <td>Strong Node compat layer</td>
+                                <td>Very fast npm-ish runtime</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Permissions</strong></td>
+                                <td><code>--permission</code> (opt-in)</td>
+                                <td>Secure by default</td>
+                                <td>Open by default</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TypeScript</strong></td>
+                                <td>Native strip (24/26)</td>
+                                <td>First-class</td>
+                                <td>First-class</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Choose when</strong></td>
+                                <td>Production APIs, libraries, hiring pool</td>
+                                <td>Secure scripts, web-standard-first</td>
+                                <td>Local speed, bundling, tests</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>In 2026 Node remains the default for production Node-compatible packages. Deno and Bun are excellent tools in the same ecosystem — many teams use Bun to install and test, and Node 24/26 to run in production.</p>
+                </div>
+            </section>
+
+            <section id="performance">
+                <h2>24) Performance</h2>
+                <div class="example-box">
+                    <h3>Memory</h3>
+                    <pre><code>console.log(process.memoryUsage());
+// rss, heapTotal, heapUsed, external, arrayBuffers
+
+// Leak patterns: unbounded arrays, forgotten timers, EventEmitter listeners
+const interval = setInterval(() =&gt; {}, 1000);
+clearInterval(interval);</code></pre>
+
+                    <h3>PM2</h3>
+                    <pre><code>npm install -g pm2
+pm2 start server.js -i max
+pm2 monit
+pm2 logs</code></pre>
+
+                    <h3>Load testing</h3>
+                    <pre><code>npx autocannon http://localhost:3000/health -c 100 -d 20</code></pre>
+                </div>
+            </section>
+
+            <section id="diagnostics">
+                <h2>25) Diagnostics and debugging</h2>
+                <div class="example-box">
+                    <pre><code>node --inspect server.ts
+node --inspect-brk server.ts
+node --trace-gc app.js
+
+# Diagnostic report on signal (Unix)
+node --report-on-signal app.js
+
+import diagnostics_channel from 'node:diagnostics_channel';
+const channel = diagnostics_channel.channel('app.request');
+channel.subscribe((message) =&gt; console.log(message));
+channel.publish({ url: '/health' });</code></pre>
+                    <p><code>AsyncLocalStorage</code> is how you keep a request id across <code>await</code> without passing it through every function — the foundation of tracing and OpenTelemetry in Node.</p>
+                    <pre><code>import { AsyncLocalStorage } from 'node:async_hooks';
+
+const als = new AsyncLocalStorage();
+
+export function withRequestId(id, fn) {
+    return als.run({ id }, fn);
+}
+
+export function requestId() {
+    return als.getStore()?.id;
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2>26) Best practices</h2>
+                <div class="example-box">
+                    <h3>Do</h3>
+                    <ul>
+                        <li>Use ESM + the <code>node:</code> prefix for core modules</li>
+                        <li>Run an LTS line (24 now, 26 after October 2026) in production</li>
+                        <li>Type-check in CI even if Node strips types at runtime</li>
+                        <li>Prefer <code>fs/promises</code>, <code>pipeline</code>, and <code>fetch</code> with timeouts</li>
+                        <li>Handle <code>unhandledRejection</code> and <code>error</code> events</li>
+                        <li>Keep secrets in env files that never hit git; load with <code>--env-file</code></li>
+                        <li>Pin engines in <code>package.json</code>: <code>"engines": { "node": "&gt;=24" }</code></li>
+                    </ul>
+                    <h3>Don't</h3>
+                    <ul>
+                        <li>Block the event loop with sync I/O or big CPU on the request path</li>
+                        <li>Swallow errors in empty <code>catch</code> blocks</li>
+                        <li>Commit <code>.env</code> or mix lockfiles from npm and pnpm</li>
+                        <li>Assume <code>node:sqlite</code> is a Postgres replacement</li>
+                    </ul>
+                    <h3>Security</h3>
+                    <ul>
+                        <li>Helmet (or equivalent headers) behind HTTPS</li>
+                        <li>Validate input (JSON Schema, Zod, Fastify schemas)</li>
+                        <li>Rate-limit public routes</li>
+                        <li><code>npm audit</code> / <code>pnpm audit</code> in CI</li>
+                        <li>Consider <code>--permission</code> for plugins and untrusted scripts</li>
+                        <li>Never build shell strings from user input — use <code>execFile</code></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <h3>⬢ Node.js Complete Guide</h3>
+            <p>Updated for Node.js 24 LTS and Node.js 26 — TypeScript, SQLite, permissions, fetch, and Temporal</p>
+            <p>&copy; 2026 | Learning Platform</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth &lt;= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hardware cores to OS scheduling, processes, threads, Node.js, async, worker threads, and PM2 — with diagrams.">
+    <title>Concurrency & Parallelism - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🔀 Concurrency</h2>
+            <p>Hardware → OS → Node → PM2</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start Here</div>
+            <div class="sidebar-links">
+                <a href="#two-questions" class="sidebar-link">🎯 Software ≠ CPU</a>
+                <a href="#basic-concepts" class="sidebar-link">🧩 Four Pictures</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Hardware &amp; OS</div>
+            <div class="sidebar-links">
+                <a href="#your-cpu" class="sidebar-link">🖥️ Your CPU</a>
+                <a href="#core-vs-hw-thread" class="sidebar-link">⚙️ Core vs Hardware Thread</a>
+                <a href="#os-sees" class="sidebar-link">👁️ What the OS Sees</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Processes &amp; Threads</div>
+            <div class="sidebar-links">
+                <a href="#process" class="sidebar-link">📦 A Process</a>
+                <a href="#software-threads" class="sidebar-link">🧵 Software Threads</a>
+                <a href="#three-threads" class="sidebar-link">3️⃣ Three “Thread” Meanings</a>
+                <a href="#context-switching" class="sidebar-link">↔️ Context Switching</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">How You Wait</div>
+            <div class="sidebar-links">
+                <a href="#synchronous" class="sidebar-link">⏳ Synchronous</a>
+                <a href="#asynchronous" class="sidebar-link">⚡ Asynchronous</a>
+                <a href="#async-not-threads" class="sidebar-link">🚫 Async ≠ New Thread</a>
+                <a href="#io-bound" class="sidebar-link">🌐 I/O vs CPU</a>
+                <a href="#async-not-parallel" class="sidebar-link">🔀 Concurrency vs Parallelism</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">How You Execute</div>
+            <div class="sidebar-links">
+                <a href="#multithreading" class="sidebar-link">🧵 Multithreading</a>
+                <a href="#threads-vs-async" class="sidebar-link">🔄 Threads vs Async</a>
+                <a href="#multiprocessing" class="sidebar-link">🖥️ Multiprocessing</a>
+                <a href="#thread-vs-process" class="sidebar-link">⚖️ Thread vs Process</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Node.js</div>
+            <div class="sidebar-links">
+                <a href="#nodejs-architecture" class="sidebar-link">🏗️ Node Architecture</a>
+                <a href="#nodejs-event-loop" class="sidebar-link">🔁 Event Loop</a>
+                <a href="#nodejs-threads" class="sidebar-link">🧠 Not Simply Single-Threaded</a>
+                <a href="#worker-threads" class="sidebar-link">👷 Worker Threads</a>
+                <a href="#does-it-create-a-thread" class="sidebar-link">❓ Does It Create a Thread?</a>
+                <a href="#worker-vs-process" class="sidebar-link">🔀 Worker vs Process</a>
+                <a href="#pm2" class="sidebar-link">🚀 PM2 / Cluster</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">On Your Machine</div>
+            <div class="sidebar-links">
+                <a href="#apply-cpu" class="sidebar-link">🧮 Apply 14 Cores / 20 Threads</a>
+                <a href="#combine" class="sidebar-link">🧱 Combining Models</a>
+                <a href="#queues" class="sidebar-link">📬 Why Queues Matter</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Practice</div>
+            <div class="sidebar-links">
+                <a href="#which-to-use" class="sidebar-link">🧭 Which One to Use</a>
+                <a href="#controlled-concurrency" class="sidebar-link">🎚️ Controlled Concurrency</a>
+                <a href="#full-machine" class="sidebar-link">🖥️ Full Machine Picture</a>
+                <a href="#remember" class="sidebar-link">📌 How to Remember</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <style>
+                .illustration {
+                    text-align: center;
+                    margin: 2.5rem 0;
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                    border-radius: 20px;
+                    border: 1px solid #e2e8f0;
+                }
+                .illustration img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+                }
+                .illustration-caption {
+                    margin-top: 0.85rem;
+                    font-size: 0.9rem;
+                    color: #64748b;
+                    font-weight: 500;
+                }
+                .diagram-box {
+                    background: #0f172a;
+                    color: #cbd5e1;
+                    border-radius: 16px;
+                    padding: 1.5rem 1.75rem;
+                    margin: 1.75rem 0;
+                    font-family: 'Fira Code', ui-monospace, monospace;
+                    font-size: 0.82rem;
+                    line-height: 1.65;
+                    white-space: pre;
+                    overflow-x: auto;
+                    border: 1px solid #1e293b;
+                }
+                .grid-2, .grid-3 {
+                    display: grid;
+                    gap: 1.25rem;
+                    margin: 1.75rem 0;
+                }
+                .grid-2 { grid-template-columns: repeat(2, 1fr); }
+                .grid-3 { grid-template-columns: repeat(3, 1fr); }
+                .feature-card {
+                    background: #fff;
+                    padding: 1.5rem 1.6rem;
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+                    border-top: 4px solid #6366f1;
+                }
+                .feature-card h4 { margin-top: 0; }
+                .card-blue { border-top-color: #3b82f6; }
+                .card-green { border-top-color: #10b981; }
+                .card-purple { border-top-color: #8b5cf6; }
+                .card-orange { border-top-color: #f59e0b; }
+                .card-teal { border-top-color: #14b8a6; }
+                .card-pink { border-top-color: #ec4899; }
+                .cp-timeline {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 20px;
+                    padding: 1.5rem 1.75rem;
+                    margin: 1.75rem 0;
+                }
+                .cp-timeline h4 {
+                    margin: 0 0 1rem;
+                    font-size: 0.95rem;
+                }
+                .cp-row {
+                    display: grid;
+                    grid-template-columns: 90px 1fr 70px;
+                    gap: 0.75rem;
+                    align-items: center;
+                    margin: 0.55rem 0;
+                }
+                .cp-row span:first-child {
+                    font-size: 0.82rem;
+                    font-weight: 700;
+                    color: #334155;
+                }
+                .cp-track {
+                    height: 18px;
+                    background: #f1f5f9;
+                    border-radius: 999px;
+                    position: relative;
+                    overflow: hidden;
+                }
+                .cp-bar {
+                    position: absolute;
+                    top: 0;
+                    height: 100%;
+                    border-radius: 999px;
+                }
+                .cp-bar.sync1 { left: 0; width: 33%; background: #6366f1; }
+                .cp-bar.sync2 { left: 33%; width: 33%; background: #8b5cf6; }
+                .cp-bar.sync3 { left: 66%; width: 34%; background: #a855f7; }
+                .cp-bar.async { left: 0; width: 34%; }
+                .cp-bar.a1 { background: #6366f1; }
+                .cp-bar.a2 { background: #14b8a6; width: 28%; }
+                .cp-bar.a3 { background: #f59e0b; width: 34%; }
+                .cp-time {
+                    font-size: 0.75rem;
+                    color: #64748b;
+                    text-align: right;
+                    font-weight: 700;
+                }
+                .cp-axis {
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 0.75rem 0 0 90px;
+                    max-width: calc(100% - 160px);
+                    font-size: 0.72rem;
+                    color: #94a3b8;
+                    font-weight: 700;
+                }
+                .cp-gantt {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 20px;
+                    padding: 1.5rem;
+                    margin: 1.5rem 0;
+                }
+                .cp-gantt-row {
+                    display: grid;
+                    grid-template-columns: 80px 1fr;
+                    gap: 0.75rem;
+                    align-items: center;
+                    margin: 0.45rem 0;
+                }
+                .cp-gantt-label {
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    color: #334155;
+                }
+                .cp-gantt-track {
+                    height: 22px;
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    position: relative;
+                }
+                .cp-seg {
+                    position: absolute;
+                    top: 3px;
+                    height: 16px;
+                    border-radius: 6px;
+                }
+                .remember-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .remember-card {
+                    background: #0f172a;
+                    color: #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.25rem 1.4rem;
+                }
+                .remember-card strong {
+                    display: block;
+                    color: #a5b4fc;
+                    font-size: 0.85rem;
+                    letter-spacing: 0.08em;
+                    margin-bottom: 0.35rem;
+                }
+                .remember-card p { color: #cbd5e1; margin: 0; }
+                .stat-row {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .stat-card {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.25rem 1.4rem;
+                }
+                .stat-card .num {
+                    font-size: 2rem;
+                    font-weight: 800;
+                    color: #4f46e5;
+                    letter-spacing: -0.03em;
+                    line-height: 1;
+                }
+                .stat-card .label {
+                    margin-top: 0.4rem;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: #334155;
+                }
+                .stat-card p {
+                    margin: 0.45rem 0 0;
+                    color: #64748b;
+                    font-size: 0.88rem;
+                }
+                .wrong-box {
+                    background: #fef2f2;
+                    border: 1px solid #fecaca;
+                    color: #991b1b;
+                    border-radius: 12px;
+                    padding: 0.9rem 1.1rem;
+                    font-family: 'Fira Code', ui-monospace, monospace;
+                    font-size: 0.85rem;
+                    margin: 1rem 0;
+                }
+                .right-box {
+                    background: #ecfdf5;
+                    border: 1px solid #a7f3d0;
+                    color: #065f46;
+                    border-radius: 12px;
+                    padding: 0.9rem 1.1rem;
+                    font-family: 'Fira Code', ui-monospace, monospace;
+                    font-size: 0.85rem;
+                    margin: 1rem 0;
+                }
+                .exec-pipe {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.45rem;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 1.75rem 0;
+                    padding: 1.25rem 1rem;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 20px;
+                }
+                .exec-step {
+                    background: #0f172a;
+                    color: #e2e8f0;
+                    border-radius: 12px;
+                    padding: 0.7rem 0.85rem;
+                    min-width: 108px;
+                    text-align: center;
+                    font-size: 0.78rem;
+                    font-weight: 700;
+                    line-height: 1.35;
+                }
+                .exec-step small {
+                    display: block;
+                    font-size: 0.68rem;
+                    font-weight: 600;
+                    color: #94a3b8;
+                    margin-top: 0.2rem;
+                }
+                .exec-step.sw { background: #4f46e5; }
+                .exec-step.os { background: #0d9488; }
+                .exec-step.hw { background: #d97706; }
+                .exec-step.cpu { background: #dc2626; }
+                .exec-arrow {
+                    color: #94a3b8;
+                    font-weight: 800;
+                    font-size: 1.1rem;
+                }
+                .hop-list {
+                    counter-reset: hop;
+                    list-style: none;
+                    padding: 0;
+                    margin: 1.5rem 0 0;
+                }
+                .hop-list li {
+                    counter-increment: hop;
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    padding: 1.15rem 1.25rem 1.15rem 4.1rem;
+                    margin: 0.85rem 0;
+                    position: relative;
+                }
+                .hop-list li::before {
+                    content: counter(hop);
+                    position: absolute;
+                    left: 1rem;
+                    top: 1.15rem;
+                    width: 2rem;
+                    height: 2rem;
+                    border-radius: 999px;
+                    background: #eef2ff;
+                    color: #4f46e5;
+                    font-weight: 800;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                }
+                .hop-list strong { color: #0f172a; }
+                @media (max-width: 800px) {
+                    .grid-2, .grid-3, .remember-grid, .stat-row { grid-template-columns: 1fr; }
+                    .diagram-box { font-size: 0.72rem; }
+                    .cp-row { grid-template-columns: 70px 1fr 54px; }
+                    .exec-step { min-width: 46%; }
+                    .exec-arrow { display: none; }
+                }
+            </style>
+
+            <header>
+                <h1>🔀 Concurrency & Parallelism</h1>
+                <p>Node, Chrome, <code>await</code>, and PM2 are software. Cores and logical processors are hardware. The OS scheduler is the only bridge between them.</p>
+            </header>
+
+            <section id="two-questions">
+                <h2>1) Software is not the CPU</h2>
+                <p>The easy mistake — and the one this lesson used to make — is treating a Node process, a Chrome tab, or a “worker” as if it <em>were</em> a processor. Those are <strong>software</strong>. They ask for CPU time. They do not execute machine instructions themselves.</p>
+
+                <div class="exec-pipe" aria-label="Software to hardware path">
+                    <div class="exec-step sw">Application<small>software</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step sw">Process<small>software</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step sw">Software thread<small>OS thread</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step os">OS Scheduler<small>Windows</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step hw">Hardware thread<small>logical CPU</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step hw">Physical core<small>silicon</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step cpu">CPU executes<small>hardware</small></div>
+                </div>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/machine-software-hardware.png?v=2" alt="Your computer split into software processes and threads on the left, hardware CPU cores and hardware threads on the right, joined by the Windows scheduler">
+                    <div class="illustration-caption">Left column = software. Right column = hardware. The scheduler is the only thing that connects them.</div>
+                </div>
+
+                <p>Once that split is clear, sync / async / threads / processes answer two <em>software</em> questions. Hardware answers a third:</p>
+
+                <div class="grid-3">
+                    <div class="feature-card card-blue">
+                        <h4>1. How does software wait?</h4>
+                        <p><strong>Sync vs async.</strong> Does this function sit idle, or can other JavaScript run while I/O is outstanding?</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>2. How is software structured?</h4>
+                        <p><strong>Process vs software thread.</strong> Isolated program, or another execution path inside the same memory?</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>3. Where does it actually run?</h4>
+                        <p><strong>Hardware.</strong> The OS maps software threads onto 20 logical processors and 14 physical cores. That is the only place work executes.</p>
+                    </div>
+                </div>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/wait-vs-execute.png?v=3" alt="How software waits versus how software is structured — processes and threads are not CPU cores">
+                    <div class="illustration-caption">Waiting and structuring work are software decisions. They still have to pass the OS scheduler to reach a core.</div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>The rule this whole page uses</h3>
+                    <p><code>await</code>, <code>Promise.all()</code>, worker threads, and PM2 change <strong>software</strong> — how many processes/threads exist, and how they wait. They never create extra physical cores. Parallelism only happens after the scheduler places a software thread on a hardware thread, on a core, and the CPU executes.</p>
+                </div>
+            </section>
+
+            <section id="basic-concepts">
+                <h2>2) The four pictures</h2>
+                <p>Imagine you have <strong>10 API calls</strong> to make. These four pictures are <strong>software shapes</strong>. None of them is a CPU. Hardware comes after the scheduler.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Synchronous</h4>
+                        <div class="diagram-box">API 1 → wait → finish
+API 2 → wait → finish
+API 3 → wait → finish
+...
+API 10</div>
+                        <p>Everything happens sequentially. The next call cannot start until the previous one returns.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Asynchronous</h4>
+                        <div class="diagram-box">API 1 ───────────────→
+API 2 ───────→
+API 3 ─────────→
+API 4 ──→
+          ↓
+       results</div>
+                        <p>While API 1 is waiting on the network, you can start API 2, 3, and 4.</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>Multithreading</h4>
+                        <div class="diagram-box">One process
+│
+├── Software thread 1 → API 1
+├── Software thread 2 → API 2
+├── Software thread 3 → API 3
+└── Software thread 4 → API 4
+        ↓
+   OS scheduler
+        ↓
+hardware threads / cores</div>
+                        <p>Multiple <strong>software</strong> threads inside one process. They share memory. The OS may run them at the same time — or time-slice them — on hardware.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Multiprocessing</h4>
+                        <div class="diagram-box">Process 1  ─┐
+Process 2  ─┼── software (own memory)
+Process 3  ─┤
+Process 4  ─┘
+        ↓
+   OS scheduler
+        ↓
+14 cores / 20 hardware threads</div>
+                        <p>Independent programs. Each has its own memory. They are still software. Isolation does not mean “this process owns that core.”</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="your-cpu">
+                <h2>3) First: your CPU — 14 cores and 20 threads</h2>
+                <p>Task Manager on this machine reports something like:</p>
+
+                <div class="stat-row">
+                    <div class="stat-card">
+                        <div class="num">14</div>
+                        <div class="label">Physical cores</div>
+                        <p>Actual CPU execution units on the chip.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">20</div>
+                        <div class="label">Logical processors</div>
+                        <p>Hardware threads the OS can schedule onto.</p>
+                    </div>
+                </div>
+
+                <div class="diagram-box">                 PHYSICAL CPU
+                      │
+        ┌─────────────┼─────────────┐
+        ↓             ↓             ↓
+      Core 1        Core 2       Core 3 ...
+        │             │
+     Threads       Threads</div>
+
+                <p>There are <strong>14 physical CPU cores</strong>. The CPU exposes <strong>20 logical processors</strong> to the operating system.</p>
+
+                <div class="right-box">14 cores + 20 threads = 14 physical cores and 20 total hardware threads</div>
+                <div class="wrong-box">14 cores × 20 threads = 280 threads  ❌</div>
+
+                <p>Those 20 threads are the <em>total</em> hardware execution contexts on the chip — not 20 threads <em>per core</em>.</p>
+            </section>
+
+            <section id="core-vs-hw-thread">
+                <h2>4) Physical core vs hardware thread</h2>
+                <p>A <strong>physical core</strong> is an actual CPU execution unit. A <strong>hardware thread</strong> is a logical execution context that the CPU exposes to the OS.</p>
+
+                <p>A simpler textbook CPU often looks like this — one core, two hardware threads:</p>
+
+                <div class="diagram-box">Core 1 → Thread 1
+       → Thread 2
+
+Core 2 → Thread 3
+       → Thread 4
+
+...
+
+8 cores → 16 threads   (classic “8 cores / 16 threads”)</div>
+
+                <p>That marketing line exists because each core supports <strong>2 hardware threads</strong> (SMT / Hyper-Threading).</p>
+
+                <div class="warning-box">
+                    <strong>Your 14 / 20 CPU is not 2 threads on every core.</strong> 14 cores and 20 logical processors usually means a <strong>hybrid</strong> chip: some performance cores have 2 hardware threads, efficiency cores have 1. Do not assume every core has the same thread count just from 14 / 20.
+                </div>
+
+                <div class="diagram-box">Typical hybrid mapping (example, not a guarantee):
+
+  6 P-cores × 2 hardware threads  = 12
+  8 E-cores × 1 hardware thread   =  8
+                                 ────
+                         Logical CPUs = 20</div>
+
+                <p>The exact split depends on the processor. What you can trust from Task Manager is the totals: <strong>14 cores</strong>, <strong>20 logical processors</strong>.</p>
+            </section>
+
+            <section id="os-sees">
+                <h2>5) What does the OS see?</h2>
+                <p>Windows / Linux does not simply see “14 CPUs.” It sees something like:</p>
+
+                <div class="diagram-box">              Operating System
+                     │
+       ┌─────────────┼──────────────┐
+       ↓             ↓              ↓
+    CPU 0          CPU 1          CPU 2
+       ...                           ...
+                    ↓
+                  CPU 19</div>
+
+                <p>So <strong>20 logical processors</strong> are available for scheduling. The OS scheduler places software threads onto those 20 slots. Only about 20 hardware threads can truly execute at once — extra software threads wait or get time-sliced.</p>
+            </section>
+
+            <section id="process">
+                <h2>6) Now introduce a process</h2>
+                <p>A <strong>process</strong> is a running program with its own memory and resources.</p>
+
+                <div class="diagram-box">Node.js application
+       ↓
+    Process
+
+node app.js
+       ↓
+OS creates Process 1234</div>
+
+                <p>Conceptually a process owns:</p>
+
+                <div class="diagram-box">Process 1234
+│
+├── Code
+├── Heap
+├── Stack
+├── Environment
+├── File handles
+└── Threads</div>
+
+                <p>Your Node app is one process (until you start more). Everything below — the event loop, worker threads, libuv — lives <em>inside</em> that process unless you spawn another one.</p>
+            </section>
+
+            <section id="software-threads">
+                <h2>7) A process can have many threads</h2>
+                <p>A process does not have only one thread. Node can look like this:</p>
+
+                <div class="diagram-box">Node Process
+│
+├── Main Thread
+├── Worker Thread 1
+├── Worker Thread 2
+├── Worker Thread 3
+└── Worker Thread 4</div>
+
+                <p>These are <strong>software / OS threads</strong> created by the application or runtime. They are different from the CPU’s <strong>20 hardware threads</strong>.</p>
+
+                <div class="info-box">
+                    <p>You can have <strong>100 software threads</strong> even though you only have <strong>20 logical CPUs</strong>. The extra threads do not create extra cores. The OS multiplexes them onto the 20 logical processors.</p>
+                </div>
+            </section>
+
+            <section id="three-threads">
+                <h2>8) Three different “thread” concepts</h2>
+                <p>When people say “thread”, they can mean three different things. Mixing them up is how “Node is single-threaded” and “async creates threads” both get oversimplified.</p>
+
+                <div class="grid-3">
+                    <div class="feature-card card-blue">
+                        <h4>1. Hardware thread</h4>
+                        <p>CPU capability. Your chip: <strong>14 cores, 20 hardware threads</strong>.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>2. OS / software thread</h4>
+                        <p>Created by apps and runtimes. Task Manager’s “Threads” count (thousands) is this — not your 20 logical CPUs.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>3. JavaScript async work</h4>
+                        <p><code>await fetch(url)</code> is <strong>not</strong> “create a new CPU thread.” It is an in-flight I/O operation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="context-switching">
+                <h2>9) Context switching</h2>
+                <p>Suppose you have 20 logical CPUs and 100 software threads. The OS has to schedule them:</p>
+
+                <div class="diagram-box">Time 1:
+  CPU 1  → Thread A
+  CPU 2  → Thread B
+  ...
+  CPU 20 → Thread T
+
+Time 2:
+  CPU 1  → Thread U
+  CPU 2  → Thread V
+  ...</div>
+
+                <p>Switching a CPU from one software thread to another is <strong>context switching</strong>. The scheduler saves one thread’s registers / stack pointer and restores another’s.</p>
+
+                <div class="warning-box">
+                    <strong>More threads does not automatically mean more performance.</strong> Past a point you pay for switching, cache disruption, and lock contention — while still only executing on ~20 logical processors at a time.
+                </div>
+
+                <div class="diagram-box">100 software threads
+        ↓
+   OS scheduler
+        ↓
+20 logical CPUs</div>
+            </section>
+
+            <section id="synchronous">
+                <h2>10) Synchronous programming</h2>
+                <p><strong>Synchronous = do one thing and wait for it before continuing.</strong></p>
+
+                <div class="code-block">const result1 = await callAPI1();
+const result2 = await callAPI2();
+const result3 = await callAPI3();</div>
+
+                <p>This snippet uses <code>await</code>, so it is async <em>syntax</em>, but it is still sequential <em>execution</em>: each call waits for the previous one. If each API takes 2 seconds:</p>
+
+                <div class="cp-timeline">
+                    <h4>Sequential execution — total ≈ 6 seconds</h4>
+                    <div class="cp-row">
+                        <span>API 1</span>
+                        <div class="cp-track"><div class="cp-bar sync1"></div></div>
+                        <span class="cp-time">0–2s</span>
+                    </div>
+                    <div class="cp-row">
+                        <span>API 2</span>
+                        <div class="cp-track"><div class="cp-bar sync2"></div></div>
+                        <span class="cp-time">2–4s</span>
+                    </div>
+                    <div class="cp-row">
+                        <span>API 3</span>
+                        <div class="cp-track"><div class="cp-bar sync3"></div></div>
+                        <span class="cp-time">4–6s</span>
+                    </div>
+                    <div class="cp-axis"><span>0s</span><span>2s</span><span>4s</span><span>6s</span></div>
+                </div>
+
+                <h3>Restaurant analogy</h3>
+                <div class="diagram-box">Customer 1 orders
+↓
+Wait for food
+↓
+Food delivered
+↓
+Customer 2 orders
+↓
+Wait
+↓
+Food delivered</div>
+                <p>Very simple, and often the right choice for a short script. It becomes inefficient when most of the time is spent waiting.</p>
+            </section>
+
+            <section id="asynchronous">
+                <h2>11) Asynchronous programming</h2>
+                <p><strong>Async = don't block while waiting for something.</strong> The program starts work, continues with other work, and comes back when the result is ready.</p>
+
+                <div class="warning-box">
+                    <strong>Important:</strong> Using <code>async/await</code> does not automatically run things together. This is still sequential:
+                    <div class="code-block">const result1 = await callAPI1();
+const result2 = await callAPI2();
+const result3 = await callAPI3();</div>
+                    Each <code>await</code> pauses this function until that promise settles, so the next call does not start yet.
+                </div>
+
+                <p>Start all three calls first, then wait together:</p>
+
+                <div class="code-block">const p1 = callAPI1();
+const p2 = callAPI2();
+const p3 = callAPI3();
+
+const results = await Promise.all([p1, p2, p3]);</div>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/sync-vs-async.png" alt="Synchronous sequential API calls versus overlapping async API calls">
+                    <div class="illustration-caption">This is software waiting. Overlapping API calls does not mean three hardware threads started.</div>
+                </div>
+
+                <div class="cp-timeline">
+                    <h4>Concurrent async — total ≈ max(2, 2, 2) = 2 seconds</h4>
+                    <div class="cp-row">
+                        <span>API 1</span>
+                        <div class="cp-track"><div class="cp-bar async a1"></div></div>
+                        <span class="cp-time">~2s</span>
+                    </div>
+                    <div class="cp-row">
+                        <span>API 2</span>
+                        <div class="cp-track"><div class="cp-bar async a2"></div></div>
+                        <span class="cp-time">~2s</span>
+                    </div>
+                    <div class="cp-row">
+                        <span>API 3</span>
+                        <div class="cp-track"><div class="cp-bar async a3"></div></div>
+                        <span class="cp-time">~2s</span>
+                    </div>
+                    <div class="cp-axis"><span>0s</span><span>2s</span><span>4s</span><span>6s</span></div>
+                </div>
+
+                <div class="tip-box">
+                    <strong>The payoff:</strong> Sequential time is <code>2 + 2 + 2 ≈ 6s</code>. Concurrent async is <code>max(2, 2, 2) ≈ 2s</code>. That is one of the biggest wins of async programming for <strong>I/O-bound</strong> work.
+                </div>
+
+                <h3>Why async is useful</h3>
+                <p>Suppose MongoDB takes 100 ms.</p>
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Blocking</h4>
+                        <div class="diagram-box">Request
+   ↓
+MongoDB
+   ↓
+WAIT 100ms
+   ↓
+Continue</div>
+                        <p>During that wait, this execution path is stuck on that operation.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Async</h4>
+                        <div class="diagram-box">Request
+   ↓
+MongoDB request
+   ↓
+“Tell me when finished”
+   ↓
+Do other work
+   ↓
+MongoDB result arrives
+   ↓
+Continue</div>
+                        <p>Powerful for MongoDB, APIs, HTTP, Redis, S3, network, and file I/O.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="async-not-threads">
+                <h2>12) Async does not create 20 threads</h2>
+                <p>This is one of the biggest misconceptions — especially after looking at “20 logical processors” in Task Manager.</p>
+
+                <p>If you write:</p>
+                <div class="code-block">const result = await fetch(url);</div>
+                <p>you should <strong>not</strong> think: <code>fetch()</code> → new CPU thread.</p>
+
+                <div class="diagram-box">JavaScript
+   ↓
+Start I/O
+   ↓
+Event loop can handle other work
+   ↓
+I/O completes
+   ↓
+Promise continuation executes</div>
+
+                <p>1,000 users sending requests does not mean Node creates 1,000 software threads, and it certainly does not mean 1,000 hardware threads. The event loop keeps many I/O operations in flight on <strong>one</strong> main JavaScript software thread.</p>
+            </section>
+
+            <section id="io-bound">
+                <h2>13) I/O-bound vs CPU-bound</h2>
+                <p>Choosing a model starts with the kind of work you have.</p>
+
+                <h3>What is I/O?</h3>
+                <p>I/O means <strong>Input/Output</strong> — waiting on something outside the CPU:</p>
+                <ul>
+                    <li>Calling an API</li>
+                    <li>MongoDB / MySQL / Redis queries</li>
+                    <li>Reading or writing a file</li>
+                    <li>S3 upload/download</li>
+                    <li>HTTP requests and waiting for a response</li>
+                </ul>
+
+                <div class="diagram-box">Node.js
+   |
+   | HTTP request  (CPU is mostly idle here)
+   ↓
+External API
+   |
+   | processing
+   ↓
+Response
+   |
+   ↓
+Node.js continues</div>
+
+                <p>During that wait, Node.js can handle other work. That is why <strong>Node.js is very good for I/O-heavy applications</strong>.</p>
+
+                <h3>CPU-bound work</h3>
+                <p>CPU-bound means the processor itself is busy. There isn't much waiting on a network or disk:</p>
+                <ul>
+                    <li>Image / video processing</li>
+                    <li>Encryption and compression</li>
+                    <li>Large calculations and complex algorithms</li>
+                    <li>Machine learning inference</li>
+                    <li>PDF generation</li>
+                    <li>Parsing huge datasets</li>
+                </ul>
+
+                <div class="code-block">for (let i = 0; i &lt; 10_000_000_000; i++) {
+    // heavy calculation — the CPU is occupied
+}</div>
+
+                <div class="warning-box">
+                    Async alone does not fix CPU-bound work. The event loop is busy computing, so other requests stall. For that, you need <strong>worker threads</strong>, <strong>child processes</strong>, or <strong>multiple Node processes</strong>.
+                </div>
+            </section>
+
+            <section id="async-not-parallel">
+                <h2>14) Concurrency vs parallelism</h2>
+                <p>This is one of the most common interview traps. Async is usually concurrency. It is not automatically parallelism.</p>
+
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <h4>Concurrency</h4>
+                        <p>“Multiple tasks are in progress during the same period.” They may take turns on one core. Example: API A, MongoDB B, and API C all outstanding at once.</p>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>Parallelism</h4>
+                        <p>“Multiple tasks execute at the same time” on different CPU cores / logical processors.</p>
+                    </div>
+                </div>
+
+                <div class="diagram-box">Concurrency (in progress, not necessarily simultaneous CPU):
+
+A ────────────────→
+B ────────→
+C ─────────────→
+
+Parallelism (simultaneous execution):
+
+CPU Core 1 → Task A
+CPU Core 2 → Task B
+CPU Core 3 → Task C
+CPU Core 4 → Task D</div>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/concurrency-vs-parallelism.png?v=3" alt="Concurrency as interleaved software tasks versus parallelism as simultaneous work on physical cores">
+                    <div class="illustration-caption">Concurrency is a software story. Parallelism is a hardware story. The scheduler is how one becomes the other.</div>
+                </div>
+
+                <div class="cp-gantt">
+                    <h4>Async concurrency — overlapping waits</h4>
+                    <div class="cp-gantt-row">
+                        <span class="cp-gantt-label">Task A</span>
+                        <div class="cp-gantt-track">
+                            <div class="cp-seg" style="left:0;width:28%;background:#6366f1;"></div>
+                            <div class="cp-seg" style="left:55%;width:28%;background:#6366f1;"></div>
+                        </div>
+                    </div>
+                    <div class="cp-gantt-row">
+                        <span class="cp-gantt-label">Task B</span>
+                        <div class="cp-gantt-track">
+                            <div class="cp-seg" style="left:22%;width:30%;background:#14b8a6;"></div>
+                        </div>
+                    </div>
+                    <div class="cp-gantt-row">
+                        <span class="cp-gantt-label">Task C</span>
+                        <div class="cp-gantt-track">
+                            <div class="cp-seg" style="left:40%;width:38%;background:#f59e0b;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cp-gantt">
+                    <h4>Parallelism — same time, different cores</h4>
+                    <div class="cp-gantt-row">
+                        <span class="cp-gantt-label">CPU 1</span>
+                        <div class="cp-gantt-track"><div class="cp-seg" style="left:0;width:90%;background:#6366f1;"></div></div>
+                    </div>
+                    <div class="cp-gantt-row">
+                        <span class="cp-gantt-label">CPU 2</span>
+                        <div class="cp-gantt-track"><div class="cp-seg" style="left:0;width:90%;background:#14b8a6;"></div></div>
+                    </div>
+                    <div class="cp-gantt-row">
+                        <span class="cp-gantt-label">CPU 3</span>
+                        <div class="cp-gantt-track"><div class="cp-seg" style="left:0;width:90%;background:#f59e0b;"></div></div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>Concurrency</strong> = dealing with multiple tasks in the same period.<br>
+                    <strong>Parallelism</strong> = executing multiple tasks simultaneously.</p>
+                    <p>You can have concurrency without parallelism: one software thread, many in-flight I/O operations (<code>await</code> / <code>Promise.all()</code>). Parallelism needs more than one hardware thread actually executing at the same instant. Extra Node processes or <code>Worker</code>s only help if the scheduler can place them on different cores.</p>
+                </div>
+            </section>
+
+            <section id="multithreading">
+                <h2>15) Multithreading</h2>
+                <p>A <strong>software thread</strong> is an execution path inside a process. It is not a hardware thread and not a core.</p>
+
+                <div class="diagram-box">Application Process   ← software
+│
+├── Software thread 1 → Task A
+├── Software thread 2 → Task B
+├── Software thread 3 → Task C
+└── Software thread 4 → Task D
+              │
+              ↓
+        OS scheduler
+              │
+              ↓
+     hardware threads / cores</div>
+
+                <p>The OS schedules these software threads onto your <strong>20 logical processors</strong>. They <strong>share the process's memory</strong>. They may run at the same time if the scheduler places them on different hardware threads — or they may take turns on one.</p>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/threads-vs-processes.png?v=3" alt="Software threads sharing memory versus processes with isolated memory, both mapped onto hardware by the OS scheduler">
+                    <div class="illustration-caption">Threads and processes are both software. The OS scheduler — not the process — decides which core runs them.</div>
+                </div>
+
+                <div class="diagram-box">Process
+│
+├── Thread 1 ──┐
+├── Thread 2 ──┤
+├── Thread 3 ──┤── Shared memory
+└── Thread 4 ──┘</div>
+
+                <p>Shared memory makes communication cheap. It also introduces:</p>
+                <ul>
+                    <li>Race conditions</li>
+                    <li>Deadlocks</li>
+                    <li>Locks and contention</li>
+                    <li>Hard-to-reproduce synchronization bugs</li>
+                </ul>
+            </section>
+
+            <section id="threads-vs-async">
+                <h2>16) Multithreading vs async</h2>
+                <p>These are often confused because both can "handle more than one thing." They focus on different problems.</p>
+
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Async</th>
+                        <th>Multithreading</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Main idea</strong></td>
+                        <td>Don't block while waiting</td>
+                        <td>Have multiple execution threads</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best at</strong></td>
+                        <td>I/O waits (network, disk, DB)</td>
+                        <td>Overlapping work, some CPU/I/O mixes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Typical cost</strong></td>
+                        <td>Low — callbacks / promises / event loop</td>
+                        <td>Higher — stacks, context switches, locks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Shared state</strong></td>
+                        <td>Usually one JS thread, fewer data races</td>
+                        <td>Shared memory — races are common</td>
+                    </tr>
+                </table>
+
+                <div class="grid-2">
+                    <div class="feature-card card-teal">
+                        <h4>Async without extra threads</h4>
+                        <p>Node.js event-loop style: one JavaScript thread, many in-flight I/O operations.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Threads without async</h4>
+                        <p>A Java servlet or a Python thread pool that blocks on I/O inside each thread.</p>
+                    </div>
+                </div>
+                <p>You can also combine them: async I/O on the main thread, worker threads for CPU work.</p>
+            </section>
+
+            <section id="multiprocessing">
+                <h2>17) Multiprocessing</h2>
+                <p>Multiprocessing means running <strong>multiple independent processes</strong>. Each process has its own memory space.</p>
+
+                <div class="diagram-box">Server
+│
+├── Process 1 → Heap A
+├── Process 2 → Heap B
+├── Process 3 → Heap C
+└── Process 4 → Heap D</div>
+
+                <p>This gives stronger isolation than threads. A crash in process 3 usually does not take down process 1. Isolation is a <strong>software</strong> property. It does not pin Process 1 to Core 1.</p>
+
+                <h3>Why use it?</h3>
+                <p>A CPU-heavy JavaScript job in one Node process mostly occupies <strong>one software thread</strong> (the main JS thread). The scheduler can only keep one hardware thread busy with that JavaScript. Several processes create several runnable software threads, so the scheduler has a chance to use several cores:</p>
+
+                <div class="diagram-box">SOFTWARE                      HARDWARE
+Process 1 (main JS thread) ─┐
+Process 2 (main JS thread) ─┼──→ OS scheduler ──→ 14 cores / 20 HTs
+Process 3 (main JS thread) ─┤
+Process 4 (main JS thread) ─┘
+
+Not: Process 1 = Core 1</div>
+
+                <p>This is especially useful for CPU-bound workloads: image processing, PDF generation, encryption, ML, huge parses — because those jobs need real cores, not just more async.</p>
+
+                <h3>14-core machine example</h3>
+                <p>Machine: <strong>14 CPU cores / 20 logical processors</strong>, 16 GB RAM. Job: process <strong>1 million images</strong>, each CPU-heavy.</p>
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <h4>Single process</h4>
+                        <p>One main JS software thread does the heavy work. The scheduler has little else from this app to place on the other cores.</p>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>Multiple processes</h4>
+                        <p>More software threads for the scheduler to spread across cores. Better hardware utilization if the work is actually CPU-heavy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="thread-vs-process">
+                <h2>18) Thread vs process</h2>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Software thread</th>
+                        <th>Process</th>
+                    </tr>
+                    <tr>
+                        <td>Memory</td>
+                        <td>Shared</td>
+                        <td>Separate</td>
+                    </tr>
+                    <tr>
+                        <td>Communication</td>
+                        <td>Easier (shared data)</td>
+                        <td>More expensive (IPC, queues, HTTP)</td>
+                    </tr>
+                    <tr>
+                        <td>Creation</td>
+                        <td>Usually cheaper</td>
+                        <td>Usually heavier</td>
+                    </tr>
+                    <tr>
+                        <td>Isolation</td>
+                        <td>Low</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Crash impact</td>
+                        <td>Can take down the whole process</td>
+                        <td>Usually isolated</td>
+                    </tr>
+                    <tr>
+                        <td>Parallel CPU work</td>
+                        <td>Possible (runtime-dependent)</td>
+                        <td>Strong fit</td>
+                    </tr>
+                    <tr>
+                        <td>Shared data</td>
+                        <td>Easy but risky</td>
+                        <td>Requires IPC</td>
+                    </tr>
+                    <tr>
+                        <td>Resource usage</td>
+                        <td>Lower</td>
+                        <td>Higher</td>
+                    </tr>
+                    <tr>
+                        <td>Is this a CPU core?</td>
+                        <td>No — software</td>
+                        <td>No — software</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="nodejs-architecture">
+                <h2>19) Node.js architecture</h2>
+                <p>A simplified Node.js process looks like this:</p>
+
+                <div class="diagram-box">                    Node.js Process
+                          │
+                 ┌────────┴────────┐
+                 │                 │
+          Main JS Thread       libuv
+                 │                 │
+            Event Loop       Thread Pool
+                 │                 │
+        ┌────────┼──────┐     ┌────┼────┐
+        ↓        ↓      ↓     ↓    ↓    ↓
+      HTTP      DB     Timer  T1   T2   T3</div>
+
+                <p>Your JavaScript primarily executes on the <strong>main JavaScript thread</strong>. The event loop manages asynchronous work. libuv’s pool handles some blocking OS work (file I/O, some crypto/DNS) so that main thread can stay free.</p>
+            </section>
+
+            <section id="nodejs-event-loop">
+                <h2>20) What is the event loop?</h2>
+                <p>Node.js primarily uses an <strong>event loop</strong> for JavaScript execution. While one operation waits on I/O, Node can keep handling other requests. That is why it can serve many concurrent HTTP connections without creating one JavaScript thread per request.</p>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/nodejs-event-loop.png" alt="Node.js event loop handling multiple requests while I/O is in flight">
+                    <div class="illustration-caption">One JavaScript thread drives the event loop. In-flight I/O does not block that thread.</div>
+                </div>
+
+                <div class="diagram-box">                Event Loop
+                    │
+       ┌────────────┼─────────────┐
+       ↓            ↓             ↓
+    Request 1    Request 2     Request 3
+       │            │             │
+       ↓            ↓             ↓
+     MongoDB       API           Redis
+       │            │             │
+       └────────────┼─────────────┘
+                    ↓
+                 Results</div>
+            </section>
+
+            <section id="nodejs-threads">
+                <h2>21) Node.js is not simply "single-threaded"</h2>
+                <p>People often say: <em>Node.js is single-threaded.</em> More accurately:</p>
+                <div class="info-box premium">
+                    <p><strong>JavaScript execution is primarily handled by a single event-loop thread</strong>, while Node.js itself can use additional threads internally and can also use worker threads or multiple processes.</p>
+                </div>
+
+                <div class="diagram-box">Node.js Process
+│
+├── Main JavaScript Thread
+│      └── Event Loop
+│
+├── libuv worker threads  (fs, crypto, DNS, etc.)
+│
+└── OS resources</div>
+
+                <p>libuv's thread pool handles some blocking OS work so the event loop stays free. For your own CPU-heavy JavaScript, use <code>worker_threads</code> or extra processes — the main thread will not magically parallelize a tight <code>for</code> loop. Even with 20 logical CPUs, one CPU-heavy JavaScript function still occupies the main thread.</p>
+            </section>
+
+            <section id="worker-threads">
+                <h2>22) Worker Threads in Node.js</h2>
+                <p>Node’s <code>worker_threads</code> module gives you extra JavaScript threads <em>inside the same process</em>.</p>
+
+                <div class="diagram-box">Node Process
+│
+├── Main Thread
+│     ├── HTTP requests
+│     ├── MongoDB
+│     └── API
+│
+├── Worker 1  → Image processing
+├── Worker 2  → PDF processing
+└── Worker 3  → Large calculation</div>
+
+                <p>The main event loop stays more responsive because the heavy CPU work is not running on it. Workers are the right tool when the bottleneck is <strong>JavaScript computation</strong>, not waiting on the network.</p>
+            </section>
+
+            <section id="does-it-create-a-thread">
+                <h2>23) Does this create a thread?</h2>
+                <p>This is the Node.js rule that ties async, libuv, and <code>worker_threads</code> together. <code>await</code> and <code>Promise.all()</code> change <em>when JavaScript continues</em>. They do not, by themselves, create OS threads.</p>
+
+                <h3>1. <code>await</code> — no new thread</h3>
+                <div class="code-block">const a = await getData1();</div>
+                <p><code>await</code> does not create a thread. It pauses <em>this function</em> and lets the main JavaScript OS thread run other work until the promise settles.</p>
+
+                <div class="diagram-box">Node.js Process
+│
+└── Main JS OS Thread
+       │
+       ├── start async operation
+       ├── await → pause this function
+       │
+       └── later → resume</div>
+
+                <p>The main thread is free to run other JavaScript while waiting. That is concurrency, not a new thread.</p>
+
+                <h3>2. <code>Promise.all()</code> — concurrent operations, not automatically new threads</h3>
+                <div class="code-block">await Promise.all([
+    getData1(),
+    getData2(),
+    getData3()
+]);</div>
+                <p>This starts the operations without waiting for each one sequentially.</p>
+
+                <div class="diagram-box">Main JS Thread
+     │
+     ├── getData1 ──┐
+     ├── getData2 ──┼──→ operations happen concurrently
+     └── getData3 ──┘</div>
+
+                <div class="wrong-box">Promise.all()  ≠  3 new threads</div>
+                <p>Whether threads are involved depends on what <code>getData1</code> / <code>getData2</code> / <code>getData3</code> actually do — network I/O, a libuv pool job, or a <code>Worker</code>. <code>Promise.all()</code> only says “run these operations together and wait for all of them.”</p>
+
+                <h3>3. <code>worker_threads</code> — creates a new OS thread</h3>
+                <p>For CPU-heavy JavaScript you create a Worker yourself:</p>
+                <div class="code-block">const { Worker } = require("node:worker_threads");
+
+new Worker("./calculation.js");</div>
+
+                <div class="diagram-box">Node.js Process
+│
+├── Main JS OS Thread
+│      ├── event loop
+│      └── normal JS
+│
+└── Worker OS Thread  ← NEW
+       └── heavy calculation</div>
+
+                <p>That is an explicit new Node.js Worker on a separate OS thread. The main event loop can keep serving requests while the worker computes.</p>
+
+                <h3>4. Where does libuv fit?</h3>
+                <p>libuv is the fourth piece. Some Node APIs offload blocking work to an <strong>internal thread pool</strong>. Those are OS threads Node already owns — not <code>await</code>, and not <code>new Worker()</code>.</p>
+
+                <div class="diagram-box">                    Node.js Process
+                          │
+          ┌───────────────┴────────────────┐
+          │                                │
+ Main JavaScript OS Thread          libuv Thread Pool
+          │                                │
+          │                         Worker OS Threads
+          │                         ├── Worker 1
+          │                         ├── Worker 2
+          │                         ├── Worker 3
+          │                         └── Worker 4  (default pool size)
+          │
+          └────── node:worker_threads
+                         │
+                    NEW OS Thread  (your Worker)</div>
+
+                <p>Default libuv pool size is 4 (override with <code>UV_THREADPOOL_SIZE</code>). Typical pool users: some <code>fs</code> calls, <code>crypto.pbkdf2</code>, some DNS lookups. <code>fetch()</code> / network I/O generally does <strong>not</strong> sit on that pool — the OS and event loop handle the socket.</p>
+
+                <h3>The simple rule</h3>
+                <table>
+                    <tr>
+                        <th>You do</th>
+                        <th>New OS thread?</th>
+                    </tr>
+                    <tr>
+                        <td><code>await</code></td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><code>Promise.all()</code></td>
+                        <td>Not by itself</td>
+                    </tr>
+                    <tr>
+                        <td><code>fs.readFile()</code></td>
+                        <td>May use a libuv pool worker</td>
+                    </tr>
+                    <tr>
+                        <td><code>crypto.pbkdf2()</code></td>
+                        <td>Uses a libuv pool worker</td>
+                    </tr>
+                    <tr>
+                        <td><code>fetch()</code> / network I/O</td>
+                        <td>Generally not a libuv pool thread</td>
+                    </tr>
+                    <tr>
+                        <td><code>new Worker()</code></td>
+                        <td>Yes — a new Node.js Worker thread</td>
+                    </tr>
+                </table>
+
+                <h3>Then every OS thread still competes for hardware</h3>
+                <div class="diagram-box">OS Threads
+   │
+   ├── Chrome threads
+   ├── Node main thread
+   ├── libuv workers
+   ├── Node Worker threads
+   └── Other application threads
+              │
+              ↓
+        OS Scheduler
+              │
+              ↓
+       CPU hardware threads  (20 on this machine)
+              │
+              ↓
+          CPU cores  (14 on this machine)</div>
+
+                <div class="info-box premium">
+                    <h3>The most important distinction</h3>
+                    <p><strong>Concurrent JavaScript</strong> (<code>await</code>, <code>Promise.all()</code>) overlaps waiting. It does not spawn threads.</p>
+                    <p><strong>libuv pool threads</strong> are Node’s hidden OS threads for some blocking C/C++ work. You did not write <code>new Worker()</code>.</p>
+                    <p><strong><code>worker_threads</code></strong> is when <em>you</em> create another JavaScript OS thread for CPU-heavy JS.</p>
+                    <p>All of those OS threads still go through the Windows scheduler onto the CPU’s <strong>20 hardware threads</strong> and <strong>14 cores</strong>. Creating threads is not the same as getting more cores.</p>
+                </div>
+            </section>
+
+            <section id="worker-vs-process">
+                <h2>24) Worker Thread vs process</h2>
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Worker Thread</h4>
+                        <div class="diagram-box">Same Process
+│
+├── Main Thread
+├── Worker 1
+└── Worker 2</div>
+                        <p>Memory can be shared in controlled ways (<code>SharedArrayBuffer</code>, message passing). Less isolation. Cheaper to start than a full process.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Process</h4>
+                        <div class="diagram-box">Process 1 → Memory 1
+
+Process 2 → Memory 2</div>
+                        <p>Separate memory spaces. More isolation. A worker crash can still hurt the process; a process crash usually stays contained.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pm2">
+                <h2>25) Node.js multiprocessing and PM2</h2>
+                <p>Because one Node process has a main JavaScript <strong>software</strong> thread, CPU-heavy JS or high traffic can bottleneck that thread. Extra processes do not add cores. They add more software the scheduler can place on the cores you already have.</p>
+
+                <div class="diagram-box">SOFTWARE                         HARDWARE
+Node Process 1 ─┐
+Node Process 2 ─┼── OS scheduler ──→ 20 hardware threads
+Node Process 3 ─┤                   ──→ 14 physical cores
+Node Process 4 ─┘</div>
+
+                <p><strong>PM2 cluster mode</strong> (or Node’s <code>cluster</code> module, or multiple containers) runs multiple instances and puts a load balancer in front:</p>
+
+                <div class="diagram-box">                 Load
+                  │
+             Load Balancer
+                  │
+       ┌──────────┼──────────┐
+       ↓          ↓          ↓
+    Node 1      Node 2     Node 3
+       ↓          ↓          ↓
+    Event       Event      Event
+    Loop        Loop       Loop</div>
+
+                <p>Each process handles I/O efficiently with async. Together they can use multiple cores for JavaScript. One process dying does not take the whole service down.</p>
+
+                <div class="tip-box">
+                    <strong>Why multiple Node processes?</strong> One busy main JS thread can stall every request in that process. Several processes let Process 1, 2, 3, 4 do CPU work (or serve traffic) at the same time.
+                </div>
+            </section>
+
+            <section id="apply-cpu">
+                <h2>26) Apply your 14-core / 20-thread CPU</h2>
+                <p>The machine has 14 physical cores and 20 logical processors. A Node process is software. It does <em>not</em> become 20 processors, and its main JavaScript thread does not automatically use all 20 logical CPUs.</p>
+
+                <h3>Scenario A — normal Node.js</h3>
+                <div class="diagram-box">Node Process
+     │
+Main JS Thread
+     │
+Event Loop</div>
+                <p>Your main JavaScript execution does not automatically spread one CPU-heavy operation across 20 logical CPUs.</p>
+
+                <h3>Scenario B — many API calls</h3>
+                <div class="diagram-box">Node
+ │
+ Event Loop
+ │
+ ├── API 1 ─────→
+ ├── API 2 ─────→
+ ├── API 3 ─────→
+ ├── ...
+ └── API 100 ───→</div>
+                <p>This is excellent for I/O. You do not need 100 threads.</p>
+
+                <h3>Scenario C — 100 CPU-heavy tasks</h3>
+                <p>Async alone is not the magic solution for image processing or heavy math. Use worker threads or multiple processes so the CPU can actually be utilized.</p>
+
+                <div class="warning-box">
+                    <strong>Do not blindly create 20 workers because Task Manager says 20 threads.</strong> The right count depends on physical vs SMT/hybrid cores, memory, I/O waiting, worker overhead, garbage collection, and other services on the machine. For CPU-heavy work, start with a sensible count (often near physical cores) and benchmark.
+                </div>
+            </section>
+
+            <section id="combine">
+                <h2>27) Combining async + threads + processes</h2>
+                <p>These are not competitors. They solve different problems and can all coexist:</p>
+
+                <div class="diagram-box">SOFTWARE (you control this)          HARDWARE (fixed)
+        │
+ Node 1 / Node 2 / Node 3  processes
+        │
+ Event loops + async I/O + Workers
+        │
+        ↓
+  OS scheduler
+        │
+        ↓
+ 20 hardware threads → 14 cores → CPU executes</div>
+
+                <h3>WRM / mixed workload</h3>
+                <p>Imagine 10,000 URLs. Each needs an HTTP request, a screenshot, HTML processing, and a MongoDB update.</p>
+                <ul>
+                    <li><strong>HTTP / MongoDB</strong> — mostly I/O-bound → async</li>
+                    <li><strong>Screenshot</strong> — potentially CPU / memory heavy</li>
+                    <li><strong>HTML processing</strong> — CPU-heavy depending on complexity</li>
+                </ul>
+
+                <div class="diagram-box">                  Queue
+                    │
+        ┌───────────┼───────────┐
+        ↓           ↓           ↓
+     Worker       Worker       Worker
+      Node          Node         Node
+        │           │            │
+      Async       Async        Async
+        │           │            │
+   ┌────┼────┐ ┌────┼────┐  ┌────┼────┐
+   ↓    ↓    ↓ ↓    ↓    ↓  ↓    ↓    ↓
+  API Mongo S3 API Mongo S3 API Mongo S3</div>
+
+                <p>CPU-heavy screenshot / processing can be isolated into worker threads if the main loop starts to stall.</p>
+
+                <h3>One example showing everything</h3>
+                <div class="diagram-box">                 1,000 URLs
+                      │
+                      ↓
+                    Queue
+                      │
+       ┌──────────────┼──────────────┐
+       ↓              ↓              ↓
+   Node Process 1  Node Process 2  Node Process 3
+       │              │              │
+   Event Loop      Event Loop      Event Loop
+       │              │              │
+   Async HTTP      Async HTTP      Async HTTP
+       │              │              │
+    MongoDB          MongoDB        MongoDB
+       │              │              │
+       └──────────────┼──────────────┘
+                      ↓
+               CPU-heavy work
+                      │
+              ┌───────┼───────┐
+              ↓       ↓       ↓
+           Worker 1 Worker 2 Worker 3</div>
+
+                <ul>
+                    <li><strong>Multiprocessing</strong> → multiple Node processes</li>
+                    <li><strong>Multithreading</strong> → worker threads where appropriate</li>
+                    <li><strong>Async</strong> → HTTP / DB / network</li>
+                    <li><strong>Concurrency</strong> → many websites in progress</li>
+                    <li><strong>Parallelism</strong> → CPU-heavy jobs across CPU resources</li>
+                    <li><strong>Queue</strong> → controls how much work enters the system</li>
+                </ul>
+            </section>
+
+            <section id="queues">
+                <h2>28) Why queues are important</h2>
+                <p>Do not send 10,000 jobs directly into the process. Put them on a queue and let a controlled number of workers pull:</p>
+
+                <div class="diagram-box">10,000 URLs
+     ↓
+   Queue
+     │
+     ├── Job 1
+     ├── Job 2
+     ├── Job 3
+     ...
+     └── Job 10000
+     ↓
+Controlled workers take jobs at a safe rate</div>
+
+                <p>That gives you concurrency control, retries, fault tolerance, backpressure, scaling, and monitoring. Tools people actually use: BullMQ, RabbitMQ, SQS, and similar.</p>
+            </section>
+
+            <section id="which-to-use">
+                <h2>29) Which one should you use?</h2>
+
+                <table>
+                    <tr>
+                        <th>Concept</th>
+                        <th>What it actually means</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Sync</strong></td>
+                        <td>Wait before continuing</td>
+                        <td>API A → wait → API B</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Async</strong></td>
+                        <td>Continue while I/O is pending</td>
+                        <td>API A + API B concurrently</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Concurrency</strong></td>
+                        <td>Multiple tasks in progress</td>
+                        <td>100 HTTP requests</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Parallelism</strong></td>
+                        <td>Multiple tasks executing simultaneously on hardware</td>
+                        <td>Two cores running at once</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Software thread</strong></td>
+                        <td>Execution path inside a process — not a core</td>
+                        <td>Node main thread, <code>new Worker()</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multithreading</strong></td>
+                        <td>Multiple threads in a process</td>
+                        <td>Main + 4 workers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Process</strong></td>
+                        <td>Independent running program</td>
+                        <td>A Node process</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multiprocessing</strong></td>
+                        <td>Multiple independent processes</td>
+                        <td>PM2 cluster / 8 Node instances</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware core</strong></td>
+                        <td>Physical CPU execution resource</td>
+                        <td>14 cores</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware thread</strong></td>
+                        <td>Logical CPU execution context</td>
+                        <td>20 logical processors</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event loop</strong></td>
+                        <td>Node’s mechanism for async work</td>
+                        <td>HTTP / DB callbacks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>libuv pool</strong></td>
+                        <td>Node’s internal OS threads for some blocking work</td>
+                        <td><code>fs.readFile</code>, <code>crypto.pbkdf2</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Worker Thread</strong></td>
+                        <td>You create a new JS OS thread</td>
+                        <td><code>new Worker("./calc.js")</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Queue</strong></td>
+                        <td>Controls jobs flowing through workers</td>
+                        <td>SQS / RabbitMQ / BullMQ</td>
+                    </tr>
+                </table>
+
+                <h3>API calls</h3>
+                <div class="code-block">await Promise.all([
+    api1(),
+    api2(),
+    api3()
+]);</div>
+
+                <h3>MongoDB / independent queries</h3>
+                <div class="code-block">const [users, merchants, transactions] =
+    await Promise.all([
+        getUsers(),
+        getMerchants(),
+        getTransactions()
+    ]);</div>
+
+                <h3>CPU-heavy JavaScript</h3>
+                <p>Use <strong>Worker Threads</strong>:</p>
+                <div class="diagram-box">Main Thread
+     │
+     ├── Worker 1
+     ├── Worker 2
+     └── Worker 3</div>
+
+                <h3>High traffic Node.js</h3>
+                <p>Use <strong>PM2 cluster / cluster module / multiple containers</strong> behind a load balancer:</p>
+                <div class="diagram-box">Server
+│
+├── Node Process 1
+├── Node Process 2
+├── Node Process 3
+└── Node Process 4</div>
+                <p>This uses multiple CPU cores and improves availability: one process crash does not take the whole service down.</p>
+            </section>
+
+            <section id="controlled-concurrency">
+                <h2>30) Don't do unlimited async</h2>
+                <p>A very common mistake:</p>
+                <div class="code-block">await Promise.all(
+    100000.map(url => processURL(url))
+);</div>
+                <p>That can create huge pressure on external APIs, MongoDB, memory, network connections, CPU, and file descriptors.</p>
+
+                <div class="warning-box">
+                    <strong>Use controlled concurrency.</strong> Keep a fixed number of operations in flight (for example 20), and start the next one only when one finishes.
+                </div>
+
+                <div class="diagram-box">250 URLs
+   ↓
+Concurrency = 20
+   ↓
+20 running
+   ↓
+completed
+   ↓
+next 20
+
+Batch 1 → 20
+Batch 2 → 20
+Batch 3 → 20
+...</div>
+                <p>This is almost always safer in production than firing every promise at once. A job queue is the same idea at system scale.</p>
+            </section>
+
+            <section id="full-machine">
+                <h2>31) The full picture: your computer</h2>
+                <p>This is the picture the whole lesson is built on. Software never talks to a core directly. An application becomes a process, the process creates software threads, Windows schedules those threads onto hardware threads, and a physical core finally executes instructions.</p>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/machine-software-hardware.png?v=2" alt="Your computer split into software processes and threads on the left, hardware CPU cores and hardware threads on the right, joined by the Windows scheduler">
+                    <div class="illustration-caption">Software on the left. Hardware on the right. The Windows scheduler is the bridge.</div>
+                </div>
+
+                <div class="exec-pipe" aria-label="Execution path from application to CPU">
+                    <div class="exec-step sw">Application<small>Node / Chrome</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step sw">Process<small>own memory</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step sw">Software Threads<small>OS threads</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step os">OS Scheduler<small>Windows</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step hw">Hardware Threads<small>20 logical CPUs</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step hw">Physical Core<small>14 cores</small></div>
+                    <span class="exec-arrow">→</span>
+                    <div class="exec-step cpu">CPU Executes<small>instructions</small></div>
+                </div>
+
+                <div class="diagram-box">                    YOUR COMPUTER
+                         │
+        ┌────────────────┴────────────────┐
+        │                                 │
+     SOFTWARE                          HARDWARE
+        │                                 │
+ ┌──────┴────────┐                  CPU / Processor
+ │               │                         │
+Node.js        Chrome                      │
+Process        Processes                   │
+ │               │                         │
+ ├─ Thread 1     ├─ Thread 1               │
+ ├─ Thread 2     ├─ Thread 2               │
+ └─ Thread 3     ├─ Thread 3               │
+                 └─ Thread 4               │
+         │                                 │
+         └───────┬─────────────────────────┘
+                 │
+                 ▼
+         Windows Scheduler
+                 │
+                 ├───────────────┐
+                 ▼               ▼
+              HT1 / HT2       HT3 / HT4  …  HT19 / HT20
+                 │               │
+                 └───────────────┴─────────┘
+                                 │
+                                 ▼
+                          Physical Cores
+                                 │
+                                 ▼
+                           CPU executes</div>
+
+                <h3>Read it top to bottom</h3>
+                <ol class="hop-list">
+                    <li>
+                        <strong>Application.</strong> You start a program — <code>node app.js</code>, Chrome, VS Code. That is still just a file until the OS loads it.
+                    </li>
+                    <li>
+                        <strong>Process.</strong> Windows creates a process: its own memory (code, heap, stack), file handles, and environment. Node is usually one process. Chrome is many processes (browser + GPU + a process per tab), which is why a crashed tab does not kill the whole browser.
+                    </li>
+                    <li>
+                        <strong>Software threads.</strong> Inside each process the runtime creates OS threads — Node’s main JS thread, libuv pool threads, worker threads; Chrome’s UI, compositor, and renderer threads. These are <em>not</em> the 20 hardware threads in Task Manager. You can have thousands of software threads on this machine.
+                    </li>
+                    <li>
+                        <strong>OS scheduler.</strong> Windows decides, many times per second, which software threads get a turn. Node and Chrome do not pick a core themselves. They ask the scheduler for CPU time. This is the bridge between the software column and the hardware column.
+                    </li>
+                    <li>
+                        <strong>Hardware threads (logical processors).</strong> The scheduler places a runnable software thread onto one of your <strong>20 logical CPUs</strong> (HT1…HT20). Only about 20 software threads can truly execute at the same instant. The rest wait or get time-sliced.
+                    </li>
+                    <li>
+                        <strong>Physical core.</strong> Each hardware thread sits on a real core. Your chip has <strong>14 physical cores</strong>. Some cores expose two hardware threads, some expose one. Two hardware threads on the same core share that core’s execution units — they interleave, they are not two full extra cores.
+                    </li>
+                    <li>
+                        <strong>CPU executes instructions.</strong> The core fetches and runs machine instructions. That is the only place work actually happens. Everything above it — processes, threads, async, PM2 — is about <em>who is allowed to reach this step, and when</em>.
+                    </li>
+                </ol>
+
+                <div class="info-box premium">
+                    <h3>Why this picture matters</h3>
+                    <p>Async, worker threads, and PM2 all sit on the <strong>software</strong> side. They change how many processes/threads exist and how they wait. They do not create extra physical cores.</p>
+                    <p>The Windows scheduler and the 20 hardware threads sit in the middle. They are why 100 software threads do not mean 100× speed.</p>
+                    <p>The 14 cores sit on the <strong>hardware</strong> side. That is the real parallelism budget for CPU-heavy work.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Software column</h4>
+                        <p>Applications, processes, software threads, async work, worker threads, PM2 instances. Cheap to create relative to cores. Easy to over-create.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Hardware column</h4>
+                        <p>14 physical cores, 20 hardware threads, the execution units that run instructions. Fixed for this machine. The ceiling for true parallel CPU work.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="remember">
+                <h2>32) How to remember it</h2>
+
+                <h3>The hierarchy</h3>
+                <div class="diagram-box">Application → Process → Software Threads
+        → OS Scheduler → Hardware Threads
+        → Physical Core → CPU executes
+
+PHYSICAL MACHINE
+       │
+       ├── SOFTWARE: Node / Chrome processes + threads
+       └── HARDWARE: 14 cores / 20 logical processors
+                │
+                ↓
+        Windows Scheduler
+                │
+          ┌─────┴─────┐
+          ↓           ↓
+       Process 1   Process 2
+          │           │
+        Threads     Threads
+          │
+          ↓
+       Node.js
+          │
+     Main JS Thread
+          │
+          ↓
+      Event Loop
+          │
+          ↓
+    Async I/O operations
+          │
+          ↓
+    Worker threads / PM2 processes when CPU or traffic needs them</div>
+
+                <div class="illustration">
+                    <img src="/images/concurrency/restaurant-analogy.png" alt="Restaurant analogy for sync, async, multithreading, and multiprocessing">
+                    <div class="illustration-caption">Waiters = software threads. Separate restaurants = processes. Kitchen stations = hardware cores. Extra waiters do not build extra kitchens.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Synchronous</h4>
+                        <p>One waiter: take order → wait in the kitchen → deliver → next customer. Simple, slow when the kitchen is the bottleneck.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>Async</h4>
+                        <p>One waiter takes order A, gives it to the kitchen, takes B and C, then delivers food as it is ready. No standing around.</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>Multithreading</h4>
+                        <p>Several waiters in the same restaurant, sharing the same kitchen and floor.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Multiprocessing</h4>
+                        <p>Completely separate restaurants, each with its own kitchen and staff.</p>
+                    </div>
+                </div>
+
+                <div class="remember-grid">
+                    <div class="remember-card">
+                        <strong>SYNC</strong>
+                        <p>"Wait until I'm done."</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>ASYNC</strong>
+                        <p>"Don't wait; let me do other work."</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>SOFTWARE THREAD</strong>
+                        <p>"Another execution path inside a process. Not a core."</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>PROCESS</strong>
+                        <p>"Another independent program. Still software."</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>CONCURRENCY</strong>
+                        <p>"Handle multiple things in the same period."</p>
+                    </div>
+                    <div class="remember-card">
+                        <strong>PARALLELISM</strong>
+                        <p>"Execute multiple things at the same time."</p>
+                    </div>
+                </div>
+
+                <h3>The 5 lines</h3>
+                <div class="diagram-box">SOFTWARE
+   ↓
+Processes, software threads, await, Promise.all,
+libuv pool, Worker, PM2
+   ↓
+Ask for CPU time. Do not execute silicon.
+
+OS SCHEDULER
+   ↓
+The only bridge
+
+HARDWARE
+   ↓
+14 physical cores
+20 hardware threads / logical processors
+   ↓
+The only place instructions run
+
+NODE ASYNC
+   ↓
+Concurrent I/O on one software thread
+   ↓
+Not new hardware
+
+WORKER / EXTRA PROCESSES
+   ↓
+More software for the scheduler to place on cores
+
+MULTIPROCESSING + ASYNC
+   ↓
+Multiple Node processes (PM2), each efficiently handling I/O</div>
+
+                <h3>For Node.js specifically</h3>
+                <div class="grid-3">
+                    <div class="feature-card card-teal">
+                        <h4>I/O-heavy</h4>
+                        <p>Async / event loop → API + MongoDB + S3 + HTTP</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>CPU-heavy</h4>
+                        <p>Worker threads / processes → images, PDFs, compression, heavy math</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>High traffic</h4>
+                        <p>PM2 cluster / multiple Node processes or containers → load balancer</p>
+                    </div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>The key rule</h3>
+                    <p><strong>Async improves how software waits. Software threads and processes change how software is structured. Only hardware executes in parallel — after the OS scheduler maps a software thread onto a core.</strong></p>
+                    <p>That is why "async vs multithreading" is not an apples-to-apples comparison. They sit on different axes:</p>
+                    <div class="diagram-box">Synchronous  + Single process
+Asynchronous + Single process
+Synchronous  + Multithreading
+Asynchronous + Multithreading
+Synchronous  + Multiprocessing
+Asynchronous + Multiprocessing</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            sidebar.classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.remove('active');
+                    sidebar.classList.remove('mobile-open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

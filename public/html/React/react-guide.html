@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">⚛️ React Guide</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Basics</div>
+            <div class="sidebar-links">
+                <a href="#introduction" class="sidebar-link">Introduction</a>
+                <a href="#features" class="sidebar-link">Features</a>
+                <a href="#jsx" class="sidebar-link">JSX</a>
+                <a href="#components" class="sidebar-link">Components</a>
+                <a href="#props-state" class="sidebar-link">Props & State</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🎨 Core Concepts</div>
+            <div class="sidebar-links">
+                <a href="#virtual-dom" class="sidebar-link">Virtual DOM</a>
+                <a href="#event-handling" class="sidebar-link">Event Handling</a>
+                <a href="#conditional-rendering" class="sidebar-link">Conditional Rendering</a>
+                <a href="#lists-keys" class="sidebar-link">Lists & Keys</a>
+                <a href="#forms" class="sidebar-link">Forms</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Lifecycle</div>
+            <div class="sidebar-links">
+                <a href="#lifecycle" class="sidebar-link">Lifecycle Methods</a>
+                <a href="#mounting" class="sidebar-link">Mounting</a>
+                <a href="#updating" class="sidebar-link">Updating</a>
+                <a href="#unmounting" class="sidebar-link">Unmounting</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🪝 Hooks</div>
+            <div class="sidebar-links">
+                <a href="#hooks-intro" class="sidebar-link">Hooks Introduction</a>
+                <a href="#usestate" class="sidebar-link">useState</a>
+                <a href="#useeffect" class="sidebar-link">useEffect</a>
+                <a href="#usecontext" class="sidebar-link">useContext</a>
+                <a href="#usereducer" class="sidebar-link">useReducer</a>
+                <a href="#usecallback" class="sidebar-link">useCallback</a>
+                <a href="#usememo" class="sidebar-link">useMemo</a>
+                <a href="#useref" class="sidebar-link">useRef</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🚀 Advanced</div>
+            <div class="sidebar-links">
+                <a href="#fragments" class="sidebar-link">Fragments</a>
+                <a href="#pure-components" class="sidebar-link">Pure Components</a>
+                <a href="#refs" class="sidebar-link">Refs</a>
+                <a href="#portals" class="sidebar-link">Portals</a>
+                <a href="#error-boundaries" class="sidebar-link">Error Boundaries</a>
+                <a href="#hoc" class="sidebar-link">Higher-Order Components</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚡ Performance</div>
+            <div class="sidebar-links">
+                <a href="#performance" class="sidebar-link">Optimization</a>
+                <a href="#lazy-loading" class="sidebar-link">Lazy Loading</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>⚛️ React</h1>
+            <p>Complete Guide to React - Basics, Hooks & Advanced Concepts</p>
+        </header>
+
+        <section id="introduction">
+            <h2>⚛️ The React Architecture</h2>
+            
+            <p>React is more than a library; it's a <strong>declarative UI engine</strong> that abstracts away the complexity of state synchronization and manual DOM manipulation. For a senior engineer, React is a tool for building <strong>predictable, component-driven interfaces</strong>.</p>
+            
+            <div class="info-box premium">
+                <h3>The Paradigm Shift: Declarative vs Imperative</h3>
+                <p>In traditional jQuery (Imperative), you tell the browser <em>how</em> to change (e.g., "Find the button, add a class, change text"). In React (Declarative), you tell the browser <em>what</em> the UI should look like for a given state, and React handles the state-to-view transformation efficiently.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Why React Wins</h3>
+                <ul>
+                    <li>🧱 <strong>Component Atomic Design:</strong> Build complex systems from small, testable, and reusable atoms.</li>
+                    <li>🔄 <strong>One-Way Data Flow:</strong> Predictable state management where data only flows downwards (Parents to Children).</li>
+                    <li>🚀 <strong>Ecosystem Maturity:</strong> From Next.js for SSR to React Native for mobile, the knowledge is cross-platform.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="features">
+            <h2>✨ Key Features</h2>
+
+            <table>
+                <tr><th>Feature</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Virtual DOM</strong></td>
+                    <td>Uses VirtualDOM instead of RealDOM (RealDOM manipulations are expensive)</td>
+                </tr>
+                <tr>
+                    <td><strong>Server-Side Rendering</strong></td>
+                    <td>Supports SSR for better performance and SEO</td>
+                </tr>
+                <tr>
+                    <td><strong>Unidirectional Data Flow</strong></td>
+                    <td>Data flows from parent to child (Efficiency, Better control, Easier debugging)</td>
+                </tr>
+                <tr>
+                    <td><strong>Declarative Programming</strong></td>
+                    <td>Tell what UI should look like, React handles the rest</td>
+                </tr>
+                <tr>
+                    <td><strong>Component-Based</strong></td>
+                    <td>Reusable/composable UI components</td>
+                </tr>
+            </table>
+
+            <h3>Advantages</h3>
+            <ul>
+                <li>✓ Component-based approach</li>
+                <li>✓ Declarative programming (tell what UI should look like)</li>
+                <li>✓ DOM updates handled gracefully</li>
+                <li>✓ Increased application performance</li>
+                <li>✓ Easy to integrate</li>
+                <li>✓ Reusable code</li>
+                <li>✓ Helps build rich UI</li>
+                <li>✓ Rich ecosystem</li>
+            </ul>
+
+            <h3>Disadvantages</h3>
+            <ul>
+                <li>✗ Only a library (handles only View in MVC)</li>
+                <li>✗ Library size is relatively large</li>
+                <li>✗ Difficult to understand for novices</li>
+            </ul>
+        </section>
+
+        <section id="jsx">
+            <h2>📝 JSX (JavaScript XML)</h2>
+
+            <p>JSX is an <span class="highlight">extension to JavaScript</span> that allows us to write HTML elements in JavaScript and place them in the DOM without using <code>createElement()</code> or <code>appendChild()</code>.</p>
+
+            <h3>What is JSX?</h3>
+            <ul>
+                <li>JSX converts HTML tags into React elements</li>
+                <li>Provides syntactic sugar for <code>React.createElement()</code></li>
+                <li>Gives expressiveness of JavaScript with HTML-like template syntax</li>
+                <li>JSX files don't render directly - uses transformers like Babel</li>
+            </ul>
+
+            <div class="code-block">// Without JSX
+React.createElement('div', null, 'Hello World')
+
+// With JSX
+&lt;div&gt;Hello World&lt;/div&gt;</div>
+
+            <div class="info-box">
+                <strong>💡 Note:</strong> JSX makes your code elegant and simple. Browsers don't understand JSX directly - it must be transformed to JavaScript using tools like Babel.
+            </div>
+        </section>
+
+        <section id="components">
+            <h2>🧩 Components</h2>
+
+            <p>A <strong>component</strong> is a small unit of design that can be reused or nested in other components.</p>
+
+            <h3>Types of Components</h3>
+
+            <h4>1. Functional Components</h4>
+            <p>JavaScript functions that return HTML (JSX).</p>
+            <div class="code-block">const Welcome = (props) => {
+  return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;;
+}</div>
+
+            <h4>2. Class-Based Components</h4>
+            <p>ES6 classes that extend React.Component.</p>
+            <div class="code-block">class Welcome extends React.Component {
+  render() {
+    return &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;;
+  }
+}</div>
+
+            <h3>Functional vs Class Components</h3>
+            <table>
+                <tr><th>Feature</th><th>Functional</th><th>Class-Based</th></tr>
+                <tr>
+                    <td><strong>Definition</strong></td>
+                    <td>JavaScript function</td>
+                    <td>JavaScript class</td>
+                </tr>
+                <tr>
+                    <td><strong>Render Method</strong></td>
+                    <td>No render method</td>
+                    <td>Has render() method</td>
+                </tr>
+                <tr>
+                    <td><strong>State Management</strong></td>
+                    <td>React Hooks (useState, etc.)</td>
+                    <td>this.state, this.setState()</td>
+                </tr>
+                <tr>
+                    <td><strong>Lifecycle</strong></td>
+                    <td>useEffect hook</td>
+                    <td>Lifecycle methods</td>
+                </tr>
+                <tr>
+                    <td><strong>Constructor</strong></td>
+                    <td>Not available</td>
+                    <td>Available</td>
+                </tr>
+                <tr>
+                    <td><strong>'this' keyword</strong></td>
+                    <td>Absent</td>
+                    <td>Present</td>
+                </tr>
+            </table>
+
+            <h3>When to Use Class Components</h3>
+            <ul>
+                <li>When you need lifecycle hooks (before Hooks were introduced)</li>
+                <li>Error boundaries (still require class components)</li>
+            </ul>
+        </section>
+
+        <section id="props-state">
+            <h2>🔄 Props & State</h2>
+
+            <h3>Props (Properties)</h3>
+            <p>"Props" is a special keyword in React for <span class="highlight">passing data from parent to child</span> component.</p>
+
+            <h4>Key Characteristics:</h4>
+            <ul>
+                <li><strong>Immutable:</strong> Cannot be changed by the child component</li>
+                <li><strong>Read-only:</strong> Component configuration</li>
+                <li><strong>How components communicate:</strong> Props are how components talk to each other</li>
+            </ul>
+
+            <h3>State</h3>
+            <p>State is a data structure that holds information that may <span class="highlight">change over the lifetime</span> of the component.</p>
+
+            <h3>Props vs State</h3>
+            <table>
+                <tr><th>Feature</th><th>Props</th><th>State</th></tr>
+                <tr>
+                    <td><strong>Passed to</strong></td>
+                    <td>Component (from parent)</td>
+                    <td>Managed within component</td>
+                </tr>
+                <tr>
+                    <td><strong>Mutability</strong></td>
+                    <td>Immutable</td>
+                    <td>Mutable</td>
+                </tr>
+                <tr>
+                    <td><strong>Can be changed?</strong></td>
+                    <td>No</td>
+                    <td>Yes (using setState or useState)</td>
+                </tr>
+                <tr>
+                    <td><strong>Ownership</strong></td>
+                    <td>Parent component</td>
+                    <td>Component itself</td>
+                </tr>
+            </table>
+
+            <h3>setState() in Class Components</h3>
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> setState is <strong>asynchronous</strong>!
+            </div>
+
+            <div class="code-block">// ❌ Wrong - won't reflect immediately
+this.setState({count: this.state.count + 1})
+console.log(this.state.count) // Old value
+
+// ✅ Correct - use callback
+this.setState({count: this.state.count + 1}, () => {
+  console.log(this.state.count) // Updated value
+})
+
+// ✅ Best - use previous state
+this.setState(prevState => ({
+  count: prevState.count + 1
+}))</div>
+
+            <h3>State Best Practices</h3>
+            <ul>
+                <li>✓ Do not modify state directly (won't trigger re-render)</li>
+                <li>✓ Use callback if code needs to execute after state update</li>
+                <li>✓ Use previous state when updating based on current state</li>
+                <li>✓ React groups multiple setState calls for performance</li>
+            </ul>
+        </section>
+
+        <section id="virtual-dom">
+            <h2>🌳 Virtual DOM & Reconciliation</h2>
+
+            <p>The Virtual DOM (VDOM) is React's "draft" version of the actual DOM. It allows React to perform calculations in JavaScript memory, which is orders of magnitude faster than communicating with the browser's DOM engine.</p>
+
+            <div class="info-box premium">
+                <h3>Senior Technical Deep Dive: The Reconciliation Algorithm</h3>
+                <p>Directly comparing two DOM trees has an <strong>O(n³)</strong> complexity. React uses a <strong>Heuristic O(n) Algorithm</strong> based on two assumptions:</p>
+                <ol>
+                    <li>Two elements of different types will produce different trees.</li>
+                    <li>The developer can hint at which child elements may be stable across different renders with a <code>key</code> prop.</li>
+                </ol>
+            </div>
+
+            <div class="info-box">
+                <h3>React Fiber: The Engine Behind the UI</h3>
+                <p><strong>React Fiber</strong> is the re-implementation of React's core algorithm. It allows React to <strong>pause, abort, or reuse work</strong>. This enables "Concurrent Features" like <strong>Time Slicing</strong> (preventing long renders from blocking the main thread) and <strong>Suspense</strong>.</p>
+            </div>
+        </section>
+
+        <section id="event-handling">
+            <h2>🖱️ Event Handling</h2>
+
+            <p>Event handlers in React should be <span class="highlight">functions, not function calls</span>.</p>
+
+            <div class="code-block">// ❌ Wrong - calls function immediately
+&lt;button onClick={this.handleClick()}&gt;Click&lt;/button&gt;
+
+// ✅ Correct - passes function reference
+&lt;button onClick={this.handleClick}&gt;Click&lt;/button&gt;</div>
+
+            <h3>Binding Event Handlers (Class Components)</h3>
+            <p>Because of the "this" keyword in JavaScript, it's necessary to bind events:</p>
+
+            <h4>Method 1: Bind in JSX</h4>
+            <div class="code-block">&lt;button onClick={this.handleClick.bind(this)}&gt;
+  {this.state.message}
+&lt;/button&gt;</div>
+
+            <h4>Method 2: Arrow Functions (Most Common)</h4>
+            <div class="code-block">&lt;button onClick={() => this.handleClick()}&gt;
+  {this.state.message}
+&lt;/button&gt;</div>
+
+            <h4>Method 3: Binding in Constructor (Best Performance)</h4>
+            <div class="code-block">constructor(props) {
+  super(props);
+  this.state = { message: "hello" };
+  this.handleClick = this.handleClick.bind(this);
+}</div>
+
+            <h3>Methods as Props</h3>
+            <p>You can pass methods as props to child components and also pass parameters.</p>
+        </section>
+
+        <section id="conditional-rendering">
+            <h2>🔀 Conditional Rendering</h2>
+
+            <h3>1. If/Else (Outside JSX)</h3>
+            <div class="code-block">if(this.state.loggedIn) {
+  return &lt;h1&gt;Welcome Lijo&lt;/h1&gt;;
+} else {
+  return &lt;h1&gt;Welcome Guest&lt;/h1&gt;;
+}</div>
+
+            <h3>2. Element Variables</h3>
+            <div class="code-block">render() {
+  let message;
+  if(this.state.loggedIn) {
+    message = "Welcome Lijo";
+  } else {
+    message = "Welcome Guest";
+  }
+  return &lt;h1&gt;{message}&lt;/h1&gt;;
+}</div>
+
+            <h3>3. Ternary Operator</h3>
+            <div class="code-block">return (
+  &lt;h1&gt;
+    {this.state.loggedIn ? "Welcome Lijo" : "Welcome Guest"}
+  &lt;/h1&gt;
+);</div>
+
+            <h3>4. Short Circuit (&&)</h3>
+            <div class="code-block">return this.state.loggedIn && &lt;h1&gt;Welcome Lijo&lt;/h1&gt;;</div>
+        </section>
+
+        <section id="lists-keys">
+            <h2>📋 Lists & Keys</h2>
+
+            <h3>Rendering Lists</h3>
+            <div class="code-block">const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((number) =>
+  &lt;li key={number.toString()}&gt;{number}&lt;/li&gt;
+);</div>
+
+            <h3>Importance of Keys</h3>
+            <ul>
+                <li><strong>Stable Identity:</strong> Keys help React identify which items changed, added, or removed</li>
+                <li><strong>Efficient Updates:</strong> Keys play a crucial role in efficiently updating the UI</li>
+                <li><strong>Performance:</strong> Help React optimize rendering</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Warning:</strong> Do NOT use index as key! If you add or remove items, indices will change, causing issues.
+            </div>
+        </section>
+
+        <section id="forms">
+            <h2>📝 Forms</h2>
+
+            <h3>Controlled vs Uncontrolled Components</h3>
+            <table>
+                <tr><th>Controlled</th><th>Uncontrolled</th></tr>
+                <tr>
+                    <td>Value controlled by React state</td>
+                    <td>Value controlled by DOM</td>
+                </tr>
+                <tr>
+                    <td>Use useState/setState</td>
+                    <td>Use refs to access value</td>
+                </tr>
+                <tr>
+                    <td>Recommended approach</td>
+                    <td>Quick and dirty</td>
+                </tr>
+            </table>
+
+            <h3>Controlled Component Example</h3>
+            <div class="code-block">const [value, setValue] = useState('');
+
+&lt;input 
+  value={value} 
+  onChange={(e) => setValue(e.target.value)} 
+/&gt;</div>
+
+            <h3>Uncontrolled Component Example</h3>
+            <div class="code-block">const inputRef = useRef();
+
+&lt;input ref={inputRef} /&gt;
+// Access value: inputRef.current.value</div>
+        </section>
+
+        <section id="lifecycle">
+            <h2>🔄 Lifecycle Methods (Class Components)</h2>
+
+            <p>Lifecycle methods are special methods in class components that run at specific points in a component's life.</p>
+        </section>
+
+        <section id="mounting">
+            <h2>⬆️ Mounting Phase</h2>
+            <p>When an instance of a component is being created and inserted into the DOM.</p>
+
+            <h3>Order of Execution</h3>
+            <ol>
+                <li><strong>constructor()</strong> - Called when component is created</li>
+                <li><strong>getDerivedStateFromProps()</strong> - Static method, rarely used</li>
+                <li><strong>render()</strong> - Only required method, returns JSX</li>
+                <li><strong>componentDidMount()</strong> - Called after component is mounted</li>
+            </ol>
+
+            <h3>componentDidMount()</h3>
+            <ul>
+                <li>Called only once</li>
+                <li>Invoked immediately after render()</li>
+                <li>Perfect for HTTP requests</li>
+                <li>Can call setState() here</li>
+            </ul>
+
+            <h3>Parent-Child Execution Order</h3>
+            <div class="code-block">ComponentA constructor
+ComponentA getDerivedStateFromProps
+ComponentA render
+  ComponentB constructor
+  ComponentB getDerivedStateFromProps
+  ComponentB render
+  ComponentB componentDidMount
+ComponentA componentDidMount</div>
+        </section>
+
+        <section id="updating">
+            <h2>🔄 Updating Phase</h2>
+            <p>Called when component re-renders due to changes in state or props.</p>
+
+            <h3>Order of Execution</h3>
+            <ol>
+                <li><strong>getDerivedStateFromProps()</strong> - Static method</li>
+                <li><strong>shouldComponentUpdate()</strong> - Decides whether to re-render</li>
+                <li><strong>render()</strong> - Re-renders component</li>
+                <li><strong>getSnapshotBeforeUpdate()</strong> - Captures info from DOM (e.g., scroll position)</li>
+                <li><strong>componentDidUpdate(prevProps, prevState, snapshot)</strong> - Called after update</li>
+            </ol>
+        </section>
+
+        <section id="unmounting">
+            <h2>⬇️ Unmounting Phase</h2>
+            <p>When a component is removed from the DOM.</p>
+
+            <h3>componentWillUnmount()</h3>
+            <ul>
+                <li>Clean up work</li>
+                <li>Cancel network requests</li>
+                <li>Remove event listeners</li>
+                <li>Clear timers</li>
+            </ul>
+        </section>
+
+        <section id="hooks-intro">
+            <h2>🪝 React Hooks: Functional Power</h2>
+
+            <p>Introduced in <strong>React 16.8</strong>, Hooks allow functional components to "hook into" React state and lifecycle features, effectively making class components optional for most use cases.</p>
+
+            <div class="info-box premium">
+                <h3>How React Tracks Hooks Internally</h3>
+                <p>React doesn't use magic; it uses a <strong>Linked List</strong>. Each time a Hook is called, it's added to a list for that component instance. On the next render, React traverses this list to find the previous state.</p>
+                <br>
+                <strong>⚠️ Why Order Matters:</strong> This is why Hooks <strong>cannot</strong> be called inside loops or conditions. If the order of calls changes between renders, React will lose track of which state belongs to which Hook.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Junior vs Senior Perspective</h3>
+                <ul>
+                    <li>👶 <strong>Junior:</strong> "Hooks are easier to write than classes."</li>
+                    <li>👨‍💻 <strong>Senior:</strong> "Hooks enable better <strong>logic extraction</strong> via Custom Hooks, allowing us to share side-effect logic without Higher-Order Components (HOCs) or Render Props."</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="usestate">
+            <h2>📊 useState Hook</h2>
+
+            <p>Manages state in functional components.</p>
+
+            <h3>Basic Usage</h3>
+            <div class="code-block">const [count, setCount] = useState(0);
+
+// Update state
+setCount(count + 1);
+
+// Update based on previous state (recommended)
+setCount(prevCount => prevCount + 1);</div>
+
+            <h3>useState vs setState</h3>
+            <table>
+                <tr><th>Feature</th><th>setState (Class)</th><th>useState (Hooks)</th></tr>
+                <tr>
+                    <td><strong>State Type</strong></td>
+                    <td>Must be object</td>
+                    <td>Can be anything (number, string, object, array)</td>
+                </tr>
+                <tr>
+                    <td><strong>Merging</strong></td>
+                    <td>Automatically merges</td>
+                    <td>Does NOT merge (must spread manually)</td>
+                </tr>
+                <tr>
+                    <td><strong>Return Value</strong></td>
+                    <td>N/A</td>
+                    <td>Array with [value, setter]</td>
+                </tr>
+            </table>
+
+            <h3>Multiple State Variables</h3>
+            <div class="code-block">const [name, setName] = useState('');
+const [age, setAge] = useState(0);
+const [email, setEmail] = useState('');</div>
+
+            <h3>Object State (Manual Merging)</h3>
+            <div class="code-block">const [user, setUser] = useState({ name: '', email: '' });
+
+// Must spread to merge
+setUser(prevUser => ({
+  ...prevUser,
+  name: 'John'
+}));</div>
+        </section>
+
+        <section id="useeffect">
+            <h2>⚡ useEffect Hook</h2>
+
+            <p>The <code>useEffect</code> hook is the Swiss Army Knife of functional components. It's often misunderstood as a lifecycle method replacement, but its true purpose is <strong>Synchronization</strong>.</p>
+
+            <div class="info-box premium">
+                <h3>The Mental Model: Synchronizing with External Systems</h3>
+                <p>Instead of thinking "when does this run?", think "with what state does this effect synchronize?". An effect is a way to step outside of the React paradigm and synchronize with the DOM, a network request, or a third-party library.</p>
+                <br>
+                <strong>Senior Tip: Avoid the "God Effect"</strong>. Don't put unrelated logic in a single <code>useEffect</code>. Use multiple effects to separate concerns, making them easier to debug and optimize.
+            </div>
+
+            <div class="info-box">
+                <h3>Senior Perspective: Race Conditions</h3>
+                <p>When fetching data inside <code>useEffect</code>, always handle <strong>Race Conditions</strong>. If a user triggers a request and then quickly navigates away or triggers another, you might update state with "stale" data. Use a <code>boolean</code> flag or an <code>AbortController</code> in the cleanup function to cancel pending updates.</p>
+            </div>
+            <h3>ComponentWillUnmount Equivalent</h3>
+            <div class="code-block">useEffect(() => {
+  // Setup
+  window.addEventListener('resize', handleResize);
+  
+  // Cleanup (runs on unmount)
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);</div>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> Always clean up subscriptions and event listeners in the return function to prevent memory leaks!
+            </div>
+        </section>
+
+        <section id="usecontext">
+            <h2>🌐 useContext Hook</h2>
+
+            <p>Context API is React's native solution for <strong>Prop Drilling</strong>—passing data through intermediate elements that don't need it.</p>
+
+            <div class="info-box premium">
+                <h3>Architectural Choice: Context API vs. Redux</h3>
+                <p><strong>Context API:</strong> Best for low-frequency updates (e.g., Theme, Locale, User Auth). It's built into React and requires no extra boilerplate.
+                <br><strong>Redux/Zustand:</strong> Best for high-frequency updates or complex state transitions. Context re-renders <strong>all</strong> consumers whenever the value changes, which can be a performance bottleneck if the state is massive.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Senior Tip: Component Composition</h3>
+                <p>Before reaching for Context, consider <strong>Component Composition</strong>. Passing the child component itself as a prop can often eliminate the need for prop drilling without adding the complexity of a Context Provider.</p>
+            </div>
+        </section>
+
+        <section id="usereducer">
+            <h2>🔄 useReducer Hook</h2>
+
+            <p>Alternative to useState for complex state logic.</p>
+
+            <div class="code-block">const reducer = (state, action) => {
+  switch(action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+// Usage
+dispatch({ type: 'increment' });</div>
+        </section>
+
+        <section id="usecallback">
+            <h2>🎯 useCallback Hook</h2>
+
+            <p>Returns a <span class="highlight">memoized callback function</span> that only changes if dependencies change.</p>
+
+            <h3>Why useCallback?</h3>
+            <ul>
+                <li>Prevents unnecessary re-renders</li>
+                <li>Useful when passing callbacks to optimized child components</li>
+                <li>Improves performance</li>
+            </ul>
+
+            <div class="code-block">const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b] // Only recreate if a or b changes
+);</div>
+
+            <div class="info-box">
+                <strong>💡 Remember:</strong> Use <code>React.memo</code> for components and <code>useCallback</code> for functions.
+            </div>
+        </section>
+
+        <section id="usememo">
+            <h2>💾 useMemo Hook</h2>
+
+            <p>Returns a <span class="highlight">memoized value</span> that only recomputes when dependencies change.</p>
+
+            <h3>Why useMemo?</h3>
+            <ul>
+                <li>Avoid expensive calculations on every render</li>
+                <li>Optimize performance for CPU-intensive operations</li>
+            </ul>
+
+            <div class="code-block">const expensiveValue = useMemo(() => {
+  return computeExpensiveValue(a, b);
+}, [a, b]); // Only recompute if a or b changes</div>
+
+            <h3>useCallback vs useMemo</h3>
+            <table>
+                <tr><th>useCallback</th><th>useMemo</th></tr>
+                <tr>
+                    <td>Caches function instance</td>
+                    <td>Caches result/value</td>
+                </tr>
+                <tr>
+                    <td>Returns memoized callback</td>
+                    <td>Returns memoized value</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="useref">
+            <h2>🔗 useRef Hook</h2>
+
+            <p>Allows you to access DOM nodes directly or persist values across renders.</p>
+
+            <h3>Accessing DOM Elements</h3>
+            <div class="code-block">const inputRef = useRef();
+
+// Focus input
+inputRef.current.focus();
+
+// Get value
+const value = inputRef.current.value;
+
+&lt;input ref={inputRef} /&gt;</div>
+
+            <h3>Persisting Values</h3>
+            <div class="code-block">const countRef = useRef(0);
+
+// Doesn't cause re-render
+countRef.current += 1;</div>
+        </section>
+
+        <section id="fragments">
+            <h2>🧩 Fragments</h2>
+
+            <p>Fragments let you group a list of children <span class="highlight">without adding extra nodes</span> to the DOM.</p>
+
+            <h3>Why Fragments?</h3>
+            <ul>
+                <li>Avoid unnecessary div wrappers</li>
+                <li>Better CSS performance</li>
+                <li>Cleaner DOM structure</li>
+            </ul>
+
+            <div class="code-block">// Long syntax
+&lt;React.Fragment&gt;
+  &lt;h1&gt;Title&lt;/h1&gt;
+  &lt;p&gt;Content&lt;/p&gt;
+&lt;/React.Fragment&gt;
+
+// Short syntax
+&lt;&gt;
+  &lt;h1&gt;Title&lt;/h1&gt;
+  &lt;p&gt;Content&lt;/p&gt;
+&lt;/&gt;</div>
+
+            <div class="info-box">
+                <strong>💡 Note:</strong> The only attribute you can pass to Fragment is <code>key</code> (when mapping).
+            </div>
+        </section>
+
+        <section id="performance">
+            <h2>⚡ React Performance & Optimization</h2>
+
+            <p>React is fast by default, but complex applications can suffer from "Jank" if unnecessary re-renders aren't managed. Optimization in React is about <strong>avoiding reconciliation work</strong>.</p>
+
+            <div class="info-box premium">
+                <h3>The Memoization Matrix: memo vs useMemo vs useCallback</h3>
+                <ul>
+                    <li>🧩 <strong>React.memo:</strong> HOC that prevents a component from re-rendering if its props haven't changed (Shallow Comparison).</li>
+                    <li>💾 <strong>useMemo:</strong> Hook that caches the <em>result</em> of an expensive calculation.</li>
+                    <li>🎯 <strong>useCallback:</strong> Hook that caches the <em>function instance</em> to prevent breaking <code>React.memo</code> in child components.</li>
+                </ul>
+                <br>
+                <strong>⚠️ Senior Warning:</strong> Optimization is not free. Re-calculating dependencies and comparing props has an overhead. Don't wrap everything in <code>memo</code>—use profiling tools first.
+            </div>
+        </section>
+
+        <section id="lazy-loading">
+            <h2>📦 Code Splitting & Dynamic Imports</h2>
+
+            <p>Modern SPAs can become massive. <strong>Code Splitting</strong> allows you to split your bundle into smaller chunks, loading them only when the user actually needs them.</p>
+
+            <div class="code-block">// Dynamic Import with React.lazy
+const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
+
+function MyComponent() {
+  return (
+    &lt;React.Suspense fallback={&lt;Spinner /&gt;}&gt;
+      &lt;HeavyComponent /&gt;
+    &lt;/React.Suspense&gt;
+  );
+}</div>
+
+            <div class="info-box premium">
+                <h3>Why it Matters for Core Web Vitals</h3>
+                <p>By using <code>React.lazy</code> and <code>Suspense</code>, you significantly reduce the <strong>LCP (Largest Contentful Paint)</strong> and <strong>TBT (Total Blocking Time)</strong>, as the browser doesn't have to parse and execute unused code on the initial load.</p>
+            </div>
+        </section>
+
+        <section id="refs">
+            <h2>🎯 Refs</h2>
+
+            <p>Refs allow you to <span class="highlight">access DOM nodes directly</span> within React.</p>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Focusing text inputs</li>
+                <li>Triggering animations</li>
+                <li>Integrating with third-party DOM libraries</li>
+            </ul>
+
+            <h3>Ref Forwarding</h3>
+            <p>Forwarding refs from parent to child component:</p>
+            <div class="code-block">const FancyInput = React.forwardRef((props, ref) => (
+  &lt;input ref={ref} {...props} /&gt;
+));
+
+// Parent can access child's input
+const inputRef = useRef();
+&lt;FancyInput ref={inputRef} /&gt;</div>
+        </section>
+
+        <section id="portals">
+            <h2>🚪 Portals</h2>
+
+            <p>Portals provide a way to render children into a DOM node that exists <span class="highlight">outside the parent component's DOM hierarchy</span>.</p>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Modals</li>
+                <li>Tooltips</li>
+                <li>Dropdowns</li>
+            </ul>
+
+            <div class="code-block">// index.html
+&lt;div id="root"&gt;&lt;/div&gt;
+&lt;div id="portal-root"&gt;&lt;/div&gt;
+
+// Component
+const PortalDemo = () => {
+  return ReactDOM.createPortal(
+    &lt;div&gt;Portal Content&lt;/div&gt;,
+    document.getElementById('portal-root')
+  );
+};</div>
+
+            <div class="info-box">
+                <strong>💡 Note:</strong> Event bubbling works normally even though the element is in a different DOM tree!
+            </div>
+        </section>
+
+        <section id="error-boundaries">
+            <h2>🛡️ Error Boundaries</h2>
+
+            <p>Error boundaries are React components that <span class="highlight">catch JavaScript errors</span> anywhere in their child component tree.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Catch errors during rendering</li>
+                <li>Display fallback UI</li>
+                <li>Log error information</li>
+            </ul>
+
+            <div class="code-block">class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.log('Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return &lt;h1&gt;Something went wrong.&lt;/h1&gt;;
+    }
+    return this.props.children;
+  }
+}</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Note:</strong> Error boundaries currently must be class components. There's no hook equivalent yet.
+            </div>
+        </section>
+
+        <section id="hoc">
+            <h2>🎁 Higher-Order Components (HOC)</h2>
+
+            <p>A higher-order component is a <span class="highlight">function that takes a component and returns a new component</span>.</p>
+
+            <div class="code-block">const withLoading = (Component) => {
+  return (props) => {
+    if (props.isLoading) {
+      return &lt;div&gt;Loading...&lt;/div&gt;;
+    }
+    return &lt;Component {...props} /&gt;;
+  };
+};
+
+// Usage
+const EnhancedComponent = withLoading(MyComponent);</div>
+
+            <div class="info-box">
+                <strong>💡 Important:</strong> Don't forget to pass <code>{...props}</code> to the wrapped component!
+            </div>
+        </section>
+
+        <!-- CLEANED UP REBUNDANT DUPLICATES -->
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

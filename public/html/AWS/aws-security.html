@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Security - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔒 AWS Security</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🎯 Security Domains</div>
+            <div class="sidebar-links">
+                <a href="#domains" class="sidebar-link">Overview</a>
+                <a href="#guardduty" class="sidebar-link">GuardDuty</a>
+                <a href="#cloudtrail" class="sidebar-link">CloudTrail</a>
+                <a href="#inspector" class="sidebar-link">Inspector</a>
+                <a href="#macie" class="sidebar-link">Macie</a>
+                <a href="#security-hub" class="sidebar-link">Security Hub</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🛡️ Protection</div>
+            <div class="sidebar-links">
+                <a href="#waf" class="sidebar-link">WAF</a>
+                <a href="#shield" class="sidebar-link">Shield</a>
+                <a href="#kms" class="sidebar-link">KMS</a>
+                <a href="#secrets-manager" class="sidebar-link">Secrets Manager</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">👤 IAM</div>
+            <div class="sidebar-links">
+                <a href="#iam" class="sidebar-link">IAM Basics</a>
+                <a href="#iam-users" class="sidebar-link">Users & Groups</a>
+                <a href="#iam-roles" class="sidebar-link">Roles</a>
+                <a href="#iam-policies" class="sidebar-link">Policies</a>
+                <a href="#iam-best-practices" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📊 Monitoring</div>
+            <div class="sidebar-links">
+                <a href="#systems-manager" class="sidebar-link">Systems Manager</a>
+                <a href="#cloudwatch" class="sidebar-link">CloudWatch</a>
+                <a href="#config" class="sidebar-link">Config</a>
+                <a href="#eventbridge" class="sidebar-link">EventBridge</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🌐 Network Security</div>
+            <div class="sidebar-links">
+                <a href="#network-security" class="sidebar-link">Overview</a>
+                <a href="#vpc-security" class="sidebar-link">VPC Security</a>
+                <a href="#bastion" class="sidebar-link">Bastion Host</a>
+                <a href="#vpn" class="sidebar-link">VPN</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🚨 Incident Response</div>
+            <div class="sidebar-links">
+                <a href="#incident-response" class="sidebar-link">Response Plan</a>
+                <a href="#detective" class="sidebar-link">Detective</a>
+                <a href="#vulnerabilities" class="sidebar-link">Vulnerabilities</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>🔒 AWS Security</h1>
+            <p>Complete Guide to AWS Security Services & Best Practices</p>
+        </header>
+
+        <section id="domains">
+            <h2>🎯 Security Domains</h2>
+
+            <h3>1. Threat Detection & Incident Response</h3>
+            <ul>
+                <li>Identify and respond to potential security threats</li>
+                <li>Continuous monitoring for malicious activity</li>
+                <li><strong>Service:</strong> Amazon GuardDuty</li>
+            </ul>
+
+            <h3>2. Security Logging & Monitoring</h3>
+            <ul>
+                <li>Capture and analyze logs from AWS services</li>
+                <li>Detect and respond to security incidents</li>
+                <li><strong>Services:</strong> CloudTrail, CloudWatch, VPC Flow Logs</li>
+            </ul>
+
+            <h3>3. Infrastructure Security</h3>
+            <ul>
+                <li>Protect underlying infrastructure (network, access control, encryption)</li>
+                <li><strong>Services:</strong> VPC, Security Groups, NACLs, WAF, Shield, Network Firewall</li>
+            </ul>
+
+            <h3>4. Identity & Access Management</h3>
+            <ul>
+                <li>Manage user identities and control access to resources</li>
+                <li><strong>Service:</strong> AWS IAM (users, groups, roles, policies)</li>
+            </ul>
+
+            <h3>5. Data Protection</h3>
+            <ul>
+                <li>Secure sensitive data at rest and in transit</li>
+                <li><strong>Services:</strong> KMS (encryption), Secrets Manager, Macie (PII discovery)</li>
+            </ul>
+
+            <h3>6. Compliance & Governance</h3>
+            <ul>
+                <li>Meet regulatory requirements and industry standards</li>
+                <li><strong>Services:</strong> Security Hub, Config, Organizations</li>
+            </ul>
+
+            <h3>7. Application Security</h3>
+            <ul>
+                <li>Secure applications deployed on AWS</li>
+                <li><strong>Services:</strong> Inspector (vulnerability scanning), WAF</li>
+            </ul>
+        </section>
+
+        <section id="guardduty">
+            <h2>🛡️ Amazon GuardDuty (Threat Detection)</h2>
+
+            <p>Continuously monitors AWS accounts for <span class="highlight">malicious activity</span> and unauthorized behavior.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li>Uses ML, anomaly detection, threat intelligence</li>
+                <li>Severity levels: Critical → High → Medium → Low → Informational</li>
+                <li>Findings can trigger EventBridge → Lambda/SNS for automation</li>
+                <li>Supports suppression rules and whitelisting</li>
+            </ul>
+
+            <h3>Protection Plans</h3>
+            <table>
+                <tr><th>Plan</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>S3 Protection</strong></td>
+                    <td>Monitors S3 access patterns</td>
+                </tr>
+                <tr>
+                    <td><strong>EKS Protection</strong></td>
+                    <td>Monitors container activity</td>
+                </tr>
+                <tr>
+                    <td><strong>Runtime Protection</strong></td>
+                    <td>Continuous monitoring</td>
+                </tr>
+                <tr>
+                    <td><strong>Malware Protection</strong></td>
+                    <td>Agentless EBS volume scanning (initial + on-demand)</td>
+                </tr>
+            </table>
+
+            <h3>Severity Levels</h3>
+            <ul>
+                <li><strong>Critical:</strong> High-risk threats requiring immediate attention</li>
+                <li><strong>High:</strong> Significant threats impacting security</li>
+                <li><strong>Medium:</strong> Potential threats requiring investigation</li>
+                <li><strong>Low:</strong> Minor issues to monitor</li>
+                <li><strong>Informational:</strong> Additional context, no threat</li>
+            </ul>
+        </section>
+
+        <section id="cloudtrail">
+            <h2>📜 AWS CloudTrail (API Auditing)</h2>
+
+            <p>Records all <span class="highlight">AWS API calls</span> (who, what, when, where).</p>
+
+            <h3>Event Types</h3>
+            <ul>
+                <li><strong>Management Events:</strong> Control plane operations (CreateBucket, TerminateInstance)</li>
+                <li><strong>Data Events:</strong> Resource operations (S3 GetObject, Lambda Invoke)</li>
+                <li><strong>Insight Events:</strong> Detect unusual API activity</li>
+            </ul>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li>90 days free event history</li>
+                <li>Create trails for long-term storage in S3</li>
+                <li>Integrates with CloudWatch Logs for real-time monitoring</li>
+                <li>Essential for compliance, security analysis, troubleshooting</li>
+            </ul>
+
+            <h3>CloudTrail vs CloudWatch</h3>
+            <table>
+                <tr><th>Feature</th><th>CloudTrail</th><th>CloudWatch</th></tr>
+                <tr>
+                    <td><strong>Purpose</strong></td>
+                    <td>API audit trail (who did what)</td>
+                    <td>Performance monitoring</td>
+                </tr>
+                <tr>
+                    <td><strong>Captures</strong></td>
+                    <td>API calls</td>
+                    <td>Metrics, logs, events</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Case</strong></td>
+                    <td>Security, compliance, governance</td>
+                    <td>Alerting, troubleshooting, performance</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-time</strong></td>
+                    <td>No (few min delay)</td>
+                    <td>Yes (near real-time)</td>
+                </tr>
+                <tr>
+                    <td><strong>Retention</strong></td>
+                    <td>90 days (free), longer in S3</td>
+                    <td>Configurable</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="inspector">
+            <h2>🔍 Amazon Inspector (Vulnerability Assessment)</h2>
+
+            <p>Automated security assessment for <span class="highlight">EC2, Lambda, containers (ECR)</span>.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Scans for CVEs (Common Vulnerabilities and Exposures)</li>
+                <li>CVSS scoring (0-10, higher = more critical)</li>
+                <li>Requires SSM agent on EC2 instances</li>
+                <li>Provides actionable remediation recommendations</li>
+            </ul>
+
+            <h3>CVE & CVSS</h3>
+            <div class="info-box">
+                <strong>CVE (Common Vulnerabilities and Exposures):</strong>
+                <ul>
+                    <li>Publicly disclosed list of known security vulnerabilities</li>
+                    <li>CVE ID format: CVE-YYYY-NNNN</li>
+                    <li>Includes description, date published, affected products</li>
+                </ul>
+                <strong>CVSS (Common Vulnerability Scoring System):</strong>
+                <ul>
+                    <li>Numerical score (0-10) indicating severity</li>
+                    <li>Higher scores = more critical vulnerabilities</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="macie">
+            <h2>🔐 Amazon Macie (Data Security & Privacy)</h2>
+
+            <p>ML-based discovery and classification of <span class="highlight">sensitive data in S3</span>.</p>
+
+            <h3>Features</h3>
+            <table>
+                <tr><th>Feature</th><th>Description</th></tr>
+                <tr>
+                    <td>🔍 <strong>Data Discovery</strong></td>
+                    <td>Scans S3 buckets to find sensitive data (PII, credit cards, SSNs)</td>
+                </tr>
+                <tr>
+                    <td>🏷️ <strong>Data Classification</strong></td>
+                    <td>Automatically classifies data based on content patterns</td>
+                </tr>
+                <tr>
+                    <td>📢 <strong>Alerts</strong></td>
+                    <td>Generates findings when sensitive data is detected</td>
+                </tr>
+                <tr>
+                    <td>📁 <strong>S3 Bucket Monitoring</strong></td>
+                    <td>Continuously monitors for public or overly permissive access</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="security-hub">
+            <h2>🎯 AWS Security Hub (Centralized Security)</h2>
+
+            <p>Aggregates findings from <span class="highlight">GuardDuty, Inspector, Macie, Config</span>, etc.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Automated compliance checks (CIS, PCI DSS)</li>
+                <li>Integrates with 3rd-party tools (Tenable, etc.)</li>
+                <li>Regional service with cross-region aggregation</li>
+                <li>Generates its own findings via automated checks</li>
+            </ul>
+
+            <h3>Supported Standards</h3>
+            <ul>
+                <li><strong>CIS AWS Foundation Benchmark:</strong> Security best practices for AWS</li>
+                <li><strong>PCI DSS:</strong> Payment Card Industry Data Security Standard</li>
+            </ul>
+        </section>
+
+        <section id="waf">
+            <h2>🛡️ AWS WAF (Web Application Firewall)</h2>
+
+            <p>Protects web apps from common exploits (<span class="highlight">SQL injection, XSS</span>).</p>
+
+            <h3>Components</h3>
+            <table>
+                <tr><th>Component</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Rule</strong></td>
+                    <td>Specific condition to inspect HTTP(S) requests<br>Actions: Allow, Deny, Count, CAPTCHA</td>
+                </tr>
+                <tr>
+                    <td><strong>Rule Group</strong></td>
+                    <td>Collection of rules for better management<br>Sources: AWS Managed, AWS Marketplace, Customer Managed</td>
+                </tr>
+                <tr>
+                    <td><strong>WebACL</strong></td>
+                    <td>Central policy linking rules/rule groups<br>Attached to: CloudFront, ALB, API Gateway, AppSync</td>
+                </tr>
+            </table>
+
+            <h3>Inspects</h3>
+            <ul>
+                <li>Request body</li>
+                <li>Headers</li>
+                <li>Query strings</li>
+                <li>URIs</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Note:</strong> Basic Network firewall and Security Groups only check IP and port. WAF provides advanced protection by inspecting HTTP/HTTPS request content.
+            </div>
+        </section>
+
+        <section id="shield">
+            <h2>🛡️ AWS Shield (DDoS Protection)</h2>
+
+            <table>
+                <tr><th>Feature</th><th>Standard</th><th>Advanced</th></tr>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>Free</td>
+                    <td>~$3,000/month</td>
+                </tr>
+                <tr>
+                    <td><strong>Protection</strong></td>
+                    <td>Common L3/L4 attacks</td>
+                    <td>Large, sophisticated attacks</td>
+                </tr>
+                <tr>
+                    <td><strong>DDoS Response Team</strong></td>
+                    <td>No</td>
+                    <td>24/7 access</td>
+                </tr>
+                <tr>
+                    <td><strong>Cost Protection</strong></td>
+                    <td>No</td>
+                    <td>Yes (scaling charges)</td>
+                </tr>
+                <tr>
+                    <td><strong>WAF Integration</strong></td>
+                    <td>No</td>
+                    <td>Yes (included)</td>
+                </tr>
+                <tr>
+                    <td><strong>Attack Diagnostics</strong></td>
+                    <td>Basic</td>
+                    <td>Detailed, real-time</td>
+                </tr>
+            </table>
+
+            <h3>DoS vs DDoS</h3>
+            <table>
+                <tr><th>Feature</th><th>DoS</th><th>DDoS</th></tr>
+                <tr>
+                    <td><strong>Source</strong></td>
+                    <td>Single machine</td>
+                    <td>Multiple machines (botnets)</td>
+                </tr>
+                <tr>
+                    <td><strong>Scale</strong></td>
+                    <td>Smaller</td>
+                    <td>Much larger, harder to mitigate</td>
+                </tr>
+                <tr>
+                    <td><strong>Detection</strong></td>
+                    <td>Easier</td>
+                    <td>More complex</td>
+                </tr>
+            </table>
+
+            <h3>Attack Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th><th>Examples</th></tr>
+                <tr>
+                    <td><strong>Volumetric</strong></td>
+                    <td>Overwhelm bandwidth</td>
+                    <td>UDP flood, ICMP flood, DNS amplification</td>
+                </tr>
+                <tr>
+                    <td><strong>Protocol</strong></td>
+                    <td>Exploit L3/L4 weaknesses</td>
+                    <td>SYN flood, Ping of Death</td>
+                </tr>
+                <tr>
+                    <td><strong>Application Layer</strong></td>
+                    <td>Target L7</td>
+                    <td>HTTP GET/POST flood, Slowloris</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="kms">
+            <h2>🔑 AWS KMS (Key Management Service)</h2>
+
+            <ul>
+                <li>Managed encryption key creation and control</li>
+                <li>Customer Master Keys (CMKs) for data encryption</li>
+                <li>Integrates with most AWS services</li>
+                <li>Automatic key rotation support</li>
+                <li>Audit key usage via CloudTrail</li>
+            </ul>
+
+            <h3>Encryption Best Practices</h3>
+            <ul>
+                <li><strong>At Rest:</strong> Use KMS for all storage (S3, EBS, RDS, DynamoDB)</li>
+                <li><strong>In Transit:</strong> Use TLS/SSL 1.2+ for all communications</li>
+                <li><strong>End-to-End:</strong> Encrypt before uploading to AWS (client-side encryption)</li>
+                <li><strong>Key Rotation:</strong> Enable automatic rotation (annual recommended)</li>
+                <li><strong>Access Control:</strong> Limit KMS key permissions via key policies</li>
+                <li><strong>Separate Keys:</strong> Different keys for different data classifications</li>
+            </ul>
+        </section>
+
+        <section id="secrets-manager">
+            <h2>🔐 AWS Secrets Manager</h2>
+
+            <ul>
+                <li>Store and rotate database credentials, API keys, secrets</li>
+                <li>Automatic rotation for RDS, Redshift, DocumentDB</li>
+                <li>Integrates with IAM for access control</li>
+                <li>Encrypted at rest using KMS</li>
+            </ul>
+        </section>
+
+        <section id="iam">
+            <h2>👤 AWS IAM (Identity & Access Management)</h2>
+
+            <h3>Core Components</h3>
+            <ul>
+                <li><strong>Users:</strong> Individual identities with unique credentials</li>
+                <li><strong>Groups:</strong> Collections of users with shared permissions</li>
+                <li><strong>Roles:</strong> Temporary credentials for AWS services/applications</li>
+                <li><strong>Policies:</strong> JSON documents defining permissions</li>
+            </ul>
+
+            <h3>Policy Evaluation Logic</h3>
+            <ol>
+                <li><strong>Explicit Deny</strong> → Always wins</li>
+                <li><strong>Explicit Allow</strong> → Check all applicable policies</li>
+                <li><strong>Default Deny</strong> → If no allow, deny</li>
+            </ol>
+        </section>
+
+        <section id="iam-users">
+            <h2>👥 IAM Users & Groups</h2>
+
+            <h3>IAM Users</h3>
+            <p><strong>Access Types:</strong></p>
+            <ul>
+                <li>Console (password)</li>
+                <li>CLI/API (access keys)</li>
+                <li>CodeCommit (Git credentials)</li>
+            </ul>
+
+            <p><strong>Security Features:</strong></p>
+            <ul>
+                <li>MFA: Multi-factor authentication for additional security</li>
+                <li>Password policy: Enforce complexity, expiration, reuse prevention</li>
+                <li>Create aliases for account sign-in URL</li>
+            </ul>
+
+            <h3>IAM Groups</h3>
+            <ul>
+                <li>Organize users by function (developers, admins, etc.)</li>
+                <li>Attach policies to groups for easier management</li>
+                <li>Users inherit group permissions</li>
+            </ul>
+        </section>
+
+        <section id="iam-roles">
+            <h2>🎭 IAM Roles (5 Types)</h2>
+
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>1. AWS Service Roles</strong></td>
+                    <td>Allow AWS services to act on your behalf (EC2 → S3)</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Cross-Account Roles</strong></td>
+                    <td>Access resources in another AWS account</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Web Identity Roles</strong></td>
+                    <td>Authenticate via Facebook, Google (IdPs)</td>
+                </tr>
+                <tr>
+                    <td><strong>4. SAML Roles</strong></td>
+                    <td>Enterprise SSO using SAML 2.0</td>
+                </tr>
+                <tr>
+                    <td><strong>5. Service-Linked Roles</strong></td>
+                    <td>Predefined roles for specific AWS services</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Key Benefits:</strong>
+                <ul>
+                    <li>No long-term credentials (temporary security tokens)</li>
+                    <li>Custom trust policies define who can assume role</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="iam-policies">
+            <h2>📜 IAM Policies (7 Types)</h2>
+
+            <table>
+                <tr><th>Type</th><th>Attached To</th><th>Purpose</th></tr>
+                <tr>
+                    <td><strong>AWS Managed</strong></td>
+                    <td>Users/Groups/Roles</td>
+                    <td>Pre-defined by AWS</td>
+                </tr>
+                <tr>
+                    <td><strong>Customer Managed</strong></td>
+                    <td>Users/Groups/Roles</td>
+                    <td>Custom policies</td>
+                </tr>
+                <tr>
+                    <td><strong>Inline</strong></td>
+                    <td>Single User/Group/Role</td>
+                    <td>One-off permissions</td>
+                </tr>
+                <tr>
+                    <td><strong>Permissions Boundary</strong></td>
+                    <td>Users/Roles</td>
+                    <td>Limit max permissions</td>
+                </tr>
+                <tr>
+                    <td><strong>SCP</strong></td>
+                    <td>Accounts/OUs</td>
+                    <td>Org-wide limits</td>
+                </tr>
+                <tr>
+                    <td><strong>Session Policy</strong></td>
+                    <td>Temporary session</td>
+                    <td>Session restrictions</td>
+                </tr>
+                <tr>
+                    <td><strong>Resource-Based</strong></td>
+                    <td>AWS Resources</td>
+                    <td>Cross-account access</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="iam-best-practices">
+            <h2>✅ IAM Best Practices</h2>
+
+            <ul>
+                <li>✓ Enable MFA on root and all users</li>
+                <li>✓ Never use root account for daily tasks</li>
+                <li>✓ Create master IAM user for admin tasks</li>
+                <li>✓ Rotate access keys every 90 days</li>
+                <li>✓ Delete unused access keys</li>
+                <li>✓ Use IAM roles instead of access keys where possible</li>
+                <li>✓ Apply least privilege principle</li>
+                <li>✓ Use groups to manage permissions</li>
+                <li>✓ Secure email associated with account</li>
+                <li>✓ Use account aliases for easier sign-in</li>
+            </ul>
+
+            <h3>IAM Reporting Tools</h3>
+            <table>
+                <tr><th>Tool</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Credential Report</strong></td>
+                    <td>CSV with all users and credential status (password age, MFA status)</td>
+                </tr>
+                <tr>
+                    <td><strong>Access Advisor</strong></td>
+                    <td>Shows last service access time (identify unused permissions)</td>
+                </tr>
+                <tr>
+                    <td><strong>Access Analyzer</strong></td>
+                    <td>Identifies resources shared with external entities<br>Analyzes: External access, Unused access</td>
+                </tr>
+            </table>
+
+            <h3>IAM Policy Simulator</h3>
+            <ul>
+                <li>Test and troubleshoot IAM policies before applying</li>
+                <li>Validate permissions without making actual API calls</li>
+            </ul>
+        </section>
+
+        <section id="systems-manager">
+            <h2>🔧 AWS Systems Manager</h2>
+
+            <p>Unified interface to manage both cloud-based and on-premises resources.</p>
+
+            <h3>Key Features</h3>
+            <table>
+                <tr><th>Feature</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Session Manager</strong></td>
+                    <td>Browser-based shell access (no SSH/RDP ports)<br>No open inbound ports, no SSH keys required, audit logins</td>
+                </tr>
+                <tr>
+                    <td><strong>Run Command</strong></td>
+                    <td>Execute commands on multiple instances</td>
+                </tr>
+                <tr>
+                    <td><strong>Patch Manager</strong></td>
+                    <td>Automate OS and software patching</td>
+                </tr>
+                <tr>
+                    <td><strong>Parameter Store</strong></td>
+                    <td>Secure hierarchical configuration storage<br>Types: String, StringList, SecureString</td>
+                </tr>
+                <tr>
+                    <td><strong>Inventory</strong></td>
+                    <td>Collect metadata from instances (software, OS versions, drivers)</td>
+                </tr>
+                <tr>
+                    <td><strong>Automation</strong></td>
+                    <td>Runbooks for operational tasks (AMI creation, backups)</td>
+                </tr>
+                <tr>
+                    <td><strong>State Manager</strong></td>
+                    <td>Maintain consistent configuration</td>
+                </tr>
+                <tr>
+                    <td><strong>Fleet Manager</strong></td>
+                    <td>Unified view of nodes, direct terminal access</td>
+                </tr>
+                <tr>
+                    <td><strong>Compliance</strong></td>
+                    <td>Monitor patch compliance and configuration</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>⚠️ Requirement:</strong> SSM agent must be installed on instances
+            </div>
+        </section>
+
+        <section id="cloudwatch">
+            <h2>📊 Amazon CloudWatch</h2>
+
+            <h3>Components</h3>
+            <ul>
+                <li><strong>Metrics:</strong> CPU, disk, network (5-min default, 1-min detailed monitoring)</li>
+                <li><strong>Logs:</strong> Application logs, system logs (requires CloudWatch agent)</li>
+                <li><strong>Alarms:</strong> Trigger actions based on thresholds (SNS, Auto Scaling)</li>
+                <li><strong>Dashboards:</strong> Visualize metrics across services</li>
+                <li><strong>Log Insights:</strong> Query and analyze log data with SQL-like syntax</li>
+            </ul>
+
+            <h3>Default CloudWatch Metrics (5-min, no agent)</h3>
+            <table>
+                <tr><th>Service</th><th>Metrics</th></tr>
+                <tr>
+                    <td><strong>EC2</strong></td>
+                    <td>CPUUtilization, NetworkIn/Out, DiskReadOps/WriteOps, StatusChecks</td>
+                </tr>
+                <tr>
+                    <td><strong>EBS</strong></td>
+                    <td>VolumeReadOps/WriteOps, VolumeIdleTime, BurstBalance</td>
+                </tr>
+                <tr>
+                    <td><strong>ELB/ALB/NLB</strong></td>
+                    <td>RequestCount, Latency, HealthyHostCount, HTTPCode_XXX</td>
+                </tr>
+                <tr>
+                    <td><strong>RDS</strong></td>
+                    <td>CPUUtilization, DatabaseConnections, FreeableMemory, ReadLatency</td>
+                </tr>
+                <tr>
+                    <td><strong>Lambda</strong></td>
+                    <td>Invocations, Duration, Errors, Throttles, ConcurrentExecutions</td>
+                </tr>
+                <tr>
+                    <td><strong>DynamoDB</strong></td>
+                    <td>ConsumedReadCapacityUnits, ThrottleEvents</td>
+                </tr>
+                <tr>
+                    <td><strong>S3</strong></td>
+                    <td>BucketSizeBytes, NumberOfObjects (daily)</td>
+                </tr>
+                <tr>
+                    <td><strong>CloudFront</strong></td>
+                    <td>Requests, BytesDownloaded, ErrorRate</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="config">
+            <h2>⚙️ AWS Config</h2>
+
+            <p>Tracks <span class="highlight">resource configuration changes</span> over time.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Records configuration snapshots to S3</li>
+                <li>Compliance rules: Detective (after change), Proactive (before creation)</li>
+                <li>Conformance packs: Pre-defined compliance rule sets</li>
+                <li>Triggers: EventBridge → Lambda/SNS for remediation</li>
+                <li>Shows compliance/non-compliance resources</li>
+            </ul>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Auditing changes over time (who changed what and when)</li>
+                <li>Enforcing security standards (e.g., encryption at rest)</li>
+                <li>Detecting configuration drift from desired state</li>
+                <li>Assisting with compliance requirements (HIPAA, PCI-DSS)</li>
+            </ul>
+        </section>
+
+        <section id="eventbridge">
+            <h2>🔔 Amazon EventBridge</h2>
+
+            <p>Serverless event bus for <span class="highlight">event-driven architecture</span>.</p>
+
+            <h3>Components</h3>
+            <table>
+                <tr><th>Component</th><th>Purpose</th><th>Example Use Case</th></tr>
+                <tr>
+                    <td><strong>Rules</strong></td>
+                    <td>Filter and route events</td>
+                    <td>S3 → Lambda on object creation</td>
+                </tr>
+                <tr>
+                    <td><strong>Pipes</strong></td>
+                    <td>Transform events between source and target</td>
+                    <td>SQS → Lambda with transformation</td>
+                </tr>
+                <tr>
+                    <td><strong>Scheduler</strong></td>
+                    <td>Cron/rate-based scheduling</td>
+                    <td>Call an API every hour</td>
+                </tr>
+                <tr>
+                    <td><strong>Schema Registry</strong></td>
+                    <td>Discover and manage event schemas</td>
+                    <td>Code generation and schema validation</td>
+                </tr>
+            </table>
+
+            <h3>Sources & Targets</h3>
+            <ul>
+                <li><strong>Sources:</strong> AWS services (EC2, GuardDuty), custom apps, SaaS (Zendesk, Datadog)</li>
+                <li><strong>Targets:</strong> Lambda, SNS, SQS, Step Functions, EC2 actions, ECS tasks</li>
+            </ul>
+        </section>
+
+        <section id="detective">
+            <h2>🔍 AWS Detective</h2>
+
+            <p>Security investigation and <span class="highlight">root cause analysis</span>.</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>Visualizes relationships between resources and activities</li>
+                <li>Analyzes CloudTrail, VPC Flow Logs, GuardDuty findings</li>
+                <li>Use: Investigate GuardDuty findings, track lateral movement</li>
+            </ul>
+
+            <h3>Detective vs GuardDuty</h3>
+            <table>
+                <tr><th>Service</th><th>Purpose</th></tr>
+                <tr>
+                    <td><strong>GuardDuty</strong></td>
+                    <td>Detects threats (threat detection)</td>
+                </tr>
+                <tr>
+                    <td><strong>Detective</strong></td>
+                    <td>Investigates threats (root cause analysis)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="incident-response">
+            <h2>🚨 Incident Response</h2>
+
+            <h3>AWS Services for Incident Response</h3>
+            <ul>
+                <li><strong>WAF:</strong> Block malicious web traffic</li>
+                <li><strong>IAM:</strong> Revoke compromised credentials</li>
+                <li><strong>Network Firewall:</strong> Filter VPC traffic</li>
+                <li><strong>KMS:</strong> Rotate encryption keys</li>
+                <li><strong>CloudTrail:</strong> Audit API activity</li>
+                <li><strong>CloudWatch:</strong> Real-time monitoring and alerts</li>
+                <li><strong>Inspector:</strong> Assess vulnerabilities</li>
+                <li><strong>Detective:</strong> Investigate security issues</li>
+                <li><strong>EventBridge:</strong> Automate incident response</li>
+            </ul>
+
+            <h3>Event-Driven Incident Response</h3>
+            <div class="code-block">GuardDuty Finding → EventBridge → Lambda → Automated remediation
+Examples: Isolate compromised instance, revoke IAM keys, block IPs</div>
+
+            <h3>Compromised EC2 Instance Response Steps</h3>
+            <ol>
+                <li><strong>Lock down:</strong> Modify security groups (deny all traffic)</li>
+                <li><strong>Isolate:</strong> Detach from network or stop instance</li>
+                <li><strong>Investigate:</strong> Analyze logs, CloudTrail, VPC Flow Logs</li>
+                <li><strong>Remediate:</strong> Patch vulnerabilities, change credentials</li>
+                <li><strong>Recover:</strong> Restore from clean backup or rebuild</li>
+            </ol>
+        </section>
+
+        <section id="vulnerabilities">
+            <h2>⚠️ Vulnerabilities & Attack Vectors</h2>
+
+            <h3>Terminology</h3>
+            <table>
+                <tr><th>Term</th><th>Definition</th></tr>
+                <tr>
+                    <td><strong>Vulnerability</strong></td>
+                    <td>Weakness in system/application (software bug, misconfiguration)</td>
+                </tr>
+                <tr>
+                    <td><strong>Exploit</strong></td>
+                    <td>Code/technique that takes advantage of vulnerability</td>
+                </tr>
+                <tr>
+                    <td><strong>Payload</strong></td>
+                    <td>Malicious action delivered by exploit (code execution, data theft)</td>
+                </tr>
+                <tr>
+                    <td><strong>Penetration Testing</strong></td>
+                    <td>Simulated attack to find vulnerabilities</td>
+                </tr>
+            </table>
+
+            <h3>Common Attack Vectors</h3>
+            <ul>
+                <li><strong>SQL Injection:</strong> Malicious SQL code in input fields</li>
+                <li><strong>Cross-Site Scripting (XSS):</strong> Inject malicious scripts in web pages</li>
+                <li><strong>Cross-Site Request Forgery (CSRF):</strong> Trick users into unwanted actions</li>
+                <li><strong>Man-in-the-Middle (MITM):</strong> Intercept communication</li>
+                <li><strong>Brute Force:</strong> Repeatedly try passwords/keys</li>
+                <li><strong>Zero-Day:</strong> Exploit unknown vulnerabilities</li>
+                <li><strong>Social Engineering:</strong> Manipulate humans to divulge info</li>
+                <li><strong>Phishing:</strong> Fake emails/websites to steal credentials</li>
+            </ul>
+
+            <h3>Common Security Shortcomings</h3>
+            <ul>
+                <li>Weak passwords (easily guessable)</li>
+                <li>Unpatched software (missing security updates)</li>
+                <li>Improper firewall configuration</li>
+                <li>Lack of WAF for web applications</li>
+                <li>Insufficient server hardening</li>
+                <li>No file integrity monitoring</li>
+                <li>Lack of logging and monitoring</li>
+                <li>No threat detection system</li>
+                <li>Missing incident response plan</li>
+                <li>Inadequate static code analysis</li>
+                <li>Lack of security awareness training</li>
+            </ul>
+        </section>
+
+        <section id="network-security">
+            <h2>🌐 Network Security</h2>
+
+            <h3>Security Groups vs NACLs</h3>
+            <table>
+                <tr><th>Feature</th><th>Security Groups</th><th>Network ACLs</th></tr>
+                <tr>
+                    <td><strong>Level</strong></td>
+                    <td>Instance</td>
+                    <td>Subnet</td>
+                </tr>
+                <tr>
+                    <td><strong>State</strong></td>
+                    <td>Stateful</td>
+                    <td>Stateless</td>
+                </tr>
+                <tr>
+                    <td><strong>Rules</strong></td>
+                    <td>Allow only</td>
+                    <td>Allow & Deny</td>
+                </tr>
+                <tr>
+                    <td><strong>Evaluation</strong></td>
+                    <td>All rules</td>
+                    <td>Top-to-bottom (rule numbers)</td>
+                </tr>
+                <tr>
+                    <td><strong>Return Traffic</strong></td>
+                    <td>Auto-allowed</td>
+                    <td>Must explicitly allow</td>
+                </tr>
+                <tr>
+                    <td><strong>Default</strong></td>
+                    <td>Deny all inbound</td>
+                    <td>Allow all</td>
+                </tr>
+            </table>
+
+            <h3>Stateful vs Stateless Firewalls</h3>
+            <table>
+                <tr><th>Feature</th><th>Stateful</th><th>Stateless</th></tr>
+                <tr>
+                    <td><strong>Connection Tracking</strong></td>
+                    <td>Yes (TCP handshake)</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Return Traffic</strong></td>
+                    <td>Auto-allowed</td>
+                    <td>Must explicitly allow</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>Slower (tracks state)</td>
+                    <td>Faster</td>
+                </tr>
+                <tr>
+                    <td><strong>Memory</strong></td>
+                    <td>Higher</td>
+                    <td>Lower</td>
+                </tr>
+                <tr>
+                    <td><strong>Security</strong></td>
+                    <td>More intelligent</td>
+                    <td>Less intelligent</td>
+                </tr>
+                <tr>
+                    <td><strong>Example</strong></td>
+                    <td>Security Groups, pfSense</td>
+                    <td>Network ACLs, router ACLs</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="vpc-security">
+            <h2>🔒 VPC Security Features</h2>
+
+            <h3>VPC Endpoints</h3>
+            <ul>
+                <li>Private connection to AWS services (no internet/NAT)</li>
+                <li><strong>Gateway Endpoints:</strong> S3, DynamoDB (route table entry)</li>
+                <li><strong>Interface Endpoints:</strong> Most other services (powered by PrivateLink)</li>
+                <li>Use: EC2 in private subnet → VPC Endpoint → S3 (no public internet)</li>
+            </ul>
+
+            <h3>VPC Flow Logs</h3>
+            <p>Captures IP traffic metadata for VPC network interfaces.</p>
+            <div class="code-block">Format: version account-id interface-id srcaddr dstaddr srcport dstport protocol packets bytes start end action log-status
+
+Fields:
+- action: ACCEPT or REJECT
+- protocol: 6 = TCP, 17 = UDP
+- Destinations: CloudWatch Logs, S3, Kinesis Data Firehose</div>
+
+            <h3>VPC Reachability Analyzer</h3>
+            <ul>
+                <li>Static configuration analysis (not live traffic)</li>
+                <li>Validates connectivity paths between resources</li>
+                <li>Identifies misconfigurations (route tables, SGs, NACLs)</li>
+                <li>Use: Pre-deployment checks, troubleshooting</li>
+            </ul>
+
+            <h3>Network Access Analyzer</h3>
+            <ul>
+                <li>Identifies unintended network access to resources</li>
+                <li>Defines network access scope (allowed/denied paths)</li>
+                <li>Generates findings when access violates defined scope</li>
+                <li>Use: Security audits, compliance validation</li>
+                <li>Example: Ensure EC2 only accessible via MongoDB (no internet)</li>
+            </ul>
+
+            <h3>Traffic Mirroring</h3>
+            <ul>
+                <li>Copy network traffic from ENIs for deep packet inspection</li>
+                <li>Components: Source (ENI) → Filter (protocols) → Target (ENI/NLB)</li>
+                <li>Use: Content inspection, threat monitoring, troubleshooting</li>
+                <li>Integrates with tools like Splunk, Wireshark</li>
+            </ul>
+        </section>
+
+        <section id="bastion">
+            <h2>🏰 Bastion Host & SSH Agent Forwarding</h2>
+
+            <h3>Bastion Host</h3>
+            <ul>
+                <li>Secure jump server in public subnet</li>
+                <li>Access private instances via SSH forwarding</li>
+                <li>Minimize attack surface (only bastion exposed)</li>
+            </ul>
+
+            <h3>SSH Agent Forwarding</h3>
+            <p>Key in local machine → bastion → private server</p>
+            <ul>
+                <li>No need to store keys on bastion host</li>
+                <li>More secure than copying keys to bastion</li>
+            </ul>
+        </section>
+
+        <section id="vpn">
+            <h2>🔐 VPN (Virtual Private Network)</h2>
+
+            <h3>Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Site-to-Site VPN</strong></td>
+                    <td>Connect on-premises to VPC</td>
+                </tr>
+                <tr>
+                    <td><strong>Client VPN</strong></td>
+                    <td>Remote user access to VPC</td>
+                </tr>
+            </table>
+
+            <h3>Components</h3>
+            <ul>
+                <li><strong>Customer Gateway:</strong> Customer-side device/software</li>
+                <li><strong>Virtual Private Gateway:</strong> AWS side, attached to VPC</li>
+                <li><strong>Client VPN Endpoint:</strong> Managed VPN for remote access</li>
+            </ul>
+
+            <h3>Challenges</h3>
+            <ul>
+                <li>High availability</li>
+                <li>Patch management</li>
+                <li>Performance optimization</li>
+                <li>VPN server configuration</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 AWS VPN Endpoint:</strong> Managed solution to address these challenges
+            </div>
+        </section>
+
+        <section>
+            <h2>🛡️ Defense in Depth Strategy</h2>
+
+            <table>
+                <tr><th>Layer</th><th>Security Measures</th></tr>
+                <tr>
+                    <td><strong>Layer 1: Physical</strong></td>
+                    <td>AWS responsibility</td>
+                </tr>
+                <tr>
+                    <td><strong>Layer 2: Network</strong></td>
+                    <td>VPC, SGs, NACLs, WAF, Shield</td>
+                </tr>
+                <tr>
+                    <td><strong>Layer 3: Access Control</strong></td>
+                    <td>IAM, MFA, least privilege</td>
+                </tr>
+                <tr>
+                    <td><strong>Layer 4: Data Encryption</strong></td>
+                    <td>KMS, TLS/SSL</td>
+                </tr>
+                <tr>
+                    <td><strong>Layer 5: Logging & Monitoring</strong></td>
+                    <td>CloudTrail, GuardDuty, CloudWatch</td>
+                </tr>
+                <tr>
+                    <td><strong>Layer 6: Incident Response</strong></td>
+                    <td>Detective, Systems Manager, EventBridge</td>
+                </tr>
+                <tr>
+                    <td><strong>Layer 7: Application Security</strong></td>
+                    <td>Inspector, WAF, code reviews</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>📋 Security Monitoring Checklist</h2>
+
+            <ul>
+                <li>✓ Enable CloudTrail in all regions</li>
+                <li>✓ Enable GuardDuty for threat detection</li>
+                <li>✓ Configure VPC Flow Logs for all VPCs</li>
+                <li>✓ Set up CloudWatch Alarms for critical metrics</li>
+                <li>✓ Enable Config rules for compliance monitoring</li>
+                <li>✓ Aggregate findings in Security Hub</li>
+                <li>✓ Configure EventBridge for automated response</li>
+                <li>✓ Regular Inspector scans for vulnerabilities</li>
+                <li>✓ Review IAM Access Advisor quarterly</li>
+                <li>✓ Enable MFA on all privileged accounts</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🏢 Compliance Programs AWS Supports</h2>
+
+            <ul>
+                <li><strong>PCI DSS:</strong> Payment Card Industry Data Security Standard</li>
+                <li><strong>HIPAA:</strong> Health Insurance Portability and Accountability Act</li>
+                <li><strong>SOC 1/2/3:</strong> Service Organization Controls</li>
+                <li><strong>ISO 27001:</strong> Information Security Management</li>
+                <li><strong>FedRAMP:</strong> Federal Risk and Authorization Management Program</li>
+                <li><strong>GDPR:</strong> General Data Protection Regulation (EU)</li>
+                <li><strong>NIST:</strong> National Institute of Standards and Technology</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🔄 Security Automation Patterns</h2>
+
+            <div class="code-block">GuardDuty finding → EventBridge → Lambda → Isolate instance
+Config non-compliance → EventBridge → Lambda → Auto-remediate
+CloudTrail unusual activity → CloudWatch Logs → Alarm → SNS → Security team
+Inspector vulnerability → EventBridge → Lambda → Create Jira ticket
+Failed login attempts → CloudWatch → Alarm → Lambda → Block IP in WAF</div>
+        </section>
+
+        <section>
+            <h2>🔐 Shared Responsibility Model</h2>
+
+            <h3>AWS Responsibility (Security OF the cloud)</h3>
+            <ul>
+                <li>Physical infrastructure (data centers, servers, networking)</li>
+                <li>Hardware, software, networking, facilities</li>
+                <li>Managed service operations (RDS, Lambda, S3)</li>
+                <li>Global infrastructure security</li>
+            </ul>
+
+            <h3>Customer Responsibility (Security IN the cloud)</h3>
+            <ul>
+                <li>Data encryption (at rest and in transit)</li>
+                <li>IAM configuration (users, roles, policies)</li>
+                <li>OS/application patching (EC2, containers)</li>
+                <li>Network/firewall configuration (SGs, NACLs)</li>
+                <li>Application code security</li>
+                <li>Data classification and protection</li>
+            </ul>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

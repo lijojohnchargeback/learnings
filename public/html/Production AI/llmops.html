@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production AI / LLMOps / MLOps — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🚀 LLMOps / MLOps</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#docker" class="sidebar-link">Docker</a>
+                <a href="#k8s" class="sidebar-link">Kubernetes</a>
+                <a href="#cicd" class="sidebar-link">CI/CD</a>
+                <a href="#eval" class="sidebar-link">Evaluation</a>
+                <a href="#obs" class="sidebar-link">Observability</a>
+                <a href="#reliability" class="sidebar-link">Reliability</a>
+                <a href="#scaling" class="sidebar-link">Scaling</a>
+                <a href="#cache" class="sidebar-link">Caching</a>
+                <a href="#serving" class="sidebar-link">Model Serving</a>
+                <a href="#gpus" class="sidebar-link">GPUs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🚀 11. Production AI / LLMOps / MLOps</h1>
+            <p>Step 11 of 12 — If you cannot deploy, observe, evaluate, and roll back, you do not have a production system.</p>
+        </header>
+
+        <section id="overview">
+            <h2>MLOps vs LLMOps</h2>
+            <p><strong>MLOps</strong> is training pipelines, registries, feature stores, drift. <strong>LLMOps</strong> adds prompt/versioning, traces, token cost, retrieval indexes, and non-deterministic eval. You still need Docker, Kubernetes (or a PaaS), CI/CD, and SLOs. <span class="highlight">Ship the gateway like any other microservice, then add model-specific gates.</span></p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Docker</td><td>Reproducible image; non-root; healthcheck</td></tr>
+                <tr><td>2</td><td>CI/CD</td><td>Tests + eval subset on PR; promote images, not "run on my laptop"</td></tr>
+                <tr><td>3</td><td>Observability</td><td>Traces with prompt ids, latency, tokens, errors</td></tr>
+                <tr><td>4</td><td>Eval in CI</td><td>A failing golden set blocks deploy</td></tr>
+                <tr><td>5</td><td>Serving</td><td>You can explain vLLM batching vs one-Python-process</td></tr>
+            </table>
+        </section>
+
+        <section id="docker">
+            <h2>Docker</h2>
+            <p>Pin base images, install only what you need, copy lockfiles, run as non-root, and use multi-stage builds. GPU images need matching CUDA. Never bake API keys into layers.</p>
+            <div class="code-block">FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+USER 1000
+EXPOSE 8000
+HEALTHCHECK CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</div>
+        </section>
+
+        <section id="k8s">
+            <h2>Kubernetes</h2>
+            <p>Readiness vs liveness: a model loading should be unready, not killed. Resource requests/limits for CPU; for GPUs, <code>nvidia.com/gpu: 1</code>. Use PDBs so you do not evict the only replica. ConfigMaps for prompt versions if you must; prefer an artifact store.</p>
+        </section>
+
+        <section id="cicd">
+            <h2>CI/CD</h2>
+            <ul>
+                <li>PR: unit tests, lint, secret scan, tiny eval set</li>
+                <li>Main: build image, full eval job, deploy staging</li>
+                <li>Prod: canary or blue/green; keep previous prompt+model pair rollbackable</li>
+            </ul>
+            <p>Version together: <code>model_id</code>, <code>prompt_hash</code>, <code>index_version</code>, <code>app_git_sha</code>.</p>
+        </section>
+
+        <section id="eval">
+            <h2>Evaluation</h2>
+            <p>Offline: golden Q&A, RAGAS-style faithfulness, tool-call exact match, safety suites. Online: thumbs, implicit (retry, hangup), shadow traffic. LLM-as-judge needs a held-out human audit. Gate releases on a scorecard, not vibes.</p>
+            <div class="code-block"># eval.yml (conceptual)
+gate:
+  faithfulness_min: 0.85
+  hit_at_5_min: 0.7
+  p95_latency_ms_max: 2500
+  cost_per_query_usd_max: 0.02</div>
+        </section>
+
+        <section id="obs">
+            <h2>Observability</h2>
+            <p>Logs, metrics, traces. For LLMs add: Langfuse, Phoenix, Braintrust, OpenTelemetry spans around retrieve/generate/tools. Redact PII. Sample raw prompts if legally allowed. Dashboards: error rate, p95, tokens, $/day, tool failure rate, eval score over time.</p>
+        </section>
+
+        <section id="reliability">
+            <h2>Reliability</h2>
+            <p>Timeouts, retries (idempotent GETs only), circuit breakers, fallback model, graceful degradation (keyword search if vector DB is down). SLOs: availability and latency. Error budgets for prompt experiments. Chaos: kill a replica, expire a vendor key in staging.</p>
+        </section>
+
+        <section id="scaling">
+            <h2>Scaling</h2>
+            <p>Scale the API on RPS/CPU. Scale workers on queue depth. Scale GPU servers on KV cache and concurrent sequences, not HTTP alone. Backpressure: 429 the client rather than melting the GPU. Separate ingest from query paths.</p>
+        </section>
+
+        <section id="cache">
+            <h2>Caching</h2>
+            <table>
+                <tr><th>Cache</th><th>What</th></tr>
+                <tr><td>Exact prompt cache</td><td>Identical requests (rare in chat, common in classification)</td></tr>
+                <tr><td>Semantic cache</td><td>Near-duplicate questions — watch correctness</td></tr>
+                <tr><td>Embedding cache</td><td>Same chunk text → skip re-embed</td></tr>
+                <tr><td>Provider prompt cache</td><td>Anthropic/OpenAI cached prefixes for long system+docs</td></tr>
+                <tr><td>HTTP CDN</td><td>Static assets, never personalized model output unless keyed</td></tr>
+            </table>
+        </section>
+
+        <section id="serving">
+            <h2>Model serving</h2>
+            <p>Do not serve 70B models with a naive <code>generate()</code> loop. Use vLLM, TGI, TensorRT-LLM, or a cloud endpoint. Features you want: continuous batching, paged KV cache, streaming, LoRA multiplex, metrics. Put a queue in front for bursty traffic.</p>
+        </section>
+
+        <section id="gpus">
+            <h2>GPUs in production</h2>
+            <p>Binpack sequences, watch fragmentation, use MIG only if it matches your models. Mixed precision. Quantize when quality evals pass. Multi-GPU: tensor parallel for big models, replica parallel for small ones. Cost = (GPU-hours) + (idle time). Autoscale to zero only if cold start is acceptable.</p>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can roll back a prompt+model+index as one unit</li>
+                <li>You have traces and a CI eval gate</li>
+                <li>You can explain how you would 10× traffic without 10× GPU spend (batching, cache, smaller models)</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> Enterprise AI Architecture — security, cost, tenancy, and compliance around all of the above.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

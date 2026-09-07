@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redux Saga - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧵 Redux Saga</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Why Saga</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">What is a Saga?</a>
+                <a href="#generators" class="sidebar-link">Generators</a>
+                <a href="#setup" class="sidebar-link">Setup</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚡ Effects</div>
+            <div class="sidebar-links">
+                <a href="#effects" class="sidebar-link">Effect Catalog</a>
+                <a href="#watch-work" class="sidebar-link">Watcher & Worker</a>
+                <a href="#async" class="sidebar-link">Async Flow</a>
+                <a href="#cancel" class="sidebar-link">Cancel & Race</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🧪 Practice</div>
+            <div class="sidebar-links">
+                <a href="#errors" class="sidebar-link">Errors & Retry</a>
+                <a href="#testing" class="sidebar-link">Testing</a>
+                <a href="#vs-thunk" class="sidebar-link">vs Thunk</a>
+                <a href="#when" class="sidebar-link">When to Use</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧵 Redux Saga</h1>
+            <p>Generator-based middleware for side effects: APIs, cancellation, debouncing, and long-running flows.</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 What is a Saga?</h2>
+            <p>A <span class="highlight">saga</span> is a background worker that listens to Redux actions and runs side effects. Reducers stay pure. The saga <code>call</code>s APIs, then <code>put</code>s new actions so reducers can update state.</p>
+            <p>redux-saga uses <strong>ES6 generators</strong> so async steps look sequential, and so the library can pause, cancel, or restart the worker.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/saga-flow.png" alt="Redux Saga watcher listening for actions, worker calling an API, takeLatest cancelling the previous request">
+                <div class="illustration-caption">Watchers listen. Workers call APIs and put results back. takeLatest cancels the previous in-flight job.</div>
+            </div>
+
+            <div class="diagram-box">dispatch(search/queryChanged)
+        │
+        ▼
+   Watcher  takeLatest
+        │
+        ├── Worker A  call(api)  ✕ cancelled
+        └── Worker B  call(api) ──put──► search/fulfilled
+                                              │
+                                              ▼
+                                           reducer</div>
+
+            <div class="info-box premium">
+                <h3>Thunk vs Saga in one line</h3>
+                <p>A thunk is “dispatch a function that does async.” A saga is “a long-lived process that reacts to actions with declarative effects.” Thunks are simpler; sagas win at orchestration.</p>
+            </div>
+        </section>
+
+        <section id="generators">
+            <h2>⚙️ Generators (Crash Course)</h2>
+            <p>A generator function is declared with <code>function*</code>. <code>yield</code> pauses it and hands a value to the caller. redux-saga reads those yielded objects (effects) and performs the real work.</p>
+
+            <div class="code-block">function* count() {
+  yield 1;
+  yield 2;
+  return 3;
+}
+
+const it = count();
+it.next(); // { value: 1, done: false }
+it.next(); // { value: 2, done: false }
+it.next(); // { value: 3, done: true }</div>
+
+            <p>You almost never call <code>.next()</code> yourself in app code. You <code>yield</code> effect creators; the middleware runs them.</p>
+        </section>
+
+        <section id="setup">
+            <h2>🔧 Setup</h2>
+            <div class="code-block">npm install redux-saga
+
+// store.js (classic or Toolkit)
+import createSagaMiddleware from 'redux-saga';
+import { createStore, applyMiddleware } from 'redux';
+import rootReducer from './rootReducer';
+import rootSaga from './rootSaga';
+
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
+sagaMiddleware.run(rootSaga);
+
+// With Redux Toolkit
+import { configureStore } from '@reduxjs/toolkit';
+
+const sagaMiddleware = createSagaMiddleware();
+
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefault) =&gt;
+    getDefault({ thunk: false }).concat(sagaMiddleware)
+});
+
+sagaMiddleware.run(rootSaga);</div>
+
+            <p>If you keep thunks (RTK default) <em>and</em> saga, you can concat saga without disabling thunk. Disable thunk only if you want saga as the sole async path.</p>
+        </section>
+
+        <section id="effects">
+            <h2>📦 Effect Catalog</h2>
+            <p>Effects are plain objects describing intent. The middleware executes them.</p>
+
+            <table>
+                <tr><th>Effect</th><th>Role</th></tr>
+                <tr>
+                    <td><code>take(pattern)</code></td>
+                    <td>Wait until a matching action is dispatched. Resumes with that action.</td>
+                </tr>
+                <tr>
+                    <td><code>takeEvery(pattern, saga)</code></td>
+                    <td>Run a worker on every matching action (parallel; can overlap).</td>
+                </tr>
+                <tr>
+                    <td><code>takeLatest(pattern, saga)</code></td>
+                    <td>Start a worker; if a new action arrives, cancel the previous worker.</td>
+                </tr>
+                <tr>
+                    <td><code>takeLeading(pattern, saga)</code></td>
+                    <td>Ignore new actions until the current worker finishes.</td>
+                </tr>
+                <tr>
+                    <td><code>call(fn, ...args)</code></td>
+                    <td>Invoke a function (often returning a Promise). Testable: yield the descriptor, don’t run fn in tests.</td>
+                </tr>
+                <tr>
+                    <td><code>put(action)</code></td>
+                    <td>Dispatch an action into the store (like dispatch).</td>
+                </tr>
+                <tr>
+                    <td><code>select(selector)</code></td>
+                    <td>Read current state (optionally with a selector).</td>
+                </tr>
+                <tr>
+                    <td><code>fork(saga)</code></td>
+                    <td>Non-blocking child task. Parent can cancel it. Errors bubble to parent.</td>
+                </tr>
+                <tr>
+                    <td><code>spawn(saga)</code></td>
+                    <td>Detached fork. Child errors do not kill the parent.</td>
+                </tr>
+                <tr>
+                    <td><code>join(task)</code></td>
+                    <td>Wait for a forked task to finish.</td>
+                </tr>
+                <tr>
+                    <td><code>cancel(task)</code></td>
+                    <td>Cancel a forked task. Worker should handle <code>cancelled()</code>.</td>
+                </tr>
+                <tr>
+                    <td><code>delay(ms)</code></td>
+                    <td>Sleep. Cancel-friendly (unlike raw setTimeout in a thunk).</td>
+                </tr>
+                <tr>
+                    <td><code>all([...effects])</code></td>
+                    <td>Run in parallel; wait for all (like Promise.all).</td>
+                </tr>
+                <tr>
+                    <td><code>race({ a, b })</code></td>
+                    <td>Run in parallel; first winner cancels the rest.</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="watch-work">
+            <h2>👀 Watcher &amp; Worker</h2>
+            <p>A <strong>watcher</strong> saga listens. A <strong>worker</strong> saga does the job. The root saga starts watchers.</p>
+
+            <div class="code-block">import { takeEvery, call, put, all } from 'redux-saga/effects';
+
+function* fetchUserWorker(action) {
+  const user = yield call(api.getUser, action.payload);
+  yield put({ type: 'user/fulfilled', payload: user });
+}
+
+function* watchFetchUser() {
+  yield takeEvery('user/requested', fetchUserWorker);
+}
+
+export default function* rootSaga() {
+  yield all([
+    watchFetchUser(),
+    watchLogin(),
+    watchCheckout()
+  ]);
+}</div>
+        </section>
+
+        <section id="async">
+            <h2>🌐 Typical Async Flow</h2>
+            <div class="code-block">function* loginWorker(action) {
+  try {
+    yield put({ type: 'auth/pending' });
+    const session = yield call(api.login, action.payload);
+    yield put({ type: 'auth/fulfilled', payload: session });
+    const profile = yield call(api.getProfile, session.userId);
+    yield put({ type: 'profile/fulfilled', payload: profile });
+  } catch (err) {
+    yield put({ type: 'auth/rejected', error: err.message });
+  }
+}
+
+function* watchLogin() {
+  yield takeLatest('auth/loginRequested', loginWorker);
+}
+
+// UI
+dispatch({ type: 'auth/loginRequested', payload: { email, password } });</div>
+
+            <p>The reducer only handles <code>pending</code> / <code>fulfilled</code> / <code>rejected</code>. The saga owns the sequence: login then profile.</p>
+        </section>
+
+        <section id="cancel">
+            <h2>🛑 Cancellation, Debounce, Race</h2>
+
+            <h3>Search as you type — takeLatest</h3>
+            <p>Each new keystroke cancels the in-flight request worker.</p>
+            <div class="code-block">function* searchWorker(action) {
+  yield delay(300); // debounce inside the worker
+  const results = yield call(api.search, action.payload);
+  yield put({ type: 'search/fulfilled', payload: results });
+}
+
+function* watchSearch() {
+  yield takeLatest('search/queryChanged', searchWorker);
+}</div>
+
+            <h3>Race: request vs cancel button</h3>
+            <div class="code-block">function* fetchWithCancel() {
+  const { response, cancel } = yield race({
+    response: call(api.slowJob),
+    cancel: take('job/cancel')
+  });
+
+  if (cancel) {
+    yield put({ type: 'job/cancelled' });
+    return;
+  }
+  yield put({ type: 'job/fulfilled', payload: response });
+}</div>
+
+            <h3>Cleanup on cancel</h3>
+            <div class="code-block">import { cancelled } from 'redux-saga/effects';
+
+function* fetchWorker() {
+  const controller = new AbortController();
+  try {
+    const data = yield call(api.get, { signal: controller.signal });
+    yield put({ type: 'data/fulfilled', payload: data });
+  } finally {
+    if (yield cancelled()) {
+      controller.abort();
+    }
+  }
+}</div>
+        </section>
+
+        <section id="errors">
+            <h2>🩹 Errors &amp; Retry</h2>
+            <div class="code-block">function* fetchWithRetry(fn, args, retries = 3) {
+  for (let i = 0; i &lt; retries; i++) {
+    try {
+      return yield call(fn, ...args);
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      yield delay(500 * 2 ** i);
+    }
+  }
+}
+
+function* loadDashboard() {
+  try {
+    const stats = yield call(fetchWithRetry, api.getStats, []);
+    yield put({ type: 'dashboard/fulfilled', payload: stats });
+  } catch (err) {
+    yield put({ type: 'dashboard/rejected', error: err.message });
+  }
+}</div>
+        </section>
+
+        <section id="testing">
+            <h2>🧪 Testing Sagas</h2>
+            <p>Because effects are data, you can step through a generator and assert yielded descriptors (classic style), or run the saga with a mock store.</p>
+
+            <div class="code-block">import { runSaga } from 'redux-saga';
+import { call, put } from 'redux-saga/effects';
+
+// Step style
+const gen = fetchUserWorker({ payload: '1' });
+expect(gen.next().value).toEqual(call(api.getUser, '1'));
+expect(gen.next(fakeUser).value).toEqual(
+  put({ type: 'user/fulfilled', payload: fakeUser })
+);
+expect(gen.next().done).toBe(true);
+
+// Integration style
+const dispatched = [];
+await runSaga(
+  { dispatch: (a) =&gt; dispatched.push(a), getState: () =&gt; ({}) },
+  fetchUserWorker,
+  { payload: '1' }
+).toPromise();</div>
+        </section>
+
+        <section id="vs-thunk">
+            <h2>⚖️ Saga vs Thunk</h2>
+            <table>
+                <tr><th></th><th>Thunk</th><th>Saga</th></tr>
+                <tr>
+                    <td><strong>Mental model</strong></td>
+                    <td>Function you dispatch</td>
+                    <td>Always-on process watching actions</td>
+                </tr>
+                <tr>
+                    <td><strong>Cancel / debounce</strong></td>
+                    <td>Manual (AbortController, flags)</td>
+                    <td>Built-in (<code>takeLatest</code>, <code>race</code>, <code>delay</code>)</td>
+                </tr>
+                <tr>
+                    <td><strong>Testability</strong></td>
+                    <td>Mock dispatch + APIs</td>
+                    <td>Yielded effects are data</td>
+                </tr>
+                <tr>
+                    <td><strong>Learning curve</strong></td>
+                    <td>Low</td>
+                    <td>Generators + effect API</td>
+                </tr>
+                <tr>
+                    <td><strong>Typical use</strong></td>
+                    <td>One-shot fetch</td>
+                    <td>Workflows, websockets, complex timing</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="when">
+            <h2>🎯 When to Use Saga</h2>
+            <ul>
+                <li>Checkout, onboarding, or sync jobs with many steps and failure paths</li>
+                <li>Search, autosave, or polling that must cancel on new input or unmount</li>
+                <li>Coordinating several actions that are not a simple “fetch then save”</li>
+            </ul>
+            <p>Do not reach for saga for a single GET that RTK Query or <code>createAsyncThunk</code> already handles.</p>
+
+            <div class="warning-box">
+                <strong>⚠️</strong> Avoid putting business-critical branching only in sagas with no tests. Sagas are easy to over-abstract. Prefer small workers named after the user journey (<code>checkoutSaga</code>, <code>sessionSaga</code>).
+            </div>
+
+            <div class="tip-box">
+                <strong>Related:</strong> <a href="/learn/redux">Redux core</a> · <a href="/learn/redux-toolkit">Redux Toolkit</a> · <a href="/learn/state-management-overview">Module overview</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

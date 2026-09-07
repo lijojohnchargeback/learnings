@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI State Management - Overview</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔄 State Management</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Big Picture</div>
+            <div class="sidebar-links">
+                <a href="#what-is-state" class="sidebar-link">What is UI State?</a>
+                <a href="#kinds-of-state" class="sidebar-link">Kinds of State</a>
+                <a href="#why-libraries" class="sidebar-link">Why Libraries Exist</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗺️ The Module</div>
+            <div class="sidebar-links">
+                <a href="#library-map" class="sidebar-link">Library Map</a>
+                <a href="#compare" class="sidebar-link">Head-to-Head</a>
+                <a href="#when-to-use" class="sidebar-link">When to Use What</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🧭 Path</div>
+            <div class="sidebar-links">
+                <a href="#data-flow" class="sidebar-link">Data Flow</a>
+                <a href="#learning-path" class="sidebar-link">Learning Path</a>
+                <a href="#mistakes" class="sidebar-link">Common Mistakes</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🔄 UI State Management</h1>
+            <p>An overall map of Context API, Redux, Redux Saga, and Redux Toolkit — then jump into each library in detail.</p>
+        </header>
+
+        <section id="what-is-state">
+            <h2>📦 What is UI State?</h2>
+            <p><span class="highlight">UI state</span> is every piece of data that decides what the screen looks like and how it behaves right now: the logged-in user, a shopping cart, a loading spinner, a selected tab, form values, and cached API results.</p>
+            <p>React already has local state (<code>useState</code>, <code>useReducer</code>). A <strong>state management library</strong> is needed when that state must be <strong>shared, predictable, and easy to debug</strong> across many components.</p>
+
+            <div class="info-box premium">
+                <h3>The core problem</h3>
+                <p>As an app grows, passing props down many layers (prop drilling) becomes noisy. Two distant components need the same data. Async calls, caching, and undo/redo appear. Libraries give you a <strong>single source of truth</strong> and a clear way to update it.</p>
+            </div>
+        </section>
+
+        <section id="kinds-of-state">
+            <h2>🧩 Kinds of State</h2>
+            <p>Not all state belongs in a global store. Mix the right tool with the right kind of data.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/state-kinds.png" alt="Four layers of UI state: local UI, shared UI, server state, and URL state">
+                <div class="illustration-caption">Keep each kind of state in the smallest place that still works — local first, global only when shared.</div>
+            </div>
+
+            <table>
+                <tr><th>Kind</th><th>Examples</th><th>Best home</th></tr>
+                <tr>
+                    <td><strong>Local UI</strong></td>
+                    <td>Open/closed accordion, input draft, hover</td>
+                    <td><code>useState</code> in the component</td>
+                </tr>
+                <tr>
+                    <td><strong>Shared UI</strong></td>
+                    <td>Theme, current user, cart, feature flags</td>
+                    <td>Context API or Redux/RTK</td>
+                </tr>
+                <tr>
+                    <td><strong>Server / remote</strong></td>
+                    <td>Product list, user profile from an API</td>
+                    <td>RTK Query, React Query, or Saga + store</td>
+                </tr>
+                <tr>
+                    <td><strong>URL state</strong></td>
+                    <td>Filters, page number, selected tab</td>
+                    <td>React Router search params</td>
+                </tr>
+                <tr>
+                    <td><strong>Form state</strong></td>
+                    <td>Multi-step wizard fields, validation</td>
+                    <td>Local state or a form library</td>
+                </tr>
+            </table>
+
+            <div class="tip-box">
+                <strong>💡 Rule of thumb:</strong> Keep state as close as possible to where it is used. Lift it only when two or more siblings (or distant trees) need it.
+            </div>
+        </section>
+
+        <section id="why-libraries">
+            <h2>❓ Why These Libraries Exist</h2>
+            <p>React’s Context API is built-in. Redux is a separate, predictable store. Saga sits on top of Redux for complex async. Toolkit is the official, shorter way to write Redux today.</p>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>Without a library</h4>
+                    <ul>
+                        <li>Prop drilling through 6 layers</li>
+                        <li>Ad-hoc fetch in every screen</li>
+                        <li>Hard to replay bugs</li>
+                        <li>Inconsistent loading/error handling</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>With a clear store</h4>
+                    <ul>
+                        <li>Any component can read what it needs</li>
+                        <li>Updates go through known actions</li>
+                        <li>DevTools time-travel debugging</li>
+                        <li>Side effects live in one place</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="library-map">
+            <h2>🗺️ Library Map</h2>
+            <p>This module is four detailed guides plus this overview. Start here, then open the topic that matches your stack.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/library-map.png" alt="Map of Context API, Redux, Redux Saga, and Redux Toolkit">
+                <div class="illustration-caption">Context for shared UI chrome. Redux/Toolkit for a global store. Saga only when async flows get complex.</div>
+            </div>
+
+            <table>
+                <tr><th>Topic</th><th>What you learn</th><th>Role in the stack</th></tr>
+                <tr>
+                    <td><a href="/learn/context-api"><strong>Context API</strong></a></td>
+                    <td>Provider, <code>useContext</code>, Context + <code>useReducer</code>, re-render pitfalls</td>
+                    <td>Built into React. Best for low-frequency shared values (theme, auth, locale).</td>
+                </tr>
+                <tr>
+                    <td><a href="/learn/redux"><strong>Redux</strong></a></td>
+                    <td>Store, actions, reducers, <code>dispatch</code>, <code>useSelector</code>, middleware</td>
+                    <td>Predictable global store with a strict one-way data flow.</td>
+                </tr>
+                <tr>
+                    <td><a href="/learn/redux-saga"><strong>Redux Saga</strong></a></td>
+                    <td>Generators, <code>takeEvery</code>, <code>call</code>/<code>put</code>, cancellation, racing effects</td>
+                    <td>Side-effect layer for long-running, cancellable, orchestrated async.</td>
+                </tr>
+                <tr>
+                    <td><a href="/learn/redux-toolkit"><strong>Redux Toolkit</strong></a></td>
+                    <td><code>configureStore</code>, <code>createSlice</code>, <code>createAsyncThunk</code>, RTK Query</td>
+                    <td>Official Redux today — less boilerplate, Immer, batteries included.</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h3>How they stack</h3>
+                <p><strong>Context</strong> can stand alone. <strong>Redux</strong> replaces (or sits beside) Context for a large shared store. <strong>Saga</strong> is optional middleware on Redux. <strong>Toolkit</strong> is how you should write Redux in 2026 — you can still add Saga on top of a Toolkit store if you need it.</p>
+            </div>
+        </section>
+
+        <section id="compare">
+            <h2>⚖️ Head-to-Head</h2>
+
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Context API</th>
+                    <th>Redux</th>
+                    <th>Redux Saga</th>
+                    <th>Redux Toolkit</th>
+                </tr>
+                <tr>
+                    <td><strong>Built into React?</strong></td>
+                    <td>Yes</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Boilerplate</strong></td>
+                    <td>Low</td>
+                    <td>High (classic)</td>
+                    <td>Medium–high</td>
+                    <td>Low</td>
+                </tr>
+                <tr>
+                    <td><strong>DevTools</strong></td>
+                    <td>React DevTools</td>
+                    <td>Redux DevTools</td>
+                    <td>Saga monitor + Redux</td>
+                    <td>Redux DevTools (built-in)</td>
+                </tr>
+                <tr>
+                    <td><strong>Async story</strong></td>
+                    <td>You write it (effects, fetch)</td>
+                    <td>Thunks or other middleware</td>
+                    <td>First-class (generators)</td>
+                    <td>Thunks + RTK Query</td>
+                </tr>
+                <tr>
+                    <td><strong>Cancellation</strong></td>
+                    <td>Manual (AbortController)</td>
+                    <td>Depends on middleware</td>
+                    <td>Excellent (<code>takeLatest</code>, <code>cancel</code>)</td>
+                    <td>Abort in thunks / RTK Query</td>
+                </tr>
+                <tr>
+                    <td><strong>Best app size</strong></td>
+                    <td>Small–medium</td>
+                    <td>Medium–large</td>
+                    <td>Large, complex flows</td>
+                    <td>Medium–large (default choice)</td>
+                </tr>
+                <tr>
+                    <td><strong>Learning cost</strong></td>
+                    <td>Low</td>
+                    <td>Medium</td>
+                    <td>High (generators + effects)</td>
+                    <td>Medium (easier than classic Redux)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="when-to-use">
+            <h2>🎯 When to Use What</h2>
+
+            <h3>Choose Context API when…</h3>
+            <ul>
+                <li>You share a few values: theme, locale, current user, “is sidebar open”</li>
+                <li>Updates are rare (user logs in once, theme changes occasionally)</li>
+                <li>You do not need time-travel debugging or a large action log</li>
+            </ul>
+
+            <h3>Choose Redux / Redux Toolkit when…</h3>
+            <ul>
+                <li>Many screens read and write the same domain data (cart, dashboard, editor)</li>
+                <li>You want a single store, serializable state, and DevTools</li>
+                <li>Several developers must follow the same update pattern</li>
+            </ul>
+
+            <h3>Add Redux Saga when…</h3>
+            <ul>
+                <li>Flows are long: login → fetch profile → hydrate cache → navigate</li>
+                <li>You need to cancel in-flight work (search-as-you-type, route change)</li>
+                <li>You must race, debounce, or retry in a testable, declarative way</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ 2026 default:</strong> For a new React + Redux app, start with <strong>Redux Toolkit</strong> (and RTK Query for server cache). Use classic action/reducer files only to understand the model. Add Saga only when thunks become spaghetti.
+            </div>
+        </section>
+
+        <section id="data-flow">
+            <h2>➡️ Data Flow (One-Way)</h2>
+            <p>All of these tools share the same idea: <strong>UI reads state, events produce updates, updates create new state, UI re-renders</strong>.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/one-way-flow.png" alt="One-way data flow: UI event, dispatch, reducer, new state, back to UI">
+                <div class="illustration-caption">Data never jumps backward. Events go in as actions; the UI only reads the resulting state.</div>
+            </div>
+
+            <div class="diagram-box">UI event
+   │
+   ▼
+dispatch(action)  ──►  reducer (pure)  ──►  new store
+   │                                          │
+   │          Redux Saga / thunk / RTK Query  │
+   │          (optional side effects)         │
+   └──────────────────────────────────────────┘
+                    ▼
+              useSelector / useContext
+                    ▼
+                   UI</div>
+
+            <div class="code-block">Context:
+  UI event → setState / dispatch(reducer) → Context value changes → consumers re-render
+
+Redux / Toolkit:
+  UI event → dispatch(action) → reducer (pure) → new store → useSelector re-render
+
+Redux + Saga:
+  UI event → dispatch(action)
+            ↳ reducer updates sync state
+            ↳ saga watches action → call API → put(success/failure action) → reducer</div>
+
+            <p>Reducers (and Context reducers) must be <strong>pure</strong>: same input → same output, no fetch, no <code>Date.now()</code> as a hidden dependency, no mutations of previous state (Toolkit uses Immer so you <em>write</em> mutations that become immutable updates).</p>
+        </section>
+
+        <section id="learning-path">
+            <h2>🧭 Suggested Learning Path</h2>
+            <ol>
+                <li>Read this overview so the vocabulary is shared.</li>
+                <li>Open <a href="/learn/context-api">Context API</a> — you will use it even in Redux apps (theme, i18n).</li>
+                <li>Open <a href="/learn/redux">Redux</a> — understand store, actions, and reducers without shortcuts.</li>
+                <li>Open <a href="/learn/redux-toolkit">Redux Toolkit</a> — this is how production Redux is written.</li>
+                <li>Open <a href="/learn/redux-saga">Redux Saga</a> when you need advanced async orchestration.</li>
+            </ol>
+
+            <div class="tip-box">
+                <strong>💡 Interview angle:</strong> Be ready to explain why Context can over-render, why Redux state should be serializable, what problem Saga solves vs thunks, and why Toolkit’s <code>createSlice</code> still produces the same actions/reducers underneath.
+            </div>
+        </section>
+
+        <section id="mistakes">
+            <h2>🚫 Common Mistakes</h2>
+            <ul>
+                <li><strong>Putting everything in Redux</strong> — local hover state does not belong in the store.</li>
+                <li><strong>One giant Context</strong> — every consumer re-renders on any change. Split contexts or use a store.</li>
+                <li><strong>Fetching inside reducers</strong> — reducers stay pure; async lives in thunks, sagas, or RTK Query.</li>
+                <li><strong>Non-serializable values in Redux</strong> — no class instances, Promises, or functions in state/actions.</li>
+                <li><strong>Saga for a single GET</strong> — a thunk or RTK Query endpoint is simpler.</li>
+                <li><strong>Skipping selectors</strong> — components subscribe to huge slices and re-render constantly.</li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

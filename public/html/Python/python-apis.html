@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python REST APIs - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔌 REST APIs</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#rest" class="sidebar-link">REST Principles</a>
+                <a href="#http-methods" class="sidebar-link">HTTP Methods</a>
+                <a href="#status-codes" class="sidebar-link">Status Codes</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🏗️ Building APIs</div>
+            <div class="sidebar-links">
+                <a href="#fastapi-api" class="sidebar-link">FastAPI REST API</a>
+                <a href="#middleware" class="sidebar-link">Middleware & CORS</a>
+                <a href="#auth" class="sidebar-link">Authentication</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📋 Best Practices</div>
+            <div class="sidebar-links">
+                <a href="#versioning" class="sidebar-link">API Versioning</a>
+                <a href="#pagination" class="sidebar-link">Pagination & Filtering</a>
+                <a href="#errors" class="sidebar-link">Error Handling</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🔌 Building REST APIs with Python</h1>
+            <p>REST principles, HTTP methods, authentication, and API best practices</p>
+        </header>
+
+        <section id="rest">
+            <h2>📖 REST Principles</h2>
+            <p><strong>REST</strong> (Representational State Transfer) is an architectural style for designing networked APIs.</p>
+
+            <div class="grid-2">
+                <div class="feature-card card-blue">
+                    <h4>Stateless</h4>
+                    <p>Each request contains all info needed; server stores no client state</p>
+                </div>
+                <div class="feature-card card-green">
+                    <h4>Resource-Based</h4>
+                    <p>Everything is a resource identified by URLs (/users/1)</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Uniform Interface</h4>
+                    <p>Standard HTTP methods for CRUD operations</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>JSON Responses</h4>
+                    <p>Typically JSON for request/response bodies</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="http-methods">
+            <h2>📡 HTTP Methods</h2>
+            <table>
+                <tr><th>Method</th><th>Action</th><th>Example</th><th>Idempotent</th></tr>
+                <tr><td><code>GET</code></td><td>Read resource</td><td><code>GET /users/1</code></td><td>✅</td></tr>
+                <tr><td><code>POST</code></td><td>Create resource</td><td><code>POST /users</code></td><td>❌</td></tr>
+                <tr><td><code>PUT</code></td><td>Replace resource</td><td><code>PUT /users/1</code></td><td>✅</td></tr>
+                <tr><td><code>PATCH</code></td><td>Partial update</td><td><code>PATCH /users/1</code></td><td>❌</td></tr>
+                <tr><td><code>DELETE</code></td><td>Remove resource</td><td><code>DELETE /users/1</code></td><td>✅</td></tr>
+            </table>
+        </section>
+
+        <section id="status-codes">
+            <h2>📊 HTTP Status Codes</h2>
+            <table>
+                <tr><th>Code</th><th>Meaning</th><th>When to Use</th></tr>
+                <tr><td><code>200</code></td><td>OK</td><td>Successful GET, PUT, PATCH</td></tr>
+                <tr><td><code>201</code></td><td>Created</td><td>Successful POST</td></tr>
+                <tr><td><code>204</code></td><td>No Content</td><td>Successful DELETE</td></tr>
+                <tr><td><code>400</code></td><td>Bad Request</td><td>Invalid input/validation error</td></tr>
+                <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing/invalid authentication</td></tr>
+                <tr><td><code>403</code></td><td>Forbidden</td><td>Authenticated but not authorized</td></tr>
+                <tr><td><code>404</code></td><td>Not Found</td><td>Resource doesn't exist</td></tr>
+                <tr><td><code>422</code></td><td>Unprocessable Entity</td><td>Validation failed (FastAPI default)</td></tr>
+                <tr><td><code>500</code></td><td>Internal Server Error</td><td>Unexpected server error</td></tr>
+            </table>
+        </section>
+
+        <section id="fastapi-api">
+            <h2>⚡ Complete FastAPI REST API</h2>
+            <div class="code-block"># main.py
+from fastapi import FastAPI, HTTPException, Depends, status
+from pydantic import BaseModel, EmailStr
+from typing import List
+
+app = FastAPI(title="User API", version="1.0.0")
+
+# In-memory store (use a real DB in production)
+users_db: dict[int, dict] = {}
+next_id = 1
+
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr
+
+class UserUpdate(BaseModel):
+    name: str | None = None
+    email: EmailStr | None = None
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+
+@app.get("/api/v1/users", response_model=List[UserResponse])
+async def list_users(skip: int = 0, limit: int = 10):
+    users = list(users_db.values())
+    return users[skip : skip + limit]
+
+@app.get("/api/v1/users/{user_id}", response_model=UserResponse)
+async def get_user(user_id: int):
+    if user_id not in users_db:
+        raise HTTPException(status_code=404, detail="User not found")
+    return users_db[user_id]
+
+@app.post("/api/v1/users", response_model=UserResponse, status_code=201)
+async def create_user(user: UserCreate):
+    global next_id
+    new_user = {"id": next_id, **user.model_dump()}
+    users_db[next_id] = new_user
+    next_id += 1
+    return new_user
+
+@app.patch("/api/v1/users/{user_id}", response_model=UserResponse)
+async def update_user(user_id: int, updates: UserUpdate):
+    if user_id not in users_db:
+        raise HTTPException(status_code=404, detail="User not found")
+    users_db[user_id].update(updates.model_dump(exclude_unset=True))
+    return users_db[user_id]
+
+@app.delete("/api/v1/users/{user_id}", status_code=204)
+async def delete_user(user_id: int):
+    if user_id not in users_db:
+        raise HTTPException(status_code=404, detail="User not found")
+    del users_db[user_id]</div>
+        </section>
+
+        <section id="middleware">
+            <h2>🔧 Middleware & CORS</h2>
+            <div class="code-block">from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+import time
+import logging
+
+app = FastAPI()
+
+# CORS — allow frontend to call your API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Custom middleware — request timing
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start
+    response.headers["X-Process-Time"] = str(process_time)
+    logging.info(f"{request.method} {request.url.path} - {process_time:.3f}s")
+    return response</div>
+        </section>
+
+        <section id="auth">
+            <h2>🔐 Authentication</h2>
+
+            <h3>JWT Authentication</h3>
+            <div class="code-block">from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
+
+SECRET_KEY = "your-secret-key"
+ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=["bcrypt"])
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(hours=24))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401)
+        return user_id
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+@app.get("/protected")
+async def protected_route(user_id: str = Depends(get_current_user)):
+    return {"message": f"Hello, user {user_id}"}</div>
+
+            <h3>API Key Authentication</h3>
+            <div class="code-block">from fastapi import Security, HTTPException
+from fastapi.security import APIKeyHeader
+
+api_key_header = APIKeyHeader(name="X-API-Key")
+
+async def verify_api_key(api_key: str = Security(api_key_header)):
+    if api_key != "your-secret-api-key":
+        raise HTTPException(status_code=403, detail="Invalid API key")
+    return api_key</div>
+        </section>
+
+        <section id="versioning">
+            <h2>📌 API Versioning</h2>
+            <div class="code-block"># URL path versioning (most common)
+@app.get("/api/v1/users")
+@app.get("/api/v2/users")  # New version with breaking changes
+
+# Header versioning
+@app.get("/users")
+async def get_users(api_version: str = Header("1.0")):
+    if api_version == "2.0":
+        return {"users": [], "meta": {"version": "2.0"}}
+    return {"users": []}</div>
+        </section>
+
+        <section id="pagination">
+            <h2>📄 Pagination & Filtering</h2>
+            <div class="code-block">from fastapi import Query
+from pydantic import BaseModel
+
+class PaginatedResponse(BaseModel):
+    items: list
+    total: int
+    page: int
+    page_size: int
+    has_next: bool
+
+@app.get("/api/v1/products")
+async def list_products(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    category: str | None = None,
+    min_price: float | None = None,
+    sort_by: str = "created_at",
+):
+    # Build query with filters...
+    skip = (page - 1) * page_size
+    items = query.offset(skip).limit(page_size).all()
+    total = query.count()
+    return PaginatedResponse(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        has_next=(skip + page_size) < total,
+    )</div>
+        </section>
+
+        <section id="errors">
+            <h2>❌ Error Handling</h2>
+            <div class="code-block">from fastapi import Request
+from fastapi.responses import JSONResponse
+
+class AppException(Exception):
+    def __init__(self, status_code: int, detail: str):
+        self.status_code = status_code
+        self.detail = detail
+
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": {
+                "code": exc.status_code,
+                "message": exc.detail,
+                "path": str(request.url.path),
+            }
+        },
+    )
+
+# Consistent error response format
+# {
+#   "error": {
+#     "code": 404,
+#     "message": "User not found",
+#     "path": "/api/v1/users/99"
+#   }
+# }</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

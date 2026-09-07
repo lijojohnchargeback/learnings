@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Storage Services - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">💾 AWS Storage</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📦 Block Storage</div>
+            <div class="sidebar-links">
+                <a href="#storage-types" class="sidebar-link">Storage Types</a>
+                <a href="#ebs" class="sidebar-link">EBS</a>
+                <a href="#instance-store" class="sidebar-link">Instance Store</a>
+                <a href="#snapshots" class="sidebar-link">Snapshots</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📁 File Storage</div>
+            <div class="sidebar-links">
+                <a href="#efs" class="sidebar-link">EFS</a>
+                <a href="#fsx" class="sidebar-link">FSx</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗄️ Object Storage</div>
+            <div class="sidebar-links">
+                <a href="#s3" class="sidebar-link">S3 Basics</a>
+                <a href="#s3-classes" class="sidebar-link">Storage Classes</a>
+                <a href="#s3-versioning" class="sidebar-link">Versioning</a>
+                <a href="#s3-encryption" class="sidebar-link">Encryption</a>
+                <a href="#s3-features" class="sidebar-link">Advanced Features</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🌐 CDN</div>
+            <div class="sidebar-links">
+                <a href="#cloudfront" class="sidebar-link">CloudFront</a>
+                <a href="#global-accelerator" class="sidebar-link">Global Accelerator</a>
+            </div>
+        </div>
+    </aside>
+    
+    <div class="container">
+        <header>
+            <h1>💾 AWS Storage Services</h1>
+            <p>Complete Guide to EBS, EFS, S3, CloudFront & More</p>
+        </header>
+
+        <section id="storage-types">
+            <h2>📦 Storage Types</h2>
+
+            <p>Storage is critical for any computing system. AWS offers three main types of storage:</p>
+
+            <table>
+                <tr><th>Type</th><th>Description</th><th>AWS Services</th></tr>
+                <tr>
+                    <td><strong>Block Storage (DAS)</strong></td>
+                    <td>Direct Access Storage - stores data in blocks</td>
+                    <td>EBS, Instance Store, HDD, SSD</td>
+                </tr>
+                <tr>
+                    <td><strong>File Storage</strong></td>
+                    <td>Stores data in files and directories</td>
+                    <td>EFS (Linux), FSx (Windows)</td>
+                </tr>
+                <tr>
+                    <td><strong>Object Storage</strong></td>
+                    <td>Stores data as objects with metadata</td>
+                    <td>S3</td>
+                </tr>
+            </table>
+
+            <h3>HDD vs SSD</h3>
+            <table>
+                <tr><th>Feature</th><th>HDD (Hard Disk Drive)</th><th>SSD (Solid State Drive)</th></tr>
+                <tr>
+                    <td><strong>Technology</strong></td>
+                    <td>Magnetic disks</td>
+                    <td>Flash memory</td>
+                </tr>
+                <tr>
+                    <td><strong>Speed</strong></td>
+                    <td>Slower</td>
+                    <td>Faster</td>
+                </tr>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>Lower cost per GB</td>
+                    <td>Higher cost per GB</td>
+                </tr>
+                <tr>
+                    <td><strong>Capacity</strong></td>
+                    <td>Larger storage capacity</td>
+                    <td>Smaller capacity</td>
+                </tr>
+                <tr>
+                    <td><strong>Reliability</strong></td>
+                    <td>Moving parts (less reliable)</td>
+                    <td>No moving parts (more reliable)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="instance-store">
+            <h2>⚡ Instance Store</h2>
+
+            <p><span class="highlight">Temporary storage</span> physically attached to the host computer.</p>
+
+            <h3>Characteristics</h3>
+            <ul>
+                <li><strong>Ephemeral:</strong> Data lost when instance stops/terminates</li>
+                <li><strong>High Performance:</strong> Faster than EBS</li>
+                <li><strong>No Additional Cost:</strong> Included with instance</li>
+                <li><strong>Local Storage:</strong> Not shared between instances</li>
+            </ul>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Temporary data (caches, buffers)</li>
+                <li>High-performance computing</li>
+                <li>Low latency applications</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Warning:</strong> Instance Store data is lost when the instance stops or terminates. Not suitable for long-term storage!
+            </div>
+        </section>
+
+        <section id="ebs">
+            <h2>💿 Amazon EBS (Elastic Block Store)</h2>
+
+            <p>EBS provides <span class="highlight">persistent block storage</span> for EC2 instances.</p>
+
+            <h3>EBS vs Instance Store</h3>
+            <table>
+                <tr><th>Feature</th><th>EBS</th><th>Instance Store</th></tr>
+                <tr>
+                    <td><strong>Type</strong></td>
+                    <td>Persistent block storage</td>
+                    <td>Temporary block storage</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Retention</strong></td>
+                    <td>Persists after stop/terminate</td>
+                    <td>Lost when instance stops</td>
+                </tr>
+                <tr>
+                    <td><strong>Availability</strong></td>
+                    <td>Highly available</td>
+                    <td>Not highly available</td>
+                </tr>
+                <tr>
+                    <td><strong>Durability</strong></td>
+                    <td>Multiple copies across AZs</td>
+                    <td>No redundancy</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>Consistent</td>
+                    <td>High performance</td>
+                </tr>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>Pay-as-you-go</td>
+                    <td>No additional cost</td>
+                </tr>
+            </table>
+
+            <h3>EBS Volume Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th><th>Use Case</th></tr>
+                <tr>
+                    <td><strong>gp2/gp3 (General Purpose SSD)</strong></td>
+                    <td>Balance of price and performance</td>
+                    <td>Boot volumes, dev/test, small-medium databases</td>
+                </tr>
+                <tr>
+                    <td><strong>io1/io2 (Provisioned IOPS SSD)</strong></td>
+                    <td>High performance, low latency</td>
+                    <td>I/O-intensive apps, databases, big data</td>
+                </tr>
+                <tr>
+                    <td><strong>st1 (Throughput Optimized HDD)</strong></td>
+                    <td>Low cost, high throughput</td>
+                    <td>Big data, data warehousing</td>
+                </tr>
+                <tr>
+                    <td><strong>sc1 (Cold HDD)</strong></td>
+                    <td>Lowest cost</td>
+                    <td>Infrequently accessed data, backups</td>
+                </tr>
+            </table>
+
+            <h3>Mounting EBS Volume in Ubuntu</h3>
+            <div class="code-block"># Check available disks
+lsblk
+
+# Create file system
+sudo mkfs -t ext4 /dev/xvdf
+
+# Create mount point
+sudo mkdir /mnt/myebsvolume
+
+# Mount the volume
+sudo mount /dev/xvdf /mnt/myebsvolume
+
+# Verify mount
+df -h
+
+# Make mount persistent (add to /etc/fstab)
+/dev/xvdf /mnt/myebsvolume ext4 defaults,nofail 0 2
+
+# Unmount
+sudo umount /mnt/myebsvolume</div>
+        </section>
+
+        <section id="snapshots">
+            <h2>📸 EBS Snapshots</h2>
+
+            <p>A <span class="highlight">snapshot is a point-in-time copy</span> of an EBS volume stored in S3.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Incremental:</strong> Only changes since last snapshot are stored</li>
+                <li><strong>Stored in S3:</strong> Highly durable and available</li>
+                <li><strong>Create New Volumes:</strong> Restore or create new EBS volumes</li>
+                <li><strong>Share:</strong> Share with other AWS accounts or make public</li>
+                <li><strong>Encrypted:</strong> Can be encrypted for security</li>
+                <li><strong>Create AMIs:</strong> Use to create Amazon Machine Images</li>
+            </ul>
+
+            <h3>Data Lifecycle Manager (DLM)</h3>
+            <p>Automates creation, retention, and deletion of EBS snapshots:</p>
+            <ul>
+                <li>Schedule-based snapshots</li>
+                <li>Event-based snapshots</li>
+                <li>Tag-based management</li>
+                <li>Reduces storage costs</li>
+            </ul>
+        </section>
+
+        <section id="efs">
+            <h2>📁 Amazon EFS (Elastic File System)</h2>
+
+            <p>EFS is a <span class="highlight">scalable file storage service</span> for Linux-based workloads using NFS protocol.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Highly Available:</strong> Multiple copies across AZs</li>
+                <li><strong>Scalable:</strong> Automatically grows/shrinks</li>
+                <li><strong>Cost-Effective:</strong> Pay-as-you-go pricing</li>
+                <li><strong>Shared Access:</strong> Multiple EC2 instances can access simultaneously</li>
+                <li><strong>NFS Protocol:</strong> Standard Linux file system</li>
+            </ul>
+
+            <h3>Mounting EFS</h3>
+            <div class="code-block"># Install EFS utils
+sudo apt-get update
+sudo apt-get install -y git binutils rustc cargo pkg-config libssl-dev
+sudo git clone https://github.com/aws/efs-utils
+cd efs-utils
+sudo ./build-deb.sh
+sudo apt-get -y install ./build/amazon-efs-utils*deb
+
+# Permanent mounting (add to /etc/fstab)
+fs-0bbc10dde901a37cf.efs.ap-northeast-3.amazonaws.com:/ /var/www/html efs _netdev,tls 0 0</div>
+        </section>
+
+        <section id="fsx">
+            <h2>🪟 Amazon FSx</h2>
+
+            <p>FSx is a <span class="highlight">fully managed file storage service</span> supporting Windows File Server and Lustre.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Windows File Server:</strong> SMB protocol for Windows workloads</li>
+                <li><strong>Lustre:</strong> High-performance computing and big data</li>
+                <li><strong>Highly Available:</strong> Multiple copies across AZs</li>
+                <li><strong>Scalable:</strong> Easily adjust capacity</li>
+                <li><strong>Secure:</strong> Built-in encryption and access controls</li>
+            </ul>
+        </section>
+
+        <section id="s3">
+            <h2>🗄️ Amazon S3 (Simple Storage Service)</h2>
+
+            <p>S3 is a <span class="highlight">scalable object storage service</span> designed for high availability and durability.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Highly Available:</strong> 99.99% availability</li>
+                <li><strong>Durable:</strong> 99.999999999% (11 9's) durability</li>
+                <li><strong>Scalable:</strong> Unlimited storage capacity</li>
+                <li><strong>Cost-Effective:</strong> Pay only for what you use</li>
+                <li><strong>Secure:</strong> Encryption, access controls, versioning</li>
+            </ul>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Backup and archiving</li>
+                <li>Content delivery (websites, media)</li>
+                <li>Big data analytics</li>
+                <li>Disaster recovery</li>
+                <li>Static website hosting</li>
+            </ul>
+        </section>
+
+        <section id="s3-classes">
+            <h2>📊 S3 Storage Classes</h2>
+
+            <table>
+                <tr><th>Class</th><th>Description</th><th>Use Case</th></tr>
+                <tr>
+                    <td><strong>S3 Standard</strong></td>
+                    <td>Frequently accessed data, high performance</td>
+                    <td>Active data, websites, content delivery</td>
+                </tr>
+                <tr>
+                    <td><strong>S3 Intelligent-Tiering</strong></td>
+                    <td>Automatically moves data between tiers</td>
+                    <td>Unpredictable access patterns</td>
+                </tr>
+                <tr>
+                    <td><strong>S3 Standard-IA</strong></td>
+                    <td>Infrequently accessed, lower cost</td>
+                    <td>Backups, disaster recovery</td>
+                </tr>
+                <tr>
+                    <td><strong>S3 One Zone-IA</strong></td>
+                    <td>Single AZ, lower cost</td>
+                    <td>Easily recreatable data</td>
+                </tr>
+                <tr>
+                    <td><strong>S3 Glacier</strong></td>
+                    <td>Long-term archival, low cost</td>
+                    <td>Archives, compliance data</td>
+                </tr>
+                <tr>
+                    <td><strong>S3 Glacier Deep Archive</strong></td>
+                    <td>Lowest cost, longest retrieval</td>
+                    <td>Long-term archives (7-10 years)</td>
+                </tr>
+                <tr>
+                    <td><strong>S3 Express One Zone</strong></td>
+                    <td>Single AZ, high performance</td>
+                    <td>Frequently accessed data in one zone</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="s3-versioning">
+            <h2>🔄 S3 Bucket Versioning</h2>
+
+            <p>Versioning keeps <span class="highlight">multiple versions of an object</span> in S3.</p>
+
+            <h3>Benefits</h3>
+            <ul>
+                <li>Protect against accidental deletions</li>
+                <li>Recover previous versions</li>
+                <li>Works with lifecycle management</li>
+                <li>Disabled by default (must enable)</li>
+            </ul>
+
+            <h3>Lifecycle Management</h3>
+            <p>Automate transitions between storage classes:</p>
+            <ul>
+                <li>30 days → Standard-IA</li>
+                <li>60 days → Glacier</li>
+                <li>90 days → Glacier Deep Archive</li>
+                <li>365 days → Delete (expiration)</li>
+            </ul>
+        </section>
+
+        <section id="s3-encryption">
+            <h2>🔒 S3 Encryption</h2>
+
+            <h3>Encryption Types</h3>
+            <table>
+                <tr><th>Type</th><th>Description</th><th>Key Management</th></tr>
+                <tr>
+                    <td><strong>SSE-S3</strong></td>
+                    <td>Server-Side Encryption with S3-managed keys</td>
+                    <td>AWS manages keys (AES-256)</td>
+                </tr>
+                <tr>
+                    <td><strong>SSE-KMS</strong></td>
+                    <td>Server-Side Encryption with KMS</td>
+                    <td>Customer or AWS managed keys, key rotation</td>
+                </tr>
+                <tr>
+                    <td><strong>SSE-C</strong></td>
+                    <td>Server-Side Encryption with Customer keys</td>
+                    <td>Customer provides and manages keys</td>
+                </tr>
+                <tr>
+                    <td><strong>Client-Side</strong></td>
+                    <td>Encrypt before uploading to S3</td>
+                    <td>Client responsibility</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Recommended:</strong> Use SSE-KMS for better control and audit trails.
+            </div>
+        </section>
+
+        <section id="s3-features">
+            <h2>✨ S3 Advanced Features</h2>
+
+            <h3>1. Static Website Hosting</h3>
+            <ul>
+                <li>Host static websites on S3</li>
+                <li>Bucket name should match domain name</li>
+                <li>Only HTTP supported</li>
+                <li>Bucket must be public</li>
+            </ul>
+
+            <h3>2. CORS (Cross-Origin Resource Sharing)</h3>
+            <p>Control access from other domains</p>
+
+            <h3>3. Cross-Region Replication</h3>
+            <ul>
+                <li>Replicate objects across regions</li>
+                <li>Improves availability and durability</li>
+                <li>Reduces latency</li>
+                <li>Requires versioning enabled</li>
+            </ul>
+
+            <h3>4. Transfer Acceleration</h3>
+            <ul>
+                <li>Accelerate uploads to S3</li>
+                <li>Uses CloudFront edge locations</li>
+                <li>Best for large files</li>
+                <li>Additional cost</li>
+            </ul>
+
+            <h3>5. Presigned URLs</h3>
+            <p>Generate temporary URLs for secure sharing</p>
+
+            <h3>6. MFA Delete</h3>
+            <ul>
+                <li>Require MFA for deletions</li>
+                <li>Versioning must be enabled</li>
+                <li>Only via Console or CLI</li>
+            </ul>
+
+            <h3>7. Event Notifications</h3>
+            <p>Trigger Lambda, SNS, or SQS on S3 events</p>
+
+            <h3>8. VPC Endpoints</h3>
+            <ul>
+                <li><strong>Gateway Endpoints:</strong> For S3 and DynamoDB</li>
+                <li><strong>Interface Endpoints:</strong> For other services</li>
+                <li>Access S3 without public internet</li>
+            </ul>
+
+            <h3>9. Access Points</h3>
+            <ul>
+                <li>Create custom endpoints for S3 buckets</li>
+                <li>Fine-grained access control</li>
+                <li>One bucket, multiple access points</li>
+                <li>Easier policy management</li>
+            </ul>
+        </section>
+
+        <section id="cloudfront">
+            <h2>🌐 Amazon CloudFront</h2>
+
+            <p>CloudFront is a <span class="highlight">Content Delivery Network (CDN)</span> that distributes content globally.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Edge Locations:</strong> Cache content closer to users</li>
+                <li><strong>Low Latency:</strong> Faster content delivery</li>
+                <li><strong>Global Reach:</strong> Worldwide distribution</li>
+                <li><strong>Security:</strong> DDoS protection, SSL/TLS</li>
+                <li><strong>Integration:</strong> Works with S3, EC2, ELB</li>
+            </ul>
+
+            <h3>Origins</h3>
+            <ul>
+                <li>S3 buckets</li>
+                <li>EC2 instances</li>
+                <li>Elastic Load Balancer</li>
+                <li>Custom HTTP servers</li>
+            </ul>
+
+            <h3>Security Features</h3>
+            <ul>
+                <li><strong>Signed URLs/Cookies:</strong> Restrict access</li>
+                <li><strong>Trusted Key Groups:</strong> Manage signing keys</li>
+                <li><strong>Geo-Restriction:</strong> Block/allow countries</li>
+                <li><strong>AWS Certificate Manager:</strong> SSL/TLS certificates</li>
+            </ul>
+
+            <h3>Cache Behavior</h3>
+            <ul>
+                <li>Path patterns</li>
+                <li>Automatic compression</li>
+                <li>Viewer protocol policy (HTTP/HTTPS)</li>
+                <li>TTL (Time To Live)</li>
+            </ul>
+        </section>
+
+        <section id="global-accelerator">
+            <h2>🚀 AWS Global Accelerator</h2>
+
+            <p>Global Accelerator improves <span class="highlight">availability and performance</span> using AWS global network.</p>
+
+            <h3>Key Features</h3>
+            <table>
+                <tr><th>Feature</th><th>Description</th></tr>
+                <tr>
+                    <td><strong>Global Anycast IPs</strong></td>
+                    <td>Two static IPs as fixed entry points</td>
+                </tr>
+                <tr>
+                    <td><strong>Global Traffic Distribution</strong></td>
+                    <td>Routes to optimal endpoint</td>
+                </tr>
+                <tr>
+                    <td><strong>Health Checks</strong></td>
+                    <td>Monitors endpoint health</td>
+                </tr>
+                <tr>
+                    <td><strong>Fast Failover</strong></td>
+                    <td>Automatic rerouting on failures</td>
+                </tr>
+                <tr>
+                    <td><strong>AWS Integration</strong></td>
+                    <td>Works with ELB, EC2, Elastic IPs</td>
+                </tr>
+            </table>
+
+            <h3>Benefits</h3>
+            <ul>
+                <li>✅ Improved performance via AWS backbone</li>
+                <li>✅ High availability with automatic failover</li>
+                <li>✅ Consistent IPs for DNS/firewall management</li>
+                <li>✅ Built-in DDoS protection</li>
+            </ul>
+
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Global web applications</li>
+                <li>Gaming platforms</li>
+                <li>Live media streaming</li>
+                <li>Disaster recovery</li>
+            </ul>
+        </section>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && sectionTop + sectionHeight > scrollPos) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

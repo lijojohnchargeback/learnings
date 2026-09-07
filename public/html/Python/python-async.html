@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Async Programming - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">⚡ Async Python</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Concepts</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Why Async?</a>
+                <a href="#async-await" class="sidebar-link">async/await</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 asyncio</div>
+            <div class="sidebar-links">
+                <a href="#asyncio-basics" class="sidebar-link">asyncio Basics</a>
+                <a href="#tasks" class="sidebar-link">Tasks & Gathering</a>
+                <a href="#timeouts" class="sidebar-link">Timeouts & Cancellation</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🌐 Async I/O</div>
+            <div class="sidebar-links">
+                <a href="#aiohttp" class="sidebar-link">HTTP with aiohttp</a>
+                <a href="#async-db" class="sidebar-link">Async Databases</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>⚡ Python Async Programming</h1>
+            <p>asyncio, async/await, and building high-performance backend services</p>
+        </header>
+
+        <section id="intro">
+            <h2>📖 Why Async?</h2>
+            <p>Async programming lets a single thread handle many I/O-bound operations concurrently — perfect for APIs, web scraping, and database-heavy backends.</p>
+
+            <table>
+                <tr><th>Approach</th><th>Best For</th><th>Concurrency Model</th></tr>
+                <tr><td><strong>Sync</strong></td><td>CPU-bound tasks, simple scripts</td><td>Blocking, one at a time</td></tr>
+                <tr><td><strong>Threading</strong></td><td>I/O with blocking libraries</td><td>OS threads (GIL limited)</td></tr>
+                <tr><td><strong>Multiprocessing</strong></td><td>CPU-bound parallel work</td><td>Separate processes</td></tr>
+                <tr><td><strong>Async (asyncio)</strong></td><td>I/O-bound, many connections</td><td>Single thread, event loop</td></tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Rule of thumb:</strong> Use async for I/O-bound backend work (HTTP, DB, file I/O). Use multiprocessing for CPU-bound tasks.
+            </div>
+        </section>
+
+        <section id="async-await">
+            <h2>🔑 async/await Syntax</h2>
+            <div class="code-block">import asyncio
+
+# Coroutine function — defined with async def
+async def fetch_data(url: str) -> dict:
+    await asyncio.sleep(1)  # Simulate network delay
+    return {"url": url, "status": 200}
+
+# Calling a coroutine requires await (inside async function)
+# or asyncio.run() (top level)
+
+async def main():
+    result = await fetch_data("https://api.example.com")
+    print(result)
+
+# Entry point
+asyncio.run(main())</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Common mistake:</strong> Calling <code>fetch_data()</code> without <code>await</code> returns a coroutine object, not the result. Always <code>await</code> or pass to <code>asyncio.create_task()</code>.
+            </div>
+        </section>
+
+        <section id="asyncio-basics">
+            <h2>🔄 asyncio Basics</h2>
+            <div class="code-block">import asyncio
+
+async def say_after(delay, message):
+    await asyncio.sleep(delay)
+    print(message)
+
+async def main():
+    print("Start")
+    await say_after(1, "Hello")
+    await say_after(1, "World")  # Sequential: ~2 seconds total
+    print("Done")
+
+asyncio.run(main())</div>
+        </section>
+
+        <section id="tasks">
+            <h2>📋 Tasks & Concurrent Execution</h2>
+            <div class="code-block">import asyncio
+
+async def fetch_user(user_id):
+    await asyncio.sleep(0.5)
+    return {"id": user_id, "name": f"User {user_id}"}
+
+async def main():
+    # Run concurrently with gather
+    results = await asyncio.gather(
+        fetch_user(1),
+        fetch_user(2),
+        fetch_user(3),
+    )
+    print(results)  # All 3 users in ~0.5s (not 1.5s)
+
+    # Create tasks for more control
+    task1 = asyncio.create_task(fetch_user(4))
+    task2 = asyncio.create_task(fetch_user(5))
+    user4 = await task1
+    user5 = await task2
+
+asyncio.run(main())</div>
+        </section>
+
+        <section id="timeouts">
+            <h2>⏱️ Timeouts & Cancellation</h2>
+            <div class="code-block">import asyncio
+
+async def slow_operation():
+    await asyncio.sleep(10)
+    return "done"
+
+async def main():
+    try:
+        result = await asyncio.wait_for(slow_operation(), timeout=2.0)
+    except asyncio.TimeoutError:
+        print("Operation timed out!")
+
+    # Cancel a task
+    task = asyncio.create_task(slow_operation())
+    await asyncio.sleep(0.1)
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        print("Task was cancelled")
+
+asyncio.run(main())</div>
+        </section>
+
+        <section id="aiohttp">
+            <h2>🌐 HTTP with aiohttp</h2>
+            <div class="code-block">import aiohttp
+import asyncio
+
+async def fetch_url(session, url):
+    async with session.get(url) as response:
+        return await response.json()
+
+async def main():
+    urls = [
+        "https://api.github.com/users/octocat",
+        "https://api.github.com/users/torvalds",
+    ]
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+        for data in results:
+            print(data["login"])
+
+asyncio.run(main())</div>
+
+            <div class="code-block"># FastAPI async endpoint
+from fastapi import FastAPI
+import httpx
+
+app = FastAPI()
+
+@app.get("/github/{username}")
+async def get_github_user(username: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"https://api.github.com/users/{username}"
+        )
+        return response.json()</div>
+        </section>
+
+        <section id="async-db">
+            <h2>🗄️ Async Databases</h2>
+            <div class="code-block"># asyncpg (PostgreSQL)
+import asyncpg
+
+async def get_users():
+    conn = await asyncpg.connect("postgresql://user:pass@localhost/db")
+    try:
+        rows = await conn.fetch("SELECT * FROM users LIMIT 10")
+        return [dict(row) for row in rows]
+    finally:
+        await conn.close()
+
+# SQLAlchemy 2.0 async
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+
+engine = create_async_engine("postgresql+asyncpg://user:pass@localhost/db")
+
+async def get_user(session: AsyncSession, user_id: int):
+    result = await session.execute(
+        select(User).where(User.id == user_id)
+    )
+    return result.scalar_one_or_none()</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+.code-block {
+    margin: var(--spacing-xl) 0;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    background: var(--bg-secondary);
+    transition: all var(--transition-base);
+}
+
+.code-block:hover {
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-light);
+}
+
+.code-block-title {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.code-block-title::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+}
+
+.code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+    border-bottom: 1px solid var(--border);
+}
+
+.code-language {
+    font-family: var(--font-code);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+}
+
+.copy-button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--bg-primary);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.copy-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.copy-button:hover::before {
+    opacity: 1;
+}
+
+.copy-button:hover {
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px var(--shadow-colored);
+}
+
+.copy-button svg,
+.copy-text {
+    position: relative;
+    z-index: 1;
+}
+
+.copy-text {
+    font-weight: 600;
+}
+
+/* Override syntax highlighter styles */
+.code-block pre {
+    margin: 0 !important;
+    background-color: var(--bg-secondary) !important;
+}

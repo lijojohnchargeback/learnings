@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Data Structures & Algorithms - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 DSA Guide</h2>
+            <p>Data Structures & Algorithms</p>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Fundamentals</div>
+                <ul>
+                    <li><a href="#big-o">📊 Big O Notation</a></li>
+                    <li><a href="#patterns">🎯 Problem Solving Patterns</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Core Concepts</div>
+                <ul>
+                    <li><a href="#recursion">🔄 Recursion</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Algorithms</div>
+                <ul>
+                    <li><a href="#searching">🔍 Searching Algorithms</a></li>
+                    <li><a href="#sorting">🔢 Sorting Algorithms</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Data Structures</div>
+                <ul>
+                    <li><a href="#data-structures">🗂️ Overview</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🎓 Data Structures & Algorithms</h1>
+                <p>Complete Guide to DSA in JavaScript</p>
+            </header>
+
+        <section id="big-o">
+            <h2>📊 Big O Notation</h2>
+
+            <p><span class="highlight">Big O Notation</span> describes the performance or complexity of an algorithm - how runtime or space grows as input size increases.</p>
+
+            <h3>Why Big O Matters</h3>
+            <div class="info-box">
+                <ul>
+                    <li>📈 <strong>Scalability:</strong> How does code perform with large inputs?</li>
+                    <li>⚡ <strong>Performance:</strong> Compare different approaches</li>
+                    <li>🎯 <strong>Optimization:</strong> Identify bottlenecks</li>
+                    <li>💼 <strong>Interviews:</strong> Common technical interview topic</li>
+                </ul>
+            </div>
+
+            <h3>Common Time Complexities</h3>
+            <table>
+                <tr>
+                    <th>Notation</th>
+                    <th>Name</th>
+                    <th>Example</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>O(1)</code></td>
+                    <td>Constant</td>
+                    <td>Array access</td>
+                    <td>Same time regardless of input size</td>
+                </tr>
+                <tr>
+                    <td><code>O(log n)</code></td>
+                    <td>Logarithmic</td>
+                    <td>Binary search</td>
+                    <td>Divides problem in half each time</td>
+                </tr>
+                <tr>
+                    <td><code>O(n)</code></td>
+                    <td>Linear</td>
+                    <td>Loop through array</td>
+                    <td>Proportional to input size</td>
+                </tr>
+                <tr>
+                    <td><code>O(n log n)</code></td>
+                    <td>Linearithmic</td>
+                    <td>Merge sort</td>
+                    <td>Efficient sorting algorithms</td>
+                </tr>
+                <tr>
+                    <td><code>O(n²)</code></td>
+                    <td>Quadratic</td>
+                    <td>Nested loops</td>
+                    <td>Loop within a loop</td>
+                </tr>
+                <tr>
+                    <td><code>O(2ⁿ)</code></td>
+                    <td>Exponential</td>
+                    <td>Recursive Fibonacci</td>
+                    <td>Doubles with each additional input</td>
+                </tr>
+            </table>
+
+            <h3>Examples with Code</h3>
+            <div class="code-block"><span class="comment">// O(1) - Constant Time</span>
+<span class="keyword">function</span> <span class="function">getFirst</span>(arr) {
+    <span class="keyword">return</span> arr[<span class="number">0</span>]; <span class="comment">// Always same time</span>
+}
+
+<span class="comment">// O(n) - Linear Time</span>
+<span class="keyword">function</span> <span class="function">sumArray</span>(arr) {
+    <span class="keyword">let</span> sum = <span class="number">0</span>;
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr.<span class="keyword">length</span>; i++) {
+        sum += arr[i]; <span class="comment">// Runs n times</span>
+    }
+    <span class="keyword">return</span> sum;
+}
+
+<span class="comment">// O(n²) - Quadratic Time</span>
+<span class="keyword">function</span> <span class="function">printPairs</span>(arr) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr.<span class="keyword">length</span>; i++) {
+        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j < arr.<span class="keyword">length</span>; j++) {
+            <span class="function">console</span>.<span class="function">log</span>(arr[i], arr[j]); <span class="comment">// n * n = n²</span>
+        }
+    }
+}
+
+<span class="comment">// O(log n) - Logarithmic Time</span>
+<span class="keyword">function</span> <span class="function">binarySearch</span>(arr, target) {
+    <span class="keyword">let</span> left = <span class="number">0</span>, right = arr.<span class="keyword">length</span> - <span class="number">1</span>;
+    <span class="keyword">while</span> (left <= right) {
+        <span class="keyword">const</span> mid = <span class="function">Math</span>.<span class="function">floor</span>((left + right) / <span class="number">2</span>);
+        <span class="keyword">if</span> (arr[mid] === target) <span class="keyword">return</span> mid;
+        <span class="keyword">if</span> (arr[mid] < target) left = mid + <span class="number">1</span>;
+        <span class="keyword">else</span> right = mid - <span class="number">1</span>;
+    }
+    <span class="keyword">return</span> -<span class="number">1</span>;
+}
+</div>
+
+            <h3>Space Complexity</h3>
+            <div class="code-block"><span class="comment">// O(1) Space - Constant</span>
+<span class="keyword">function</span> <span class="function">sum</span>(n) {
+    <span class="keyword">let</span> total = <span class="number">0</span>; <span class="comment">// One variable</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i <= n; i++) {
+        total += i;
+    }
+    <span class="keyword">return</span> total;
+}
+
+<span class="comment">// O(n) Space - Linear</span>
+<span class="keyword">function</span> <span class="function">double</span>(arr) {
+    <span class="keyword">const</span> result = []; <span class="comment">// New array of size n</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr.<span class="keyword">length</span>; i++) {
+        result.<span class="function">push</span>(arr[i] * <span class="number">2</span>);
+    }
+    <span class="keyword">return</span> result;
+}
+</div>
+        </section>
+
+        <section id="patterns">
+            <h2>🎯 Problem Solving Patterns</h2>
+
+            <h3>1. Frequency Counter Pattern</h3>
+            <p>Use objects to collect values/frequencies, avoiding nested loops</p>
+            
+            <div class="code-block"><span class="comment">// Problem: Check if two arrays have the same squared values</span>
+<span class="comment">// arr1 = [1, 2, 3], arr2 = [4, 1, 9] → true</span>
+
+<span class="comment">// ❌ Naive Solution O(n²)</span>
+<span class="keyword">function</span> <span class="function">same</span>(arr1, arr2) {
+    <span class="keyword">if</span> (arr1.<span class="keyword">length</span> !== arr2.<span class="keyword">length</span>) <span class="keyword">return</span> <span class="keyword">false</span>;
+    
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr1.<span class="keyword">length</span>; i++) {
+        <span class="keyword">const</span> index = arr2.<span class="function">indexOf</span>(arr1[i] ** <span class="number">2</span>);
+        <span class="keyword">if</span> (index === -<span class="number">1</span>) <span class="keyword">return</span> <span class="keyword">false</span>;
+        arr2.<span class="function">splice</span>(index, <span class="number">1</span>);
+    }
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+}
+
+<span class="comment">// ✅ Optimized Solution O(n)</span>
+<span class="keyword">function</span> <span class="function">same</span>(arr1, arr2) {
+    <span class="keyword">if</span> (arr1.<span class="keyword">length</span> !== arr2.<span class="keyword">length</span>) <span class="keyword">return</span> <span class="keyword">false</span>;
+    
+    <span class="keyword">const</span> freq1 = {};
+    <span class="keyword">const</span> freq2 = {};
+    
+    <span class="comment">// Count frequencies</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> val <span class="keyword">of</span> arr1) freq1[val] = (freq1[val] || <span class="number">0</span>) + <span class="number">1</span>;
+    <span class="keyword">for</span> (<span class="keyword">let</span> val <span class="keyword">of</span> arr2) freq2[val] = (freq2[val] || <span class="number">0</span>) + <span class="number">1</span>;
+    
+    <span class="comment">// Compare frequencies</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> freq1) {
+        <span class="keyword">if</span> (!(key ** <span class="number">2</span> <span class="keyword">in</span> freq2)) <span class="keyword">return</span> <span class="keyword">false</span>;
+        <span class="keyword">if</span> (freq2[key ** <span class="number">2</span>] !== freq1[key]) <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+    
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+}
+</div>
+
+            <h3>2. Multiple Pointers Pattern</h3>
+            <p>Create pointers that move towards each other or in same direction</p>
+            
+            <div class="code-block"><span class="comment">// Problem: Find pair that sums to zero in sorted array</span>
+<span class="keyword">function</span> <span class="function">sumZero</span>(arr) {
+    <span class="keyword">let</span> left = <span class="number">0</span>;
+    <span class="keyword">let</span> right = arr.<span class="keyword">length</span> - <span class="number">1</span>;
+    
+    <span class="keyword">while</span> (left < right) {
+        <span class="keyword">const</span> sum = arr[left] + arr[right];
+        <span class="keyword">if</span> (sum === <span class="number">0</span>) {
+            <span class="keyword">return</span> [arr[left], arr[right]];
+        } <span class="keyword">else</span> <span class="keyword">if</span> (sum > <span class="number">0</span>) {
+            right--;
+        } <span class="keyword">else</span> {
+            left++;
+        }
+    }
+    <span class="keyword">return</span> <span class="keyword">undefined</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">sumZero</span>([-<span class="number">3</span>, -<span class="number">2</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])); <span class="comment">// [-3, 3]</span>
+</div>
+
+            <h3>3. Sliding Window Pattern</h3>
+            <p>Create a window which can slide or close based on conditions</p>
+            
+            <div class="code-block"><span class="comment">// Problem: Maximum sum of n consecutive elements</span>
+<span class="keyword">function</span> <span class="function">maxSubarraySum</span>(arr, num) {
+    <span class="keyword">if</span> (arr.<span class="keyword">length</span> < num) <span class="keyword">return</span> <span class="keyword">null</span>;
+    
+    <span class="keyword">let</span> maxSum = <span class="number">0</span>;
+    <span class="keyword">let</span> tempSum = <span class="number">0</span>;
+    
+    <span class="comment">// Sum first window</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < num; i++) {
+        maxSum += arr[i];
+    }
+    
+    tempSum = maxSum;
+    
+    <span class="comment">// Slide window</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = num; i < arr.<span class="keyword">length</span>; i++) {
+        tempSum = tempSum - arr[i - num] + arr[i];
+        maxSum = <span class="function">Math</span>.<span class="function">max</span>(maxSum, tempSum);
+    }
+    
+    <span class="keyword">return</span> maxSum;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">maxSubarraySum</span>([<span class="number">2</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3</span>], <span class="number">3</span>)); <span class="comment">// 19</span>
+</div>
+        </section>
+
+        <section id="recursion">
+            <h2>🔄 Recursion</h2>
+
+            <p><span class="highlight">Recursion</span> is when a function calls itself until it reaches a base case.</p>
+
+            <h3>Why Use Recursion?</h3>
+            <div class="info-box">
+                <ul>
+                    <li>✅ Simplifies complex problems into smaller, easier pieces</li>
+                    <li>✅ Used in JSON.parse(), JSON.stringify(), DOM traversal</li>
+                    <li>✅ Good for hierarchical data (trees, graphs)</li>
+                    <li>✅ Any recursion can be converted to iteration and vice versa</li>
+                    <li>⚠️ Trade-off: Uses call stack memory (higher space complexity)</li>
+                </ul>
+            </div>
+
+            <h3>Call Stack</h3>
+            <p>The <span class="highlight">call stack</span> stores function calls in LIFO (Last In, First Out) order. Each recursive call adds a new stack frame. For N recursive calls, up to O(N) stack space is used.</p>
+
+            <h3>Essential Components</h3>
+            <div class="info-box">
+                <ol>
+                    <li><strong>Base Case:</strong> Condition to stop recursion (prevents infinite loop/stack overflow)</li>
+                    <li><strong>Progress Toward Base Case:</strong> Input must change on every call</li>
+                    <li><strong>Recursive Case:</strong> Function calls itself with modified input</li>
+                </ol>
+            </div>
+
+            <h3>Simple Examples</h3>
+            <div class="code-block"><span class="comment">// Countdown</span>
+<span class="keyword">function</span> <span class="function">reduceNumber</span>(number) {
+    <span class="keyword">if</span> (number < <span class="number">0</span>) { <span class="comment">// Base case</span>
+        <span class="function">console</span>.<span class="function">log</span>(<span class="string">"It is all over"</span>);
+        <span class="keyword">return</span>;
+    }
+    <span class="function">console</span>.<span class="function">log</span>(number);
+    <span class="function">reduceNumber</span>(number - <span class="number">1</span>); <span class="comment">// Progress toward base</span>
+}
+
+<span class="comment">// Factorial</span>
+<span class="keyword">function</span> <span class="function">factorial</span>(n) {
+    <span class="keyword">if</span> (n === <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>; <span class="comment">// Base case</span>
+    <span class="keyword">return</span> n * <span class="function">factorial</span>(n - <span class="number">1</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">factorial</span>(<span class="number">5</span>)); <span class="comment">// 120 (5 * 4 * 3 * 2 * 1)</span>
+
+<span class="comment">// Fibonacci</span>
+<span class="keyword">function</span> <span class="function">fibonacci</span>(n) {
+    <span class="keyword">if</span> (n <= <span class="number">2</span>) <span class="keyword">return</span> <span class="number">1</span>;
+    <span class="keyword">return</span> <span class="function">fibonacci</span>(n - <span class="number">1</span>) + <span class="function">fibonacci</span>(n - <span class="number">2</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">fibonacci</span>(<span class="number">7</span>)); <span class="comment">// 13</span>
+</div>
+
+            <h3>Types of Recursion</h3>
+            
+            <h4>1. Tail Recursion</h4>
+            <p>The last operation is the recursive call. Easier to optimize in some languages.</p>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">countdown</span>(n) {
+    <span class="keyword">if</span> (n === <span class="number">0</span>) <span class="keyword">return</span>;
+    <span class="function">console</span>.<span class="function">log</span>(n);
+    <span class="keyword">return</span> <span class="function">countdown</span>(n - <span class="number">1</span>); <span class="comment">// Tail call</span>
+}
+</div>
+
+            <h4>2. Head Recursion</h4>
+            <p>The first operation is the recursive call (processing happens after return).</p>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">printNumbers</span>(n) {
+    <span class="keyword">if</span> (n === <span class="number">0</span>) <span class="keyword">return</span>;
+    <span class="function">printNumbers</span>(n - <span class="number">1</span>); <span class="comment">// First call recursively</span>
+    <span class="function">console</span>.<span class="function">log</span>(n); <span class="comment">// Then process</span>
+}
+</div>
+
+            <h4>3. Tree Recursion</h4>
+            <p>Function calls itself more than once.</p>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">fib</span>(n) {
+    <span class="keyword">if</span> (n <= <span class="number">1</span>) <span class="keyword">return</span> n;
+    <span class="keyword">return</span> <span class="function">fib</span>(n - <span class="number">1</span>) + <span class="function">fib</span>(n - <span class="number">2</span>); <span class="comment">// Two recursive calls</span>
+}
+</div>
+
+            <h4>4. Linear Recursion</h4>
+            <p>Function calls itself once each time.</p>
+
+            <h4>5. Indirect Recursion</h4>
+            <p>Function A calls Function B, which calls Function A.</p>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">A</span>(n) { 
+    <span class="keyword">if</span> (n > <span class="number">0</span>) <span class="function">B</span>(n - <span class="number">1</span>); 
+}
+
+<span class="keyword">function</span> <span class="function">B</span>(n) { 
+    <span class="keyword">if</span> (n > <span class="number">0</span>) <span class="function">A</span>(n - <span class="number">1</span>); 
+}
+
+<span class="function">A</span>(<span class="number">3</span>);
+</div>
+
+            <h4>6. Nested Recursion</h4>
+            <p>Recursive call is made inside the parameters of another recursive call.</p>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">nested</span>(n) {
+    <span class="keyword">if</span> (n > <span class="number">100</span>) <span class="keyword">return</span> n - <span class="number">10</span>;
+    <span class="keyword">return</span> <span class="function">nested</span>(<span class="function">nested</span>(n + <span class="number">11</span>)); <span class="comment">// Nested call</span>
+}
+</div>
+
+            <h3>Real-World Examples</h3>
+            <div class="code-block"><span class="comment">// Sum of array</span>
+<span class="keyword">function</span> <span class="function">sumArray</span>(arr) {
+    <span class="keyword">if</span> (arr.<span class="keyword">length</span> === <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;
+    <span class="keyword">return</span> arr[<span class="number">0</span>] + <span class="function">sumArray</span>(arr.<span class="function">slice</span>(<span class="number">1</span>));
+}
+
+<span class="comment">// Flatten nested array</span>
+<span class="keyword">function</span> <span class="function">flatten</span>(arr) {
+    <span class="keyword">let</span> result = [];
+    
+    <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> arr) {
+        <span class="keyword">if</span> (<span class="function">Array</span>.<span class="function">isArray</span>(item)) {
+            result = result.<span class="function">concat</span>(<span class="function">flatten</span>(item));
+        } <span class="keyword">else</span> {
+            result.<span class="function">push</span>(item);
+        }
+    }
+    
+    <span class="keyword">return</span> result;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">flatten</span>([<span class="number">1</span>, [<span class="number">2</span>, [<span class="number">3</span>, <span class="number">4</span>], <span class="number">5</span>]])); <span class="comment">// [1, 2, 3, 4, 5]</span>
+</div>
+
+            <h3>Common Pitfalls</h3>
+            <div class="info-box">
+                <ul>
+                    <li>❌ <strong>Missing or incorrect base case</strong> → Infinite recursion → stack overflow</li>
+                    <li>❌ <strong>Static or global variables</strong> retain state across calls → unintended side effects</li>
+                    <li>⚠️ Recursion is elegant but <strong>memory-intensive</strong></li>
+                    <li>✅ Loops are usually more <strong>space-efficient</strong></li>
+                    <li>✅ Always design a clear base case and input that moves toward termination</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="searching">
+            <h2>🔍 Searching Algorithms</h2>
+
+            <h3>1. Linear Search - O(n)</h3>
+            <p>Search each element <strong>one by one</strong> until the target is found or the array ends.</p>
+            <ul>
+                <li>✅ Works on <strong>unsorted or sorted</strong> data</li>
+                <li>✅ Simple to implement</li>
+                <li>❌ Slow for large datasets</li>
+            </ul>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">linearSearch</span>(arr, target) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr.<span class="keyword">length</span>; i++) {
+        <span class="keyword">if</span> (arr[i] === target) <span class="keyword">return</span> i; <span class="comment">// found</span>
+    }
+    <span class="keyword">return</span> -<span class="number">1</span>; <span class="comment">// not found</span>
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">linearSearch</span>([<span class="number">5</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">4</span>], <span class="number">8</span>)); <span class="comment">// 2</span>
+
+<span class="comment">// Time: O(n), Space: O(1)</span>
+</div>
+
+            <h3>2. Binary Search - O(log n)</h3>
+            <p>Efficient for <strong>sorted arrays</strong>. Repeatedly divide the search range in half.</p>
+            <ul>
+                <li>✅ Very fast for large sorted datasets</li>
+                <li>❌ Requires <strong>sorted</strong> data</li>
+            </ul>
+            
+            <div class="code-block"><span class="comment">// Iterative Binary Search</span>
+<span class="keyword">function</span> <span class="function">binarySearch</span>(arr, target) {
+    <span class="keyword">let</span> left = <span class="number">0</span>, right = arr.<span class="keyword">length</span> - <span class="number">1</span>;
+    
+    <span class="keyword">while</span> (left <= right) {
+        <span class="keyword">const</span> mid = <span class="function">Math</span>.<span class="function">floor</span>((left + right) / <span class="number">2</span>);
+        
+        <span class="keyword">if</span> (arr[mid] === target) <span class="keyword">return</span> mid;
+        <span class="keyword">if</span> (arr[mid] < target) left = mid + <span class="number">1</span>;
+        <span class="keyword">else</span> right = mid - <span class="number">1</span>;
+    }
+    
+    <span class="keyword">return</span> -<span class="number">1</span>;
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">binarySearch</span>([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], <span class="number">7</span>)); <span class="comment">// 3</span>
+
+<span class="comment">// Time: O(log n), Space: O(1)</span>
+</div>
+
+            <h3>3. Recursive Binary Search</h3>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">binarySearchRecursive</span>(arr, target, left = <span class="number">0</span>, right = arr.<span class="keyword">length</span> - <span class="number">1</span>) {
+    <span class="keyword">if</span> (left > right) <span class="keyword">return</span> -<span class="number">1</span>;
+    
+    <span class="keyword">const</span> mid = <span class="function">Math</span>.<span class="function">floor</span>((left + right) / <span class="number">2</span>);
+    
+    <span class="keyword">if</span> (arr[mid] === target) <span class="keyword">return</span> mid;
+    <span class="keyword">if</span> (arr[mid] < target) 
+        <span class="keyword">return</span> <span class="function">binarySearchRecursive</span>(arr, target, mid + <span class="number">1</span>, right);
+    <span class="keyword">else</span> 
+        <span class="keyword">return</span> <span class="function">binarySearchRecursive</span>(arr, target, left, mid - <span class="number">1</span>);
+}
+
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">binarySearchRecursive</span>([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], <span class="number">3</span>)); <span class="comment">// 1</span>
+
+<span class="comment">// Time: O(log n), Space: O(log n) - due to recursion stack</span>
+</div>
+
+            <h3>4. Jump Search - O(√n)</h3>
+            <p>Jump ahead by fixed steps (√n) to narrow down, then do a linear search inside the block.</p>
+            <p>Efficient for <strong>sorted arrays</strong> but less common in JavaScript.</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">jumpSearch</span>(arr, target) {
+    <span class="keyword">const</span> n = arr.<span class="keyword">length</span>;
+    <span class="keyword">const</span> step = <span class="function">Math</span>.<span class="function">floor</span>(<span class="function">Math</span>.<span class="function">sqrt</span>(n));
+    <span class="keyword">let</span> prev = <span class="number">0</span>;
+
+    <span class="comment">// Jump to find block</span>
+    <span class="keyword">while</span> (arr[<span class="function">Math</span>.<span class="function">min</span>(step, n) - <span class="number">1</span>] < target) {
+        prev = step;
+        step += <span class="function">Math</span>.<span class="function">floor</span>(<span class="function">Math</span>.<span class="function">sqrt</span>(n));
+        <span class="keyword">if</span> (prev >= n) <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    
+    <span class="comment">// Linear search in block</span>
+    <span class="keyword">while</span> (arr[prev] < target) {
+        prev++;
+        <span class="keyword">if</span> (prev === <span class="function">Math</span>.<span class="function">min</span>(step, n)) <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    
+    <span class="keyword">return</span> arr[prev] === target ? prev : -<span class="number">1</span>;
+}
+
+<span class="comment">// Time: O(√n), Space: O(1)</span>
+</div>
+
+            <h3>5. Interpolation Search - O(log log n)</h3>
+            <p>Improved binary search for <strong>uniformly distributed sorted data</strong>. Estimates position using the value itself.</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">interpolationSearch</span>(arr, target) {
+    <span class="keyword">let</span> low = <span class="number">0</span>, high = arr.<span class="keyword">length</span> - <span class="number">1</span>;
+
+    <span class="keyword">while</span> (low <= high && target >= arr[low] && target <= arr[high]) {
+        <span class="keyword">if</span> (low === high) <span class="keyword">return</span> arr[low] === target ? low : -<span class="number">1</span>;
+
+        <span class="comment">// Estimate position</span>
+        <span class="keyword">const</span> pos = low + <span class="function">Math</span>.<span class="function">floor</span>(
+            ((target - arr[low]) * (high - low)) /
+            (arr[high] - arr[low])
+        );
+
+        <span class="keyword">if</span> (arr[pos] === target) <span class="keyword">return</span> pos;
+        <span class="keyword">if</span> (arr[pos] < target) low = pos + <span class="number">1</span>;
+        <span class="keyword">else</span> high = pos - <span class="number">1</span>;
+    }
+    
+    <span class="keyword">return</span> -<span class="number">1</span>;
+}
+
+<span class="comment">// Time: O(log log n) best, O(n) worst, Space: O(1)</span>
+</div>
+
+            <h3>6. Hash Table Search - O(1)</h3>
+            <p>Uses a hash map (object or <code>Map</code>) for <strong>O(1)</strong> average lookup.</p>
+            
+            <div class="code-block"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="function">Map</span>();
+map.<span class="function">set</span>(<span class="string">"apple"</span>, <span class="number">1</span>);
+map.<span class="function">set</span>(<span class="string">"banana"</span>, <span class="number">2</span>);
+map.<span class="function">set</span>(<span class="string">"orange"</span>, <span class="number">3</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(map.<span class="function">has</span>(<span class="string">"banana"</span>)); <span class="comment">// true</span>
+<span class="function">console</span>.<span class="function">log</span>(map.<span class="function">get</span>(<span class="string">"banana"</span>)); <span class="comment">// 2</span>
+
+<span class="comment">// Time: O(1) average, O(n) worst (hash collisions)</span>
+<span class="comment">// Space: O(n)</span>
+</div>
+
+            <h3>Search Algorithm Comparison</h3>
+            <table>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Data Requirement</th>
+                    <th>Time (Average)</th>
+                    <th>Space</th>
+                </tr>
+                <tr>
+                    <td>Linear Search</td>
+                    <td>Unsorted/Sorted</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                </tr>
+                <tr>
+                    <td>Binary Search</td>
+                    <td>Sorted</td>
+                    <td>O(log n)</td>
+                    <td>O(1)</td>
+                </tr>
+                <tr>
+                    <td>Jump Search</td>
+                    <td>Sorted</td>
+                    <td>O(√n)</td>
+                    <td>O(1)</td>
+                </tr>
+                <tr>
+                    <td>Interpolation</td>
+                    <td>Sorted & Uniform</td>
+                    <td>O(log log n)</td>
+                    <td>O(1)</td>
+                </tr>
+                <tr>
+                    <td>Hash Table</td>
+                    <td>Any (key-value)</td>
+                    <td>O(1)*</td>
+                    <td>O(n)</td>
+                </tr>
+            </table>
+
+            <h3>Key Takeaways</h3>
+            <div class="info-box">
+                <ul>
+                    <li>🔍 Use <strong>Linear Search</strong> for small or unsorted data</li>
+                    <li>🚀 Use <strong>Binary Search</strong> for large, sorted arrays</li>
+                    <li>⚡ <strong>Hashing</strong> is fastest for key-value lookups</li>
+                    <li>📊 Advanced searches (Jump/Interpolation) are niche in JS but good to know</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sorting">
+            <h2>🔢 Sorting Algorithms</h2>
+
+            <p><span class="highlight">Sorting</span> means rearranging items in a collection. Some algorithms are very fast in certain situations but slow in others.</p>
+
+            <h3>1. Bubble Sort - O(n²)</h3>
+            <p><strong>Explanation:</strong> Compares adjacent elements and swaps them if they're in the wrong order. This "bubbles" the largest values to the end with each pass.</p>
+            <p><strong>Best For:</strong> Teaching basics, nearly sorted arrays</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">bubbleSort</span>(arr) {
+    <span class="keyword">let</span> len = arr.<span class="keyword">length</span>;
+    
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < len - <span class="number">1</span>; i++) {
+        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j < len - i - <span class="number">1</span>; j++) {
+            <span class="keyword">if</span> (arr[j] > arr[j + <span class="number">1</span>]) {
+                <span class="comment">// Swap</span>
+                [arr[j], arr[j + <span class="number">1</span>]] = [arr[j + <span class="number">1</span>], arr[j]];
+            }
+        }
+    }
+    <span class="keyword">return</span> arr;
+}
+
+<span class="keyword">let</span> nums = [<span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">8</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">bubbleSort</span>(nums)); <span class="comment">// [1, 2, 4, 5, 8]</span>
+</div>
+
+            <h3>2. Selection Sort - O(n²)</h3>
+            <p><strong>Explanation:</strong> Repeatedly finds the <strong>smallest element</strong> from the unsorted part and swaps it with the first unsorted element.</p>
+            <p><strong>Best For:</strong> Simple but inefficient</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">selectionSort</span>(arr) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr.<span class="keyword">length</span>; i++) {
+        <span class="keyword">let</span> minIdx = i;
+        
+        <span class="comment">// Find minimum in unsorted part</span>
+        <span class="keyword">for</span> (<span class="keyword">let</span> j = i + <span class="number">1</span>; j < arr.<span class="keyword">length</span>; j++) {
+            <span class="keyword">if</span> (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        
+        <span class="comment">// Swap with first unsorted element</span>
+        [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+    }
+    <span class="keyword">return</span> arr;
+}
+
+<span class="keyword">let</span> nums = [<span class="number">29</span>, <span class="number">10</span>, <span class="number">14</span>, <span class="number">37</span>, <span class="number">13</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">selectionSort</span>(nums)); <span class="comment">// [10, 13, 14, 29, 37]</span>
+</div>
+
+            <h3>3. Insertion Sort - O(n²)</h3>
+            <p><strong>Explanation:</strong> Builds the final sorted array one item at a time, inserting each item into its correct position among the already-sorted items.</p>
+            <p><strong>Best For:</strong> Nearly sorted arrays, small datasets</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">insertionSort</span>(arr) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i < arr.<span class="keyword">length</span>; i++) {
+        <span class="keyword">let</span> key = arr[i];
+        <span class="keyword">let</span> j = i - <span class="number">1</span>;
+
+        <span class="comment">// Shift elements to make room for key</span>
+        <span class="keyword">while</span> (j >= <span class="number">0</span> && arr[j] > key) {
+            arr[j + <span class="number">1</span>] = arr[j]; <span class="comment">// Shift right</span>
+            j--;
+        }
+        
+        arr[j + <span class="number">1</span>] = key; <span class="comment">// Insert key</span>
+    }
+    <span class="keyword">return</span> arr;
+}
+
+<span class="keyword">let</span> nums = [<span class="number">9</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">insertionSort</span>(nums)); <span class="comment">// [1, 3, 4, 5, 9]</span>
+</div>
+
+            <h3>4. Merge Sort - O(n log n)</h3>
+            <p><strong>Explanation:</strong> <strong>Divide-and-conquer</strong> algorithm. Splits the array into halves, sorts each half recursively, and then <strong>merges</strong> the sorted halves.</p>
+            <p><strong>Best For:</strong> Stable sort, large data, guaranteed O(n log n)</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">mergeSort</span>(arr) {
+    <span class="keyword">if</span> (arr.<span class="keyword">length</span> <= <span class="number">1</span>) <span class="keyword">return</span> arr;
+
+    <span class="keyword">let</span> mid = <span class="function">Math</span>.<span class="function">floor</span>(arr.<span class="keyword">length</span> / <span class="number">2</span>);
+    <span class="keyword">let</span> left = <span class="function">mergeSort</span>(arr.<span class="function">slice</span>(<span class="number">0</span>, mid));
+    <span class="keyword">let</span> right = <span class="function">mergeSort</span>(arr.<span class="function">slice</span>(mid));
+
+    <span class="keyword">return</span> <span class="function">merge</span>(left, right);
+}
+
+<span class="keyword">function</span> <span class="function">merge</span>(left, right) {
+    <span class="keyword">let</span> result = [];
+    
+    <span class="keyword">while</span> (left.<span class="keyword">length</span> && right.<span class="keyword">length</span>) {
+        result.<span class="function">push</span>(left[<span class="number">0</span>] < right[<span class="number">0</span>] ? left.<span class="function">shift</span>() : right.<span class="function">shift</span>());
+    }
+    
+    <span class="keyword">return</span> result.<span class="function">concat</span>(left, right);
+}
+
+<span class="keyword">let</span> nums = [<span class="number">38</span>, <span class="number">27</span>, <span class="number">43</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">82</span>, <span class="number">10</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">mergeSort</span>(nums)); <span class="comment">// [3, 9, 10, 27, 38, 43, 82]</span>
+</div>
+
+            <h3>5. Quick Sort - O(n log n)</h3>
+            <p><strong>Explanation:</strong> Picks a <strong>pivot</strong> and partitions the array into elements <strong>less than</strong> and <strong>greater than</strong> the pivot. Recursively sorts the partitions.</p>
+            <p><strong>Best For:</strong> Fast average case, general use</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">quickSort</span>(arr) {
+    <span class="keyword">if</span> (arr.<span class="keyword">length</span> <= <span class="number">1</span>) <span class="keyword">return</span> arr;
+
+    <span class="keyword">let</span> pivot = arr[arr.<span class="keyword">length</span> - <span class="number">1</span>];
+    <span class="keyword">let</span> left = [], right = [];
+
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr.<span class="keyword">length</span> - <span class="number">1</span>; i++) {
+        <span class="keyword">if</span> (arr[i] < pivot) left.<span class="function">push</span>(arr[i]);
+        <span class="keyword">else</span> right.<span class="function">push</span>(arr[i]);
+    }
+
+    <span class="keyword">return</span> [...<span class="function">quickSort</span>(left), pivot, ...<span class="function">quickSort</span>(right)];
+}
+
+<span class="keyword">let</span> nums = [<span class="number">10</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">5</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">quickSort</span>(nums)); <span class="comment">// [1, 5, 7, 8, 9, 10]</span>
+</div>
+
+            <h3>6. Heap Sort - O(n log n)</h3>
+            <p><strong>Explanation:</strong> Turns the array into a <strong>max-heap</strong>, then repeatedly swaps the first (largest) element with the last and re-heapifies the rest.</p>
+            <p><strong>Best For:</strong> When constant space is needed</p>
+            
+            <div class="code-block"><span class="keyword">function</span> <span class="function">heapSort</span>(arr) {
+    <span class="keyword">let</span> n = arr.<span class="keyword">length</span>;
+
+    <span class="keyword">function</span> <span class="function">heapify</span>(i, size) {
+        <span class="keyword">let</span> largest = i;
+        <span class="keyword">let</span> left = <span class="number">2</span> * i + <span class="number">1</span>;
+        <span class="keyword">let</span> right = <span class="number">2</span> * i + <span class="number">2</span>;
+
+        <span class="keyword">if</span> (left < size && arr[left] > arr[largest]) largest = left;
+        <span class="keyword">if</span> (right < size && arr[right] > arr[largest]) largest = right;
+
+        <span class="keyword">if</span> (largest !== i) {
+            [arr[i], arr[largest]] = [arr[largest], arr[i]];
+            <span class="function">heapify</span>(largest, size);
+        }
+    }
+
+    <span class="comment">// Build max heap</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="function">Math</span>.<span class="function">floor</span>(n / <span class="number">2</span>) - <span class="number">1</span>; i >= <span class="number">0</span>; i--) {
+        <span class="function">heapify</span>(i, n);
+    }
+
+    <span class="comment">// Extract elements from heap</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = n - <span class="number">1</span>; i > <span class="number">0</span>; i--) {
+        [arr[<span class="number">0</span>], arr[i]] = [arr[i], arr[<span class="number">0</span>]];
+        <span class="function">heapify</span>(<span class="number">0</span>, i);
+    }
+
+    <span class="keyword">return</span> arr;
+}
+
+<span class="keyword">let</span> nums = [<span class="number">4</span>, <span class="number">10</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">1</span>];
+<span class="function">console</span>.<span class="function">log</span>(<span class="function">heapSort</span>(nums)); <span class="comment">// [1, 3, 4, 5, 10]</span>
+</div>
+
+            <h3>Use-Cases Summary</h3>
+            <table>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td>Bubble Sort</td>
+                    <td>Teaching basics</td>
+                </tr>
+                <tr>
+                    <td>Selection Sort</td>
+                    <td>Simple but inefficient</td>
+                </tr>
+                <tr>
+                    <td>Insertion Sort</td>
+                    <td>Nearly sorted arrays</td>
+                </tr>
+                <tr>
+                    <td>Merge Sort</td>
+                    <td>Stable sort, large data</td>
+                </tr>
+                <tr>
+                    <td>Quick Sort</td>
+                    <td>Fast average case, general use</td>
+                </tr>
+                <tr>
+                    <td>Heap Sort</td>
+                    <td>When constant space is needed</td>
+                </tr>
+            </table>
+
+            <h3>Complete Sorting Algorithm Comparison</h3>
+            <table>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Time (Best)</th>
+                    <th>Time (Worst)</th>
+                    <th>Space</th>
+                    <th>Stable</th>
+                    <th>In-Place</th>
+                </tr>
+                <tr>
+                    <td>Bubble Sort</td>
+                    <td>O(n)</td>
+                    <td>O(n²)</td>
+                    <td>O(1)</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Selection Sort</td>
+                    <td>O(n²)</td>
+                    <td>O(n²)</td>
+                    <td>O(1)</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Insertion Sort</td>
+                    <td>O(n)</td>
+                    <td>O(n²)</td>
+                    <td>O(1)</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Merge Sort</td>
+                    <td>O(n log n)</td>
+                    <td>O(n log n)</td>
+                    <td>O(n)</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Quick Sort</td>
+                    <td>O(n log n)</td>
+                    <td>O(n²)</td>
+                    <td>O(log n)</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Heap Sort</td>
+                    <td>O(n log n)</td>
+                    <td>O(n log n)</td>
+                    <td>O(1)</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="data-structures">
+            <h2>🗂️ Data Structures</h2>
+
+            <p><span class="highlight">Data structures</span> are collections of values and define the relationships among them, along with the functionality and operations that can be applied to that data. Arrays don't solve all problems!</p>
+
+            <h3>Arrays vs Linked Lists</h3>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Array</th>
+                    <th>Linked List</th>
+                </tr>
+                <tr>
+                    <td>Access</td>
+                    <td>✅ Indexed (fast: O(1))</td>
+                    <td>❌ No indexes (sequential)</td>
+                </tr>
+                <tr>
+                    <td>Insertion/Deletion</td>
+                    <td>❌ Can be expensive</td>
+                    <td>✅ Fast at beginning</td>
+                </tr>
+                <tr>
+                    <td>Random Access</td>
+                    <td>✅ Allowed</td>
+                    <td>❌ Not allowed</td>
+                </tr>
+                <tr>
+                    <td>Structure</td>
+                    <td>Contiguous memory</td>
+                    <td>Nodes with pointers</td>
+                </tr>
+            </table>
+
+            <h3>1. Singly Linked List</h3>
+            <p>A linked list consists of nodes, where each node has a value and a pointer to the next node (or null).</p>
+            <p><strong>Structure:</strong> Head → Node1 → Node2 → Node3 → null</p>
+            
+            <div class="code-block"><span class="keyword">class</span> <span class="function">Node</span> {
+    <span class="function">constructor</span>(value) {
+        <span class="keyword">this</span>.value = value;
+        <span class="keyword">this</span>.next = <span class="keyword">null</span>;
+    }
+}
+
+<span class="keyword">class</span> <span class="function">SinglyLinkedList</span> {
+    <span class="function">constructor</span>() {
+        <span class="keyword">this</span>.head = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.length = <span class="number">0</span>;
+    }
+    
+    <span class="comment">// Add to end</span>
+    <span class="function">push</span>(value) {
+        <span class="keyword">const</span> newNode = <span class="keyword">new</span> <span class="function">Node</span>(value);
+        
+        <span class="keyword">if</span> (!<span class="keyword">this</span>.head) {
+            <span class="keyword">this</span>.head = newNode;
+        } <span class="keyword">else</span> {
+            <span class="keyword">let</span> current = <span class="keyword">this</span>.head;
+            <span class="keyword">while</span> (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        <span class="keyword">this</span>.length++;
+        <span class="keyword">return</span> <span class="keyword">this</span>;
+    }
+    
+    <span class="comment">// Remove from end</span>
+    <span class="function">pop</span>() {
+        <span class="keyword">if</span> (!<span class="keyword">this</span>.head) <span class="keyword">return</span> <span class="keyword">undefined</span>;
+        
+        <span class="keyword">let</span> current = <span class="keyword">this</span>.head;
+        <span class="keyword">let</span> newTail = current;
+        
+        <span class="keyword">while</span> (current.next) {
+            newTail = current;
+            current = current.next;
+        }
+        
+        <span class="keyword">this</span>.tail = newTail;
+        <span class="keyword">this</span>.tail.next = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.length--;
+        
+        <span class="keyword">if</span> (<span class="keyword">this</span>.length === <span class="number">0</span>) {
+            <span class="keyword">this</span>.head = <span class="keyword">null</span>;
+        }
+        
+        <span class="keyword">return</span> current;
+    }
+    
+    <span class="comment">// Traverse and print</span>
+    <span class="function">print</span>() {
+        <span class="keyword">let</span> current = <span class="keyword">this</span>.head;
+        <span class="keyword">while</span> (current) {
+            <span class="function">console</span>.<span class="function">log</span>(current.value);
+            current = current.next;
+        }
+    }
+}
+
+<span class="keyword">const</span> list = <span class="keyword">new</span> <span class="function">SinglyLinkedList</span>();
+list.<span class="function">push</span>(<span class="number">1</span>);
+list.<span class="function">push</span>(<span class="number">2</span>);
+list.<span class="function">push</span>(<span class="number">3</span>);
+list.<span class="function">print</span>(); <span class="comment">// 1, 2, 3</span>
+</div>
+
+            <h3>2. Doubly Linked List</h3>
+            <p>Each node has <strong>two pointers</strong>: one to the next node and one to the previous node. Allows traversal in both directions.</p>
+            <p><strong>Structure:</strong> null ← Node1 ⇄ Node2 ⇄ Node3 → null</p>
+            
+            <div class="code-block"><span class="keyword">class</span> <span class="function">DoublyNode</span> {
+    <span class="function">constructor</span>(value) {
+        <span class="keyword">this</span>.value = value;
+        <span class="keyword">this</span>.next = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.prev = <span class="keyword">null</span>; <span class="comment">// Back pointer</span>
+    }
+}
+
+<span class="keyword">class</span> <span class="function">DoublyLinkedList</span> {
+    <span class="function">constructor</span>() {
+        <span class="keyword">this</span>.head = <span class="keyword">null</span>;
+        <span class="keyword">this</span>.tail = <span class="keyword">null</span>; <span class="comment">// Track tail</span>
+        <span class="keyword">this</span>.length = <span class="number">0</span>;
+    }
+    
+    <span class="function">push</span>(value) {
+        <span class="keyword">const</span> newNode = <span class="keyword">new</span> <span class="function">DoublyNode</span>(value);
+        
+        <span class="keyword">if</span> (!<span class="keyword">this</span>.head) {
+            <span class="keyword">this</span>.head = newNode;
+            <span class="keyword">this</span>.tail = newNode;
+        } <span class="keyword">else</span> {
+            <span class="keyword">this</span>.tail.next = newNode;
+            newNode.prev = <span class="keyword">this</span>.tail;
+            <span class="keyword">this</span>.tail = newNode;
+        }
+        
+        <span class="keyword">this</span>.length++;
+        <span class="keyword">return</span> <span class="keyword">this</span>;
+    }
+}
+
+<span class="comment">// Benefit: Can traverse backwards easily!</span>
+</div>
+
+            <h3>Singly vs Doubly Linked List</h3>
+            <div class="info-box">
+                <p><strong>Singly Linked List:</strong></p>
+                <ul>
+                    <li>✅ Less memory (only one pointer)</li>
+                    <li>❌ Can only traverse forward</li>
+                </ul>
+                <p><strong>Doubly Linked List:</strong></p>
+                <ul>
+                    <li>✅ Can traverse both directions</li>
+                    <li>✅ Easier to remove nodes</li>
+                    <li>❌ More memory (two pointers per node)</li>
+                </ul>
+            </div>
+
+            <h3>3. Stack (LIFO - Last In First Out)</h3>
+            <p><span class="highlight">Stacks</span> are LIFO data structures. The last element added is the first to be removed.</p>
+            
+            <h4>Real-World Use Cases</h4>
+            <ul>
+                <li>📝 <strong>Undo/Redo:</strong> Text editors track actions</li>
+                <li>🌐 <strong>Browser History:</strong> Back button navigation</li>
+                <li>🔧 <strong>Function Calls:</strong> Call stack in programming</li>
+                <li>🌳 <strong>Routing:</strong> Navigation history</li>
+                <li>🔍 <strong>Expression Evaluation:</strong> Parsing mathematical expressions</li>
+            </ul>
+            
+            <div class="code-block"><span class="keyword">class</span> <span class="function">Stack</span> {
+    <span class="function">constructor</span>() {
+        <span class="keyword">this</span>.items = [];
+    }
+    
+    <span class="function">push</span>(element) {
+        <span class="keyword">this</span>.items.<span class="function">push</span>(element);
+    }
+    
+    <span class="function">pop</span>() {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.<span class="function">isEmpty</span>()) <span class="keyword">return</span> <span class="string">"Stack is empty"</span>;
+        <span class="keyword">return</span> <span class="keyword">this</span>.items.<span class="function">pop</span>();
+    }
+    
+    <span class="function">peek</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.items[<span class="keyword">this</span>.items.<span class="keyword">length</span> - <span class="number">1</span>];
+    }
+    
+    <span class="function">isEmpty</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.items.<span class="keyword">length</span> === <span class="number">0</span>;
+    }
+    
+    <span class="function">size</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.items.<span class="keyword">length</span>;
+    }
+}
+
+<span class="comment">// Example: Undo functionality</span>
+<span class="keyword">const</span> undoStack = <span class="keyword">new</span> <span class="function">Stack</span>();
+undoStack.<span class="function">push</span>(<span class="string">"Type: Hello"</span>);
+undoStack.<span class="function">push</span>(<span class="string">"Type: World"</span>);
+undoStack.<span class="function">push</span>(<span class="string">"Delete: World"</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(undoStack.<span class="function">pop</span>()); <span class="comment">// "Delete: World" (last action undone first)</span>
+<span class="function">console</span>.<span class="function">log</span>(undoStack.<span class="function">pop</span>()); <span class="comment">// "Type: World"</span>
+</div>
+
+            <h3>4. Queue (FIFO - First In First Out)</h3>
+            <p><span class="highlight">Queues</span> are FIFO data structures. The first element added is the first to be removed.</p>
+            
+            <h4>Real-World Use Cases</h4>
+            <ul>
+                <li>🖨️ <strong>Print Queue:</strong> Documents printed in order</li>
+                <li>📞 <strong>Call Center:</strong> Customers served in order</li>
+                <li>🎮 <strong>Gaming:</strong> Player matchmaking</li>
+                <li>🔍 <strong>BFS:</strong> Breadth-first search in graphs</li>
+                <li>⚙️ <strong>Task Scheduling:</strong> Process jobs in order</li>
+            </ul>
+            
+            <div class="code-block"><span class="keyword">class</span> <span class="function">Queue</span> {
+    <span class="function">constructor</span>() {
+        <span class="keyword">this</span>.items = [];
+    }
+    
+    <span class="function">enqueue</span>(element) {
+        <span class="keyword">this</span>.items.<span class="function">push</span>(element);
+    }
+    
+    <span class="function">dequeue</span>() {
+        <span class="keyword">if</span> (<span class="keyword">this</span>.<span class="function">isEmpty</span>()) <span class="keyword">return</span> <span class="string">"Queue is empty"</span>;
+        <span class="keyword">return</span> <span class="keyword">this</span>.items.<span class="function">shift</span>();
+    }
+    
+    <span class="function">front</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.items[<span class="number">0</span>];
+    }
+    
+    <span class="function">isEmpty</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.items.<span class="keyword">length</span> === <span class="number">0</span>;
+    }
+    
+    <span class="function">size</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.items.<span class="keyword">length</span>;
+    }
+}
+
+<span class="comment">// Example: Print queue</span>
+<span class="keyword">const</span> printQueue = <span class="keyword">new</span> <span class="function">Queue</span>();
+printQueue.<span class="function">enqueue</span>(<span class="string">"Document 1"</span>);
+printQueue.<span class="function">enqueue</span>(<span class="string">"Document 2"</span>);
+printQueue.<span class="function">enqueue</span>(<span class="string">"Document 3"</span>);
+
+<span class="function">console</span>.<span class="function">log</span>(printQueue.<span class="function">dequeue</span>()); <span class="comment">// "Document 1" (first in, first out)</span>
+<span class="function">console</span>.<span class="function">log</span>(printQueue.<span class="function">dequeue</span>()); <span class="comment">// "Document 2"</span>
+</div>
+
+            <h3>When to Use Each Data Structure</h3>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Array:</strong> Fast access by index, when you need random access</li>
+                    <li><strong>Singly Linked List:</strong> Fast insertion/deletion at beginning, memory efficiency</li>
+                    <li><strong>Doubly Linked List:</strong> When you need to traverse backwards</li>
+                    <li><strong>Stack:</strong> Undo/redo, browser history, function call management</li>
+                    <li><strong>Queue:</strong> Task scheduling, BFS traversal, order processing</li>
+                    <li><strong>Hash Table (Map/Object):</strong> Fast lookup, caching, counting frequencies</li>
+                </ul>
+            </div>
+
+            <h3>Data Structure Operations Complexity</h3>
+            <table>
+                <tr>
+                    <th>Data Structure</th>
+                    <th>Access</th>
+                    <th>Search</th>
+                    <th>Insertion</th>
+                    <th>Deletion</th>
+                </tr>
+                <tr>
+                    <td>Array</td>
+                    <td>O(1)</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                </tr>
+                <tr>
+                    <td>Linked List</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>O(1)*</td>
+                    <td>O(1)*</td>
+                </tr>
+                <tr>
+                    <td>Stack</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>O(1)</td>
+                </tr>
+                <tr>
+                    <td>Queue</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>O(1)</td>
+                </tr>
+                <tr>
+                    <td>Hash Table</td>
+                    <td>N/A</td>
+                    <td>O(1)**</td>
+                    <td>O(1)**</td>
+                    <td>O(1)**</td>
+                </tr>
+            </table>
+            <p style="margin-top: 0.5rem;"><small>* At beginning/end | ** Average case</small></p>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking on a link (mobile only)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside (mobile only)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>
+

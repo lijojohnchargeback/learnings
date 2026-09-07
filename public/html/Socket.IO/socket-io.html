@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Socket.IO complete guide: bidirectional events, WebSocket vs HTTP, rooms, namespaces, the Node.js event loop, libuv, and scaling with Redis.">
+    <title>Socket.IO - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🔌 Socket.IO Guide</h2>
+            <p>Real-Time Communication</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">🏠 Introduction</a>
+                <a href="#problem" class="sidebar-link">❓ The Problem</a>
+                <a href="#websocket" class="sidebar-link">🌐 WebSocket</a>
+                <a href="#what-is" class="sidebar-link">⚡ What is Socket.IO</a>
+                <a href="#not-websocket" class="sidebar-link">🆚 Not the Same as WebSocket</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Architecture</div>
+            <div class="sidebar-links">
+                <a href="#architecture" class="sidebar-link">🏗️ Architecture</a>
+                <a href="#nodejs-stack" class="sidebar-link">🧩 Node.js Internals</a>
+                <a href="#not-threads" class="sidebar-link">🧵 Connections ≠ Threads</a>
+                <a href="#event-loop" class="sidebar-link">🔄 Event Loop &amp; libuv</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Events &amp; API</div>
+            <div class="sidebar-links">
+                <a href="#connect" class="sidebar-link">🔗 Connection &amp; socket</a>
+                <a href="#events" class="sidebar-link">📡 Events</a>
+                <a href="#emit" class="sidebar-link">📤 emit, broadcast, ack</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Rooms &amp; Namespaces</div>
+            <div class="sidebar-links">
+                <a href="#rooms" class="sidebar-link">🏠 Rooms</a>
+                <a href="#namespaces" class="sidebar-link">📂 Namespaces</a>
+                <a href="#chat-app" class="sidebar-link">💬 Chat Example</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Scale &amp; Production</div>
+            <div class="sidebar-links">
+                <a href="#cpu-workers" class="sidebar-link">⚙️ CPU &amp; Workers</a>
+                <a href="#scale" class="sidebar-link">📈 Multi-Process &amp; Redis</a>
+                <a href="#auth-reconnect" class="sidebar-link">🔐 Auth &amp; Reconnect</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Comparisons</div>
+            <div class="sidebar-links">
+                <a href="#comparisons" class="sidebar-link">⚖️ HTTP vs WebSocket</a>
+                <a href="#mental-model" class="sidebar-link">🧠 Complete Mental Model</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>🔌 Socket.IO Complete Guide</h1>
+                <p>Bidirectional events, WebSocket, rooms, and how it sits on the Node.js event loop</p>
+            </header>
+
+            <!-- 1. INTRODUCTION -->
+            <section id="intro">
+                <h2>📚 Introduction to Socket.IO</h2>
+
+                <p>If you are learning <span class="highlight">Node.js internals</span> — the event loop, libuv, software threads, and processes — Socket.IO is a strong next topic. It sits on top of those ideas and makes them visible in a real-time app.</p>
+
+                <p>The <a href="https://socket.io/docs/v4/" target="_blank" rel="noopener noreferrer">official Socket.IO documentation</a> describes it as a bidirectional, low-latency communication library. It uses <strong>WebSocket</strong> when possible and can fall back to <strong>HTTP long-polling</strong>.</p>
+
+                <div class="info-box premium">
+                    <h3>Keep this sentence in your head</h3>
+                    <p><strong>Socket.IO is not itself a thread.</strong> It is a communication library built on networking transports and Node.js. A socket is a logical connection, not a CPU thread.</p>
+                </div>
+
+                <h3>The Full Picture</h3>
+                <p>A browser runs a Socket.IO client. That client talks to a Socket.IO server inside a Node.js process. Incoming packets wake the event loop. Your callbacks then talk to HTTP APIs, databases, or files — the same way the rest of Node.js works.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-full-picture.png" alt="Full picture: Internet to Browser Socket.IO Client, WebSocket or polling, Node.js Socket.IO Server, Event Loop, then HTTP, database, and files">
+                    <div class="illustration-caption">Socket.IO is the real-time layer. The event loop still owns when JavaScript runs.</div>
+                </div>
+
+                <div class="code-block"><span class="comment">// High-level flow</span>
+                    INTERNET
+                       │
+              ┌────────▼────────┐
+              │   Browser       │
+              │ Socket.IO Client│
+              └────────┬────────┘
+                       │
+             WebSocket / Polling
+                       │
+                       ▼
+              ┌─────────────────┐
+              │   Node.js       │
+              │ Socket.IO Server│
+              └────────┬────────┘
+                       │
+              ┌────────▼────────┐
+              │    Event Loop   │
+              └────────┬────────┘
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+        HTTP          DB          Files</div>
+            </section>
+
+            <!-- 2. THE PROBLEM -->
+            <section id="problem">
+                <h2>❓ What Problem Does Socket.IO Solve?</h2>
+
+                <p>Normal HTTP is a request/response conversation. The browser asks. The server answers. Then the conversation is over.</p>
+
+                <div class="code-block">Browser ───── request ─────&gt; Server
+Browser &lt;──── response ───── Server
+
+Browser:  GET /messages
+               ↓
+            Server
+               ↓
+            response
+               ↓
+            Browser</div>
+
+                <p>The server does not have a simple persistent channel to spontaneously send something to the browser.</p>
+
+                <p>Imagine WhatsApp. If somebody sends you <code>"Hello"</code>, the server needs to <strong>push</strong> that message to your browser immediately — without waiting for you to call <code>GET /messages</code> again.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-http-vs-push.png" alt="HTTP request and response on the left versus a persistent server push of Hello on the right">
+                    <div class="illustration-caption">HTTP waits for the next request. A persistent connection lets the server push as soon as something happens.</div>
+                </div>
+
+                <div class="info-box">
+                    <h3>Why persistent connections matter</h3>
+                    <ul>
+                        <li>💬 Chat and presence (online / typing / last seen)</li>
+                        <li>📡 Live scores, stock ticks, dashboards</li>
+                        <li>🎮 Multiplayer game state</li>
+                        <li>🔔 Notifications the moment they happen</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 3. WEBSOCKET -->
+            <section id="websocket">
+                <h2>🌐 WebSocket</h2>
+
+                <p><span class="highlight">WebSocket</span> creates a persistent two-way connection. After the handshake, both sides can send data independently. That is fundamentally different from request → response.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-websocket.png" alt="Browser and server establish a WebSocket, then send messages in both directions over a persistent connection">
+                    <div class="illustration-caption">After the handshake, client → server and server → client can happen at any time.</div>
+                </div>
+
+                <div class="code-block">Browser                         Server
+   │                              │
+   │──── establish connection ───&gt;│
+   │                              │
+   │&lt;════════════════════════════&gt;│
+   │        persistent            │
+   │        connection            │
+   │                              │
+   │──── message ────────────────&gt;│
+   │                              │
+   │&lt;──── message ────────────────│</div>
+
+                <table>
+                    <tr>
+                        <th>Model</th>
+                        <th>Who starts each message</th>
+                        <th>Lifetime</th>
+                    </tr>
+                    <tr>
+                        <td><strong>HTTP</strong></td>
+                        <td>Client starts every request</td>
+                        <td>One request, one response</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WebSocket</strong></td>
+                        <td>Either side, any time</td>
+                        <td>Stays open until closed</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- 4. WHAT IS SOCKET.IO -->
+            <section id="what-is">
+                <h2>⚡ Then What Is Socket.IO?</h2>
+
+                <p>Socket.IO adds a higher-level system around real-time connections. WebSocket is the low-level channel. Socket.IO is the framework you program against.</p>
+
+                <div class="code-block">WebSocket
+   ↓
+low-level communication channel
+
+Socket.IO
+   ↓
+higher-level real-time communication framework</div>
+
+                <h3>What you get on top of a raw socket</h3>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>What it gives you</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Events</strong></td>
+                        <td>Named messages: <code>emit("hello", data)</code> instead of raw frames</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Automatic reconnection</strong></td>
+                        <td>The client retries after network drops</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acknowledgements</strong></td>
+                        <td>The receiver can confirm with a callback</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rooms</strong></td>
+                        <td>Group sockets and broadcast to a subset</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Namespaces</strong></td>
+                        <td>Separate channels on the same server (<code>/chat</code>, <code>/admin</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Broadcasting</strong></td>
+                        <td>Send to all, or all except the sender</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Middleware</strong></td>
+                        <td>Auth and logging on connect</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fallback transport</strong></td>
+                        <td>HTTP long-polling when WebSocket is blocked</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Connection-state recovery</strong></td>
+                        <td>Recover missed events after a short disconnect</td>
+                    </tr>
+                </table>
+
+                <div class="info-box">
+                    <h3>Official description</h3>
+                    <p>Socket.IO is bidirectional and low-latency. WebSocket is used in most cases. HTTP long-polling is the fallback. See the <a href="https://socket.io/docs/v4/" target="_blank" rel="noopener noreferrer">v4 docs</a>.</p>
+                </div>
+            </section>
+
+            <!-- 5. NOT WEBSOCKET -->
+            <section id="not-websocket">
+                <h2>🆚 Socket.IO Is NOT the Same Thing as WebSocket</h2>
+
+                <p>People often say: <em>“Socket.IO is WebSocket.”</em> Technically, <strong>no</strong>.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-stack.png" alt="Layer cake: Socket.IO protocol on Engine.IO on WebSocket or HTTP long-polling on Node.js networking">
+                    <div class="illustration-caption">Socket.IO owns the protocol and features. WebSocket is only one transport underneath.</div>
+                </div>
+
+                <div class="code-block">Socket.IO
+   │
+   ├── Socket.IO protocol
+   │
+   ├── Engine.IO
+   │
+   └── transport
+          │
+          ├── WebSocket
+          │
+          └── HTTP long-polling</div>
+
+                <div class="warning-box">
+                    <p><strong>Not interchangeable.</strong> A plain WebSocket client and a Socket.IO server speak different protocols. Pointing a raw <code>WebSocket</code> at a Socket.IO URL will not “just work.”</p>
+                </div>
+            </section>
+
+            <!-- 6. ARCHITECTURE -->
+            <section id="architecture">
+                <h2>🏗️ Socket.IO Architecture</h2>
+
+                <p>On the browser: Socket.IO Client. On the wire: usually WebSocket. On the server: Socket.IO → Engine.IO → Node networking → the event loop.</p>
+
+                <div class="code-block">             BROWSER
+                │
+       Socket.IO Client
+                │
+          WebSocket
+                │
+                ▼
+       ┌────────────────┐
+       │ Node.js Server │
+       │                │
+       │ Socket.IO      │
+       │                │
+       │ Engine.IO      │
+       │                │
+       │ Node networking│
+       └───────┬────────┘
+               │
+               ▼
+          Node Event Loop
+               │
+       ┌───────┼────────┐
+       ▼       ▼        ▼
+      DB      API      Files</div>
+
+                <div class="info-box premium">
+                    <h3>Where your code lives</h3>
+                    <p>You write <code>io.on("connection")</code> and <code>socket.on("message")</code>. Engine.IO, the transport, and libuv are underneath. You rarely touch them — but they explain why 10,000 users do not mean 10,000 threads.</p>
+                </div>
+            </section>
+
+            <!-- 7. NODE.JS STACK -->
+            <section id="nodejs-stack">
+                <h2>🧩 Connect This to Node.js Internals</h2>
+
+                <p>You already have this stack in mind:</p>
+
+                <div class="code-block">CPU → cores → hardware threads → process → software threads → Node.js → event loop → libuv</div>
+
+                <p>Socket.IO sits much <strong>higher</strong> in that stack. It is application-level, not a new kind of thread.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-layers.png" alt="Four layers: hardware CPU cores, operating system, Node.js process with event loop and libuv, Socket.IO namespaces rooms and events, then browsers">
+                    <div class="illustration-caption">Hardware and OS schedule threads. Node coordinates I/O. Socket.IO manages logical connections on top.</div>
+                </div>
+
+                <div class="code-block">HARDWARE
+─────────────────────────────
+CPU
+├── Core 1  (hardware threads)
+├── Core 2
+├── Core 3
+└── Core 4
+
+OPERATING SYSTEM
+─────────────────────────────
+Node.js Process
+│
+├── Main JavaScript execution
+├── Event Loop
+├── libuv
+└── libuv thread pool
+
+NODE.JS APPLICATION
+─────────────────────────────
+Socket.IO
+│
+├── connections
+├── sockets
+├── namespaces
+├── rooms
+├── events
+└── broadcasting
+
+NETWORK
+─────────────────────────────
+Browser 1 … Browser 1000</div>
+            </section>
+
+            <!-- 8. NOT THREADS -->
+            <section id="not-threads">
+                <h2>🧵 Does Every Connection Create a Thread?</h2>
+
+                <p><strong>No.</strong> This is one of the most important ideas in the whole topic.</p>
+
+                <p>10,000 users connected to a Socket.IO server does <em>not</em> mean 10,000 threads. Node.js manages many network connections with asynchronous I/O. The event loop reacts when network activity happens.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-not-threads.png" alt="Many users connected to one Node.js event loop, with a red X over the idea of 10,000 threads">
+                    <div class="illustration-caption">Thousands of sockets can live in one process. They are connections, not OS threads.</div>
+                </div>
+
+                <div class="code-block">                    Node.js
+                       │
+                  Event Loop
+                       │
+       ┌───────────────┼────────────────┐
+       │               │                │
+       ▼               ▼                ▼
+   Socket A        Socket B         Socket C
+   User 1          User 2           User 3</div>
+
+                <div class="warning-box">
+                    <p><strong>Rooms and namespaces also do not create processes or threads.</strong> They are logical maps Socket.IO keeps in memory: “this socket is in <code>cricket</code>.”</p>
+                </div>
+            </section>
+
+            <!-- 9. EVENT LOOP AND LIBUV -->
+            <section id="event-loop">
+                <h2>🔄 Does Socket.IO Use the Event Loop and libuv?</h2>
+
+                <p><strong>Yes — the event loop directly. libuv indirectly.</strong></p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-event-loop.png" alt="Sockets A B and C feeding one event loop that fires connect, message, and disconnect callbacks">
+                    <div class="illustration-caption">You register callbacks. The loop runs them when packets arrive. You do not poll in a while(true).</div>
+                </div>
+
+                <h3>Event-driven, not polling</h3>
+                <p>From the application side, Socket.IO is asynchronous and event-driven:</p>
+
+                <div class="code-block"><span class="keyword">socket</span>.on(<span class="string">"message"</span>, (message) =&gt; {
+    console.log(message);
+});</div>
+
+                <p>You are saying: “When a message arrives, run this callback.” You are not doing:</p>
+
+                <div class="code-block"><span class="keyword">while</span> (<span class="keyword">true</span>) {
+    checkSocket();
+}</div>
+
+                <div class="code-block">                   Node.js
+                      │
+              ┌───────▼────────┐
+              │   Event Loop    │
+              └───────┬────────┘
+                      │
+               Socket.IO events
+                      │
+             ┌────────┼────────┐
+             ▼        ▼        ▼
+          connect   message   disconnect
+             │        │        │
+             ▼        ▼        ▼
+          callback callback callback</div>
+
+                <h3>libuv is underneath Node networking</h3>
+                <div class="code-block">Socket.IO
+    ↓
+Node.js networking APIs
+    ↓
+libuv / OS networking
+    ↓
+Operating System
+    ↓
+Network card
+    ↓
+Internet</div>
+
+                <p>Do <strong>not</strong> think: Socket.IO → libuv thread pool → one thread per socket. That is not how ordinary Socket.IO connections work.</p>
+
+                <h3>Does every network operation use the libuv thread pool?</h3>
+                <p><strong>No.</strong> The libuv thread pool is mainly for work the OS cannot do efficiently with async I/O, such as some filesystem, DNS, crypto, and compression operations. Network sockets generally use OS-level asynchronous networking.</p>
+
+                <table>
+                    <tr>
+                        <th>Work</th>
+                        <th>Typical path</th>
+                    </tr>
+                    <tr>
+                        <td>Socket.IO / TCP / HTTP sockets</td>
+                        <td>OS async networking + event loop</td>
+                    </tr>
+                    <tr>
+                        <td>Some <code>fs</code>, DNS, crypto, zlib</td>
+                        <td>libuv thread pool</td>
+                    </tr>
+                    <tr>
+                        <td>Heavy CPU in your callback</td>
+                        <td>Blocks the main JavaScript thread</td>
+                    </tr>
+                </table>
+
+                <h3>What happens when a message arrives?</h3>
+                <div class="code-block">User sends message
+       │
+       ▼
+Network card
+       │
+       ▼
+Operating system
+       │
+       ▼
+Node.js networking
+       │
+       ▼
+Event loop gets notified
+       │
+       ▼
+Socket.IO receives packet
+       │
+       ▼
+Socket.IO identifies event
+       │
+       ▼
+Your callback
+       │
+       ▼
+JavaScript executes</div>
+            </section>
+
+            <!-- 10. CONNECTION AND SOCKET -->
+            <section id="connect">
+                <h2>🔗 What Happens When a User Connects?</h2>
+
+                <p>Client:</p>
+                <div class="code-block"><span class="keyword">const</span> socket = io(<span class="string">"https://example.com"</span>);</div>
+
+                <p>Server:</p>
+                <div class="code-block">io.on(<span class="string">"connection"</span>, (socket) =&gt; {
+    console.log(<span class="string">"User connected"</span>);
+});</div>
+
+                <div class="code-block">Browser → Network → Node.js → Socket.IO → connection event → your callback</div>
+
+                <p>Your callback runs on Node’s JavaScript execution path — the same main thread as the rest of your app.</p>
+
+                <h3>What is <code>socket</code>?</h3>
+                <p><code>socket</code> represents <strong>one connected client</strong>.</p>
+
+                <div class="code-block">User A  →  socket A   (socket.id = abc123)
+User B  →  socket B   (socket.id = xyz456)
+User C  →  socket C   (socket.id = qwe789)</div>
+
+                <p>A socket also carries connection state you can inspect or attach:</p>
+
+                <div class="code-block">Socket
+│
+├── id
+├── handshake
+├── connected
+├── rooms
+├── data
+└── transport
+
+socket.data.userId = <span class="number">123</span>;
+console.log(socket.data.userId);</div>
+            </section>
+
+            <!-- 11. EVENTS -->
+            <section id="events">
+                <h2>📡 Events Are the Heart of Socket.IO</h2>
+
+                <p>Instead of sending raw bytes, Socket.IO uses <strong>event name + data</strong>.</p>
+
+                <div class="code-block">EVENT
+   │
+   ├── name     <span class="string">"userJoined"</span>
+   └── data     { username: <span class="string">"John"</span> }</div>
+
+                <h3>Client → server</h3>
+                <div class="code-block"><span class="comment">// Client</span>
+socket.emit(<span class="string">"hello"</span>, <span class="string">"Hello server"</span>);
+
+<span class="comment">// Server</span>
+socket.on(<span class="string">"hello"</span>, (message) =&gt; {
+    console.log(message);
+});</div>
+
+                <div class="code-block">Browser → emit("hello") → Socket.IO → network → Node.js → Socket.IO → "hello" event → callback</div>
+
+                <h3>Server → client</h3>
+                <div class="code-block"><span class="comment">// Server</span>
+socket.emit(<span class="string">"message"</span>, <span class="string">"Hello client"</span>);
+
+<span class="comment">// Client</span>
+socket.on(<span class="string">"message"</span>, (message) =&gt; {
+    console.log(message);
+});</div>
+
+                <div class="code-block">Node.js → emit → Socket.IO → WebSocket → Internet → Browser → Socket.IO Client → callback</div>
+
+                <h3>Named events in an app</h3>
+                <div class="code-block">socket.emit(<span class="string">"userJoined"</span>, {
+    username: <span class="string">"John"</span>
+});
+
+socket.on(<span class="string">"userJoined"</span>, (user) =&gt; {
+    console.log(user.username);
+});</div>
+            </section>
+
+            <!-- 12. EMIT / BROADCAST / ACK -->
+            <section id="emit">
+                <h2>📤 socket.emit() vs io.emit() vs broadcast</h2>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-emit.png" alt="Three columns: socket.emit to one user, io.emit to everyone, socket.broadcast.emit to everyone except the sender">
+                    <div class="illustration-caption">One socket, every socket, or every socket except the current one.</div>
+                </div>
+
+                <h3><code>socket.emit()</code> — one client</h3>
+                <div class="code-block">socket.emit(<span class="string">"message"</span>, <span class="string">"Hello"</span>);</div>
+                <div class="code-block">Server
+  │
+  ├── User A ← message
+  ├── User B
+  └── User C</div>
+
+                <h3><code>io.emit()</code> — everyone</h3>
+                <div class="code-block">io.emit(<span class="string">"message"</span>, <span class="string">"Hello everyone"</span>);</div>
+                <div class="code-block">Server
+  │
+  ├── User A ← message
+  ├── User B ← message
+  └── User C ← message</div>
+
+                <h3><code>socket.broadcast.emit()</code> — everyone except the sender</h3>
+                <div class="code-block">socket.broadcast.emit(<span class="string">"userJoined"</span>, {
+    username: <span class="string">"John"</span>
+});</div>
+                <div class="code-block">Current user  ❌ does not receive
+Other users   ← User B, User C, User D</div>
+
+                <table>
+                    <tr>
+                        <th>Call</th>
+                        <th>Who receives it</th>
+                    </tr>
+                    <tr>
+                        <td><code>socket.emit(...)</code></td>
+                        <td>That one socket</td>
+                    </tr>
+                    <tr>
+                        <td><code>io.emit(...)</code></td>
+                        <td>Every connected socket</td>
+                    </tr>
+                    <tr>
+                        <td><code>socket.broadcast.emit(...)</code></td>
+                        <td>Everyone except this socket</td>
+                    </tr>
+                    <tr>
+                        <td><code>io.to("cricket").emit(...)</code></td>
+                        <td>Sockets that joined room <code>cricket</code></td>
+                    </tr>
+                </table>
+
+                <h3>Acknowledgements</h3>
+                <p>The sender can wait for confirmation. The last argument is a callback that the other side invokes.</p>
+
+                <div class="code-block"><span class="comment">// Client</span>
+socket.emit(<span class="string">"saveUser"</span>, user, (response) =&gt; {
+    console.log(response);
+});
+
+<span class="comment">// Server</span>
+socket.on(<span class="string">"saveUser"</span>, (user, callback) =&gt; {
+    <span class="comment">// save user</span>
+    callback({ success: <span class="keyword">true</span> });
+});</div>
+
+                <div class="code-block">Client → saveUser → Server → Database → success → acknowledgement → Client</div>
+            </section>
+
+            <!-- 13. ROOMS -->
+            <section id="rooms">
+                <h2>🏠 Rooms</h2>
+
+                <p>Rooms are one of Socket.IO’s most useful features. They are <strong>logical groups of sockets</strong>, not processes.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-rooms.png" alt="Socket.IO server with a cricket room receiving a score event and a football room that does not">
+                    <div class="illustration-caption">io.to("cricket").emit(...) only reaches sockets that joined cricket.</div>
+                </div>
+
+                <div class="code-block">Chat application
+  Room: cricket
+  Room: football
+  Room: programming
+
+socket.join(<span class="string">"cricket"</span>);
+
+io.to(<span class="string">"cricket"</span>).emit(<span class="string">"score"</span>, { runs: <span class="number">120</span> });</div>
+
+                <div class="code-block">                 Socket.IO Server
+
+                     cricket
+                  ┌────────────┐
+               User A       User B
+                  └────────────┘
+
+                     football
+                  ┌────────────┐
+               User C       User D
+                  └────────────┘</div>
+
+                <h3>Rooms do NOT create processes</h3>
+                <p>10 rooms does not mean 10 processes or 10 threads.</p>
+
+                <div class="code-block">Node.js Process
+│
+└── Socket.IO
+    ├── Room A  → Socket 1, Socket 2
+    ├── Room B  → Socket 3, Socket 4
+    └── Room C  → Socket 5</div>
+            </section>
+
+            <!-- 14. NAMESPACES -->
+            <section id="namespaces">
+                <h2>📂 Namespaces</h2>
+
+                <p>Namespaces are another logical separation — typically whole areas of an app, not just a chat room.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-namespaces.png" alt="Namespaces /chat and /admin as separate channels, with cricket football tennis rooms inside /chat">
+                    <div class="illustration-caption">A namespace is a channel. Rooms live inside a namespace and group sockets.</div>
+                </div>
+
+                <div class="code-block"><span class="keyword">const</span> chat = io.of(<span class="string">"/chat"</span>);
+<span class="keyword">const</span> admin = io.of(<span class="string">"/admin"</span>);</div>
+
+                <div class="code-block">Socket.IO
+│
+├── /chat
+│    ├── sockets
+│    └── rooms
+│
+└── /admin
+     ├── sockets
+     └── rooms</div>
+
+                <h3>Namespace vs room</h3>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Namespace</th>
+                        <th>Room</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Looks like</strong></td>
+                        <td><code>/chat</code>, <code>/admin</code></td>
+                        <td><code>cricket</code>, <code>football</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Purpose</strong></td>
+                        <td>Separate application areas</td>
+                        <td>Group sockets inside a namespace</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contains</strong></td>
+                        <td>Sockets and rooms</td>
+                        <td>Sockets</td>
+                    </tr>
+                </table>
+
+                <div class="code-block">/chat
+   ├── room: cricket
+   ├── room: football
+   └── room: tennis
+
+Namespace  →  contains sockets / rooms
+Room       →  groups sockets</div>
+            </section>
+
+            <!-- 15. CHAT EXAMPLE -->
+            <section id="chat-app">
+                <h2>💬 A Real Chat Application</h2>
+
+                <div class="code-block">                Node.js Server
+                     │
+                Socket.IO
+                     │
+          ┌──────────┼──────────┐
+       User A      User B     User C
+        Room:      Room:      Room:
+        team1      team1      team2</div>
+
+                <p>User A sends a message to <code>team1</code>:</p>
+
+                <div class="code-block"><span class="comment">// Client</span>
+socket.emit(<span class="string">"sendMessage"</span>, {
+    room: <span class="string">"team1"</span>,
+    message: <span class="string">"Hello"</span>
+});
+
+<span class="comment">// Server</span>
+socket.on(<span class="string">"sendMessage"</span>, ({ room, message }) =&gt; {
+    io.to(room).emit(<span class="string">"message"</span>, message);
+});</div>
+
+                <div class="code-block">                 team1
+              ┌──────────┐
+           User A      User B     ← receive "Hello"
+              └──────────┘
+
+                 team2
+               User C             ← does not receive</div>
+            </section>
+
+            <!-- 16. CPU AND WORKERS -->
+            <section id="cpu-workers">
+                <h2>⚙️ Heavy CPU Work and Worker Threads</h2>
+
+                <p>If a callback does a huge calculation, the JavaScript thread is busy. Other Socket.IO callbacks cannot run normally until it finishes. Users A, B, C, D can all stall because of one blocking handler.</p>
+
+                <div class="code-block">socket.on(<span class="string">"message"</span>, () =&gt; {
+    <span class="comment">// HUGE CPU calculation — blocks the event loop</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10_000_000_000</span>; i++) {
+        <span class="comment">// CPU work</span>
+    }
+});</div>
+
+                <div class="code-block">User A message
+      │
+      ▼
+Event Loop
+      │
+      ▼
+Huge calculation
+      │  BLOCKED
+      ▼
+finished  →  then other users get a turn</div>
+
+                <p>For CPU-heavy work, delegate to a <span class="highlight">Worker Thread</span>. That is an explicit extra thread — different from simply having more Socket.IO connections.</p>
+
+                <div class="code-block">Socket.IO
+    │
+    ▼
+Main Node.js thread
+    │
+    │ delegate CPU work
+    ▼
+Worker Thread
+    │
+    ▼
+CPU calculation
+
+<span class="keyword">const</span> worker = <span class="keyword">new</span> Worker(<span class="string">"./worker.js"</span>);</div>
+            </section>
+
+            <!-- 17. SCALE AND REDIS -->
+            <section id="scale">
+                <h2>📈 Multiple Processes and the Redis Adapter</h2>
+
+                <p>At large scale you often run several Node processes behind a load balancer.</p>
+
+                <div class="code-block">                 Load Balancer
+                       │
+          ┌────────────┼────────────┐
+       Node #1       Node #2      Node #3
+       Socket.IO     Socket.IO    Socket.IO</div>
+
+                <p>User A may land on Node #1 while User B lands on Node #2. Node #1 does not automatically have User B’s socket in memory. That is the scaling problem.</p>
+
+                <h3>Redis adapter</h3>
+                <p>Redis can act as a shared pub/sub layer so Socket.IO servers coordinate broadcasts.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-redis-scale.png" alt="Load balancer in front of Node 1 2 and 3, all connected to Redis so User A on Node 1 can reach User B on Node 2">
+                    <div class="illustration-caption">Publish on one process, Redis fans the event out, the process that owns the target socket emits it.</div>
+                </div>
+
+                <div class="code-block">User A → Node #1 → Redis (publish) → Node #2 → User B</div>
+            </section>
+
+            <!-- 18. AUTH AND RECONNECT -->
+            <section id="auth-reconnect">
+                <h2>🔐 Authentication and Reconnection</h2>
+
+                <h3>Authentication</h3>
+                <p>You normally do not want any random client to connect and access everything. Pass credentials on connect; inspect them in server middleware.</p>
+
+                <div class="code-block"><span class="keyword">const</span> socket = io(<span class="string">"https://example.com"</span>, {
+    auth: {
+        token: <span class="string">"JWT_TOKEN"</span>
+    }
+});</div>
+
+                <div class="code-block">Client → token → Socket.IO → authentication
+                              ├── valid   → connection
+                              └── invalid → reject</div>
+
+                <h3>Reconnection</h3>
+                <p>If the network drops, Socket.IO can attempt to reconnect. That is one reason it is more than a raw WebSocket.</p>
+
+                <div class="code-block">connected → network failure → reconnect attempt → reconnect</div>
+            </section>
+
+            <!-- 19. COMPARISONS -->
+            <section id="comparisons">
+                <h2>⚖️ Socket.IO vs HTTP vs WebSocket</h2>
+
+                <h3>Socket.IO vs HTTP</h3>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>HTTP</th>
+                        <th>Socket.IO</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Shape</strong></td>
+                        <td>Client request → server response</td>
+                        <td>Persistent connection, either side emits</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Server push</strong></td>
+                        <td>Not natural (need polling / SSE)</td>
+                        <td>First-class</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Typical use</strong></td>
+                        <td>Pages, REST, CRUD</td>
+                        <td>Chat, live data, presence</td>
+                    </tr>
+                </table>
+
+                <h3>Socket.IO vs WebSocket</h3>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>WebSocket</th>
+                        <th>Socket.IO</th>
+                    </tr>
+                    <tr>
+                        <td>Persistent communication</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Bidirectional</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Event abstraction</td>
+                        <td>Basic</td>
+                        <td>✅ Named events</td>
+                    </tr>
+                    <tr>
+                        <td>Rooms</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Namespaces</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Automatic reconnection</td>
+                        <td>Not built into the protocol</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>Acknowledgements</td>
+                        <td>Not built in</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>HTTP long-polling fallback</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>API level</td>
+                        <td>Lower level</td>
+                        <td>Higher level</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- 20. MENTAL MODEL -->
+            <section id="mental-model">
+                <h2>🧠 The Complete Mental Model</h2>
+
+                <p>This is the picture to remember.</p>
+
+                <div class="illustration">
+                    <img src="/images/socket-io/socketio-layers.png" alt="Hardware, operating system, Node.js process, and Socket.IO stacked, with browsers at the bottom">
+                    <div class="illustration-caption">Five different layers. Mixing them up is where most confusion comes from.</div>
+                </div>
+
+                <div class="code-block">                         HARDWARE
+┌─────────────────────────────────────────────────┐
+│ CPU  — Core 1   Core 2   Core 3   Core 4        │
+└─────────────────────────────────────────────────┘
+                       ▲
+                       │ OS schedules threads
+┌─────────────────────────────────────────────────┐
+│ OPERATING SYSTEM                                │
+│ Network stack · TCP/IP · Sockets · Threads      │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────┐
+│ NODE.JS PROCESS                                 │
+│  JavaScript execution → Event Loop              │
+│  Node networking / libuv                        │
+│       ├─ network I/O                            │
+│       └─ thread pool for certain work           │
+│                                                 │
+│  Socket.IO                                      │
+│      ├── Namespace                              │
+│      ├── Rooms                                  │
+│      ├── Sockets                                │
+│      ├── Events                                 │
+│      ├── Broadcasting                           │
+│      └── Acknowledgements                       │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+                 WebSocket → INTERNET
+                       │
+          Browser A    Browser B    Browser C</div>
+
+                <h3>The 5 things you should keep separate</h3>
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Thing</th>
+                        <th>What it actually is</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>CPU core</strong></td>
+                        <td>Physical CPU execution resource</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>Hardware thread</strong></td>
+                        <td>CPU’s logical execution context</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>Software / OS thread</strong></td>
+                        <td>Execution thread managed by the OS</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>Node.js event loop</strong></td>
+                        <td>Coordinates asynchronous JavaScript and I/O</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>Socket.IO socket</strong></td>
+                        <td>Logical network connection to a client</td>
+                    </tr>
+                </table>
+
+                <div class="info-box premium">
+                    <h3>A Socket.IO socket is NOT a CPU thread</h3>
+                    <p>1,000 Socket.IO clients → 1,000 logical connections, managed by Node’s event-driven networking — not 1,000 threads.</p>
+                    <p><code>Socket.IO ≠ WebSocket ≠ Event Loop ≠ libuv thread pool ≠ OS thread ≠ CPU hardware thread</code></p>
+                    <p>Those are different layers.</p>
+                </div>
+
+                <h3>The deepest chain to study next</h3>
+                <p>If you want Socket.IO at the Node.js-internals level, walk this path and ask what happens — and which thread or core is involved — at each hop:</p>
+
+                <div class="code-block">Browser
+  → Socket.IO Client
+  → Engine.IO
+  → WebSocket / TCP
+  → OS
+  → libuv
+  → Node.js event loop
+  → Socket.IO parser
+  → your socket.on() callback</div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

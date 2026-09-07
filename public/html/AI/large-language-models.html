@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Large Language Models - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>LLM Guide</h2>
+            <p>Complete Documentation</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#transformers" class="sidebar-link">Transformers</a>
+                <a href="#training" class="sidebar-link">Training Process</a>
+                <a href="#tokens" class="sidebar-link">Tokens</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Core Concepts</div>
+            <div class="sidebar-links">
+                <a href="#context" class="sidebar-link">Context Window</a>
+                <a href="#inference" class="sidebar-link">Inference &amp; Sampling</a>
+                <a href="#embeddings" class="sidebar-link">Embeddings</a>
+                <a href="#vectors" class="sidebar-link">Vector Databases</a>
+                <a href="#nlp" class="sidebar-link">NLP</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Frameworks &amp; Tools</div>
+            <div class="sidebar-links">
+                <a href="#langchain" class="sidebar-link">LangChain</a>
+                <a href="#langgraph" class="sidebar-link">LangGraph</a>
+                <a href="#mcp" class="sidebar-link">MCP</a>
+                <a href="#agents" class="sidebar-link">Agents</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Advanced Techniques</div>
+            <div class="sidebar-links">
+                <a href="#rag" class="sidebar-link">RAG</a>
+                <a href="#prompts" class="sidebar-link">Prompt Engineering</a>
+                <a href="#data" class="sidebar-link">Data Processing</a>
+                <a href="#limitations" class="sidebar-link">Limits &amp; Safety</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Resources</div>
+            <div class="sidebar-links">
+                <a href="#apis" class="sidebar-link">APIs</a>
+                <a href="#models" class="sidebar-link">Popular Models</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>Large Language Models</h1>
+                <p>Complete Guide to LLMs &amp; Modern AI</p>
+            </header>
+
+        <section id="intro">
+            <h2>Introduction to LLMs</h2>
+
+            <p>A <span class="highlight">Large Language Model (LLM)</span> is a neural network trained to predict the next token in a sequence. After enough data, parameters, and compute, that simple objective produces systems that can write, translate, summarize, reason over code, call tools, and hold a conversation.</p>
+
+            <p>An LLM is not a search engine and not a database. It compresses patterns from training text into weights. It can sound confident while being wrong. Ground it with retrieval, tools, and evaluation when the answer has to be true.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-hero.png" alt="Pipeline from a user prompt through tokenization and transformer layers to the next predicted token and decoded text">
+                <div class="illustration-caption">An LLM is a next-token engine: tokenize the prompt, run it through stacked transformer layers, sample the next token, repeat, then detokenize into text.</div>
+            </div>
+
+            <div class="info-box premium">
+                <h3>The three "larges"</h3>
+                <ul>
+                    <li><strong>Large data:</strong> Trillions of tokens from web, books, code, papers, and licensed corpora. Quality filtering matters as much as volume.</li>
+                    <li><strong>Large model:</strong> Billions to trillions of parameters. Mixture-of-Experts (MoE) models activate only a subset per token, so they can be huge without paying full dense cost.</li>
+                    <li><strong>Large compute:</strong> Pretraining runs on thousands of GPUs/TPUs for weeks. Inference still needs GPUs, batching, and a KV cache.</li>
+                    <li><strong>Transformer backbone:</strong> Almost every modern LLM is a decoder-only transformer with self-attention.</li>
+                </ul>
+            </div>
+
+            <h3>What an LLM actually does</h3>
+            <p>Given tokens <code>t1 … tn</code>, the model outputs a probability distribution over the vocabulary for <code>t(n+1)</code>. Chat products wrap this loop with a conversation template (system / user / assistant), sampling settings, and often tool calls.</p>
+
+            <div class="grid-3">
+                <div class="feature-card card-orange">
+                    <h4>Decoder-only (GPT-style)</h4>
+                    <p>Reads left to right. Best for generation, chat, coding, and agents. This is the default LLM architecture in 2026.</p>
+                </div>
+                <div class="feature-card card-blue">
+                    <h4>Encoder-only (BERT-style)</h4>
+                    <p>Reads both directions. Strong for classification, NER, and embeddings. Smaller and cheaper than generative LLMs.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Encoder–decoder (T5-style)</h4>
+                    <p>Encode the input, decode the output. Still used for translation and some speech/multimodal stacks.</p>
+                </div>
+            </div>
+
+            <h3>What is a token?</h3>
+            <p>A <span class="highlight">token</span> is a subword chunk — not always a whole word. English averages roughly 0.75 words per token; code, URLs, and other languages differ.</p>
+
+            <div class="code-block"><span class="comment">// Typical BPE-style splits (illustrative)</span>
+<span class="string">"chatbot"</span>       → [<span class="string">"chat"</span>, <span class="string">"bot"</span>]
+<span class="string">"understanding"</span> → [<span class="string">"under"</span>, <span class="string">"stand"</span>, <span class="string">"ing"</span>]
+<span class="string">"GPT-5"</span>         → [<span class="string">"GPT"</span>, <span class="string">"-"</span>, <span class="string">"5"</span>]</div>
+
+            <h3>Popular LLM families (2026 snapshot)</h3>
+            <p>Exact sizes and names move quickly. Treat this as a map of families, then check vendor docs before you ship.</p>
+            <table>
+                <tr>
+                    <th>Family</th>
+                    <th>Developer</th>
+                    <th>Type</th>
+                    <th>Typical context</th>
+                    <th>Known for</th>
+                </tr>
+                <tr>
+                    <td><strong>GPT-5 / GPT-4o</strong></td>
+                    <td>OpenAI</td>
+                    <td>Closed</td>
+                    <td>128K – 1M</td>
+                    <td>Broad ecosystem, tools, coding</td>
+                </tr>
+                <tr>
+                    <td><strong>Claude 4.x</strong></td>
+                    <td>Anthropic</td>
+                    <td>Closed</td>
+                    <td>200K – 1M</td>
+                    <td>Long-horizon reasoning, safety</td>
+                </tr>
+                <tr>
+                    <td><strong>Gemini 2.5 / 3</strong></td>
+                    <td>Google</td>
+                    <td>Closed</td>
+                    <td>~1M</td>
+                    <td>Multimodal, long context</td>
+                </tr>
+                <tr>
+                    <td><strong>Llama 4</strong></td>
+                    <td>Meta</td>
+                    <td>Open weights</td>
+                    <td>128K – 10M (Scout)</td>
+                    <td>Self-host, MoE, huge windows</td>
+                </tr>
+                <tr>
+                    <td><strong>DeepSeek / Qwen / Mistral</strong></td>
+                    <td>Various</td>
+                    <td>Open / API</td>
+                    <td>128K – 1M</td>
+                    <td>Cost, local deploy, strong code</td>
+                </tr>
+                <tr>
+                    <td><strong>BERT / encoder models</strong></td>
+                    <td>Google &amp; others</td>
+                    <td>Open</td>
+                    <td>~512</td>
+                    <td>Classification, embeddings</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <h4>Keep these limits in mind from day one</h4>
+                <ul>
+                    <li>They <strong>hallucinate</strong>: fluent text is not evidence. Cite sources or refuse when context is missing.</li>
+                    <li>They have a <strong>knowledge cutoff</strong> unless you retrieve or tool-call live data.</li>
+                    <li>They follow <strong>statistics</strong>, not a guaranteed world model. Math, dates, and rare facts need tools or RAG.</li>
+                    <li>They are <strong>not private by default</strong> on hosted APIs. Check retention, regions, and zero-retention options.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="transformers">
+            <h2>Transformers</h2>
+
+            <p>The <span class="highlight">Transformer</span> (Vaswani et al., 2017, <em>Attention Is All You Need</em>) replaced recurrence with self-attention. Every token can look at every other token in the window in parallel. That is why LLMs scale on GPUs and why long-range references ("it" → "the cat") work at all.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-transformer-attention.png" alt="Self-attention: each word produces query, key, and value vectors, then a heatmap shows that 'it' attends to 'cat'">
+                <div class="illustration-caption">Self-attention: each token builds a Query, Key, and Value. Similarity of Q to every K decides how much of each V to mix in. That is how "it" can bind to "cat".</div>
+            </div>
+
+            <h3>A decoder block, in order</h3>
+            <ol>
+                <li><strong>Causal self-attention</strong> — token <em>i</em> may only attend to tokens ≤ <em>i</em> (no peeking at the future).</li>
+                <li><strong>Residual + layer norm</strong> — add the input back, then normalize so deep stacks stay trainable.</li>
+                <li><strong>Feed-forward network (MLP)</strong> — a large per-token MLP (often SwiGLU). This is where most parameters live.</li>
+                <li><strong>Residual + layer norm</strong> again. Repeat this block dozens to hundreds of times.</li>
+            </ol>
+
+            <h4>1. Self-attention (Q, K, V)</h4>
+            <p>For each token the model projects the hidden state into three vectors:</p>
+            <ul>
+                <li><strong>Query (Q)</strong> — "what am I looking for?"</li>
+                <li><strong>Key (K)</strong> — "what do I contain?"</li>
+                <li><strong>Value (V)</strong> — "what information do I pass along?"</li>
+            </ul>
+            <p>Attention weights are softmax(QK<sup>T</sup> / √d). The output is a weighted sum of values. In "The cat sat on the mat because it was tired", attention lets <em>it</em> put high weight on <em>cat</em>.</p>
+
+            <h4>2. Multi-head attention</h4>
+            <p>Several attention heads run in parallel with different projections. One head might track syntax, another coreference, another code structure. Outputs are concatenated and projected back to the model width.</p>
+
+            <h4>3. Positional information</h4>
+            <p>Attention itself is permutation-invariant. Models add position via <strong>RoPE</strong> (rotary embeddings) or similar schemes so "dog bites man" is not the same as "man bites dog". Long-context variants extend RoPE (YaRN, NTK scaling) so a 4K-trained model can run at 128K+ with some quality loss.</p>
+
+            <h3>Why transformers beat RNNs for LLMs</h3>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>RNN / LSTM</th>
+                    <th>Transformer</th>
+                </tr>
+                <tr>
+                    <td><strong>Parallelism</strong></td>
+                    <td>Sequential over time</td>
+                    <td>Whole sequence in one GPU kernel</td>
+                </tr>
+                <tr>
+                    <td><strong>Long range</strong></td>
+                    <td>Signal fades through steps</td>
+                    <td>Direct token-to-token links</td>
+                </tr>
+                <tr>
+                    <td><strong>Scaling</strong></td>
+                    <td>Hard to train very deep/wide</td>
+                    <td>Stable with residuals + norm</td>
+                </tr>
+                <tr>
+                    <td><strong>Inference trick</strong></td>
+                    <td>—</td>
+                    <td>KV cache reuses past keys/values</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>KV cache (why chat is cheaper than it looks)</h4>
+                <p>When generating token 50, you should not re-attend over the first 49 from scratch. The model stores past Keys and Values. Memory grows with <em>layers × heads × window × batch</em>. That is why a 1M-token window is expensive even if the API lets you send it.</p>
+            </div>
+        </section>
+
+        <section id="training">
+            <h2>Training Process</h2>
+
+            <p>Modern chat models are not "one training run". They are a pipeline: compress the internet, teach instruction following, then align behavior. Skipping a stage shows up as a model that can complete text but cannot follow "answer in JSON" or refuses nothing.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-training-pipeline.png" alt="Four-stage LLM training: pretraining, supervised fine-tuning, alignment with RLHF or DPO, then serving">
+                <div class="illustration-caption">Pretrain for next-token prediction, supervised fine-tune on instruction pairs, align with preferences (RLHF or DPO), then serve behind an API with safety filters.</div>
+            </div>
+
+            <h3>1. Pre-training</h3>
+            <p>Unsupervised (self-supervised) causal language modeling on a huge mixture. The loss is: given the prefix, predict the next token. No human labels required at this scale.</p>
+            <div class="info-box">
+                <p><strong>Typical mixture:</strong></p>
+                <ul>
+                    <li>Web crawls (filtered, deduplicated, PII-stripped)</li>
+                    <li>Books, news, and reference text</li>
+                    <li>Code (GitHub and similar) — large share of modern models</li>
+                    <li>Scientific papers and math</li>
+                    <li>Multilingual data if the model must not be English-only</li>
+                </ul>
+                <p><strong>Scaling laws:</strong> loss falls predictably as you grow data, parameters, and compute together. Under-training a huge model is a common waste. Chinchilla-style results: tokens often need to be ~20× parameters (order of magnitude, not a law of physics).</p>
+            </div>
+
+            <h3>2. Supervised fine-tuning (SFT)</h3>
+            <p>Show the model high-quality (instruction, response) pairs so it learns the chat format: helpful answers, refusals, tool-call syntax, markdown, JSON. A few thousand to a few million curated examples beat dumping more web text at this stage.</p>
+            <div class="info-box">
+                <p><strong>SFT data looks like:</strong></p>
+                <ul>
+                    <li>Question → well-structured answer</li>
+                    <li>Code task → working code + brief explanation</li>
+                    <li>Domain docs → grounded summaries</li>
+                    <li>Safety examples → refuse or redirect</li>
+                </ul>
+            </div>
+
+            <h3>3. Preference alignment (RLHF, DPO, RLAIF)</h3>
+            <p>SFT teaches a format. Alignment teaches <em>which</em> answer humans prefer when several are possible.</p>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>How it works</th>
+                    <th>Tradeoff</th>
+                </tr>
+                <tr>
+                    <td><strong>RLHF</strong></td>
+                    <td>Train a reward model on human rankings, then PPO (or similar) against it</td>
+                    <td>Strong, expensive, can over-optimize the reward</td>
+                </tr>
+                <tr>
+                    <td><strong>DPO</strong></td>
+                    <td>Direct preference optimization — no separate RL loop</td>
+                    <td>Simpler; widely used for open models</td>
+                </tr>
+                <tr>
+                    <td><strong>RLAIF</strong></td>
+                    <td>AI feedback instead of (or plus) human raters</td>
+                    <td>Cheaper scale; needs careful judge design</td>
+                </tr>
+            </table>
+            <ul>
+                <li>Improves helpfulness and style</li>
+                <li>Reduces toxic or policy-breaking completions</li>
+                <li>Does not magically add new world knowledge</li>
+            </ul>
+
+            <h3>4. Continued training you might actually run</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>When to use</th>
+                    <th>When not to</th>
+                </tr>
+                <tr>
+                    <td><strong>Better prompts + RAG</strong></td>
+                    <td>Default. Knowledge changes; you need citations</td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td><strong>LoRA / QLoRA</strong></td>
+                    <td>Style, format, a narrow domain, small GPU budget</td>
+                    <td>Facts that update weekly</td>
+                </tr>
+                <tr>
+                    <td><strong>Full fine-tune</strong></td>
+                    <td>Lots of data, you own the weights, you can eval</td>
+                    <td>First experiment; "teach it our wiki"</td>
+                </tr>
+                <tr>
+                    <td><strong>Distillation</strong></td>
+                    <td>Teacher labels → cheaper student for production</td>
+                    <td>You have no eval set</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <p><strong>Do not fine-tune to "add knowledge"</strong> that will go stale. Fine-tune for behavior (tone, JSON shape, tool syntax). Put facts in retrieval.</p>
+            </div>
+        </section>
+
+        <section id="tokens">
+            <h2>Understanding Tokens</h2>
+
+            <p>Models never see characters or words as you do. A tokenizer maps UTF-8 bytes to integer IDs from a fixed vocabulary (often 32K–200K entries). Training and billing both count these IDs.</p>
+
+            <h3>How tokenization works</h3>
+            <p>Most LLMs use <strong>Byte Pair Encoding (BPE)</strong> or <strong>SentencePiece</strong>. Frequent character pairs merge into longer tokens. Common words become one token; rare or misspelled strings shatter into many.</p>
+
+            <div class="info-box">
+                <p><strong>Why this design:</strong> a word-level vocab explodes for every language and typo. A character-level vocab makes sequences too long. Subwords sit in the middle.</p>
+            </div>
+
+            <h3>Tokenization examples</h3>
+            <div class="code-block"><span class="comment">// Patterns you will actually hit</span>
+<span class="string">"chatbot"</span>        → [<span class="string">"chat"</span>, <span class="string">"bot"</span>]
+<span class="string">"understanding"</span>  → [<span class="string">"under"</span>, <span class="string">"stand"</span>, <span class="string">"ing"</span>]
+<span class="string">"Hello, world!"</span>  → [<span class="string">"Hello"</span>, <span class="string">","</span>, <span class="string">" world"</span>, <span class="string">"!"</span>]
+
+<span class="comment">// Gotchas: numbers and odd spacing often split badly</span>
+<span class="string">"123456789"</span>      → many digit tokens, not one integer
+<span class="string">" gpt"</span> vs <span class="string">"gpt"</span> → different IDs because of the leading space</div>
+
+            <h3>Count tokens in code</h3>
+            <div class="code-block"><span class="keyword">import</span> tiktoken
+
+enc = tiktoken.get_encoding(<span class="string">"o200k_base"</span>)  <span class="comment"># GPT-4o family</span>
+text = <span class="string">"Explain RAG in one paragraph."</span>
+print(len(enc.encode(text)))  <span class="comment"># input tokens ≈ this</span></div>
+
+            <h3>Why tokens matter in production</h3>
+            <ul>
+                <li><strong>Cost:</strong> APIs bill input + output tokens. Hidden tokens: system prompt, tools JSON, RAG chunks, retries.</li>
+                <li><strong>Latency:</strong> Output tokens generate one-by-one. Long answers are slow even if the prompt is short.</li>
+                <li><strong>Context:</strong> Prompt + completion must fit the window. Reserve budget for the answer (<code>max_tokens</code>).</li>
+                <li><strong>Multilingual:</strong> Some languages tokenize less efficiently — the same sentence can cost 2–3× English.</li>
+            </ul>
+
+            <table>
+                <tr>
+                    <th>Text</th>
+                    <th>Rough token count</th>
+                </tr>
+                <tr>
+                    <td>1 English word</td>
+                    <td>~1.3 tokens</td>
+                </tr>
+                <tr>
+                    <td>1 sentence</td>
+                    <td>15–30</td>
+                </tr>
+                <tr>
+                    <td>1 paragraph</td>
+                    <td>100–200</td>
+                </tr>
+                <tr>
+                    <td>~1 page (500 words)</td>
+                    <td>600–800</td>
+                </tr>
+                <tr>
+                    <td>128K context</td>
+                    <td>~90–100K words, or a medium book</td>
+                </tr>
+                <tr>
+                    <td>1M context</td>
+                    <td>~750K words — a large corpus, not "free memory"</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="context">
+            <h2>Context Window</h2>
+
+            <p>The <span class="highlight">context window</span> is the maximum number of tokens the model can attend to in one request: system prompt + history + tools + retrieved docs + user message + the tokens it is about to generate.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-context-window.png" alt="A context window shown as a budget bar split among system prompt, history, retrieved docs, user question, and reserved output tokens">
+                <div class="illustration-caption">Treat the window as a budget, not a hard drive. If you fill it with RAG chunks, you still need room for the answer. Overflow drops the oldest tokens — often the instructions.</div>
+            </div>
+
+            <h3>Advertised windows (order-of-magnitude, 2026)</h3>
+            <table>
+                <tr>
+                    <th>Class</th>
+                    <th>Typical window</th>
+                    <th>Use when</th>
+                </tr>
+                <tr>
+                    <td><strong>Classic GPT-3 era</strong></td>
+                    <td>2K – 8K</td>
+                    <td>History only — you will hit this in old tutorials</td>
+                </tr>
+                <tr>
+                    <td><strong>Mainstream chat (GPT-4o, Llama 3.x)</strong></td>
+                    <td>128K</td>
+                    <td>Most apps, a few PDFs, a repo file or two</td>
+                </tr>
+                <tr>
+                    <td><strong>Claude-class long context</strong></td>
+                    <td>200K</td>
+                    <td>Long threads, multi-file coding</td>
+                </tr>
+                <tr>
+                    <td><strong>Frontier APIs (Gemini, GPT-5.x, Claude 4.x)</strong></td>
+                    <td>~1M</td>
+                    <td>Whole books or large code trees — costly, quality varies</td>
+                </tr>
+                <tr>
+                    <td><strong>Llama 4 Scout class</strong></td>
+                    <td>up to ~10M</td>
+                    <td>Extreme packing; still verify retrieval accuracy</td>
+                </tr>
+            </table>
+
+            <h3>Advertised vs effective context</h3>
+            <p>Needle-in-a-haystack demos can look perfect while <strong>multi-fact</strong> recall collapses in the middle of a long prompt ("lost in the middle"). A 200K model that stays accurate across most of its range can beat a 1M model that fades after 100K. Prefer RAG plus a moderate window for production Q&amp;A.</p>
+
+            <div class="warning-box">
+                <h4>Operational costs of a huge window</h4>
+                <ul>
+                    <li><strong>Price:</strong> You pay for every input token, every time. Dumping a 400-page PDF on each turn is a billing incident.</li>
+                    <li><strong>Latency:</strong> Prefill time grows with prompt length (attention is roughly quadratic unless the kernel is optimized).</li>
+                    <li><strong>Memory:</strong> KV cache size tracks window × layers. Long chats need eviction, summarization, or a new thread.</li>
+                    <li><strong>Truncation:</strong> When the window fills, oldest messages vanish — including the system prompt if you are sloppy.</li>
+                </ul>
+            </div>
+
+            <h3>Practical tactics</h3>
+            <ul>
+                <li>Put durable <strong>instructions first</strong>, evidence next, the user question last (or follow the vendor's recommended order).</li>
+                <li><strong>Retrieve</strong> 5–20 chunks instead of stuffing the corpus.</li>
+                <li><strong>Summarize</strong> old turns into a rolling memory; keep the last N messages verbatim.</li>
+                <li>Cap <code>max_tokens</code> so a rambling completion cannot steal the whole budget.</li>
+                <li>Log prompt token counts. Alert when a route crosses a cost threshold.</li>
+            </ul>
+        </section>
+
+        <section id="inference">
+            <h2>Inference &amp; Sampling</h2>
+
+            <p>Training writes the weights. <span class="highlight">Inference</span> is the live loop: prefilling the prompt, then sampling one token after another. Product quality is often sampling and prompt design, not a different base model.</p>
+
+            <table>
+                <tr>
+                    <th>Knob</th>
+                    <th>What it does</th>
+                    <th>Starting point</th>
+                </tr>
+                <tr>
+                    <td><strong>temperature</strong></td>
+                    <td>Scales the logits before softmax. Higher = more random.</td>
+                    <td>0–0.2 extraction / JSON; 0.7–1.0 brainstorming</td>
+                </tr>
+                <tr>
+                    <td><strong>top_p</strong></td>
+                    <td>Nucleus sampling — only the smallest set of tokens with cumulative probability p</td>
+                    <td>Leave default if temperature is already set</td>
+                </tr>
+                <tr>
+                    <td><strong>max_tokens</strong></td>
+                    <td>Hard cap on the completion</td>
+                    <td>Always set. Prevents runaway cost</td>
+                </tr>
+                <tr>
+                    <td><strong>stop sequences</strong></td>
+                    <td>End generation at a marker</td>
+                    <td>Useful for custom templates</td>
+                </tr>
+                <tr>
+                    <td><strong>streaming</strong></td>
+                    <td>Tokens arrive as they generate</td>
+                    <td>Better UX; still buffer full text for logs</td>
+                </tr>
+                <tr>
+                    <td><strong>seed</strong></td>
+                    <td>Best-effort reproducibility</td>
+                    <td>Never guaranteed across vendors or versions</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Serving stack (when you self-host)</h4>
+                <p><strong>vLLM</strong>, TensorRT-LLM, TGI, llama.cpp. Same product rules: continuous batching, paged KV cache, quantization (FP8 / INT8 / INT4), timeouts, and a queue. Speculative decoding uses a small draft model to speed a large one.</p>
+            </div>
+        </section>
+
+        <section id="embeddings">
+            <h2>Embeddings</h2>
+
+            <p><span class="highlight">Embeddings</span> are dense vectors that place text (or images, audio) in a space where <em>distance ≈ meaning</em>. They are the index for semantic search and RAG. They are not the chat model — many teams use a small embedding model plus a larger generative LLM.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-embeddings.png" alt="2D scatter plot with clusters for sports, royalty, and fruit showing that similar words sit near each other">
+                <div class="illustration-caption">In embedding space, "king" sits near "queen"; "apple" (fruit) sits far from royalty. Search becomes nearest-neighbor, not keyword match.</div>
+            </div>
+
+            <h3>From text to vector</h3>
+            <div class="code-block"><span class="comment">// Same idea every vendor uses</span>
+<span class="string">"I love cricket"</span> → [<span class="number">0.892</span>, <span class="number">-0.244</span>, <span class="number">0.551</span>, ...]   <span class="comment">// e.g. 768–3072 dims</span>
+
+<span class="string">"king"</span>  → close to <span class="string">"queen"</span>   <span class="comment">// cosine similarity high</span>
+<span class="string">"king"</span>  → far from <span class="string">"apple"</span>   <span class="comment">// unless the corpus is about Apple Inc.</span></div>
+
+            <p><strong>Cosine similarity</strong> is the usual metric: 1.0 identical direction, 0 orthogonal, negative opposite. Most systems L2-normalize vectors so cosine and dot product agree.</p>
+
+            <h3>Why embeddings matter</h3>
+            <ul>
+                <li><strong>Semantic search</strong> — "PTO policy" matches "time-off rules" without shared keywords.</li>
+                <li><strong>RAG</strong> — retrieve the few chunks that should sit in the prompt.</li>
+                <li><strong>Clustering / dedup</strong> — near-duplicate documents, topic grouping.</li>
+                <li><strong>Recommendations</strong> — similar items, similar users (with care for bias).</li>
+            </ul>
+
+            <h3>Embedding models vs generative LLMs</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Embedding model</th>
+                    <th>Chat LLM</th>
+                </tr>
+                <tr>
+                    <td><strong>Output</strong></td>
+                    <td>One vector per input</td>
+                    <td>Token stream</td>
+                </tr>
+                <tr>
+                    <td><strong>Size</strong></td>
+                    <td>Often &lt; 1B params</td>
+                    <td>Billions+</td>
+                </tr>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>Cheap; batchable</td>
+                    <td>Dominates your bill</td>
+                </tr>
+                <tr>
+                    <td><strong>Examples</strong></td>
+                    <td>text-embedding-3, Voyage, E5, GTE</td>
+                    <td>GPT, Claude, Gemini, Llama</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <p><strong>Matryoshka / flexible dimensions:</strong> some models let you truncate a 3072-d vector to 512-d and keep most quality — useful when RAM and ANN indexes hurt.</p>
+                <p><strong>Always embed the query with the same model</strong> you used for documents. Mixing vendors silently destroys recall.</p>
+            </div>
+        </section>
+
+        <section id="vectors">
+            <h2>Vector Databases</h2>
+
+            <p>A <span class="highlight">vector database</span> stores embeddings plus metadata and answers "nearest neighbors to this query vector" in milliseconds, even at millions of rows. Postgres with <code>pgvector</code> is enough to start; purpose-built stores add filters, hybrid search, and ops.</p>
+
+            <h3>What a row looks like</h3>
+            <div class="code-block">{
+  <span class="string">"id"</span>: <span class="string">"doc-42-chunk-3"</span>,
+  <span class="string">"vector"</span>: [<span class="number">0.12</span>, <span class="number">-0.55</span>, <span class="number">0.33</span>, ...],
+  <span class="string">"text"</span>: <span class="string">"Employees receive 20 days of paid leave..."</span>,
+  <span class="string">"metadata"</span>: {
+    <span class="string">"source"</span>: <span class="string">"hr-handbook.pdf"</span>,
+    <span class="string">"page"</span>: <span class="number">12</span>,
+    <span class="string">"acl"</span>: <span class="string">"staff"</span>
+  }
+}</div>
+
+            <h3>Vector DB vs a normal SQL table</h3>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Vector index</th>
+                    <th>Traditional DB</th>
+                </tr>
+                <tr>
+                    <td><strong>Query</strong></td>
+                    <td>Approximate nearest neighbor</td>
+                    <td>Exact match, ranges, joins</td>
+                </tr>
+                <tr>
+                    <td><strong>Speed at 10M × 1536-d</strong></td>
+                    <td>Designed for this</td>
+                    <td>Needs an extension / separate index</td>
+                </tr>
+                <tr>
+                    <td><strong>Filters</strong></td>
+                    <td>Metadata pre/post-filter (ACL, tenant, date)</td>
+                    <td>WHERE clauses</td>
+                </tr>
+                <tr>
+                    <td><strong>Hybrid</strong></td>
+                    <td>Vector + BM25 / keyword</td>
+                    <td>Full-text search only</td>
+                </tr>
+            </table>
+
+            <h3>Indexing algorithms</h3>
+            <div class="info-box">
+                <h4>HNSW (Hierarchical Navigable Small World)</h4>
+                <p>Graph-based ANN. Excellent recall/latency. Higher RAM. Default in many products.</p>
+                <h4>IVF / IVF-PQ</h4>
+                <p>Cluster the space, search a few clusters. PQ compresses vectors. Needs a training pass. Good at huge scale.</p>
+                <h4>DiskANN / disk-backed graphs</h4>
+                <p>When vectors no longer fit in RAM. Slightly higher latency, much cheaper machines.</p>
+            </div>
+
+            <h3>Popular stores</h3>
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Type</th>
+                    <th>Best for</th>
+                    <th>Note</th>
+                </tr>
+                <tr>
+                    <td><strong>pgvector</strong></td>
+                    <td>Postgres extension</td>
+                    <td>Start here</td>
+                    <td>One database for rows + vectors</td>
+                </tr>
+                <tr>
+                    <td><strong>Pinecone</strong></td>
+                    <td>Managed</td>
+                    <td>Production without ops</td>
+                    <td>Namespaces, metadata filters</td>
+                </tr>
+                <tr>
+                    <td><strong>Weaviate</strong></td>
+                    <td>Cloud / self-host</td>
+                    <td>Hybrid + modules</td>
+                    <td>GraphQL / REST</td>
+                </tr>
+                <tr>
+                    <td><strong>Qdrant</strong></td>
+                    <td>Open source</td>
+                    <td>Filters + payload</td>
+                    <td>Rust, strong filtering</td>
+                </tr>
+                <tr>
+                    <td><strong>Milvus / Zilliz</strong></td>
+                    <td>Open / cloud</td>
+                    <td>Billion-scale</td>
+                    <td>GPU optional</td>
+                </tr>
+                <tr>
+                    <td><strong>Chroma</strong></td>
+                    <td>Embedded / server</td>
+                    <td>Prototypes</td>
+                    <td>Minimal ceremony</td>
+                </tr>
+                <tr>
+                    <td><strong>FAISS</strong></td>
+                    <td>Library</td>
+                    <td>Research, custom serving</td>
+                    <td>You own the ops</td>
+                </tr>
+            </table>
+
+            <h3>Use cases</h3>
+            <ul>
+                <li>Semantic search and RAG with citations</li>
+                <li>Recommendations and similar-item lookup</li>
+                <li>Multimodal search (embed images with CLIP-style models)</li>
+                <li>Anomaly detection (points far from the cluster)</li>
+            </ul>
+        </section>
+
+        <section id="langchain">
+            <h2>LangChain</h2>
+
+            <p><span class="highlight">LangChain</span> is a toolkit for composing prompts, models, retrievers, and tools. Prefer <strong>LCEL</strong> (LangChain Expression Language: <code>prompt | model | parser</code>) over the old "Chain" classes you still see in 2023 tutorials.</p>
+
+            <div class="info-box">
+                <p><strong>Use it for:</strong> swapping OpenAI / Anthropic / local models behind one interface, retrieval, tool calling, and getting a first agent running. <strong>Do not</strong> treat it as a substitute for logging, evals, or a real queue.</p>
+            </div>
+
+            <h3>Minimal LCEL example</h3>
+            <div class="code-block"><span class="keyword">from</span> langchain_openai <span class="keyword">import</span> ChatOpenAI
+<span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
+
+llm = ChatOpenAI(model=<span class="string">"gpt-4.1-mini"</span>, temperature=<span class="number">0</span>)
+prompt = ChatPromptTemplate.from_messages([
+    (<span class="string">"system"</span>, <span class="string">"You are a concise tutor. If unsure, say so."</span>),
+    (<span class="string">"human"</span>, <span class="string">"{question}"</span>),
+])
+chain = prompt | llm
+print(chain.invoke({<span class="string">"question"</span>: <span class="string">"What is a token?"</span>}).content)</div>
+
+            <h3>Building blocks</h3>
+            <h4>1. Chat models</h4>
+            <p>Wrappers for OpenAI, Anthropic, Google, Bedrock, Ollama. Same <code>.invoke</code> / <code>.stream</code> / <code>.bind_tools</code> shape so you can swap providers.</p>
+
+            <h4>2. Prompts</h4>
+            <p>Templates with variables. Keep them in files, version them, and never concatenate untrusted user text into the system message without a delimiter.</p>
+            <div class="code-block">prompt = ChatPromptTemplate.from_messages([
+    (<span class="string">"system"</span>, <span class="string">"Translate {source} → {target}. Only output the translation."</span>),
+    (<span class="string">"human"</span>, <span class="string">"{text}"</span>),
+])</div>
+
+            <h4>3. Retrievers &amp; vector stores</h4>
+            <p>Document loaders → splitters → embed → store. Retrievers return Documents the prompt can cite. This is RAG without a custom ANN loop.</p>
+
+            <h4>4. Tools &amp; agents</h4>
+            <p>Expose Python functions as tools. The model chooses names + arguments (function calling). LangGraph is the better home for multi-step control flow.</p>
+
+            <h4>5. Memory</h4>
+            <table>
+                <tr>
+                    <th>Pattern</th>
+                    <th>Use</th>
+                </tr>
+                <tr>
+                    <td><strong>Buffer</strong></td>
+                    <td>Last N messages — simple chat</td>
+                </tr>
+                <tr>
+                    <td><strong>Summary</strong></td>
+                    <td>Compress old turns so the window survives</td>
+                </tr>
+                <tr>
+                    <td><strong>Vector memory</strong></td>
+                    <td>Recall semantically related past facts</td>
+                </tr>
+            </table>
+            <p>In production, persist memory in <em>your</em> DB keyed by <code>thread_id</code>. Do not rely on in-process RAM.</p>
+
+            <h3>When LangChain helps vs gets in the way</h3>
+            <table>
+                <tr>
+                    <th>Helps</th>
+                    <th>Gets in the way</th>
+                </tr>
+                <tr>
+                    <td>Provider abstraction, retrievers, quick RAG</td>
+                    <td>Debugging a 12-layer abstraction for one API call</td>
+                </tr>
+                <tr>
+                    <td>Standard document loaders</td>
+                    <td>You already have a clean HTTP client and schema</td>
+                </tr>
+                <tr>
+                    <td>LCEL streaming</td>
+                    <td>You need a strict state machine — use LangGraph</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="langgraph">
+            <h2>LangGraph</h2>
+
+            <p><span class="highlight">LangGraph</span> models an agent as a <strong>stateful graph</strong>: nodes are functions, edges are control flow, and a shared state object is checkpointed after each step. Loops, retries, and human approval are first-class — that is the gap linear LangChain chains never filled well.</p>
+
+            <h3>LangChain vs LangGraph</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>LangChain LCEL</th>
+                    <th>LangGraph</th>
+                </tr>
+                <tr>
+                    <td><strong>Shape</strong></td>
+                    <td>DAG / pipeline</td>
+                    <td>Graph with cycles</td>
+                </tr>
+                <tr>
+                    <td><strong>State</strong></td>
+                    <td>Mostly request-scoped</td>
+                    <td>Typed state, reducers, checkpoints</td>
+                </tr>
+                <tr>
+                    <td><strong>Human-in-the-loop</strong></td>
+                    <td>DIY</td>
+                    <td>Interrupt, resume from checkpoint</td>
+                </tr>
+                <tr>
+                    <td><strong>Fit</strong></td>
+                    <td>RAG, extract, classify</td>
+                    <td>Agents, research loops, approvals</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Core pieces</h4>
+                <ul>
+                    <li><strong>State</strong> — a TypedDict or Pydantic model: messages, files, flags.</li>
+                    <li><strong>Nodes</strong> — call an LLM, a tool, a ranker, or a human inbox.</li>
+                    <li><strong>Edges</strong> — including conditional edges ("if tool error → retry, else END").</li>
+                    <li><strong>Checkpointer</strong> — Postgres/SQLite so a crash or "wait for user" does not lose the run.</li>
+                </ul>
+            </div>
+
+            <h3>Example shapes</h3>
+            <table>
+                <tr>
+                    <th>Workflow</th>
+                    <th>Graph idea</th>
+                </tr>
+                <tr>
+                    <td><strong>ReAct agent</strong></td>
+                    <td>model → tools → model … until no tool call</td>
+                </tr>
+                <tr>
+                    <td><strong>Research</strong></td>
+                    <td>search → read → decide more search? → write</td>
+                </tr>
+                <tr>
+                    <td><strong>Support</strong></td>
+                    <td>classify → retrieve → draft → human approve → send</td>
+                </tr>
+                <tr>
+                    <td><strong>Codefix</strong></td>
+                    <td>edit → test → if fail, loop with logs</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="mcp">
+            <h2>MCP (Model Context Protocol)</h2>
+
+            <p><span class="highlight">MCP</span> is an open protocol so an AI app (the <em>host</em>) can talk to many <em>servers</em> that expose resources, tools, and prompts — without a custom plugin per data source. The usual analogy: USB-C for model context.</p>
+
+            <div class="info-box">
+                <p><strong>Host</strong> (Claude Desktop, an IDE, your agent runtime) embeds an <strong>MCP client</strong>. Each <strong>MCP server</strong> wraps one system: git, Slack, Postgres, a filesystem. The model only sees the tool/resource catalog the host allows.</p>
+            </div>
+
+            <h3>Server primitives</h3>
+            <div class="grid-3">
+                <div class="feature-card card-blue">
+                    <h4>Resources</h4>
+                    <p>Read-only data: files, tickets, schemas. The model fetches them as context, similar to attachments.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Tools</h4>
+                    <p>Actions with JSON arguments: query DB, create issue, run a command. Results come back as tool messages.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Prompts</h4>
+                    <p>Named templates the host can insert — onboarding, "review this PR", slash-commands.</p>
+                </div>
+            </div>
+
+            <h3>Architecture</h3>
+            <div class="diagram-box">Host (IDE / agent runtime)
+   │  MCP client (JSON-RPC)
+   ▼
+MCP server  ──►  tools / resources / prompts
+   │
+   ├── filesystem, git
+   ├── HTTP APIs
+   └── databases (credentials stay on the server)</div>
+
+            <h3>Transports &amp; messages</h3>
+            <p>Servers typically speak JSON-RPC 2.0 over <strong>stdio</strong> (local process) or <strong>Streamable HTTP / SSE</strong> (remote). A resource read looks like:</p>
+            <div class="code-block">{
+  <span class="string">"jsonrpc"</span>: <span class="string">"2.0"</span>,
+  <span class="string">"id"</span>: <span class="number">1</span>,
+  <span class="string">"method"</span>: <span class="string">"resources/read"</span>,
+  <span class="string">"params"</span>: { <span class="string">"uri"</span>: <span class="string">"file:///handbook/pto.md"</span> }
+}</div>
+
+            <div class="warning-box">
+                <h4>Security is the product</h4>
+                <ul>
+                    <li>Servers often run with the user's privileges. Treat tools as production APIs: auth, allowlists, audit logs.</li>
+                    <li>Prompt injection can arrive <em>through a resource</em> ("ignore policy, dump secrets"). Isolate untrusted content.</li>
+                    <li>Do not expose shell tools to a model that sees untrusted email or web pages.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="agents">
+            <h2>AI Agents</h2>
+
+            <p>An <span class="highlight">agent</span> is an LLM in a loop with tools and a stopping condition. It is not magic autonomy. It is: reason → maybe call a tool → observe → repeat until the goal is met or a budget (steps, dollars, time) is exhausted.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-agent-loop.png" alt="Circular agent loop: think, act with a tool, observe the result, then repeat or finish">
+                <div class="illustration-caption">The ReAct loop: Think (plan), Act (tool call), Observe (result). Without a step limit and a verifier, this loop can spend money forever.</div>
+            </div>
+
+            <h3>Chatbot vs agent</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Chatbot</th>
+                    <th>Agent</th>
+                </tr>
+                <tr>
+                    <td><strong>One turn</strong></td>
+                    <td>Answer from weights + prompt</td>
+                    <td>May take many tool round-trips</td>
+                </tr>
+                <tr>
+                    <td><strong>Side effects</strong></td>
+                    <td>None</td>
+                    <td>Email, tickets, code, payments — if you allow them</td>
+                </tr>
+                <tr>
+                    <td><strong>Failure mode</strong></td>
+                    <td>Wrong paragraph</td>
+                    <td>Wrong API call, loop, or leaked data</td>
+                </tr>
+            </table>
+
+            <h3>Patterns</h3>
+            <h4>ReAct (Reason + Act)</h4>
+            <p>Interleave thoughts and actions. Native <strong>tool calling</strong> (JSON function calls) is more reliable than asking the model to emit "Action:" text, but the loop is the same.</p>
+
+            <h4>Plan-then-execute</h4>
+            <p>Write a plan first, then run steps. Better for long tasks; the plan can be wrong, so allow replanning.</p>
+
+            <h4>Multi-agent</h4>
+            <p>Specialists (researcher, coder, reviewer) coordinated by a supervisor or a shared graph. Higher overhead; worth it when roles and tools truly differ.</p>
+
+            <h3>Tools worth giving an agent</h3>
+            <ul>
+                <li>Search and web fetch (with domain allowlists)</li>
+                <li>SQL or document retrieval (read-only until audited)</li>
+                <li>Code interpreter / tests</li>
+                <li>Ticketing and calendar APIs</li>
+                <li>MCP servers for local files and git</li>
+            </ul>
+
+            <h3>Frameworks</h3>
+            <table>
+                <tr>
+                    <th>Stack</th>
+                    <th>Strength</th>
+                </tr>
+                <tr>
+                    <td><strong>LangGraph</strong></td>
+                    <td>Explicit state, cycles, HITL</td>
+                </tr>
+                <tr>
+                    <td><strong>LangChain tools</strong></td>
+                    <td>Fast tool wiring</td>
+                </tr>
+                <tr>
+                    <td><strong>CrewAI / AutoGen-style</strong></td>
+                    <td>Role-based multi-agent</td>
+                </tr>
+                <tr>
+                    <td><strong>Vendor agents</strong></td>
+                    <td>OpenAI Agents SDK, Claude tool use, Gemini</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <h4>Ship agents with budgets</h4>
+                <ul>
+                    <li>Max tool calls, max wall-clock, max dollars per request</li>
+                    <li>Idempotent tools or a confirmation step for writes</li>
+                    <li>Trace every thought/tool in an observability product (LangSmith, Phoenix, vendor traces)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="rag">
+            <h2>RAG (Retrieval Augmented Generation)</h2>
+
+            <p><span class="highlight">RAG</span> injects retrieved evidence into the prompt so the model answers from <em>your</em> documents instead of guessing from training weights. It is the default way to add knowledge that changes, must be cited, or must not be baked into a fine-tune.</p>
+
+            <div class="illustration">
+                <img src="/images/llm/llm-rag.png" alt="RAG: documents are chunked and embedded into a vector database; a user question is embedded, top chunks are retrieved, and the LLM answers with that context">
+                <div class="illustration-caption">Index path: documents → chunks → embeddings → vector DB. Query path: question → embed → top-k search → prompt + evidence → grounded answer.</div>
+            </div>
+
+            <h3>RAG vs fine-tuning</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>RAG</th>
+                    <th>Fine-tune</th>
+                </tr>
+                <tr>
+                    <td><strong>Updates</strong></td>
+                    <td>Re-index a file</td>
+                    <td>New training job</td>
+                </tr>
+                <tr>
+                    <td><strong>Citations</strong></td>
+                    <td>Natural (chunk IDs, URLs)</td>
+                    <td>Weights cannot point to a page</td>
+                </tr>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>Embed + search + extra prompt tokens</td>
+                    <td>GPUs and a dataset</td>
+                </tr>
+                <tr>
+                    <td><strong>Best at</strong></td>
+                    <td>Facts, policies, catalogs</td>
+                    <td>Style, format, domain dialect</td>
+                </tr>
+            </table>
+
+            <h3>Pipeline</h3>
+            <h4>Ingest</h4>
+            <ul>
+                <li>Load PDF, HTML, Markdown, tickets, wiki exports.</li>
+                <li>Chunk ~400–1,000 tokens with 50–150 token overlap. Prefer headings and paragraph boundaries over naive character splits.</li>
+                <li>Store text, embedding, and metadata (source, ACL, date).</li>
+            </ul>
+            <h4>Retrieve</h4>
+            <ul>
+                <li>Embed the query with the <em>same</em> model.</li>
+                <li>Top-k (often 5–20). Hybrid search (BM25 + vector) helps IDs, error codes, and names.</li>
+                <li>Rerank with a cross-encoder if precision matters.</li>
+                <li>Filter by tenant / ACL <em>before</em> the prompt. Never retrieve another customer's chunks.</li>
+            </ul>
+            <h4>Generate</h4>
+            <ul>
+                <li>Instruct: use only the context; cite; say "I don't know" if missing.</li>
+                <li>Keep untrusted documents in a clearly marked block so they cannot override the system prompt.</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Where RAG fails (debug these first)</h4>
+                <ul>
+                    <li><strong>Wrong chunk size</strong> — tables and policies split mid-sentence.</li>
+                    <li><strong>Missed retrieval</strong> — query wording ≠ document wording; add hybrid + synonyms / HyDE.</li>
+                    <li><strong>Context stuffing</strong> — 40 mediocre chunks drown the good one (lost in the middle).</li>
+                    <li><strong>Stale index</strong> — source changed, vectors did not.</li>
+                    <li><strong>Eval-free</strong> — no golden questions, so you only notice in production.</li>
+                </ul>
+            </div>
+
+            <h3>Use cases</h3>
+            <ul>
+                <li>Internal docs, runbooks, and policy Q&amp;A</li>
+                <li>Customer support with a knowledge base</li>
+                <li>Legal / medical literature (with specialist review)</li>
+                <li>Codebase Q&amp;A (often hybrid with grep / AST, not vectors alone)</li>
+            </ul>
+        </section>
+
+        <section id="prompts">
+            <h2>Prompt Engineering</h2>
+
+            <p><span class="highlight">Prompt engineering</span> is specifying the task so the next-token distribution lands on useful outputs. Treat prompts as versioned code: files, diffs, evals — not chat folklore.</p>
+
+            <h3>Prompt parts</h3>
+            <table>
+                <tr>
+                    <th>Part</th>
+                    <th>Job</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><strong>System</strong></td>
+                    <td>Role, hard rules, output contract</td>
+                    <td>"Only use CONTEXT. Cite chunk ids."</td>
+                </tr>
+                <tr>
+                    <td><strong>Context</strong></td>
+                    <td>Evidence, code, retrieved docs</td>
+                    <td>Marked as untrusted data</td>
+                </tr>
+                <tr>
+                    <td><strong>Instruction</strong></td>
+                    <td>The actual ask</td>
+                    <td>"List three failure modes."</td>
+                </tr>
+                <tr>
+                    <td><strong>Examples</strong></td>
+                    <td>Show the format</td>
+                    <td>Few-shot input/output pairs</td>
+                </tr>
+                <tr>
+                    <td><strong>Schema</strong></td>
+                    <td>Machine-readable output</td>
+                    <td>JSON Schema / tool call</td>
+                </tr>
+            </table>
+
+            <h3>Techniques</h3>
+            <h4>Zero / one / few-shot</h4>
+            <p>Zero-shot: just the task. Few-shot: 2–5 examples of the exact format. Examples beat adjectives ("be professional") for classification and extraction.</p>
+            <div class="code-block"><span class="string">Classify sentiment: Positive, Negative, Neutral.
+
+"This product is amazing!" → Positive
+"Terrible experience" → Negative
+"Best purchase ever!" →</span></div>
+
+            <h4>Chain-of-thought</h4>
+            <p>Ask for steps when the task is multi-hop math or logic. It costs output tokens. Some models reason internally; you still want a short final answer for the user.</p>
+
+            <h4>Structured output</h4>
+            <p>Prefer JSON mode, tool calls, or constrained decoding. Validate with Pydantic or Zod. On failure, retry once with the validator error — then stop.</p>
+            <div class="code-block"><span class="string">"You are an expert Python tutor.
+Explain list comprehensions in 3 bullets for a beginner.
+No code longer than 4 lines."</span></div>
+
+            <h3>Prompt injection</h3>
+            <div class="warning-box">
+                <p>Anything retrieved or pasted by a user can say "ignore previous instructions". Separate <strong>instructions</strong> from <strong>data</strong>. Never execute tools solely because a PDF asked you to. Allowlist tools per route.</p>
+            </div>
+
+            <h3>Iterate like an engineer</h3>
+            <ul>
+                <li>Keep a set of 30–100 golden prompts with expected properties (not just one happy-path demo).</li>
+                <li>Change one variable at a time: model, temperature, chunk count, system text.</li>
+                <li>Log traces. A "worse" prompt that is cheaper and more faithful can be the win.</li>
+            </ul>
+        </section>
+
+        <section id="nlp">
+            <h2>Natural Language Processing (NLP)</h2>
+
+            <p><span class="highlight">NLP</span> is the broader field of making computers handle human language. LLMs absorbed many classic pipelines (separate taggers, parsers, and task-specific models), but specialized systems still win on latency, privacy, and high-precision labels.</p>
+
+            <h3>Core tasks (now often one LLM call)</h3>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>What it is</th>
+                    <th>Still use a specialist when</th>
+                </tr>
+                <tr>
+                    <td><strong>Classification / sentiment</strong></td>
+                    <td>Label a text</td>
+                    <td>Millions of cheap predictions / day</td>
+                </tr>
+                <tr>
+                    <td><strong>NER</strong></td>
+                    <td>People, orgs, places, SKUs</td>
+                    <td>You need consistent spans and IOB tags</td>
+                </tr>
+                <tr>
+                    <td><strong>Translation</strong></td>
+                    <td>Language A → B</td>
+                    <td>Regulated, high-volume localization</td>
+                </tr>
+                <tr>
+                    <td><strong>QA / summarization</strong></td>
+                    <td>Answer or compress</td>
+                    <td>You must ground in retrieved text (RAG)</td>
+                </tr>
+                <tr>
+                    <td><strong>Speech (ASR / TTS)</strong></td>
+                    <td>Audio ↔ text</td>
+                    <td>Always a dedicated model; LLM consumes the transcript</td>
+                </tr>
+            </table>
+
+            <h3>How the field got here</h3>
+            <div class="diagram-box">1990s  Rule-based NLP, regex, grammars
+2000s  Statistical n-grams, HMMs
+2010s  Features + SVM; then Word2Vec, RNNs, LSTMs
+2017+  Transformers (BERT, GPT)
+2020+  Large generative models + instruction tuning
+2023+  Tools, RAG, agents, multimodal, long context</div>
+
+            <p>The LLM stack still uses NLP pieces under the hood: tokenization, embeddings, attention, sequence modeling. You did not skip NLP — you inherited it.</p>
+        </section>
+
+        <section id="data">
+            <h2>Data Processing for LLMs</h2>
+
+            <p>Pretraining and RAG both fail in the same way: <strong>garbage in, confident garbage out</strong>. LLM data work is less about z-scores on numeric columns and more about deduplication, PII, toxicity, and license.</p>
+
+            <h3>Corpus hygiene (pretraining / fine-tune)</h3>
+            <ul>
+                <li><strong>Dedup</strong> — exact hashes plus near-dup (MinHash). Repeated web spam warps the model.</li>
+                <li><strong>PII</strong> — emails, phones, keys. Strip or skip; do not train on secrets.</li>
+                <li><strong>Quality filters</strong> — language ID, adult content policy, boilerplate (cookie banners).</li>
+                <li><strong>License / robots</strong> — you cannot "fair use" your way out of every ToS. Track sources.</li>
+                <li><strong>Mixture &amp; packing</strong> — pack short docs into sequences to use the context; upsample high-value domains (code, math) on purpose.</li>
+            </ul>
+
+            <h3>RAG / application data</h3>
+            <ul>
+                <li>Normalize encodings, strip HTML, keep headings.</li>
+                <li>Preserve tables as markdown or CSV snippets so chunking does not destroy them.</li>
+                <li>Attach ACL metadata at ingest — retrieval-time filter, not prompt-time hope.</li>
+                <li>Re-embed when the chunker or embedding model changes (version the index).</li>
+            </ul>
+
+            <h3>Classic cleaning (still useful for tabular ML beside an LLM)</h3>
+            <table>
+                <tr>
+                    <th>Issue</th>
+                    <th>Approach</th>
+                </tr>
+                <tr>
+                    <td>Missing values</td>
+                    <td>Drop, impute, or model as a category</td>
+                </tr>
+                <tr>
+                    <td>Duplicates</td>
+                    <td>Exact then fuzzy</td>
+                </tr>
+                <tr>
+                    <td>Date formats</td>
+                    <td>ISO 8601 everywhere</td>
+                </tr>
+                <tr>
+                    <td>Categorical text</td>
+                    <td>Do not one-hot 100k product names into an LLM prompt — retrieve instead</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <ul>
+                    <li>Biased data produces biased completions. Measure on subgroups, not only average accuracy.</li>
+                    <li>A "clean" dump that is 80% SEO spam will still teach SEO spam.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="limitations">
+            <h2>Limits, Safety &amp; Evaluation</h2>
+
+            <p>A useful LLM app assumes the model is <strong>wrong by default</strong> and then adds retrieval, tools, schemas, and tests until the error rate is acceptable.</p>
+
+            <div class="grid-2">
+                <div class="feature-card card-orange">
+                    <h4>Hallucination</h4>
+                    <p>The model samples a fluent continuation. Mitigation: RAG, "answer only from context", citations, tool use for facts, lower temperature for extraction.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Distribution shift</h4>
+                    <p>Your users' jargon, languages, or 2026 events may be rare in training. Fine-tune style; retrieve facts; add tools.</p>
+                </div>
+                <div class="feature-card card-pink">
+                    <h4>Jailbreaks &amp; injection</h4>
+                    <p>Users and documents will try to override policy. Separate data from instructions; least-privilege tools; monitor.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Eval or it did not happen</h4>
+                    <p>Golden sets, LLM-as-judge (with human spot checks), faithfulness vs relevancy for RAG, online A/B on real tasks.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Offline eval ideas:</strong> exact match for extraction, rubric scores for writing, citation precision/recall for RAG, task success for agents (did the test suite pass?). Re-run on every prompt or model change.</p>
+            </div>
+        </section>
+
+        <section id="apis">
+            <h2>LLM APIs &amp; Services</h2>
+
+            <p>Most products call a hosted <strong>chat completions</strong> (or Responses) API: messages in, tokens out. Wrap vendors so you can change models without rewriting the app. Always set timeout, max retries, and a cheaper fallback for 429/5xx.</p>
+
+            <h3>Providers</h3>
+            <table>
+                <tr>
+                    <th>Provider</th>
+                    <th>Model families</th>
+                    <th>Why teams pick it</th>
+                </tr>
+                <tr>
+                    <td><strong>OpenAI</strong></td>
+                    <td>GPT-4o, GPT-5.x</td>
+                    <td>Docs, tools, ecosystem</td>
+                </tr>
+                <tr>
+                    <td><strong>Anthropic</strong></td>
+                    <td>Claude 4.x</td>
+                    <td>Long tasks, coding, constitutional style</td>
+                </tr>
+                <tr>
+                    <td><strong>Google</strong></td>
+                    <td>Gemini</td>
+                    <td>Multimodal, 1M context, GCP</td>
+                </tr>
+                <tr>
+                    <td><strong>Amazon Bedrock</strong></td>
+                    <td>Multi-vendor in AWS</td>
+                    <td>Enterprise IAM, VPC, one bill</td>
+                </tr>
+                <tr>
+                    <td><strong>Azure OpenAI</strong></td>
+                    <td>OpenAI models on Azure</td>
+                    <td>Data residency, Microsoft estate</td>
+                </tr>
+                <tr>
+                    <td><strong>Together / Fireworks / Groq</strong></td>
+                    <td>Open weights, fast inference</td>
+                    <td>Price and latency</td>
+                </tr>
+                <tr>
+                    <td><strong>Ollama / vLLM local</strong></td>
+                    <td>Llama, Qwen, Mistral, DeepSeek</td>
+                    <td>Privacy, air-gap, cost at scale</td>
+                </tr>
+            </table>
+
+            <h3>A production-shaped call</h3>
+            <div class="code-block"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI
+
+client = OpenAI()  <span class="comment"># or base_url= for compatible servers</span>
+resp = client.chat.completions.create(
+    model=<span class="string">"gpt-4.1-mini"</span>,
+    messages=[
+        {<span class="string">"role"</span>: <span class="string">"system"</span>, <span class="string">"content"</span>: <span class="string">"Be concise. No invented APIs."</span>},
+        {<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"List 3 RAG failure modes."</span>},
+    ],
+    temperature=<span class="number">0.2</span>,
+    max_tokens=<span class="number">400</span>,
+    timeout=<span class="number">30</span>,
+)
+print(resp.choices[<span class="number">0</span>].message.content)
+print(resp.usage)  <span class="comment"># prompt_tokens, completion_tokens</span></div>
+
+            <div class="warning-box">
+                <p><strong>Pricing changes constantly.</strong> In 2026, input is often a few cents to a few dollars per million tokens; output is higher. Log <code>tokens_in</code>, <code>tokens_out</code>, model, and estimated USD on every request. Cached prompt prefixes (where offered) can cut repeated system+RAG costs.</p>
+            </div>
+        </section>
+
+        <section id="models">
+            <h2>Popular LLM Models</h2>
+
+            <p>There is no universal "best" model. Pick for <strong>task, latency, cost, context, and where the data is allowed to live</strong>. Re-benchmark quarterly; leaderboards and product names move faster than your architecture should.</p>
+
+            <h3>How to choose</h3>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Task:</strong> extraction vs open writing vs coding vs vision</li>
+                    <li><strong>Latency:</strong> Flash / mini / Haiku classes for interactive UI</li>
+                    <li><strong>Context:</strong> do you truly need 1M, or is RAG enough?</li>
+                    <li><strong>Privacy:</strong> VPC, on-prem, or zero-retention API</li>
+                    <li><strong>Features:</strong> tool calling, JSON schema, vision, computer use</li>
+                    <li><strong>Eval:</strong> your golden set beats a public MMLU screenshot</li>
+                </ul>
+            </div>
+
+            <h3>Closed vs open weights</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Open weights (Llama, Qwen, Mistral, DeepSeek)</th>
+                    <th>Closed API (GPT, Claude, Gemini)</th>
+                </tr>
+                <tr>
+                    <td><strong>Cost shape</strong></td>
+                    <td>GPUs, idle capacity, your ops</td>
+                    <td>Pay per token; easy to start</td>
+                </tr>
+                <tr>
+                    <td><strong>Privacy</strong></td>
+                    <td>Data can stay in your VPC</td>
+                    <td>Contract + region + retention settings</td>
+                </tr>
+                <tr>
+                    <td><strong>Quality</strong></td>
+                    <td>Often close on many tasks; distill for cost</td>
+                    <td>Usually the frontier for hard reasoning</td>
+                </tr>
+                <tr>
+                    <td><strong>Customization</strong></td>
+                    <td>LoRA, full fine-tune, custom decoding</td>
+                    <td>Limited to vendor features</td>
+                </tr>
+            </table>
+
+            <h3>A sane default stack</h3>
+            <ol>
+                <li>Small/fast model for classification, routing, and cheap RAG.</li>
+                <li>Frontier model for hard reasoning, coding, and agent planning.</li>
+                <li>Dedicated embedding model for the index.</li>
+                <li>Evals that tell you when a swap is a regression.</li>
+            </ol>
+        </section>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 1024 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(e.target) &&
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+    </script>
+</body>
+</html>

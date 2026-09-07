@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise AI Architecture — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🏢 Enterprise AI Architecture</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#security" class="sidebar-link">Security</a>
+                <a href="#governance" class="sidebar-link">Governance</a>
+                <a href="#cost" class="sidebar-link">Cost Optimization</a>
+                <a href="#tenancy" class="sidebar-link">Multi-tenancy</a>
+                <a href="#data-eng" class="sidebar-link">Data Engineering</a>
+                <a href="#compliance" class="sidebar-link">Compliance</a>
+                <a href="#architecture" class="sidebar-link">Architecture</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🏢 12. Enterprise AI Architecture</h1>
+            <p>Step 12 of 12 — The difference between a demo and a company system: trust, cost, tenancy, and law.</p>
+        </header>
+
+        <section id="overview">
+            <h2>The enterprise bar</h2>
+            <p>A production AI engineer in a company designs <span class="highlight">a platform</span>, not a single chatbot: identity, isolation, data contracts, model routing, spend controls, and an architecture that legal/security can approve. This category is how you sit in a design review and not get destroyed.</p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Security</td><td>You can threat-model prompt injection, data exfil, and tool abuse</td></tr>
+                <tr><td>2</td><td>Tenancy</td><td>Tenant A cannot retrieve tenant B’s chunks</td></tr>
+                <tr><td>3</td><td>Data</td><td>You know lineage from source system → index → prompt</td></tr>
+                <tr><td>4</td><td>Cost</td><td>You have budgets, routing, and cache — not unlimited GPT-∞</td></tr>
+                <tr><td>5</td><td>Governance</td><td>You can explain who owns prompts, evals, and incidents</td></tr>
+                <tr><td>6</td><td>Compliance</td><td>You know what logs you must not keep</td></tr>
+            </table>
+        </section>
+
+        <section id="security">
+            <h2>Security</h2>
+            <table>
+                <tr><th>Threat</th><th>Control</th></tr>
+                <tr><td>Prompt injection</td><td>Separate untrusted text; tool allowlists; never elevate privileges from model output</td></tr>
+                <tr><td>Data exfiltration</td><td>Egress allowlists; DLP on outputs; no unrestricted browse tool</td></tr>
+                <tr><td>Secret leak</td><td>Vault/IAM; never in prompts or client bundles</td></tr>
+                <tr><td>Insecure plugins</td><td>Same review as any microservice; signed MCP servers</td></tr>
+                <tr><td>Model supply chain</td><td>Pin model IDs; scan fine-tune data; approved base images</td></tr>
+            </table>
+            <p>AuthN/Z belongs in your API, not in the prompt. RAG filters must apply <strong>before</strong> similarity search is returned to the model.</p>
+        </section>
+
+        <section id="governance">
+            <h2>Governance</h2>
+            <p>Who can change the system prompt? Who approves a new tool? Who looks at traces with PII? Set: model catalog, change tickets for prompt prod, eval owners, incident severity for "model said something illegal." Shadow AI (employees pasting data into public ChatGPT) is an architecture problem — give them a sanctioned gateway.</p>
+        </section>
+
+        <section id="cost">
+            <h2>Cost optimization</h2>
+            <ul>
+                <li>Route: small model for classify, large for hard reasoning</li>
+                <li>Prompt cache, RAG instead of huge contexts, shorter max_tokens</li>
+                <li>Batch embeddings; don’t re-embed unchanged docs</li>
+                <li>Per-tenant and per-feature budgets; kill switches</li>
+                <li>Self-host only when utilization is high enough to beat API list price</li>
+            </ul>
+            <div class="code-block">def route(task: str) -> str:
+    if task in {"intent", "pii_mask"}:
+        return "small"
+    if task == "legal_draft":
+        return "large"
+    return "medium"</div>
+        </section>
+
+        <section id="tenancy">
+            <h2>Multi-tenancy</h2>
+            <p>Isolation levels: shared app + <code>tenant_id</code> on every row and vector (default), siloed indexes for high-risk tenants, dedicated accounts for regulated ones. Never trust tenant id from the model. Row-level security in Postgres; metadata filter <strong>required</strong> on every vector query. Rate limits per tenant so one customer cannot starve the GPU pool.</p>
+        </section>
+
+        <section id="data-eng">
+            <h2>Data engineering</h2>
+            <p>AI is downstream of data. You need CDC or scheduled extracts, a warehouse/lake, quality checks, PII classification, and a documented path into the search index. Late-arriving facts and deletes must flow to the vector DB (tombstones). Feature/label stores still matter for classical ML next to LLMs.</p>
+            <div class="info-box">
+                <strong>Contract:</strong> source system of record → cleaned table → chunk job (versioned) → index. If you cannot replay it, you cannot debug it.
+            </div>
+        </section>
+
+        <section id="compliance">
+            <h2>Compliance</h2>
+            <table>
+                <tr><th>Topic</th><th>AI implication</th></tr>
+                <tr><td>GDPR / privacy</td><td>Lawful basis, deletion (including vectors), DPA with model vendors, regional endpoints</td></tr>
+                <tr><td>Retention</td><td>Don’t keep prompts forever; hash or truncate</td></tr>
+                <tr><td>HIPAA / PCI</td><td>BAA, no PHI in logs, scoped tools</td></tr>
+                <tr><td>EU AI Act / sector rules</td><td>Risk class, transparency, human oversight for high-risk uses</td></tr>
+                <tr><td>Copyright</td><td>Training data policy; citation; don’t train on customer data without contract</td></tr>
+            </table>
+            <p>This is not legal advice — it is the checklist you bring to counsel. Architecture should make the compliant path the easy path.</p>
+        </section>
+
+        <section id="architecture">
+            <h2>Reference architecture</h2>
+            <p>A typical enterprise AI platform:</p>
+            <ol>
+                <li><strong>Edge:</strong> API gateway, WAF, auth (SSO), per-tenant quotas</li>
+                <li><strong>Orchestration:</strong> chat/workflow service, agent graphs, tool bus (MCP)</li>
+                <li><strong>Knowledge:</strong> parsers, chunk jobs, hybrid search, ACL-aware retrieval</li>
+                <li><strong>Models:</strong> router → vendor APIs and/or GPU serving</li>
+                <li><strong>Data:</strong> warehouse, object storage, secrets, encryption keys</li>
+                <li><strong>Control:</strong> eval service, prompt registry, cost explorer, audit log</li>
+                <li><strong>Observability:</strong> traces, metrics, alerts, incident runbooks</li>
+            </ol>
+            <div class="warning-box">
+                <strong>Anti-pattern:</strong> every team embeds OpenAI keys in a Streamlit app. Centralize the gateway; federate the use cases.
+            </div>
+            <p>You have finished the path when you can draw this diagram for your company, name the owners, and list the first three SLOs.</p>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Path complete — you are a Production AI Engineer when</h2>
+            <ul>
+                <li>You can ship software (step 1) and not only notebooks</li>
+                <li>You can ground models (RAG) and constrain them (tools, schemas, evals)</li>
+                <li>You can run it (cloud, Docker, traces, rollback)</li>
+                <li>You can defend it (security, tenancy, cost, compliance) in a design review</li>
+            </ul>
+            <div class="info-box">
+                <strong>Keep looping:</strong> pick one production incident or one eval miss each week and trace it through this 12-step map. That is how the path sticks.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

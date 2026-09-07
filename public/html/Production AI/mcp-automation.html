@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP, Tools & AI Automation — Production AI Engineer</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔌 MCP, Tools & Automation</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#steps" class="sidebar-link">Learning Steps</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-links">
+                <a href="#mcp" class="sidebar-link">MCP</a>
+                <a href="#function-calling" class="sidebar-link">Function Calling</a>
+                <a href="#apis" class="sidebar-link">APIs</a>
+                <a href="#db-tools" class="sidebar-link">Database Tools</a>
+                <a href="#n8n" class="sidebar-link">n8n</a>
+                <a href="#make" class="sidebar-link">Make</a>
+                <a href="#zapier" class="sidebar-link">Zapier</a>
+                <a href="#workflows" class="sidebar-link">Workflows</a>
+                <a href="#events" class="sidebar-link">Event-Driven Automation</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🔌 7. MCP, Tools & AI Automation</h1>
+            <p>Step 7 of 12 — Standardize how models call the world: protocols, APIs, and workflow engines.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Two layers</h2>
+            <p><strong>Tooling for agents/IDEs</strong> (MCP, function calling) and <strong>business automation</strong> (n8n, Make, Zapier, queues). Production AI engineers build the first and often wire the second. The shared rule: <span class="highlight">least privilege, audit logs, and no secrets in prompts.</span></p>
+        </section>
+
+        <section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <table>
+                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
+                <tr><td>1</td><td>Function calling</td><td>You can expose 3 tools with schemas and handle errors</td></tr>
+                <tr><td>2</td><td>MCP</td><td>You can run a local MCP server and call it from a client</td></tr>
+                <tr><td>3</td><td>API tools</td><td>You wrap REST with timeouts, auth, and allowlists</td></tr>
+                <tr><td>4</td><td>DB tools</td><td>Read-only SQL with bound parameters — never string concat</td></tr>
+                <tr><td>5</td><td>iPaaS</td><td>You can replace a brittle Zap with an event + worker when it matters</td></tr>
+                <tr><td>6</td><td>Events</td><td>You design webhooks, idempotency, and dead-letter queues</td></tr>
+            </table>
+        </section>
+
+        <section id="mcp">
+            <h2>MCP (Model Context Protocol)</h2>
+            <p>MCP is an open protocol for connecting AI apps to tools and data: resources (read), prompts (templates), and tools (actions). Clients (Cursor, Claude Desktop, custom agents) speak MCP to servers you run.</p>
+            <table>
+                <tr><th>Primitive</th><th>Use</th></tr>
+                <tr><td>Tools</td><td>Actions: create ticket, query metrics</td></tr>
+                <tr><td>Resources</td><td>Readable context: files, tickets, schemas</td></tr>
+                <tr><td>Prompts</td><td>Reusable instruction packs</td></tr>
+            </table>
+            <div class="code-block"># Conceptual MCP server (Python SDK pattern)
+# - list_tools / call_tool
+# - list_resources / read_resource
+# Transport: stdio for local IDEs, Streamable HTTP for remote</div>
+            <div class="info-box">
+                <strong>Production MCP:</strong> authenticate remote servers, scope tools per user, rate-limit, and never mount a shell tool on a shared server.
+            </div>
+        </section>
+
+        <section id="function-calling">
+            <h2>Function calling</h2>
+            <p>Vendor-native tool calling (OpenAI, Anthropic, Gemini) is how models emit structured tool requests. MCP often sits underneath as the catalog; the model still needs a schema. Validate arguments server-side even if the model "promised" types.</p>
+        </section>
+
+        <section id="apis">
+            <h2>APIs as tools</h2>
+            <p>Each external API becomes a narrow tool, not a generic <code>http_request</code>. Allowlist hosts. Inject auth from a secret store. Map 4xx to the model as "user error" and 5xx as "retry later."</p>
+            <div class="code-block">ALLOWED = {"https://api.github.com"}
+
+async def github_get(path: str) -> str:
+    url = "https://api.github.com" + path
+    if not url.startswith(tuple(ALLOWED)):
+        raise ValueError("host not allowed")
+    # Authorization: Bearer from env, never from the model
+    ...</div>
+        </section>
+
+        <section id="db-tools">
+            <h2>Database tools</h2>
+            <p>Prefer parameterized queries and views. Give the agent a small set of queries (get_order, list_open_tickets), not "run any SQL." For analytics, a read replica and a row limit.</p>
+            <div class="warning-box">
+                <strong>Never:</strong> <code>execute(user_sql)</code> from the model. Prompt injection + SQL = data breach.
+            </div>
+        </section>
+
+        <section id="n8n">
+            <h2>n8n</h2>
+            <p>Open, self-hostable workflow tool. Good for ops: webhook → LLM node → Slack/ticket. You can keep data in your VPC. Treat workflows as code: export, review, version. Put API keys in n8n credentials, not in node fields that get logged.</p>
+        </section>
+
+        <section id="make">
+            <h2>Make</h2>
+            <p>Visual automation (formerly Integromat). Strong SaaS connectors. Same caution as Zapier: great for internal glue, weak as the core of a product SLA unless you add monitoring and retries you control.</p>
+        </section>
+
+        <section id="zapier">
+            <h2>Zapier</h2>
+            <p>Fastest way to connect SaaS for non-engineers. AI actions exist, but you still need: rate limits, PII policy, and an owner. Promote critical paths to your own workers when volume or compliance grows.</p>
+        </section>
+
+        <section id="workflows">
+            <h2>Workflows</h2>
+            <p>A workflow is a directed graph with retries: ingest → classify → human review → notify. LLMs are steps, not the orchestrator of record. Use Temporal, Step Functions, or a simple queue if you need durability. Visual tools are for edges; your domain logic belongs in tested functions.</p>
+        </section>
+
+        <section id="events">
+            <h2>Event-driven automation</h2>
+            <p>Triggers: webhooks, pub/sub, inbox, cron. Pattern: event → validate signature → enqueue → worker → LLM/tool → persist → emit result. Idempotency key = event id. Dead-letter after N failures. Alert on queue depth.</p>
+            <div class="code-block"># Webhook handler sketch
+def handle_stripe(event):
+    if seen(event["id"]):
+        return
+    enqueue("refund.review", event)
+    mark_seen(event["id"])</div>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint — move on when</h2>
+            <ul>
+                <li>You can ship an MCP or function-calling tool with auth and an allowlist</li>
+                <li>You can explain when to use n8n vs a queue worker</li>
+                <li>You never let a model run arbitrary SQL or HTTP</li>
+            </ul>
+            <div class="info-box">
+                <strong>Next:</strong> Voice AI & Multimodal — realtime streams, STT/TTS, and interruption.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redux - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🟣 Redux</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📖 Core</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">What is Redux?</a>
+                <a href="#principles" class="sidebar-link">Three Principles</a>
+                <a href="#building-blocks" class="sidebar-link">Building Blocks</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚙️ Store</div>
+            <div class="sidebar-links">
+                <a href="#actions" class="sidebar-link">Actions</a>
+                <a href="#reducers" class="sidebar-link">Reducers</a>
+                <a href="#store" class="sidebar-link">Store</a>
+                <a href="#middleware" class="sidebar-link">Middleware</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚛️ React</div>
+            <div class="sidebar-links">
+                <a href="#react-redux" class="sidebar-link">react-redux</a>
+                <a href="#selectors" class="sidebar-link">Selectors</a>
+                <a href="#structure" class="sidebar-link">Folder Structure</a>
+                <a href="#when" class="sidebar-link">When to Use</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🟣 Redux</h1>
+            <p>A predictable global store: actions in, pure reducers, one state tree, and a one-way data flow.</p>
+        </header>
+
+        <section id="intro">
+            <h2>📚 What is Redux?</h2>
+            <p><span class="highlight">Redux</span> is a state container. The whole app (or a large domain) has <strong>one store</strong>. You never mutate that store in place. You <code>dispatch</code> a plain object called an <strong>action</strong>. A <strong>reducer</strong> function returns the next state.</p>
+            <p>Classic Redux is verbose on purpose: every change is visible in DevTools. In production you almost always write it with <a href="/learn/redux-toolkit">Redux Toolkit</a>. This page is the mental model underneath.</p>
+
+            <div class="illustration">
+                <img src="/images/state-management/redux-cycle.png" alt="The Redux cycle: view dispatches an action, reducer updates the store, view re-renders">
+                <div class="illustration-caption">One store. Actions describe what happened. Reducers compute the next state. The UI only reads.</div>
+            </div>
+
+            <div class="info-box premium">
+                <h3>The loop</h3>
+                <p><strong>UI → dispatch(action) → reducer(state, action) → new state → UI</strong>. Side effects (HTTP, timers) do not live in reducers. They live in middleware: thunks, <a href="/learn/redux-saga">sagas</a>, or RTK Query.</p>
+            </div>
+        </section>
+
+        <section id="principles">
+            <h2>📜 Three Principles</h2>
+            <table>
+                <tr><th>Principle</th><th>Meaning</th></tr>
+                <tr>
+                    <td><strong>Single source of truth</strong></td>
+                    <td>One store object. You can still split reducers with <code>combineReducers</code>.</td>
+                </tr>
+                <tr>
+                    <td><strong>State is read-only</strong></td>
+                    <td>The only way to change it is to dispatch an action. No <code>state.count++</code> from a component.</td>
+                </tr>
+                <tr>
+                    <td><strong>Changes with pure functions</strong></td>
+                    <td>Reducers: <code>(state, action) =&gt; nextState</code>. No fetch, no random, no mutation of <code>state</code>.</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="building-blocks">
+            <h2>🧱 Building Blocks</h2>
+            <ul>
+                <li><strong>State</strong> — a plain serializable object (JSON-like).</li>
+                <li><strong>Action</strong> — <code>{ type, ...payload }</code>. <code>type</code> is a string.</li>
+                <li><strong>Reducer</strong> — pure function that returns new state.</li>
+                <li><strong>Store</strong> — holds state, exposes <code>getState</code>, <code>dispatch</code>, <code>subscribe</code>.</li>
+                <li><strong>Middleware</strong> — intercepts actions (logging, async).</li>
+                <li><strong>UI bindings</strong> — <code>react-redux</code> <code>Provider</code>, <code>useSelector</code>, <code>useDispatch</code>.</li>
+            </ul>
+
+            <div class="diagram-box">store.getState()
+{
+  counter: { count: 0 },
+  todos:   { items: [] },
+  user:    { data: null, status: 'idle' }
+}
+
+UI ──dispatch──► middleware ──► reducer ──► new state ──► UI</div>
+        </section>
+
+        <section id="actions">
+            <h2>🎫 Actions</h2>
+            <p>An action is a fact that something happened. Convention: string <code>type</code> in <code>'domain/event'</code> form, plus a <code>payload</code>.</p>
+
+            <div class="code-block">const increment = { type: 'counter/increment' };
+
+const addTodo = {
+  type: 'todos/add',
+  payload: { id: '1', text: 'Learn Redux', done: false }
+};
+
+// Action creator — a function that returns an action
+function addTodo(text) {
+  return {
+    type: 'todos/add',
+    payload: { id: crypto.randomUUID(), text, done: false }
+  };
+}
+
+dispatch(addTodo('Learn Redux'));</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Serializable:</strong> Do not put Promises, class instances, or functions in actions if you use DevTools and persist. IDs, strings, numbers, plain objects, arrays only.
+            </div>
+        </section>
+
+        <section id="reducers">
+            <h2>🧮 Reducers</h2>
+            <p>A reducer is <code>(state, action) =&gt; newState</code>. It must not mutate <code>state</code>. Copy objects/arrays you change.</p>
+
+            <div class="code-block">const initialState = { count: 0 };
+
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'counter/increment':
+      return { ...state, count: state.count + 1 };
+    case 'counter/addBy':
+      return { ...state, count: state.count + action.payload };
+    default:
+      return state; // unknown actions must return current state
+  }
+}</div>
+
+            <h3>combineReducers</h3>
+            <p>Each slice owns a key of the root state. An action is passed to every slice reducer; most return their previous slice unchanged.</p>
+
+            <div class="code-block">import { combineReducers } from 'redux';
+
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  todos: todosReducer
+});
+
+// store.getState() → { counter: { count: 0 }, todos: { items: [] } }</div>
+
+            <div class="tip-box">
+                <strong>💡</strong> Reducers must handle <code>undefined</code> state on first run by returning <code>initialState</code>. That is why <code>state = initialState</code> is the default parameter.
+            </div>
+        </section>
+
+        <section id="store">
+            <h2>🏪 The Store</h2>
+            <div class="code-block">import { createStore } from 'redux';
+
+const store = createStore(rootReducer);
+
+store.getState();           // current tree
+store.dispatch({ type: 'counter/increment' });
+store.subscribe(() =&gt; {
+  console.log(store.getState());
+});</div>
+
+            <p><code>createStore</code> is considered a legacy API; Toolkit’s <code>configureStore</code> wraps it with DevTools and thunk middleware. The methods above are still the store contract.</p>
+
+            <h3>Dispatch from anywhere</h3>
+            <p>UI, middleware, and tests can dispatch. Components should not call <code>store.dispatch</code> directly in React — use <code>useDispatch</code> so they stay testable and bound to the Provider’s store.</p>
+        </section>
+
+        <section id="middleware">
+            <h2>🔌 Middleware</h2>
+            <p>Middleware is a pipeline around <code>dispatch</code>. Signature: <code>store =&gt; next =&gt; action =&gt; result</code>.</p>
+
+            <div class="code-block">const logger = (store) =&gt; (next) =&gt; (action) =&gt; {
+  console.log('dispatching', action);
+  const result = next(action);
+  console.log('next state', store.getState());
+  return result;
+};
+
+const store = createStore(rootReducer, applyMiddleware(logger));</div>
+
+            <h3>Thunks (simple async)</h3>
+            <p>redux-thunk lets you dispatch a <em>function</em>. That function receives <code>dispatch</code> and <code>getState</code> and can await APIs, then dispatch plain actions.</p>
+
+            <div class="code-block">function fetchUser(id) {
+  return async (dispatch, getState) =&gt; {
+    dispatch({ type: 'user/pending' });
+    try {
+      const user = await api.getUser(id);
+      dispatch({ type: 'user/fulfilled', payload: user });
+    } catch (err) {
+      dispatch({ type: 'user/rejected', error: err.message });
+    }
+  };
+}
+
+dispatch(fetchUser('42'));</div>
+
+            <p>When thunks grow into cancellation, races, and long workflows, use <a href="/learn/redux-saga">Redux Saga</a>. For most REST caches, use RTK Query inside <a href="/learn/redux-toolkit">Redux Toolkit</a>.</p>
+        </section>
+
+        <section id="react-redux">
+            <h2>⚛️ react-redux</h2>
+            <p>Wrap the tree once. Hooks subscribe components to the store.</p>
+
+            <div class="code-block">import { Provider, useSelector, useDispatch } from 'react-redux';
+
+root.render(
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+);
+
+function Counter() {
+  const count = useSelector((state) =&gt; state.counter.count);
+  const dispatch = useDispatch();
+
+  return (
+    &lt;button onClick={() =&gt; dispatch({ type: 'counter/increment' })}&gt;
+      {count}
+    &lt;/button&gt;
+  );
+}</div>
+
+            <p><code>useSelector</code> re-renders the component only when the selected value changes (strict <code>===</code> by default). Selecting the whole <code>state</code> defeats that.</p>
+
+            <h3>connect (legacy)</h3>
+            <p>Class apps used <code>connect(mapState, mapDispatch)(Component)</code>. New code should use hooks.</p>
+        </section>
+
+        <section id="selectors">
+            <h2>🎯 Selectors</h2>
+            <p>A selector is a function <code>state =&gt; derivedValue</code>. Keep them next to the reducer. Use Reselect (or Toolkit’s <code>createSelector</code>) to memoize expensive derived data.</p>
+
+            <div class="code-block">const selectTodos = (state) =&gt; state.todos.items;
+const selectOpenTodos = (state) =&gt;
+  selectTodos(state).filter((t) =&gt; !t.done);
+
+// memoized
+import { createSelector } from 'reselect';
+
+const selectOpenTodosMemo = createSelector(
+  [selectTodos],
+  (items) =&gt; items.filter((t) =&gt; !t.done)
+);</div>
+        </section>
+
+        <section id="structure">
+            <h2>📁 Folder Structure</h2>
+            <p>Classic “Rails-style” folders (<code>actions/</code>, <code>reducers/</code>) scatter one feature. Prefer <strong>feature folders</strong> (and Toolkit slices):</p>
+
+            <div class="code-block">src/
+  store/
+    index.js          // createStore / configureStore
+  features/
+    todos/
+      todosSlice.js   // or todosReducer.js + todosActions.js
+      TodosList.jsx
+    cart/
+      cartSlice.js
+      CartDrawer.jsx</div>
+        </section>
+
+        <section id="when">
+            <h2>🎯 When to Use Redux</h2>
+            <ul>
+                <li>Many components, distant in the tree, share the same domain data</li>
+                <li>You need a replayable log of what happened (support, undo, analytics)</li>
+                <li>Several teams must update state the same way</li>
+            </ul>
+            <p>Skip Redux for a marketing page, a form-only wizard, or a single context value like theme.</p>
+
+            <div class="info-box">
+                <h3>Immutability cheat sheet</h3>
+                <ul>
+                    <li>Object: <code>{ ...state, count: 1 }</code></li>
+                    <li>Array add: <code>[...list, item]</code></li>
+                    <li>Array update: <code>list.map(x =&gt; x.id === id ? { ...x, done: true } : x)</code></li>
+                    <li>Array remove: <code>list.filter(x =&gt; x.id !== id)</code></li>
+                    <li>Toolkit + Immer lets you write <code>state.count++</code> inside <code>createSlice</code>.</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>Next:</strong> <a href="/learn/redux-toolkit">Redux Toolkit</a> is how you should implement this model. <a href="/learn/redux-saga">Redux Saga</a> is the advanced async layer.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

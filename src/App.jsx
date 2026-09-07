@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import AllTopicsPage from './pages/AllTopicsPage';
-import ResumePage from './pages/ResumePage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import DocumentationPage from './pages/DocumentationPage';
@@ -23,7 +22,6 @@ function App() {
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/topics" element={<AllTopicsPage />} />
-                            <Route path="/resume" element={<ResumePage />} />
                             <Route path="/blog" element={<BlogPage />} />
                             <Route path="/blog/:blogId" element={<BlogPostPage />} />
                             <Route path="/about" element={<AboutPage />} />

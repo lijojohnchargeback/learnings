@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Menu, X, Layout, FileText, BookOpen, User, Home } from 'lucide-react';
+import { Search, Menu, X, Layout, BookOpen, User, Home } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import './Navbar.css';
 
 const navLinks = [
     { to: '/topics', label: 'Directory', icon: Layout, match: (path) => path === '/topics' },
     { to: '/about', label: 'About', icon: User, match: (path) => path === '/about' },
-    { to: '/resume', label: 'Resume', icon: FileText, match: (path) => path === '/resume' },
     { to: '/blog', label: 'Blog', icon: BookOpen, match: (path) => path.startsWith('/blog') },
 ];
 

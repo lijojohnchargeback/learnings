@@ -26,7 +26,6 @@ const Footer = () => {
                             <h4 className="footer-heading">Platform</h4>
                             <Link to="/" className="footer-link">Home</Link>
                             <Link to="/topics" className="footer-link">All Topics</Link>
-                            <Link to="/resume" className="footer-link">Resume</Link>
                         </div>
                         <div className="footer-links-column">
                             <h4 className="footer-heading">Social</h4>

@@ -84,7 +84,8 @@ export const categories = [
             { id: 'computer-science-master', title: 'Computer Fundamentals', file: 'Computer Science/computer-science-master.html' },
             { id: 'concurrency-parallelism', title: 'Concurrency & Parallelism', file: 'Computer Science/concurrency-parallelism.html' },
             { id: 'backend-system', title: 'Backend Systems', file: 'Backend/backend-system.html' },
-            { id: 'system-design', title: 'System Design', file: 'System Design/system-design.html' }
+            { id: 'system-design', title: 'System Design', file: 'System Design/system-design.html' },
+            { id: 'essential-engineering-concepts', title: 'Essential Engineering Concepts', file: 'System Design/essential-engineering-concepts.html' }
         ]
     },
     {

@@ -474,10 +474,10 @@ function DocumentationPage() {
                                     {topic.categoryIcon} {topic.category} Specialist
                                 </span>
                                 <span className="doc-read-time">
-                                    {topicId === 'aws-overview' ? '45 min read' : isAwsComputeTopic ? '30 min read' : topicId === 'docker' ? '40 min read' : topicId === 'backend-system' ? '25 min read' : isNodejsTopic ? '40 min read' : isSystemDesignTopic ? '35 min read' : isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic || isMessageQueueTopic ? '40 min read' : '12 min read'}
+                                    {topicId === 'aws-overview' ? '45 min read' : isAwsComputeTopic ? '30 min read' : topicId === 'docker' ? '40 min read' : topicId === 'backend-system' ? '25 min read' : topicId === 'essential-engineering-concepts' ? '35 min read' : isNodejsTopic ? '40 min read' : isSystemDesignTopic ? '35 min read' : isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic || isMessageQueueTopic ? '40 min read' : '12 min read'}
                                 </span>
                                 <span className="doc-read-time">
-                                    {topicId === 'aws-overview' ? 'Visual Deep Dive' : isAwsComputeTopic || topicId === 'docker' || isMessageQueueTopic ? 'Illustrated Guide' : topicId === 'backend-system' || isNodejsTopic || isSystemDesignTopic || isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic ? 'Illustrated Guide' : 'Advanced Level'}
+                                    {topicId === 'aws-overview' ? 'Visual Deep Dive' : isAwsComputeTopic || topicId === 'docker' || isMessageQueueTopic ? 'Illustrated Guide' : topicId === 'backend-system' || topicId === 'essential-engineering-concepts' || isNodejsTopic || isSystemDesignTopic || isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic ? 'Illustrated Guide' : 'Advanced Level'}
                                 </span>
                             </div>
                         </div>

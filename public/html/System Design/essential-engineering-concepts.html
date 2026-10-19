@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Essential software engineering concepts: N+1 queries, idempotency, canary deployments, caching, rate limiting, migrations, CAP, outbox/saga, webhooks, observability, and production reliability.">
+    <meta name="keywords" content="N+1 queries, idempotency, canary deployment, caching, rate limiting, pagination, CAP theorem, outbox, saga, webhooks, feature flags, Node.js, MongoDB">
+    <title>Essential Software Engineering Concepts</title>
+    <link rel="stylesheet" href="/css/docs.css">
+    <style>
+        .grid-2, .grid-3 {
+            display: grid;
+            gap: 1.25rem;
+            margin: 1.75rem 0;
+        }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        .feature-card {
+            background: #fff;
+            padding: 1.5rem 1.6rem;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            border-top: 4px solid #3b82f6;
+        }
+        .feature-card h4 { margin-top: 0; }
+        .card-blue { border-top-color: #3b82f6; }
+        .card-green { border-top-color: #10b981; }
+        .card-purple { border-top-color: #8b5cf6; }
+        .card-orange { border-top-color: #f59e0b; }
+        .card-teal { border-top-color: #14b8a6; }
+        .card-red { border-top-color: #ef4444; }
+        .priority-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.55rem;
+            border-radius: 999px;
+            background: #fef3c7;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+        .priority-badge.high { background: #fee2e2; color: #991b1b; }
+        .flow-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .flow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-step {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 0.85rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            text-align: center;
+            min-width: 120px;
+        }
+        .flow-step.accent { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; }
+        .flow-step.warn { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
+        .flow-step.danger { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+        .flow-step.ok { border-color: #86efac; background: #ecfdf5; color: #065f46; }
+        .flow-arrow {
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .canary-bar {
+            display: flex;
+            height: 48px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+        }
+        .canary-bar .stable {
+            flex: 95;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.9rem;
+        }
+        .canary-bar .canary {
+            flex: 5;
+            background: #fef3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #92400e;
+            font-size: 0.8rem;
+            min-width: 70px;
+        }
+        .wrong-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        .right-box {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        .checklist li {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            margin: 0.55rem 0;
+        }
+        .checklist input {
+            margin-top: 0.2rem;
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #2563eb;
+            flex-shrink: 0;
+        }
+        .phase-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .quiz-option {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            margin: 0.55rem 0;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .quiz-option:hover { border-color: #93c5fd; background: #f8fafc; }
+        .quiz-option.correct { border-color: #86efac; background: #ecfdf5; }
+        .quiz-option.wrong { border-color: #fca5a5; background: #fef2f2; }
+        .quiz-option input { margin-top: 0.15rem; accent-color: #2563eb; }
+        .arch-stack {
+            display: grid;
+            gap: 0.55rem;
+            margin: 1.5rem 0;
+        }
+        .arch-layer {
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .arch-layer strong { color: #0f172a; }
+        .arch-layer span { color: #64748b; font-size: 0.9rem; }
+        .arch-layer.l1 { background: #eff6ff; }
+        .arch-layer.l2 { background: #ecfdf5; }
+        .arch-layer.l3 { background: #f5f3ff; }
+        .arch-layer.l4 { background: #fff7ed; }
+        .arch-layer.l5 { background: #f0fdfa; }
+        .arch-layer.l6 { background: #fdf2f8; }
+        .obs-trio {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .obs-card {
+            text-align: center;
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 16px;
+            padding: 1.4rem 1rem;
+        }
+        .obs-card h4 { color: #93c5fd; margin: 0 0 0.4rem; }
+        .obs-card p { margin: 0; color: #cbd5e1; font-size: 0.9rem; }
+        .pyramid {
+            max-width: 420px;
+            margin: 1.5rem auto;
+            text-align: center;
+        }
+        .pyramid-tier {
+            margin: 0.4rem auto;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+        .pyramid-tier.e2e { width: 45%; background: #fee2e2; }
+        .pyramid-tier.int { width: 70%; background: #fef3c7; }
+        .pyramid-tier.unit { width: 100%; background: #dbeafe; }
+        .race-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+        @media (max-width: 700px) {
+            .race-grid { grid-template-columns: 1fr; }
+            .flow-arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🛠️ Engineering Essentials</h2>
+            <p>Reliability · Performance · Safe Releases</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start Here</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#at-a-glance" class="sidebar-link">Topics at a Glance</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Database &amp; APIs</div>
+            <div class="sidebar-links">
+                <a href="#n-plus-one" class="sidebar-link">N+1 Query Problem</a>
+                <a href="#db-concepts" class="sidebar-link">Database Concepts</a>
+                <a href="#username-check" class="sidebar-link">Fast Username Checks</a>
+                <a href="#idempotency" class="sidebar-link">Idempotency</a>
+                <a href="#invoice-double-click" class="sidebar-link">Invoice Double-Click</a>
+                <a href="#api-reliability" class="sidebar-link">API Reliability</a>
+                <a href="#retries" class="sidebar-link">Retries &amp; Circuit Breakers</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Releases &amp; Systems</div>
+            <div class="sidebar-links">
+                <a href="#canary" class="sidebar-link">Canary Deployment</a>
+                <a href="#deploy-compare" class="sidebar-link">Deployment Strategies</a>
+                <a href="#queues" class="sidebar-link">Queues &amp; Jobs</a>
+                <a href="#race-conditions" class="sidebar-link">Race Conditions</a>
+                <a href="#locking" class="sidebar-link">Optimistic vs Pessimistic</a>
+                <a href="#architecture" class="sidebar-link">Architecture</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Production Quality</div>
+            <div class="sidebar-links">
+                <a href="#observability" class="sidebar-link">Observability</a>
+                <a href="#testing" class="sidebar-link">Testing</a>
+                <a href="#security" class="sidebar-link">Security</a>
+                <a href="#nodejs-gotchas" class="sidebar-link">Node.js Gotchas</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">More Topics</div>
+            <div class="sidebar-links">
+                <a href="#caching" class="sidebar-link">Caching Strategies</a>
+                <a href="#pagination" class="sidebar-link">Pagination</a>
+                <a href="#rate-limiting" class="sidebar-link">Rate Limiting</a>
+                <a href="#auth-patterns" class="sidebar-link">Auth Patterns</a>
+                <a href="#migrations" class="sidebar-link">Schema Migrations</a>
+                <a href="#scaling" class="sidebar-link">Scaling &amp; Load Balancing</a>
+                <a href="#cap" class="sidebar-link">CAP &amp; Consistency</a>
+                <a href="#outbox-saga" class="sidebar-link">Outbox &amp; Saga</a>
+                <a href="#webhooks" class="sidebar-link">Webhooks</a>
+                <a href="#graceful-shutdown" class="sidebar-link">Graceful Shutdown</a>
+                <a href="#feature-flags" class="sidebar-link">Feature Flags</a>
+                <a href="#incident-response" class="sidebar-link">Incident Response</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Practice</div>
+            <div class="sidebar-links">
+                <a href="#roadmap" class="sidebar-link">Learning Roadmap</a>
+                <a href="#scenario" class="sidebar-link">Scenario Quiz</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>Essential Software Engineering Concepts</h1>
+                <p>Build reliable systems, prevent production failures, improve performance, and deploy changes safely — beyond writing feature code.</p>
+            </header>
+
+            <!-- OVERVIEW -->
+            <section id="overview">
+                <h2>Why these concepts matter</h2>
+                <p>As a software engineer working with <strong>Node.js</strong>, <strong>React</strong>, APIs, databases, and cloud deployments, coding alone is not enough. The highest-leverage skills are the ones that keep systems correct under retries, fast under load, and safe under continuous release.</p>
+
+                <div class="info-box premium">
+                    <h3>How the pieces connect</h3>
+                    <p>Efficient queries improve performance. Idempotency makes retries safe. Queues control workloads. Observability detects problems. Canary deployments reduce release risk. Learn them as a connected system, not isolated buzzwords.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>What this topic covers</h4>
+                        <ul>
+                            <li>Database performance (N+1, indexes, pooling)</li>
+                            <li>API correctness (idempotency, validation)</li>
+                            <li>Reliability patterns (timeouts, circuit breakers)</li>
+                            <li>Safe deployments (canary, blue-green, flags)</li>
+                            <li>Queues, concurrency, and observability</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Recommended starting trio</h4>
+                        <ol>
+                            <li><strong>N+1 queries</strong> — stop silent latency</li>
+                            <li><strong>Idempotency</strong> — retry without duplicates</li>
+                            <li><strong>Canary deployment</strong> — ship with a safety net</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AT A GLANCE -->
+            <section id="at-a-glance">
+                <h2>1. The most important topics at a glance</h2>
+                <div class="grid-2">
+                    <div class="feature-card card-red">
+                        <span class="priority-badge high">High priority</span>
+                        <h4>1. N+1 Query Problem</h4>
+                        <p>Why apps run too many database queries, and how joins, batching, and eager loading cut latency.</p>
+                    </div>
+                    <div class="feature-card card-red">
+                        <span class="priority-badge high">High priority</span>
+                        <h4>2. Idempotency</h4>
+                        <p>How to retry API requests safely without duplicate payments, uploads, or records.</p>
+                    </div>
+                    <div class="feature-card card-red">
+                        <span class="priority-badge high">High priority</span>
+                        <h4>3. Canary &amp; Blue-Green</h4>
+                        <p>Release gradually and roll back quickly when something goes wrong.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <span class="priority-badge">Core</span>
+                        <h4>4. Distributed Reliability</h4>
+                        <p>Retries, timeouts, circuit breakers, duplicate messages, queues, eventual consistency.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <span class="priority-badge">Core</span>
+                        <h4>5. Production Monitoring</h4>
+                        <p>Logs, metrics, tracing, alerts, SLIs, SLOs, and incident response.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <span class="priority-badge">Core</span>
+                        <h4>6. Caching &amp; Scaling</h4>
+                        <p>Cache-aside, TTLs, stampede prevention, horizontal scale, and load balancers.</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <span class="priority-badge">Core</span>
+                        <h4>7. Migrations &amp; Flags</h4>
+                        <p>Expand/contract schema changes, feature flags, and safe coexistence of versions.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- N+1 -->
+            <section id="n-plus-one">
+                <h2>2A. The N+1 query problem</h2>
+                <p>Suppose your API returns 100 merchants and their reports. A naive loop fetches reports one merchant at a time.</p>
+
+                <div class="flow-box">
+                    <h3 style="margin-top:0;text-align:center;">Bad path: 101 queries</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step accent">Query 1<br><small>All merchants</small></div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step danger">Queries 2–101<br><small>Report per merchant</small></div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step warn">High latency<br><small>DB + network cost</small></div>
+                    </div>
+                </div>
+
+                <div class="wrong-box">
+                    <strong>Bad (Node.js + MongoDB):</strong> one query inside the loop for every merchant.
+                </div>
+                <div class="code-block">const merchants = await Merchant.find();
+
+for (const merchant of merchants) {
+  merchant.reports = await Report.find({
+    merchantId: merchant._id
+  });
+}</div>
+
+                <div class="right-box">
+                    <strong>Better:</strong> batch with <code>$in</code>, then group in memory. Often 1–2 queries total.
+                </div>
+                <div class="code-block">const merchants = await Merchant.find();
+const ids = merchants.map(m =&gt; m._id);
+
+const reports = await Report.find({
+  merchantId: { $in: ids }
+});
+
+const byMerchant = new Map();
+for (const report of reports) {
+  const key = String(report.merchantId);
+  if (!byMerchant.has(key)) byMerchant.set(key, []);
+  byMerchant.get(key).push(report);
+}
+
+for (const merchant of merchants) {
+  merchant.reports = byMerchant.get(String(merchant._id)) || [];
+}</div>
+
+                <div class="info-box">
+                    <h3>SQL vs MongoDB</h3>
+                    <ul>
+                        <li><strong>SQL:</strong> prefer a <code>JOIN</code> or a second batched query with <code>WHERE merchant_id IN (...)</code></li>
+                        <li><strong>MongoDB:</strong> <code>$in</code> batching or <code>$lookup</code> aggregation</li>
+                        <li><strong>ORMs:</strong> eager loading / <code>include</code> / <code>populate</code> — but verify the generated SQL</li>
+                    </ul>
+                </div>
+
+                <p><strong>Why it matters:</strong> fewer round trips reduce API latency, database load, and cloud cost. Pair this with indexes, query plans, pagination, and avoiding over-fetching.</p>
+            </section>
+
+            <!-- DB CONCEPTS -->
+            <section id="db-concepts">
+                <h2>2B. Other database concepts you must know</h2>
+                <table>
+                    <tr><th>Concept</th><th>What to understand</th></tr>
+                    <tr><td>Indexing</td><td>Speeds reads and filters; costs storage and can slow writes</td></tr>
+                    <tr><td>Pagination</td><td>Limit/offset or cursor-based — never load huge datasets at once</td></tr>
+                    <tr><td>Connection pooling</td><td>Reuse connections; do not open one per request</td></tr>
+                    <tr><td>Transactions &amp; ACID</td><td>Keep related writes consistent when multiple ops must succeed together</td></tr>
+                    <tr><td>Optimistic locking</td><td>Detect concurrent updates so one request does not silently overwrite another</td></tr>
+                    <tr><td>Caching</td><td>Redis or in-memory cache for expensive repeated reads</td></tr>
+                    <tr><td>Query plans</td><td><code>EXPLAIN</code> (SQL) or <code>explain()</code> (MongoDB) to spot scans vs index use</td></tr>
+                </table>
+            </section>
+
+            <!-- USERNAME CHECK SPEED -->
+            <section id="username-check">
+                <h2>2C. Why “username already taken” feels instant</h2>
+                <p>Signup forms often show “username already taken” within ~100–300ms while you type. That speed is not magic — it is several small optimizations stacked together.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>1. Unique index on username</h4>
+                        <p>A unique index turns “does this name exist?” into an index lookup (O(log n)), not a full table scan. Millions of users still answer in milliseconds.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>2. Server / edge near the user</h4>
+                        <p>CDN, regional API, or edge function cuts network RTT. A light check that takes 5ms in the DB still feels slow if the round trip is 400ms across continents.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>3. Lightweight API</h4>
+                        <p>Endpoint does almost nothing: validate format → indexed exists query → return <code>{ available: false }</code>. No heavy joins, no auth side effects, tiny JSON.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>4. Debounce on the client</h4>
+                        <p>Wait ~300ms after the user stops typing before calling the API. Prevents a request on every keystroke and keeps the server cool.</p>
+                    </div>
+                </div>
+
+                <div class="flow-box">
+                    <h3 style="margin-top:0;text-align:center;">Typing → debounce → light check</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">User types<br><code>john_</code></div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step warn">Debounce<br>300ms</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">GET /usernames/<br>john_/available</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Index lookup<br>→ taken / free</div>
+                    </div>
+                </div>
+
+                <div class="code-block">// MongoDB: unique index makes existence checks fast
+db.users.createIndex({ username: 1 }, { unique: true });
+
+// Lightweight API
+app.get('/usernames/:name/available', async (req, res) =&gt; {
+  const name = String(req.params.name).toLowerCase().trim();
+  if (!/^[a-z0-9_]{3,20}$/.test(name)) {
+    return res.status(400).json({ available: false, reason: 'invalid' });
+  }
+  const taken = await User.exists({ username: name }); // uses index
+  res.json({ available: !taken });
+});</div>
+
+                <div class="code-block">// React: debounce so you do not hit the API on every keypress
+import { useEffect, useState } from 'react';
+
+function useUsernameAvailability(username) {
+  const [status, setStatus] = useState('idle'); // idle | checking | taken | free
+
+  useEffect(() =&gt; {
+    if (!username) { setStatus('idle'); return; }
+    setStatus('checking');
+    const t = setTimeout(async () =&gt; {
+      const res = await fetch(`/usernames/${encodeURIComponent(username)}/available`);
+      const data = await res.json();
+      setStatus(data.available ? 'free' : 'taken');
+    }, 300); // debounce
+    return () =&gt; clearTimeout(t);
+  }, [username]);
+
+  return status;
+}</div>
+
+                <div class="info-box premium">
+                    <h3>Still enforce uniqueness on write</h3>
+                    <p>The availability check is a UX hint. Two users can still race and both see “available.” The <strong>unique index</strong> (or unique constraint) on insert is the real guarantee — catch the duplicate-key error and show “already taken.”</p>
+                </div>
+            </section>
+
+            <!-- IDEMPOTENCY -->
+            <section id="idempotency">
+                <h2>3A. Idempotency</h2>
+                <p>An operation is <strong>idempotent</strong> when repeating it with the same inputs produces the same intended result <em>without repeating the side effect</em>.</p>
+
+                <div class="flow-box">
+                    <h3 style="margin-top:0;text-align:center;">Payment retry without double charge</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">Client sends<br>payment</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">Server charges<br>once</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Store result by<br>idempotency key</div>
+                    </div>
+                    <div class="flow-steps" style="margin-top:1rem;">
+                        <div class="flow-step warn">Client retries<br>same key</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Return stored<br>result</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">No second<br>charge</div>
+                    </div>
+                </div>
+
+                <div class="code-block">POST /payments
+Idempotency-Key: order-123-payment
+
+// Conceptual — production needs atomicity + payload checks
+const existing = await findByIdempotencyKey(key);
+if (existing) {
+  return existing.response;
+}
+return processPaymentOnce(key, requestBody);</div>
+
+                <div class="info-box premium">
+                    <h3>Production checklist for idempotent POST</h3>
+                    <ul>
+                        <li>Persist the key and result (or in-progress lock) atomically</li>
+                        <li>Handle concurrent requests with the same key (unique constraint / transaction)</li>
+                        <li>Reject the same key reused with a different payload</li>
+                        <li>Account for payment-provider behavior (they may also be idempotent)</li>
+                    </ul>
+                </div>
+
+                <p><strong>HTTP note:</strong> GET, PUT, and DELETE are defined as idempotent methods. POST is not inherently idempotent — you make it so by design.</p>
+            </section>
+
+            <!-- INVOICE DOUBLE CLICK -->
+            <section id="invoice-double-click">
+                <h2>3A+. Invoice POST: accidental double-click</h2>
+                <p>User clicks <strong>Create Invoice</strong>. The network is slow, so they click again. Without protection you get two invoices, two emails, two ledger entries.</p>
+
+                <div class="wrong-box">
+                    <strong>UI alone is not enough.</strong> Disabling the button helps, but a retry, a second tab, or a flaky network can still send the POST twice. The server must also be idempotent.
+                </div>
+
+                <h3>Defense in depth (use both)</h3>
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>1. Client: disable submit while waiting</h4>
+                        <p>On first click, disable the button (and show a spinner). Re-enable only after the response — success or error. Stops most accidental double submits.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>2. Server: client-generated idempotency key</h4>
+                        <p>Before the first request, the client generates one UUID (or key). Every retry of that “create invoice” action sends the <strong>same</strong> key. Server creates the row once and returns the same result.</p>
+                    </div>
+                </div>
+
+                <div class="flow-box">
+                    <h3 style="margin-top:0;text-align:center;">Same key → one invoice</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step accent">Client generates<br><code>idem-key</code></div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">POST /invoices<br>+ Idempotency-Key</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Server stores<br>key → invoice</div>
+                    </div>
+                    <div class="flow-steps" style="margin-top:1rem;">
+                        <div class="flow-step danger">Double-click / retry<br>same key</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Return existing<br>invoice</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">No second<br>entry</div>
+                    </div>
+                </div>
+
+                <div class="code-block">// Client (React) — generate key once per "intent", disable while in flight
+import { useRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
+
+function CreateInvoiceButton({ payload }) {
+  const [loading, setLoading] = useState(false);
+  const idempotencyKey = useRef(uuid()); // one key for this form submit intent
+
+  async function onSubmit() {
+    if (loading) return;          // ignore extra clicks
+    setLoading(true);             // disable submit immediately
+    try {
+      const res = await fetch('/invoices', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': idempotencyKey.current,
+        },
+        body: JSON.stringify(payload),
+      });
+      const invoice = await res.json();
+      // success → navigate or show invoice
+      return invoice;
+    } catch (err) {
+      // keep the SAME key so a retry does not create a second invoice
+      throw err;
+    } finally {
+      setLoading(false);          // re-enable after response
+    }
+  }
+
+  return (
+    &lt;button type="button" disabled={loading} onClick={onSubmit}&gt;
+      {loading ? 'Creating…' : 'Create invoice'}
+    &lt;/button&gt;
+  );
+}</div>
+
+                <div class="code-block">// Server (Node) — unique index on idempotencyKey guarantees one entry
+// db.invoices.createIndex({ idempotencyKey: 1 }, { unique: true })
+
+app.post('/invoices', async (req, res) =&gt; {
+  const key = req.header('Idempotency-Key');
+  if (!key) return res.status(400).json({ error: 'Idempotency-Key required' });
+
+  const existing = await Invoice.findOne({ idempotencyKey: key });
+  if (existing) {
+    return res.status(200).json(existing); // same key → same invoice
+  }
+
+  try {
+    const invoice = await Invoice.create({
+      ...req.body,
+      idempotencyKey: key,
+    });
+    return res.status(201).json(invoice);
+  } catch (err) {
+    // concurrent double POST: unique index won the race
+    if (err.code === 11000) {
+      const again = await Invoice.findOne({ idempotencyKey: key });
+      return res.status(200).json(again);
+    }
+    throw err;
+  }
+});</div>
+
+                <div class="info-box premium">
+                    <h3>Key rules</h3>
+                    <ul>
+                        <li><strong>Client generates the key</strong> once per user intent (e.g. when the form mounts or on first click) — not a new UUID on every retry</li>
+                        <li><strong>Server stores the key</strong> with a unique constraint and returns the stored invoice on repeats</li>
+                        <li><strong>Disable the button</strong> after click until the response arrives (UX layer)</li>
+                        <li>On success, generate a <em>new</em> key only if the user starts creating a <em>different</em> invoice</li>
+                    </ul>
+                </div>
+
+                <div class="right-box">
+                    Think of it as: UI prevents casual double-clicks; idempotency key prevents duplicate invoices when the network or the user still sends the request twice.
+                </div>
+            </section>
+
+            <!-- API RELIABILITY -->
+            <section id="api-reliability">
+                <h2>3B. Related API concepts</h2>
+                <table>
+                    <tr><th>Topic</th><th>Why it matters</th></tr>
+                    <tr><td>Rate limiting</td><td>Protects APIs from abuse and traffic spikes</td></tr>
+                    <tr><td>AuthN vs AuthZ</td><td>Identity vs permissions</td></tr>
+                    <tr><td>API versioning</td><td>Change without unexpectedly breaking clients</td></tr>
+                    <tr><td>Request validation</td><td>Rejects malformed or unsafe inputs</td></tr>
+                    <tr><td>Timeouts</td><td>Prevents waiting forever</td></tr>
+                    <tr><td>Retries with backoff</td><td>Recovers from temporary failures without flooding</td></tr>
+                    <tr><td>Circuit breaker</td><td>Stops calling a failing dependency for a while</td></tr>
+                    <tr><td>Bulkhead isolation</td><td>One overloaded component cannot exhaust all resources</td></tr>
+                    <tr><td>Pagination &amp; filtering</td><td>Keeps responses manageable</td></tr>
+                    <tr><td>Error handling</td><td>Consistent, actionable errors without leaking secrets</td></tr>
+                </table>
+            </section>
+
+            <!-- RETRIES -->
+            <section id="retries">
+                <h2>3C. Retry, timeout, and circuit breaker</h2>
+                <div class="flow-box">
+                    <h3 style="margin-top:0;text-align:center;">Decision flow for a dependency call</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">API request</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step warn">Circuit open?</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step danger">Fail fast / fallback</div>
+                    </div>
+                    <div class="flow-steps" style="margin-top:1rem;">
+                        <div class="flow-step accent">Call dependency<br>with timeout</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Success → return</div>
+                    </div>
+                    <div class="flow-steps" style="margin-top:1rem;">
+                        <div class="flow-step danger">Fail / timeout</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step warn">Retry budget left?</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">Backoff + jitter</div>
+                    </div>
+                </div>
+
+                <div class="wrong-box">
+                    <strong>Danger:</strong> retries are not always safe. Retrying a non-idempotent payment can create duplicate charges.
+                </div>
+                <div class="right-box">
+                    <strong>Safe combo:</strong> timeouts + bounded retries + exponential backoff + jitter + idempotency keys.
+                </div>
+            </section>
+
+            <!-- CANARY -->
+            <section id="canary">
+                <h2>4A. Canary deployment</h2>
+                <p>Release a new version to a small percentage of users first. If it stays healthy, increase traffic. If not, roll back immediately.</p>
+
+                <div class="canary-bar">
+                    <div class="stable">Stable v1 — 95%</div>
+                    <div class="canary">Canary v2 — 5%</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Monitor the canary</h4>
+                        <ul>
+                            <li>Error rate and HTTP 5xx</li>
+                            <li>Latency (especially p95 / p99)</li>
+                            <li>CPU, memory, database load</li>
+                            <li>Business metrics and correctness</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Decide</h4>
+                        <ul>
+                            <li><strong>Healthy:</strong> 5% → 10% → 25% → 50% → 100%</li>
+                            <li><strong>Unhealthy:</strong> stop rollout, route all traffic back to v1</li>
+                        </ul>
+                        <p>Percentages are examples — choose based on traffic volume, risk, and detection speed.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DEPLOY COMPARE -->
+            <section id="deploy-compare">
+                <h2>4B. Compare deployment strategies</h2>
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Canary</h4>
+                        <p>Gradually expose the new version to a small group. Best for limiting risk and validating real production behavior.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Blue-green</h4>
+                        <p>Two environments; switch traffic from old to new. Fast rollback if the old environment stays ready.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Rolling</h4>
+                        <p>Replace old instances gradually with new ones. Natural fit for multi-replica services.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Feature flags</h4>
+                        <p>Deploy code with a feature off or limited. Turn it off without necessarily redeploying.</p>
+                    </div>
+                </div>
+
+                <h3>Related deployment topics</h3>
+                <ul>
+                    <li><strong>CI/CD</strong> — automatically test, build, and deploy</li>
+                    <li><strong>Readiness / liveness probes</strong> — should this instance get traffic? Should it restart?</li>
+                    <li><strong>Graceful shutdown</strong> — stop accepting new work; finish in-flight requests</li>
+                    <li><strong>Zero-downtime deploys</strong> — no interruption during release</li>
+                    <li><strong>Database migration safety</strong> — old and new app versions must coexist</li>
+                    <li><strong>Rollback vs roll-forward</strong> — restore old version, or ship a fix</li>
+                    <li><strong>Infrastructure as code</strong> — version-controlled infrastructure</li>
+                    <li><strong>Immutable artifacts</strong> — promote the same tested build across environments</li>
+                </ul>
+
+                <div class="info-box premium">
+                    <h3>Critical rule</h3>
+                    <p>Rolling back application code does <strong>not</strong> automatically roll back database changes. Use backward-compatible schema changes and a deliberate migration plan (expand → migrate → contract).</p>
+                </div>
+            </section>
+
+            <!-- QUEUES -->
+            <section id="queues">
+                <h2>5A. Message queues and background jobs</h2>
+                <p>A queue separates the API that accepts a task from the workers that perform it. Essential when processing URLs, generating reports, or calling slow external APIs.</p>
+
+                <div class="flow-box">
+                    <div class="flow-steps">
+                        <div class="flow-step">Client</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">Node.js API</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Queue</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">Workers</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step warn">External API / PDF</div>
+                    </div>
+                    <p style="text-align:center;margin:1rem 0 0;color:#64748b;font-size:0.9rem;">Failures → retry → dead-letter queue (DLQ)</p>
+                </div>
+
+                <h3>Typical async job flow</h3>
+                <ol>
+                    <li>Accept and validate the request</li>
+                    <li>Store a job record</li>
+                    <li>Put the job on a queue</li>
+                    <li>Workers process with controlled concurrency</li>
+                    <li>Track progress and final status</li>
+                    <li>Retry transient failures; send exhausted jobs to a DLQ</li>
+                </ol>
+
+                <h3>5B. Queue concepts to learn</h3>
+                <table>
+                    <tr><th>Concept</th><th>Purpose</th></tr>
+                    <tr><td>At-least-once delivery</td><td>Message may arrive more than once — consumers must handle duplicates</td></tr>
+                    <tr><td>At-most-once delivery</td><td>Zero or one delivery — may lose work</td></tr>
+                    <tr><td>Exactly-once processing</td><td>Hard end-to-end; usually needs careful transactional design</td></tr>
+                    <tr><td>Dead-letter queue</td><td>Holds messages that repeatedly fail</td></tr>
+                    <tr><td>Backpressure</td><td>Slow producers or limit work when consumers fall behind</td></tr>
+                    <tr><td>Concurrency limits</td><td>Cap how many tasks run at once</td></tr>
+                    <tr><td>Job deduplication</td><td>Prevent duplicate jobs for the same logical operation</td></tr>
+                    <tr><td>Outbox pattern</td><td>Keep DB updates and message publish consistent</td></tr>
+                    <tr><td>Consumer ack</td><td>Signal that a message was processed</td></tr>
+                    <tr><td>Eventual consistency</td><td>Systems may temporarily disagree before converging</td></tr>
+                </table>
+
+                <div class="wrong-box">
+                    <strong>Important:</strong> a queue does not automatically make a system reliable. Workers may process the same message twice; an external API may succeed after a client timeout; a DB write may succeed even when ack fails.
+                </div>
+            </section>
+
+            <!-- RACE CONDITIONS -->
+            <section id="race-conditions">
+                <h2>5C. Concurrency and race conditions</h2>
+                <p>Two requests update the same merchant at almost the same time — a classic lost update.</p>
+
+                <div class="race-grid">
+                    <div class="feature-card card-blue">
+                        <h4>Request A</h4>
+                        <ol>
+                            <li>Read balance = 100</li>
+                            <li>Compute 100 − 20 = 80</li>
+                            <li>Write balance = 80</li>
+                        </ol>
+                    </div>
+                    <div class="feature-card card-red">
+                        <h4>Request B (overlapping)</h4>
+                        <ol>
+                            <li>Read balance = 100</li>
+                            <li>Compute 100 − 30 = 70</li>
+                            <li>Write balance = 70</li>
+                        </ol>
+                        <p><strong>A's update is overwritten.</strong> Final balance is wrong.</p>
+                    </div>
+                </div>
+
+                <div class="right-box">
+                    Prefer atomic updates (<code>$inc</code>, <code>UPDATE ... SET balance = balance - 20</code>) or optimistic locking with a version field.
+                </div>
+
+                <p>Also learn: distributed locks/leases, deadlocks, worker concurrency limits, mutexes/semaphores, event ordering, and shared mutable state. Distributed locks need clear ownership, expiration, and recovery.</p>
+            </section>
+
+            <!-- OPTIMISTIC VS PESSIMISTIC LOCKING -->
+            <section id="locking">
+                <h2>5D. Optimistic vs pessimistic locking</h2>
+                <p>Both solve the <strong>lost update</strong> problem (two requests overwrite each other). They differ in <em>when</em> they stop conflicts.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Optimistic locking</h4>
+                        <p><strong>“Assume no conflict; check at write time.”</strong></p>
+                        <ul>
+                            <li>Read the row including a <code>version</code> (or <code>updatedAt</code>)</li>
+                            <li>Change data in memory</li>
+                            <li>Write only if <code>version</code> is still the same</li>
+                            <li>If someone else wrote first → fail and retry / show conflict</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Pessimistic locking</h4>
+                        <p><strong>“Assume conflict; lock first.”</strong></p>
+                        <ul>
+                            <li>Begin a transaction</li>
+                            <li><code>SELECT … FOR UPDATE</code> (row lock)</li>
+                            <li>Other writers wait (or fail) until you commit/rollback</li>
+                            <li>Only one writer holds the row at a time</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <table>
+                    <tr><th></th><th>Optimistic</th><th>Pessimistic</th></tr>
+                    <tr><td>When lock happens</td><td>At update (version check)</td><td>At read (row lock)</td></tr>
+                    <tr><td>Best when</td><td>Conflicts are rare</td><td>Conflicts are common / costly</td></tr>
+                    <tr><td>Throughput</td><td>Usually higher (no waiting)</td><td>Lower under contention</td></tr>
+                    <tr><td>Failure mode</td><td>Update returns 0 rows → conflict</td><td>Waiters block; risk of deadlock</td></tr>
+                    <tr><td>Typical use</td><td>Edit profile, CMS, shopping cart</td><td>Bank transfer, inventory seat booking</td></tr>
+                    <tr><td>Works well with</td><td>HTTP APIs, long user think-time</td><td>Short DB transactions</td></tr>
+                </table>
+
+                <h3>Optimistic locking (version field)</h3>
+                <div class="flow-box">
+                    <div class="flow-steps">
+                        <div class="flow-step">Read<br>balance=100, v=3</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">Compute<br>balance=80</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">UPDATE … SET v=4<br>WHERE v=3</div>
+                    </div>
+                    <p style="text-align:center;margin:1rem 0 0;color:#64748b;font-size:0.9rem;">If another request already set v=4, your UPDATE matches 0 rows → conflict (retry or tell the user).</p>
+                </div>
+
+                <div class="code-block">// MongoDB optimistic lock with version
+const result = await Merchant.updateOne(
+  { _id: id, version: expectedVersion },
+  {
+    $set: { name: newName },
+    $inc: { version: 1 },
+  }
+);
+
+if (result.matchedCount === 0) {
+  // someone else updated first
+  throw new ConflictError('Merchant was modified. Refresh and try again.');
+}</div>
+
+                <div class="code-block">-- SQL optimistic lock
+UPDATE merchants
+SET name = $1, version = version + 1
+WHERE id = $2 AND version = $3;
+
+-- If rowcount = 0 → conflict</div>
+
+                <h3>Pessimistic locking (row lock)</h3>
+                <div class="flow-box">
+                    <div class="flow-steps">
+                        <div class="flow-step warn">BEGIN</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">SELECT … FOR UPDATE<br>(lock row)</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">Change balance</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">COMMIT<br>(release)</div>
+                    </div>
+                </div>
+
+                <div class="code-block">-- PostgreSQL pessimistic lock (keep the transaction SHORT)
+BEGIN;
+SELECT balance FROM accounts WHERE id = $1 FOR UPDATE;
+-- balance is locked; other writers wait here
+UPDATE accounts SET balance = balance - 20 WHERE id = $1;
+COMMIT;</div>
+
+                <div class="code-block">// MongoDB: findOneAndUpdate is atomic (often better than a long lock)
+const updated = await Account.findOneAndUpdate(
+  { _id: id, balance: { $gte: 20 } },
+  { $inc: { balance: -20 } },
+  { new: true }
+);
+if (!updated) throw new Error('Insufficient funds or missing account');</div>
+
+                <div class="info-box premium">
+                    <h3>How to choose</h3>
+                    <ul>
+                        <li><strong>Optimistic</strong> — user edits a form, opens a page, thinks for seconds/minutes, then saves. Locking the DB row that whole time would be terrible.</li>
+                        <li><strong>Pessimistic</strong> — money, seats, inventory where two simultaneous writers must not both succeed. Keep the lock duration tiny (milliseconds inside a DB transaction).</li>
+                        <li><strong>Atomic update</strong> — often the simplest: <code>$inc</code> / <code>SET balance = balance - 20</code> with a condition. Prefer this when you can express the change without a separate read-modify-write.</li>
+                    </ul>
+                </div>
+
+                <div class="wrong-box">
+                    <strong>Do not hold a pessimistic lock across HTTP calls, emails, or user input.</strong> Lock → do work that can wait → other requests pile up or deadlocks appear.
+                </div>
+                <div class="right-box">
+                    Optimistic locking pairs well with APIs: return <code>409 Conflict</code> when versions clash, and let the client refresh and retry.
+                </div>
+            </section>
+
+            <!-- ARCHITECTURE -->
+            <section id="architecture">
+                <h2>6. System design and architecture</h2>
+                <div class="arch-stack">
+                    <div class="arch-layer l1"><strong>Frontend — React</strong><span>UI, state, interactions</span></div>
+                    <div class="arch-layer l2"><strong>API — Node.js / Express</strong><span>Auth, validation, business rules</span></div>
+                    <div class="arch-layer l3"><strong>Database</strong><span>MongoDB / PostgreSQL</span></div>
+                    <div class="arch-layer l4"><strong>Cache</strong><span>Redis</span></div>
+                    <div class="arch-layer l5"><strong>Queue / Workers</strong><span>Async processing</span></div>
+                    <div class="arch-layer l6"><strong>External services</strong><span>APIs, storage, payments</span></div>
+                </div>
+
+                <table>
+                    <tr><th>Concept</th><th>What you should understand</th></tr>
+                    <tr><td>Monolith vs microservices</td><td>Operational simplicity vs independent deploy/scale</td></tr>
+                    <tr><td>Modular monolith</td><td>Separate domains without distributed complexity yet</td></tr>
+                    <tr><td>Horizontal vs vertical scaling</td><td>Add instances vs enlarge one instance</td></tr>
+                    <tr><td>Load balancing</td><td>Distribute requests across healthy instances</td></tr>
+                    <tr><td>Stateless services</td><td>Keep durable state outside app instances</td></tr>
+                    <tr><td>Caching strategies</td><td>Cache-aside, TTL, invalidation, staleness</td></tr>
+                    <tr><td>CAP theorem</td><td>Consistency vs availability during partitions</td></tr>
+                    <tr><td>Event-driven architecture</td><td>Communicate changes via events</td></tr>
+                    <tr><td>Domain-driven design</td><td>Organize around business domains</td></tr>
+                    <tr><td>Saga pattern</td><td>Coordinate multi-step workflows across services</td></tr>
+                    <tr><td>API gateway</td><td>Centralize routing and selected cross-cutting concerns</td></tr>
+                </table>
+
+                <div class="info-box">
+                    <strong>Practical advice:</strong> do not introduce microservices just because the system is growing. A well-structured modular monolith is often easier until independent scaling, ownership, or fault isolation justify the cost.
+                </div>
+            </section>
+
+            <!-- OBSERVABILITY -->
+            <section id="observability">
+                <h2>7. Observability and production debugging</h2>
+                <div class="obs-trio">
+                    <div class="obs-card"><h4>Logs</h4><p>What happened?</p></div>
+                    <div class="obs-card"><h4>Metrics</h4><p>How often / how much?</p></div>
+                    <div class="obs-card"><h4>Traces</h4><p>Where was time spent?</p></div>
+                </div>
+
+                <h3>Example: report API takes 30 seconds</h3>
+                <ol>
+                    <li>Metrics show p95 latency rose from 2s to 30s</li>
+                    <li>A distributed trace shows the DB query takes 25s</li>
+                    <li>Query plan reveals a collection scan (missing / unused index)</li>
+                    <li>Fix the query, verify, and watch latency after deploy</li>
+                </ol>
+
+                <table>
+                    <tr><th>Term</th><th>Meaning</th></tr>
+                    <tr><td>Latency</td><td>Time to complete a request</td></tr>
+                    <tr><td>Throughput</td><td>Requests or jobs per unit time</td></tr>
+                    <tr><td>Error rate</td><td>Fraction of operations that fail</td></tr>
+                    <tr><td>p50 / p95 / p99</td><td>Typical vs tail latency</td></tr>
+                    <tr><td>SLI</td><td>Measured reliability indicator</td></tr>
+                    <tr><td>SLO</td><td>Target for that indicator</td></tr>
+                    <tr><td>SLA</td><td>Formal commitment (often with penalties)</td></tr>
+                    <tr><td>MTTR</td><td>Mean time to restore service</td></tr>
+                    <tr><td>Correlation / trace ID</td><td>Follow one request across services</td></tr>
+                    <tr><td>Alert fatigue</td><td>Too many noisy alerts hide real ones</td></tr>
+                </table>
+
+                <div class="right-box">
+                    Define an SLO for an API (e.g. % of requests that succeed within a latency target) — not CPU alone.
+                </div>
+            </section>
+
+            <!-- TESTING -->
+            <section id="testing">
+                <h2>8. Testing and software quality</h2>
+                <table>
+                    <tr><th>Testing concept</th><th>What it catches</th></tr>
+                    <tr><td>Unit</td><td>Isolated functions and business rules</td></tr>
+                    <tr><td>Integration</td><td>APIs, databases, queues working together</td></tr>
+                    <tr><td>End-to-end</td><td>Broken user workflows across the whole app</td></tr>
+                    <tr><td>Contract</td><td>Incompatible consumer/provider changes</td></tr>
+                    <tr><td>Load</td><td>Performance under expected traffic</td></tr>
+                    <tr><td>Stress</td><td>Behavior beyond expected capacity</td></tr>
+                    <tr><td>Soak</td><td>Leaks and degradation over long periods</td></tr>
+                    <tr><td>Chaos</td><td>Recovery from controlled failures</td></tr>
+                    <tr><td>Regression</td><td>Previously working behavior that broke</td></tr>
+                    <tr><td>Property-based</td><td>Unexpected cases across many generated inputs</td></tr>
+                </table>
+
+                <div class="pyramid">
+                    <div class="pyramid-tier e2e">E2E — targeted</div>
+                    <div class="pyramid-tier int">Integration — fewer</div>
+                    <div class="pyramid-tier unit">Unit — many, fast</div>
+                </div>
+
+                <p>For a payment API: unit tests cover validation and rules; integration tests cover persistence and idempotency; E2E covers the full workflow. Focus on important behavior and failure paths — not coverage percentage alone.</p>
+            </section>
+
+            <!-- SECURITY -->
+            <section id="security">
+                <h2>9. Security concepts every backend engineer needs</h2>
+                <div class="grid-3">
+                    <div class="feature-card card-red">
+                        <h4>AuthN &amp; AuthZ</h4>
+                        <p>Sessions, JWTs, OAuth 2.0, RBAC, and object-level permissions.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Injection &amp; validation</h4>
+                        <p>SQL/NoSQL injection, command injection, unsafe deserialization, SSRF.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Secrets &amp; data</h4>
+                        <p>Secrets manager, least-privilege IAM, TLS, encryption, key rotation, log redaction.</p>
+                    </div>
+                </div>
+                <ul>
+                    <li>OWASP Top 10 and API Security Top 10</li>
+                    <li>XSS and CSRF</li>
+                    <li>Broken access control and IDOR</li>
+                    <li>Dependency and container vulnerability scanning</li>
+                    <li>Audit logs and sensitive-data retention</li>
+                    <li>Backup encryption and disaster recovery</li>
+                    <li>Secure headers, CORS, and cookie security</li>
+                </ul>
+            </section>
+
+            <!-- NODE GOTCHAS -->
+            <section id="nodejs-gotchas">
+                <h2>10. Other important engineering concepts</h2>
+                <table>
+                    <tr><th>Concept</th><th>Why it matters</th></tr>
+                    <tr><td>Memory leaks</td><td>Long-running Node processes can grow until OOM</td></tr>
+                    <tr><td>Event loop blocking</td><td>CPU-heavy work starves other requests</td></tr>
+                    <tr><td>Worker threads</td><td>Move suitable CPU work off the main loop</td></tr>
+                    <tr><td>Garbage collection</td><td>Heap pressure and GC pauses affect latency</td></tr>
+                    <tr><td>Resource leaks</td><td>Unclosed connections, browsers, files, timers</td></tr>
+                    <tr><td>Graceful degradation</td><td>Keep core features up when optional deps fail</td></tr>
+                    <tr><td>Disaster recovery</td><td>Restore service and data after major failures</td></tr>
+                    <tr><td>RPO / RTO</td><td>Acceptable data loss and recovery time</td></tr>
+                    <tr><td>Technical debt</td><td>Future cost of shortcuts</td></tr>
+                    <tr><td>Backward compatibility</td><td>Change APIs/schemas without breaking consumers</td></tr>
+                </table>
+
+                <div class="wrong-box">
+                    For a scraping or report service: a browser memory leak + unbounded queue concurrency + missing timeouts can outage the system even when business logic is correct.
+                </div>
+            </section>
+
+            <!-- CACHING -->
+            <section id="caching">
+                <h2>11. Caching strategies</h2>
+                <p>Caching reduces repeated expensive reads, but wrong invalidation creates stale or inconsistent data. Treat cache as an optimization layer, not the source of truth.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Cache-aside (lazy)</h4>
+                        <p>App reads cache → on miss, load DB → write cache. Most common for APIs.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Write-through</h4>
+                        <p>Writes go to cache and DB together. Stronger freshness, more write latency.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>TTL + soft TTL</h4>
+                        <p>Expire after time. Soft TTL serves stale briefly while one request refreshes.</p>
+                    </div>
+                    <div class="feature-card card-red">
+                        <h4>Cache stampede</h4>
+                        <p>Many requests miss at once and hammer the DB. Use locks, singleflight, or jittered TTL.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">// Cache-aside sketch (Redis)
+async function getMerchant(id) {
+  const key = `merchant:${id}`;
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const merchant = await Merchant.findById(id);
+  if (merchant) {
+    await redis.set(key, JSON.stringify(merchant), 'EX', 300);
+  }
+  return merchant;
+}</div>
+
+                <div class="info-box">
+                    <h3>Invalidation rules of thumb</h3>
+                    <ul>
+                        <li>Prefer short TTLs for volatile data; longer TTLs for mostly-static reference data</li>
+                        <li>On write, delete or update related keys deliberately</li>
+                        <li>Never cache personalized or permission-sensitive payloads carelessly</li>
+                        <li>Measure hit rate and origin load — a cache that is never hit is wasted cost</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- PAGINATION -->
+            <section id="pagination">
+                <h2>12. Pagination: offset vs cursor</h2>
+                <table>
+                    <tr><th></th><th>Offset / limit</th><th>Cursor-based</th></tr>
+                    <tr><td>How</td><td><code>?page=50&amp;limit=20</code> → <code>SKIP 980</code></td><td><code>?cursor=eyJpZCI6Li4ufQ&amp;limit=20</code></td></tr>
+                    <tr><td>Pros</td><td>Simple; jump to any page</td><td>Stable under inserts; cheap for deep pages</td></tr>
+                    <tr><td>Cons</td><td>Slow on deep offsets; duplicates/skips when data changes</td><td>Harder random page jumps; needs stable sort key</td></tr>
+                    <tr><td>Use when</td><td>Admin UIs, small datasets</td><td>Feeds, infinite scroll, large collections</td></tr>
+                </table>
+
+                <div class="code-block">// Cursor pagination (MongoDB) — sort by _id
+const limit = 20;
+const query = cursor ? { _id: { $gt: cursor } } : {};
+const items = await Report.find(query).sort({ _id: 1 }).limit(limit + 1);
+
+const hasMore = items.length &gt; limit;
+const page = hasMore ? items.slice(0, limit) : items;
+const nextCursor = hasMore ? String(page[page.length - 1]._id) : null;</div>
+
+                <div class="right-box">
+                    Always return a stable sort order with cursors. Unordered pages make “next page” meaningless.
+                </div>
+            </section>
+
+            <!-- RATE LIMITING -->
+            <section id="rate-limiting">
+                <h2>13. Rate limiting</h2>
+                <p>Rate limits protect your API and downstream dependencies from abuse, bugs, and traffic spikes.</p>
+
+                <div class="grid-3">
+                    <div class="feature-card card-blue">
+                        <h4>Fixed window</h4>
+                        <p>N requests per calendar minute. Simple; can burst at window edges.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Sliding window</h4>
+                        <p>Smoother limit over a rolling period. More accurate, slightly costlier.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Token bucket</h4>
+                        <p>Allows short bursts while enforcing average rate. Common at gateways.</p>
+                    </div>
+                </div>
+
+                <table>
+                    <tr><th>Dimension</th><th>Examples</th></tr>
+                    <tr><td>By identity</td><td>API key, user ID, IP, tenant</td></tr>
+                    <tr><td>By endpoint</td><td>Stricter on <code>/payments</code> than on <code>/health</code></td></tr>
+                    <tr><td>Response</td><td><code>429 Too Many Requests</code> + <code>Retry-After</code></td></tr>
+                </table>
+
+                <div class="wrong-box">
+                    Client-side rate limiting alone is not enough — enforce limits on the server (or API gateway).
+                </div>
+            </section>
+
+            <!-- AUTH PATTERNS -->
+            <section id="auth-patterns">
+                <h2>14. Authentication patterns</h2>
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Session cookies</h4>
+                        <p>Server stores session; browser sends HttpOnly cookie. Easy to revoke. Watch CSRF on cookie-based apps.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>JWT (bearer)</h4>
+                        <p>Stateless claims in a signed token. Scale well; harder to revoke early unless you add a denylist or short TTL + refresh.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>OAuth 2.0 / OIDC</h4>
+                        <p>Delegate login to an identity provider. Use for “Sign in with …” and third-party API access.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>API keys</h4>
+                        <p>Service-to-service or partner access. Store hashed; scope tightly; rotate.</p>
+                    </div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>Authorization is separate</h3>
+                    <p>Authentication answers “who are you?” Authorization answers “what may you do?” Always check object-level access (IDOR): owning <code>merchantId</code> in the path does not mean the caller may read it.</p>
+                </div>
+            </section>
+
+            <!-- MIGRATIONS -->
+            <section id="migrations">
+                <h2>15. Safe schema migrations</h2>
+                <p>During rolling/canary deploys, old and new app versions run at the same time. Schema changes must be backward compatible across that window.</p>
+
+                <div class="flow-box">
+                    <h3 style="margin-top:0;text-align:center;">Expand → migrate → contract</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step accent">1. Expand<br><small>Add new column/field</small></div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">2. Dual-write / backfill</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">3. Switch reads</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step warn">4. Contract<br><small>Remove old field later</small></div>
+                    </div>
+                </div>
+
+                <div class="wrong-box">
+                    Avoid renaming/removing columns in the same deploy that ships code that depends on the new shape — old instances will break.
+                </div>
+                <div class="right-box">
+                    Prefer additive changes first. Separate “make code ignore old field” from “drop old field” by at least one release.
+                </div>
+            </section>
+
+            <!-- SCALING -->
+            <section id="scaling">
+                <h2>16. Horizontal scaling and load balancing</h2>
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Vertical scaling</h4>
+                        <p>Bigger CPU/RAM on one machine. Simple until you hit hardware or cost limits.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Horizontal scaling</h4>
+                        <p>More instances behind a load balancer. Requires mostly-stateless app processes.</p>
+                    </div>
+                </div>
+
+                <table>
+                    <tr><th>LB concern</th><th>Why it matters</th></tr>
+                    <tr><td>Health checks</td><td>Only send traffic to ready instances</td></tr>
+                    <tr><td>Algorithms</td><td>Round-robin, least connections, consistent hashing</td></tr>
+                    <tr><td>Sticky sessions</td><td>Avoid if possible; prefer shared session store</td></tr>
+                    <tr><td>TLS termination</td><td>Often at the LB or ingress</td></tr>
+                    <tr><td>Connection draining</td><td>Needed for zero-downtime deploys</td></tr>
+                </table>
+
+                <div class="info-box">
+                    Stateless services store sessions, uploads, and job state in Redis/DB/object storage — not on local disk of one instance.
+                </div>
+            </section>
+
+            <!-- CAP -->
+            <section id="cap">
+                <h2>17. CAP theorem and consistency</h2>
+                <p>During a network partition, a distributed system cannot be fully Consistent and Available at the same time. You choose a trade-off.</p>
+
+                <div class="grid-3">
+                    <div class="feature-card card-blue">
+                        <h4>Consistency</h4>
+                        <p>Every read reflects the latest successful write (within the model you chose).</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Availability</h4>
+                        <p>Every non-failing node can still respond.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Partition tolerance</h4>
+                        <p>System continues despite network splits — required in real networks.</p>
+                    </div>
+                </div>
+
+                <table>
+                    <tr><th>Model</th><th>Meaning</th><th>Typical use</th></tr>
+                    <tr><td>Strong consistency</td><td>Read sees latest committed write</td><td>Balances, inventory reservations</td></tr>
+                    <tr><td>Eventual consistency</td><td>Replicas converge later</td><td>Feeds, search indexes, analytics</td></tr>
+                    <tr><td>Read-your-writes</td><td>User sees their own updates promptly</td><td>Profile edits, settings</td></tr>
+                </table>
+
+                <div class="right-box">
+                    Pick consistency per data type. Not everything needs strong consistency — and paying for it everywhere costs latency and availability.
+                </div>
+            </section>
+
+            <!-- OUTBOX SAGA -->
+            <section id="outbox-saga">
+                <h2>18. Outbox pattern and sagas</h2>
+                <div class="grid-2">
+                    <div class="feature-card card-teal">
+                        <h4>Transactional outbox</h4>
+                        <p>Write business data and an “event to publish” row in the same DB transaction. A relay publishes to the queue. Prevents “DB committed but message lost.”</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Saga</h4>
+                        <p>Multi-step business workflow across services. Each step has a compensating action if a later step fails (e.g. reserve stock → charge card → ship; on charge fail, release stock).</p>
+                    </div>
+                </div>
+
+                <div class="flow-box">
+                    <div class="flow-steps">
+                        <div class="flow-step accent">DB write<br>+ outbox row</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">Relay / CDC</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Message queue</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">Consumers</div>
+                    </div>
+                </div>
+
+                <div class="wrong-box">
+                    “Write DB, then publish message” without a shared transaction (or outbox) can lose events under crashes.
+                </div>
+            </section>
+
+            <!-- WEBHOOKS -->
+            <section id="webhooks">
+                <h2>19. Webhooks</h2>
+                <p>Webhooks notify your system when something happens elsewhere (payment captured, repo push, email delivered).</p>
+
+                <ul>
+                    <li><strong>Verify signatures</strong> — HMAC or provider-specific signing secrets</li>
+                    <li><strong>Idempotent handlers</strong> — providers retry; process each event once</li>
+                    <li><strong>Respond fast</strong> — ack quickly, do heavy work on a queue</li>
+                    <li><strong>Timeouts &amp; retries</strong> — expect at-least-once delivery</li>
+                    <li><strong>Replay protection</strong> — store event IDs; reject duplicates</li>
+                </ul>
+
+                <div class="code-block">// Conceptual webhook handler
+app.post('/webhooks/payments', async (req, res) =&gt; {
+  if (!verifySignature(req)) return res.status(401).end();
+
+  const eventId = req.body.id;
+  if (await alreadyProcessed(eventId)) return res.status(200).end();
+
+  await enqueue('payment-webhook', req.body);
+  res.status(200).end(); // ack fast
+});</div>
+            </section>
+
+            <!-- GRACEFUL SHUTDOWN -->
+            <section id="graceful-shutdown">
+                <h2>20. Graceful shutdown and probes</h2>
+                <div class="flow-box">
+                    <div class="flow-steps">
+                        <div class="flow-step warn">SIGTERM</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step">Stop new traffic<br><small>fail readiness</small></div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step accent">Drain in-flight<br>requests</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-step ok">Close DB / queue<br>then exit</div>
+                    </div>
+                </div>
+
+                <table>
+                    <tr><th>Probe</th><th>Question it answers</th></tr>
+                    <tr><td>Liveness</td><td>Is the process stuck? If yes, restart it.</td></tr>
+                    <tr><td>Readiness</td><td>Should it receive traffic right now?</td></tr>
+                    <tr><td>Startup</td><td>Has initial boot finished?</td></tr>
+                </table>
+
+                <div class="right-box">
+                    On SIGTERM: mark not-ready, stop accepting connections, wait for in-flight work (with a deadline), then close pools and exit 0.
+                </div>
+            </section>
+
+            <!-- FEATURE FLAGS -->
+            <section id="feature-flags">
+                <h2>21. Feature flags in depth</h2>
+                <p>Flags separate <strong>deploy</strong> from <strong>release</strong>. You can ship dark code and turn it on for 1%, one tenant, or everyone — or kill it instantly.</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Good uses</h4>
+                        <ul>
+                            <li>Gradual rollout of risky features</li>
+                            <li>A/B experiments</li>
+                            <li>Kill switches for broken paths</li>
+                            <li>Per-tenant entitlements</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-red">
+                        <h4>Pitfalls</h4>
+                        <ul>
+                            <li>Flag debt (permanent if/else forests)</li>
+                            <li>Testing every flag combination</li>
+                            <li>Flags that change DB schema unsafely</li>
+                            <li>Client/server flag mismatch</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    Clean up flags after rollout. A flag that lived longer than the feature launch is usually accidental complexity.
+                </div>
+            </section>
+
+            <!-- INCIDENT RESPONSE -->
+            <section id="incident-response">
+                <h2>22. Incident response basics</h2>
+                <ol class="hop-list" style="list-style:decimal;padding-left:1.25rem;">
+                    <li><strong>Detect</strong> — alerts from SLOs, error rate, or user reports</li>
+                    <li><strong>Triage</strong> — severity, blast radius, who is impacted</li>
+                    <li><strong>Mitigate</strong> — rollback, disable flag, scale up, shed load — stop the bleeding first</li>
+                    <li><strong>Diagnose</strong> — logs, metrics, traces, recent deploys</li>
+                    <li><strong>Resolve</strong> — permanent fix, verify with monitors</li>
+                    <li><strong>Learn</strong> — blameless postmortem, action items with owners</li>
+                </ol>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>During the incident</h4>
+                        <p>One incident commander, short status updates, mitigate before perfect root cause.</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>After the incident</h4>
+                        <p>Timeline, contributing factors, what worked, what to change in code/process/alerts.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROADMAP -->
+            <section id="roadmap">
+                <h2>23. Learn these topics in priority order</h2>
+                <p>Check items off as you study them. Aim for understanding you can explain and apply, not just recognition.</p>
+
+                <div class="phase-label">Phase 1 — Core (weeks 1–2)</div>
+                <ul class="checklist" id="phase1">
+                    <li><input type="checkbox" data-phase="1"> N+1 queries, indexes, and pagination</li>
+                    <li><input type="checkbox" data-phase="1"> HTTP methods, status codes, and API design</li>
+                    <li><input type="checkbox" data-phase="1"> Idempotency and database transactions</li>
+                    <li><input type="checkbox" data-phase="1"> Promises, async/await, and error handling</li>
+                    <li><input type="checkbox" data-phase="1"> Offset vs cursor pagination</li>
+                </ul>
+
+                <div class="phase-label">Phase 2 — Reliability (weeks 3–4)</div>
+                <ul class="checklist" id="phase2">
+                    <li><input type="checkbox" data-phase="2"> Timeouts, retries, backoff, and circuit breakers</li>
+                    <li><input type="checkbox" data-phase="2"> Queues, duplicate messages, and dead-letter queues</li>
+                    <li><input type="checkbox" data-phase="2"> Race conditions, atomic updates, and concurrency limits</li>
+                    <li><input type="checkbox" data-phase="2"> Logs, metrics, tracing, and alerting</li>
+                    <li><input type="checkbox" data-phase="2"> Rate limiting and backpressure</li>
+                    <li><input type="checkbox" data-phase="2"> Webhook verification and idempotent handlers</li>
+                </ul>
+
+                <div class="phase-label">Phase 3 — Production (weeks 5–6)</div>
+                <ul class="checklist" id="phase3">
+                    <li><input type="checkbox" data-phase="3"> Canary, blue-green, and rolling deployments</li>
+                    <li><input type="checkbox" data-phase="3"> CI/CD, feature flags, and rollback</li>
+                    <li><input type="checkbox" data-phase="3"> Load testing, SLOs, and incident response</li>
+                    <li><input type="checkbox" data-phase="3"> Security, authentication, and authorization</li>
+                    <li><input type="checkbox" data-phase="3"> Graceful shutdown, readiness, and liveness probes</li>
+                    <li><input type="checkbox" data-phase="3"> Expand / migrate / contract schema changes</li>
+                </ul>
+
+                <div class="phase-label">Phase 4 — System design (weeks 7–8)</div>
+                <ul class="checklist" id="phase4">
+                    <li><input type="checkbox" data-phase="4"> Caching strategies and stampede prevention</li>
+                    <li><input type="checkbox" data-phase="4"> Horizontal scaling and load balancing</li>
+                    <li><input type="checkbox" data-phase="4"> CAP, consistency models, and eventual consistency</li>
+                    <li><input type="checkbox" data-phase="4"> Outbox and saga patterns</li>
+                    <li><input type="checkbox" data-phase="4"> Capacity planning, disaster recovery, and trade-offs</li>
+                </ul>
+
+                <p id="checklist-progress" style="font-weight:700;color:#1e40af;">0 / 22 complete</p>
+            </section>
+
+            <!-- SCENARIO QUIZ -->
+            <section id="scenario">
+                <h2>24. Test your understanding</h2>
+                <p>Your Node.js app receives <strong>50,000 merchant URLs daily</strong>, calls external APIs, generates reports, stores results in MongoDB, and deploys several times per week.</p>
+                <p><strong>Which engineering concepts would you use?</strong> Select all that apply.</p>
+
+                <div id="quiz">
+                    <label class="quiz-option" data-correct="true">
+                        <input type="checkbox"> Use a message queue with controlled worker concurrency
+                    </label>
+                    <label class="quiz-option" data-correct="true">
+                        <input type="checkbox"> Use idempotency and job deduplication for safe retries
+                    </label>
+                    <label class="quiz-option" data-correct="true">
+                        <input type="checkbox"> Optimize database queries, indexes, and batching
+                    </label>
+                    <label class="quiz-option" data-correct="true">
+                        <input type="checkbox"> Use canary deployment with health metrics and rollback
+                    </label>
+                    <label class="quiz-option" data-correct="true">
+                        <input type="checkbox"> Use structured logs, metrics, tracing, and alerts
+                    </label>
+                    <label class="quiz-option" data-correct="false">
+                        <input type="checkbox"> Allow unlimited concurrent jobs and retry every failure immediately
+                    </label>
+                </div>
+
+                <p style="margin-top:1rem;">
+                    <button type="button" id="check-answers" style="background:#2563eb;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.2rem;font-weight:700;cursor:pointer;">Check answers</button>
+                    <button type="button" id="reset-quiz" style="background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:10px;padding:0.7rem 1.2rem;font-weight:700;cursor:pointer;margin-left:0.5rem;">Reset</button>
+                </p>
+                <div id="quiz-result" class="info-box" style="display:none;margin-top:1rem;"></div>
+
+                <details style="margin-top:1.25rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1rem 1.2rem;">
+                    <summary style="cursor:pointer;font-weight:700;color:#1e40af;">Reveal answer key</summary>
+                    <div class="right-box" style="margin-top:0.85rem;">
+                        Select the first five options. Skip “unlimited concurrent jobs and retry every failure immediately” — that floods dependencies and amplifies outages.
+                    </div>
+                </details>
+
+                <div class="info-box premium" style="margin-top:1.5rem;">
+                    <h3>Recommendation</h3>
+                    <p>Start with <strong>N+1 queries</strong>, <strong>idempotency</strong>, <strong>transactions</strong>, <strong>retries and timeouts</strong>, <strong>queue processing</strong>, and <strong>observability</strong>. Then learn canary deployments and broader system design. These concepts work together.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        function highlightActiveSection() {
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        window.addEventListener('load', highlightActiveSection);
+
+        // Checklist progress (persisted)
+        const STORAGE_KEY = 'essential-eng-checklist';
+        const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+        const progressEl = document.getElementById('checklist-progress');
+
+        function loadChecklist() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                checkboxes.forEach((cb, i) => { cb.checked = !!saved[i]; });
+            } catch (_) {}
+            updateProgress();
+        }
+
+        function saveChecklist() {
+            const state = Array.from(checkboxes).map(cb => cb.checked);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const done = Array.from(checkboxes).filter(cb => cb.checked).length;
+            progressEl.textContent = done + ' / ' + checkboxes.length + ' complete';
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', saveChecklist));
+        loadChecklist();
+
+        // Quiz
+        const checkBtn = document.getElementById('check-answers');
+        const resetBtn = document.getElementById('reset-quiz');
+        const resultEl = document.getElementById('quiz-result');
+
+        checkBtn.addEventListener('click', () => {
+            const options = document.querySelectorAll('.quiz-option');
+            let correct = 0;
+            let total = options.length;
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                const shouldSelect = opt.dataset.correct === 'true';
+                const selected = input.checked;
+                opt.classList.remove('correct', 'wrong');
+                if (selected === shouldSelect) {
+                    correct++;
+                    if (selected) opt.classList.add('correct');
+                } else {
+                    opt.classList.add('wrong');
+                }
+                if (shouldSelect && !selected) opt.classList.add('correct');
+            });
+
+            resultEl.style.display = 'block';
+            if (correct === total) {
+                resultEl.innerHTML = '<h3>Perfect</h3><p>All five good practices apply. Unlimited concurrency and immediate retries on every failure would amplify outages — that option is the trap.</p>';
+            } else {
+                resultEl.innerHTML = '<h3>Almost</h3><p>You got ' + correct + ' of ' + total + ' right. The first five options are the right tools for this workload. Unlimited concurrency + instant retries is the anti-pattern.</p>';
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.querySelector('input').checked = false;
+            });
+            resultEl.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

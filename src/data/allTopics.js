@@ -427,6 +427,16 @@ export const allTopicsData = {
                 icon: '🏛️',
                 tags: ['architecture', 'scalability', 'design', 'distributed'],
                 estimatedTime: '18 hours'
+            },
+            {
+                id: 'essential-engineering-concepts',
+                name: 'Essential Engineering Concepts',
+                description: 'N+1 queries, idempotency, canary deploys, queues, observability, and production reliability',
+                difficulty: 'intermediate',
+                htmlFile: '/html/System Design/essential-engineering-concepts.html',
+                icon: '🛠️',
+                tags: ['n+1', 'idempotency', 'canary', 'queues', 'observability', 'reliability', 'nodejs'],
+                estimatedTime: '10 hours'
             }
         ]
     },

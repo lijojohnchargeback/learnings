@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { categories } from '../data/categories';
+import { categories, getCategoryHref } from '../data/categories';
 import { Search, ArrowLeft, ArrowUpRight, Sparkles, Folder } from 'lucide-react';
 import { useState } from 'react';
 import './AllTopicsPage.css';
@@ -81,8 +81,8 @@ export default function AllTopicsPage() {
                             </div>
 
                             <div className="shelf-footer">
-                                <Link to={`/category/${category.id}`} className="view-full-shelf">
-                                    <span>Browse Category</span>
+                                <Link to={getCategoryHref(category)} className="view-full-shelf">
+                                    <span>{category.topics.length === 1 ? 'Open topic' : 'Browse Category'}</span>
                                     <div className="link-underline"></div>
                                 </Link>
                             </div>

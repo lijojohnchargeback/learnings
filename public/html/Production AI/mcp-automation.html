@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP, Tools & AI Automation — Production AI Engineer</title>
+    <title>MCP, Tools &amp; AI Automation — Production AI Engineer</title>
     <link rel="stylesheet" href="/css/docs.css">
 </head>
 <body>
@@ -11,32 +11,43 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-title">🔌 MCP, Tools & Automation</div>
+            <div class="sidebar-title">🔌 MCP, Tools &amp; Automation</div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-title">Path</div>
             <div class="sidebar-links">
                 <a href="#overview" class="sidebar-link">Overview</a>
                 <a href="#steps" class="sidebar-link">Learning Steps</a>
+                <a href="#when-to-use" class="sidebar-link">When to Use What</a>
             </div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-section-title">MCP &amp; Tools</div>
             <div class="sidebar-links">
-                <a href="#mcp" class="sidebar-link">MCP</a>
+                <a href="#mcp" class="sidebar-link">MCP Protocol</a>
                 <a href="#function-calling" class="sidebar-link">Function Calling</a>
-                <a href="#apis" class="sidebar-link">APIs</a>
+                <a href="#tool-design" class="sidebar-link">Safe Tool Design</a>
+                <a href="#apis" class="sidebar-link">APIs as Tools</a>
                 <a href="#db-tools" class="sidebar-link">Database Tools</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Automation</div>
+            <div class="sidebar-links">
                 <a href="#n8n" class="sidebar-link">n8n</a>
                 <a href="#make" class="sidebar-link">Make</a>
                 <a href="#zapier" class="sidebar-link">Zapier</a>
                 <a href="#workflows" class="sidebar-link">Workflows</a>
-                <a href="#events" class="sidebar-link">Event-Driven Automation</a>
+                <a href="#events" class="sidebar-link">Event-Driven</a>
             </div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-section-title">Advanced</div>
             <div class="sidebar-links">
+                <a href="#advanced" class="sidebar-link">Advanced MCP</a>
+                <a href="#security" class="sidebar-link">Security &amp; Tenancy</a>
+                <a href="#observability" class="sidebar-link">Observability</a>
+                <a href="#hitl" class="sidebar-link">Human-in-the-Loop</a>
                 <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
             </div>
         </div>
@@ -44,41 +55,94 @@
 
     <div class="container">
         <header>
-            <h1>🔌 7. MCP, Tools & AI Automation</h1>
+            <h1>🔌 7. MCP, Tools &amp; AI Automation</h1>
             <p>Step 7 of 12 — Standardize how models call the world: protocols, APIs, and workflow engines.</p>
         </header>
 
         <section id="overview">
             <h2>Two layers</h2>
             <p><strong>Tooling for agents/IDEs</strong> (MCP, function calling) and <strong>business automation</strong> (n8n, Make, Zapier, queues). Production AI engineers build the first and often wire the second. The shared rule: <span class="highlight">least privilege, audit logs, and no secrets in prompts.</span></p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-hero.jpg" alt="Two-layer architecture: agent IDE layer with MCP client and servers for tools resources prompts, and business automation layer with webhook queue worker LLM and SaaS actions" loading="lazy">
+                <div class="illustration-caption"><strong>Top = how the model reaches systems.</strong> Host → MCP client → servers exposing tools/resources/prompts. <strong>Bottom = how the business reacts to events.</strong> Webhook → queue → worker (maybe with an LLM step) → Slack/ticket. Same security rule on both layers.</div>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-purple">
+                    <h4>MCP / tools</h4>
+                    <p>Give an assistant a typed catalog of actions and readable context. The model proposes; your code executes.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>iPaaS glue</h4>
+                    <p>n8n / Make / Zapier connect SaaS fast. Great for ops; weak as the core of a product SLA without your own monitoring.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Durable workers</h4>
+                    <p>Queues, Temporal, Step Functions — retries, idempotency, and dead letters when the path must not silently die.</p>
+                </div>
+            </div>
         </section>
 
         <section id="steps">
             <h2>Learning steps (in order)</h2>
             <table>
                 <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
-                <tr><td>1</td><td>Function calling</td><td>You can expose 3 tools with schemas and handle errors</td></tr>
-                <tr><td>2</td><td>MCP</td><td>You can run a local MCP server and call it from a client</td></tr>
-                <tr><td>3</td><td>API tools</td><td>You wrap REST with timeouts, auth, and allowlists</td></tr>
-                <tr><td>4</td><td>DB tools</td><td>Read-only SQL with bound parameters — never string concat</td></tr>
-                <tr><td>5</td><td>iPaaS</td><td>You can replace a brittle Zap with an event + worker when it matters</td></tr>
-                <tr><td>6</td><td>Events</td><td>You design webhooks, idempotency, and dead-letter queues</td></tr>
+                <tr><td>1</td><td>When to use what</td><td>You pick MCP vs iPaaS vs queue without guessing</td></tr>
+                <tr><td>2</td><td>Function calling</td><td>You expose 3 tools with schemas and handle errors</td></tr>
+                <tr><td>3</td><td>MCP</td><td>You run a local MCP server and call it from a client</td></tr>
+                <tr><td>4</td><td>Safe tool design</td><td>Validate → allowlist → secret store → timeout → audit</td></tr>
+                <tr><td>5</td><td>API / DB tools</td><td>Narrow tools only; parameterized SQL; no open proxies</td></tr>
+                <tr><td>6</td><td>iPaaS</td><td>You can replace a brittle Zap with an event + worker when it matters</td></tr>
+                <tr><td>7</td><td>Events</td><td>Webhooks, idempotency keys, and dead-letter queues</td></tr>
+                <tr><td>8</td><td>Advanced MCP</td><td>Remote auth, multi-server routing, HITL for writes</td></tr>
+            </table>
+        </section>
+
+        <section id="when-to-use">
+            <h2>When to use what</h2>
+            <p>Most teams over-automate with Zaps or under-automate with a single mega-agent. Pick the layer from the job.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-when-to-use.jpg" alt="Decision tree: AI assistant needs company systems goes to MCP or function calling; SaaS glue goes to n8n Make Zapier; product SLAs go to queues or Temporal; LLM is a step not the orchestrator" loading="lazy">
+                <div class="illustration-caption"><strong>Read the diamonds.</strong> Assistant touching systems → MCP/tools. Ops SaaS glue → iPaaS. Product durability → queue/Temporal. An LLM inside a workflow is a <em>step</em>, never the source of truth for control flow.</div>
+            </div>
+
+            <table>
+                <tr><th>Need</th><th>Reach for</th><th>Skip when</th></tr>
+                <tr><td>IDE/agent can query tickets, docs, repos</td><td>MCP servers + function calling</td><td>You only need a nightly Zap between two SaaS apps</td></tr>
+                <tr><td>Non-engineers connect Slack ↔ Sheets</td><td>Zapier / Make / n8n</td><td>You need hard SLAs, multi-tenant isolation, or PCI paths</td></tr>
+                <tr><td>Retries, long-running, exactly-once-ish</td><td>Queue worker / Temporal / Step Functions</td><td>A one-off internal alert is enough</td></tr>
+                <tr><td>Human approval on money/PII writes</td><td>HITL gate in the tool layer</td><td>Read-only tools with no side effects</td></tr>
             </table>
         </section>
 
         <section id="mcp">
             <h2>MCP (Model Context Protocol)</h2>
-            <p>MCP is an open protocol for connecting AI apps to tools and data: resources (read), prompts (templates), and tools (actions). Clients (Cursor, Claude Desktop, custom agents) speak MCP to servers you run.</p>
+            <p>MCP is an open protocol for connecting AI apps to tools and data: <strong>resources</strong> (read), <strong>prompts</strong> (templates), and <strong>tools</strong> (actions). Clients (Cursor, Claude Desktop, custom agents) speak MCP to servers you run.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-protocol.jpg" alt="MCP client connected to servers exposing tools resources and prompts, with stdio vs Streamable HTTP transports and a list_tools then call_tool sequence" loading="lazy">
+                <div class="illustration-caption"><strong>Primitives on the left, transport on the right, loop at the bottom.</strong> Local IDEs usually use stdio. Remote servers need Streamable HTTP (or SSE) plus auth. The model never “is” MCP — it picks a tool name; the client executes.</div>
+            </div>
+
             <table>
-                <tr><th>Primitive</th><th>Use</th></tr>
-                <tr><td>Tools</td><td>Actions: create ticket, query metrics</td></tr>
-                <tr><td>Resources</td><td>Readable context: files, tickets, schemas</td></tr>
-                <tr><td>Prompts</td><td>Reusable instruction packs</td></tr>
+                <tr><th>Primitive</th><th>Use</th><th>Example</th></tr>
+                <tr><td>Tools</td><td>Actions with side effects or live queries</td><td><code>create_ticket</code>, <code>query_metrics</code></td></tr>
+                <tr><td>Resources</td><td>Readable context the host can attach</td><td>files, ticket JSON, DB schemas</td></tr>
+                <tr><td>Prompts</td><td>Reusable instruction packs</td><td>“triage this incident” template</td></tr>
             </table>
+
             <div class="code-block"># Conceptual MCP server (Python SDK pattern)
 # - list_tools / call_tool
 # - list_resources / read_resource
-# Transport: stdio for local IDEs, Streamable HTTP for remote</div>
+# Transport: stdio for local IDEs, Streamable HTTP for remote
+
+@server.tool()
+def get_order(order_id: str) -> dict:
+    """Fetch a single order by id (read-only)."""
+    return db.fetch_order(order_id)  # parameterized, scoped</div>
+
             <div class="info-box">
                 <strong>Production MCP:</strong> authenticate remote servers, scope tools per user, rate-limit, and never mount a shell tool on a shared server.
             </div>
@@ -86,33 +150,89 @@
 
         <section id="function-calling">
             <h2>Function calling</h2>
-            <p>Vendor-native tool calling (OpenAI, Anthropic, Gemini) is how models emit structured tool requests. MCP often sits underneath as the catalog; the model still needs a schema. Validate arguments server-side even if the model "promised" types.</p>
+            <p>Vendor-native tool calling (OpenAI, Anthropic, Gemini) is how models emit structured tool requests. MCP often sits underneath as the catalog; the model still needs a schema. Validate arguments server-side even if the model “promised” types.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-function-calling.jpg" alt="Side-by-side comparison of vendor function calling loop versus MCP pluggable server catalog with a note that MCP is catalog and transport while function calling is how the model emits tool requests" loading="lazy">
+                <div class="illustration-caption"><strong>Not rivals — layers.</strong> Left: classic tool_call loop against schemas you pass into the chat API. Right: MCP makes those tools a pluggable catalog across hosts. Underneath, the model still emits a structured call.</div>
+            </div>
+
+            <div class="code-block">tools = [{
+    "type": "function",
+    "function": {
+        "name": "get_order",
+        "description": "Fetch one order by id",
+        "parameters": {
+            "type": "object",
+            "properties": {"order_id": {"type": "string"}},
+            "required": ["order_id"],
+        },
+    },
+}]
+
+# Model returns tool_calls → you execute → append role=tool → continue</div>
+        </section>
+
+        <section id="tool-design">
+            <h2>Safe tool design</h2>
+            <p>Every tool is an API you will be paged for. Design for failure, abuse, and prompt injection — not for demos.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-safe-tools.jpg" alt="Safe tool pipeline from model tool_call through schema validate allowlist secret-store auth timeout sanitize and audit log, with blocked paths for arbitrary SQL open HTTP and shell" loading="lazy">
+                <div class="illustration-caption"><strong>Happy path is teal; red is banned.</strong> Schema → allowlist → secrets from a vault → timeout → truncate results → audit. Never: arbitrary SQL, open HTTP proxy, or a shell on a shared MCP server.</div>
+            </div>
+
+            <table>
+                <tr><th>Rule</th><th>Practice</th></tr>
+                <tr><td>Narrow &gt; generic</td><td><code>get_order(id)</code> beats <code>http_request(url)</code></td></tr>
+                <tr><td>Validate twice</td><td>JSON Schema at the edge; business rules in the handler</td></tr>
+                <tr><td>Timeouts + budgets</td><td>Per-tool deadline; max result bytes back to the model</td></tr>
+                <tr><td>Errors are data</td><td>Map 4xx → clear message; 5xx → “retry later”, not a stack trace dump</td></tr>
+                <tr><td>Idempotent writes</td><td>Client-supplied idempotency key for creates/charges</td></tr>
+            </table>
         </section>
 
         <section id="apis">
             <h2>APIs as tools</h2>
-            <p>Each external API becomes a narrow tool, not a generic <code>http_request</code>. Allowlist hosts. Inject auth from a secret store. Map 4xx to the model as "user error" and 5xx as "retry later."</p>
+            <p>Each external API becomes a narrow tool, not a generic <code>http_request</code>. Allowlist hosts. Inject auth from a secret store. Map 4xx to the model as “user error” and 5xx as “retry later.”</p>
             <div class="code-block">ALLOWED = {"https://api.github.com"}
 
 async def github_get(path: str) -> str:
     url = "https://api.github.com" + path
     if not url.startswith(tuple(ALLOWED)):
         raise ValueError("host not allowed")
-    # Authorization: Bearer from env, never from the model
+    # Authorization: Bearer from env / vault — never from the model
     ...</div>
+            <ul>
+                <li>One tool per use-case (<code>list_open_prs</code>), not one mega “GitHub API”</li>
+                <li>Strip secrets and PII from tool results before they re-enter the prompt</li>
+                <li>Circuit-break flaky vendors so the agent can degrade gracefully</li>
+            </ul>
         </section>
 
         <section id="db-tools">
             <h2>Database tools</h2>
-            <p>Prefer parameterized queries and views. Give the agent a small set of queries (get_order, list_open_tickets), not "run any SQL." For analytics, a read replica and a row limit.</p>
+            <p>Prefer parameterized queries and views. Give the agent a small set of queries (<code>get_order</code>, <code>list_open_tickets</code>), not “run any SQL.” For analytics, a read replica and a hard row limit.</p>
             <div class="warning-box">
                 <strong>Never:</strong> <code>execute(user_sql)</code> from the model. Prompt injection + SQL = data breach.
             </div>
+            <table>
+                <tr><th>Pattern</th><th>Why</th></tr>
+                <tr><td>Named queries only</td><td>You own the plan and indexes</td></tr>
+                <tr><td>Bound parameters</td><td>No string concatenation of IDs or filters</td></tr>
+                <tr><td>Row + time limits</td><td>Stop a runaway scan from melting the replica</td></tr>
+                <tr><td>Tenant predicate</td><td>Always AND <code>tenant_id = :caller</code> in the tool layer</td></tr>
+            </table>
         </section>
 
         <section id="n8n">
             <h2>n8n</h2>
             <p>Open, self-hostable workflow tool. Good for ops: webhook → LLM node → Slack/ticket. You can keep data in your VPC. Treat workflows as code: export, review, version. Put API keys in n8n credentials, not in node fields that get logged.</p>
+            <ul>
+                <li>Self-host when PII must not leave your network</li>
+                <li>Pin workflow versions; review diffs like application code</li>
+                <li>Use error workflows + retries; do not rely on “it usually works”</li>
+            </ul>
         </section>
 
         <section id="make">
@@ -128,11 +248,24 @@ async def github_get(path: str) -> str:
         <section id="workflows">
             <h2>Workflows</h2>
             <p>A workflow is a directed graph with retries: ingest → classify → human review → notify. LLMs are steps, not the orchestrator of record. Use Temporal, Step Functions, or a simple queue if you need durability. Visual tools are for edges; your domain logic belongs in tested functions.</p>
+            <table>
+                <tr><th>Orchestrator</th><th>Fits</th></tr>
+                <tr><td>n8n / Make / Zapier</td><td>Internal ops, low-stakes SaaS glue</td></tr>
+                <tr><td>Queue + workers</td><td>Simple async jobs you own</td></tr>
+                <tr><td>Temporal / Step Functions</td><td>Long-running, compensations, strict retries</td></tr>
+                <tr><td>Agent loop alone</td><td>Rarely — too easy to wander and burn tokens</td></tr>
+            </table>
         </section>
 
         <section id="events">
             <h2>Event-driven automation</h2>
             <p>Triggers: webhooks, pub/sub, inbox, cron. Pattern: event → validate signature → enqueue → worker → LLM/tool → persist → emit result. Idempotency key = event id. Dead-letter after N failures. Alert on queue depth.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-events.jpg" alt="Event-driven pipeline from webhook cron pubsub triggers through signature validation idempotency queue worker LLM step persist and emit, with dead-letter queue branch" loading="lazy">
+                <div class="illustration-caption"><strong>Follow the spine.</strong> Validate → dedupe by event id → queue → worker (LLM optional) → persist → emit. Failures after N tries go to the DLQ with an alert — not into a silent void.</div>
+            </div>
+
             <div class="code-block"># Webhook handler sketch
 def handle_stripe(event):
     if seen(event["id"]):
@@ -141,15 +274,75 @@ def handle_stripe(event):
     mark_seen(event["id"])</div>
         </section>
 
+        <section id="advanced">
+            <h2>Advanced MCP patterns</h2>
+            <p>Once one local server works, production asks for multi-server catalogs, remote auth, approval gates, and traces.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-mcp/mcp-advanced.jpg" alt="Four advanced MCP panels: multi-server routing, remote MCP with OAuth scopes, human-in-the-loop approval for write tools, and observability traces for tool calls" loading="lazy">
+                <div class="illustration-caption"><strong>Four upgrades.</strong> Route across GitHub/DB/Docs servers. Scope remote tools with OAuth per user. Pause dangerous writes for a human. Trace every call: name, latency, args hash, success/fail.</div>
+            </div>
+
+            <table>
+                <tr><th>Pattern</th><th>Idea</th><th>Watch out</th></tr>
+                <tr><td>Multi-server routing</td><td>One host, many MCP servers; filter tools by task</td><td>Tool-name collisions; too many tools confuse the model</td></tr>
+                <tr><td>Remote MCP + OAuth</td><td>User token → server scopes tools to that principal</td><td>Token leakage into logs/prompts</td></tr>
+                <tr><td>Sampling / elicitation</td><td>Server asks the host/model for help mid-tool</td><td>Nested calls and cost explosions</td></tr>
+                <tr><td>Resource subscriptions</td><td>Push updates when a file/ticket changes</td><td>Fan-out and stale caches</td></tr>
+                <tr><td>Tool result budgets</td><td>Hard cap tokens returned into context</td><td>Truncation that hides the answer — summarize first</td></tr>
+            </table>
+        </section>
+
+        <section id="security">
+            <h2>Security &amp; tenancy</h2>
+            <ul>
+                <li><strong>Least privilege:</strong> read tools by default; write tools behind roles + HITL</li>
+                <li><strong>Tenant isolation:</strong> pass the authenticated principal into every tool; never trust model-supplied <code>tenant_id</code></li>
+                <li><strong>Secret hygiene:</strong> vault / env only; redact from traces and tool results</li>
+                <li><strong>Prompt injection:</strong> treat tool outputs and retrieved docs as untrusted data</li>
+                <li><strong>Supply chain:</strong> pin MCP server versions; review community servers before install</li>
+            </ul>
+            <div class="warning-box">
+                <strong>Never mount an unrestricted shell, arbitrary SQL, or open HTTP proxy on a shared or remote MCP server.</strong> That is remote code execution with a chat UI.
+            </div>
+        </section>
+
+        <section id="observability">
+            <h2>Observability</h2>
+            <p>If you cannot answer “which tool failed for which user,” you do not have production tooling.</p>
+            <table>
+                <tr><th>Signal</th><th>Why</th></tr>
+                <tr><td>tool_name, latency_ms, success</td><td>Find slow/flaky tools</td></tr>
+                <tr><td>args hash (not raw secrets)</td><td>Debug without leaking PII</td></tr>
+                <tr><td>tokens in/out + $</td><td>Catch agent loops early</td></tr>
+                <tr><td>approval_id for HITL</td><td>Audit who allowed a write</td></tr>
+                <tr><td>queue depth / DLQ rate</td><td>Ops health for event paths</td></tr>
+            </table>
+        </section>
+
+        <section id="hitl">
+            <h2>Human-in-the-loop</h2>
+            <p>Any tool that moves money, deletes data, emails customers, or changes IAM should pause for approval — or be unreachable to the model.</p>
+            <div class="code-block">def refund_order(order_id: str, amount_cents: int, actor: User) -> str:
+    require_role(actor, "support_lead")
+    ticket = create_approval("refund", {"order_id": order_id, "amount_cents": amount_cents})
+    return f"Pending approval {ticket.id}"  # worker executes after approve</div>
+            <div class="info-box">
+                Prefer <strong>propose → approve → execute</strong> over “the model already charged the card.” Store the approval audit trail next to the tool trace.
+            </div>
+        </section>
+
         <section id="checkpoint">
             <h2>Checkpoint — move on when</h2>
             <ul>
-                <li>You can ship an MCP or function-calling tool with auth and an allowlist</li>
-                <li>You can explain when to use n8n vs a queue worker</li>
-                <li>You never let a model run arbitrary SQL or HTTP</li>
+                <li>You can ship an MCP or function-calling tool with auth, allowlist, timeout, and audit log</li>
+                <li>You can explain when to use MCP vs n8n vs a durable queue worker</li>
+                <li>You never let a model run arbitrary SQL, HTTP, or shell</li>
+                <li>Write tools that matter go through HITL; tenants cannot see each other’s tools/data</li>
+                <li>You can trace a failed automation from webhook → queue → tool → DLQ</li>
             </ul>
             <div class="info-box">
-                <strong>Next:</strong> Voice AI & Multimodal — realtime streams, STT/TTS, and interruption.
+                <strong>Next:</strong> Voice AI &amp; Multimodal — realtime streams, STT/TTS, and interruption.
             </div>
         </section>
     </div>

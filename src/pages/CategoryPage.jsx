@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import { getCategoryById } from '../data/categories';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import './CategoryPage.css';
@@ -16,6 +16,10 @@ export default function CategoryPage() {
                 </div>
             </div>
         );
+    }
+
+    if (category.topics.length === 1) {
+        return <Navigate to={`/learn/${category.topics[0].id}`} replace />;
     }
 
     return (

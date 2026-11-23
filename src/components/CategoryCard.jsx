@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
+import { getCategoryHref } from '../data/categories';
 import './CategoryCard.css';
 
 const CategoryCard = ({ category }) => {
@@ -10,7 +11,7 @@ const CategoryCard = ({ category }) => {
     return (
         <div
             className="category-card"
-            onClick={() => navigate(`/category/${category.id}`)}
+            onClick={() => navigate(getCategoryHref(category))}
             style={{ '--category-color': category.color }}
         >
             <div className="category-icon" style={{ backgroundColor: `${category.color}15` }}>

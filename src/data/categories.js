@@ -1,5 +1,15 @@
 export const categories = [
     {
+        id: 'software-engineering',
+        name: 'Software Engineering',
+        icon: '🧑‍💻',
+        color: '#0f766e',
+        description: 'Category introduction: hardware, OS, internet, DSA, frontend, backend, data science, AI, cloud, and how you ship production software',
+        topics: [
+            { id: 'pai-software-engineering', title: 'Introduction', file: 'Production AI/software-engineering.html' }
+        ]
+    },
+    {
         id: 'javascript',
         name: 'JavaScript',
         icon: '⚡',
@@ -131,7 +141,7 @@ export const categories = [
         color: '#7c3aed',
         description: 'AI Engineer → Production AI Engineer: software, ML, LLMs, RAG, agents, MCP, voice, cloud, LLMOps, and enterprise architecture',
         topics: [
-            { id: 'pai-software-engineering', title: 'Software Engineering', file: 'Production AI/software-engineering.html' },
+            { id: 'pai-software-engineering', title: 'Software Engineering Intro', file: 'Production AI/software-engineering.html' },
             { id: 'pai-ml-fundamentals', title: 'AI / ML Fundamentals', file: 'Production AI/ml-fundamentals.html' },
             { id: 'pai-deep-learning', title: 'Deep Learning & Transformers', file: 'Production AI/deep-learning.html' },
             { id: 'pai-generative-ai', title: 'Generative AI & LLM Engineering', file: 'Production AI/generative-ai.html' },
@@ -175,6 +185,14 @@ export const getAllTopics = () => {
 
 export const getCategoryById = (id) => {
     return categories.find(cat => cat.id === id);
+};
+
+/** Category page, or the sole topic when a category has only one subtopic. */
+export const getCategoryHref = (category) => {
+    if (category?.topics?.length === 1) {
+        return `/learn/${category.topics[0].id}`;
+    }
+    return `/category/${category.id}`;
 };
 
 export const getTopicById = (topicId) => {

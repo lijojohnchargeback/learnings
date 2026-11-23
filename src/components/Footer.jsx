@@ -12,7 +12,6 @@ const Footer = () => {
                 <div className="footer-top">
                     <div className="footer-brand">
                         <Link to="/" className="footer-logo">
-                            <span className="brand-icon">📚</span>
                             <span className="brand-text">Tech Notes</span>
                         </Link>
                         <p className="footer-tagline">

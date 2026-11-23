@@ -3,86 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Software Engineering — Production AI Engineer</title>
+    <title>Software Engineering — Introduction</title>
     <link rel="stylesheet" href="/css/docs.css">
 </head>
 <body>
     <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
 
-    <aside class="sidebar" id="sidebar">
+            <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-title">🧑‍💻 Software Engineering</div>
+            <div class="sidebar-title">🧑‍💻 SE — Introduction</div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Path</div>
+            <div class="sidebar-section-title">1. Start</div>
             <div class="sidebar-links">
                 <a href="#overview" class="sidebar-link">Overview</a>
                 <a href="#steps" class="sidebar-link">Learning Steps</a>
             </div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-section-title">2. Computer Foundations</div>
             <div class="sidebar-links">
-                <a href="#python" class="sidebar-link">Python</a>
-                <a href="#js-ts" class="sidebar-link">JS / TypeScript</a>
-                <a href="#nodejs" class="sidebar-link">Node.js</a>
-                <a href="#apis" class="sidebar-link">APIs</a>
-                <a href="#databases" class="sidebar-link">Databases</a>
-                <a href="#git" class="sidebar-link">Git</a>
-                <a href="#linux" class="sidebar-link">Linux</a>
-                <a href="#testing" class="sidebar-link">Testing</a>
-                <a href="#microservices" class="sidebar-link">Microservices</a>
-                <a href="#distributed" class="sidebar-link">Distributed Systems</a>
+                <a href="#foundations" class="sidebar-link">Foundations Map</a>
+                <a href="#hardware" class="sidebar-link">Hardware</a>
+                <a href="#os" class="sidebar-link">Operating Systems</a>
+                <a href="#internet" class="sidebar-link">Internet &amp; Networks</a>
+                <a href="#binary" class="sidebar-link">Data Representation</a>
+                <a href="#virtualization" class="sidebar-link">Virtualization</a>
+                <a href="#files-storage" class="sidebar-link">Files &amp; Storage</a>
             </div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-section-title">3. Domains</div>
+            <div class="sidebar-links">
+                <a href="#domains" class="sidebar-link">Tech Domains Map</a>
+                <a href="#frontend" class="sidebar-link">Frontend</a>
+                <a href="#backend" class="sidebar-link">Backend</a>
+                <a href="#data-science" class="sidebar-link">Data Science</a>
+                <a href="#ai-domain" class="sidebar-link">AI &amp; ML</a>
+                <a href="#cloud" class="sidebar-link">Cloud</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">4. Languages</div>
+            <div class="sidebar-links">
+                <a href="#languages" class="sidebar-link">Language Stack</a>
+                <a href="#python" class="sidebar-link">Python</a>
+                <a href="#js-ts" class="sidebar-link">JS / TypeScript</a>
+                <a href="#nodejs" class="sidebar-link">Node.js</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">5. Application Core</div>
+            <div class="sidebar-links">
+                <a href="#http" class="sidebar-link">HTTP &amp; Networking</a>
+                <a href="#apis" class="sidebar-link">APIs</a>
+                <a href="#auth" class="sidebar-link">AuthN vs AuthZ</a>
+                <a href="#databases" class="sidebar-link">Databases</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">6. Engineering Basics</div>
+            <div class="sidebar-links">
+                <a href="#fundamentals" class="sidebar-link">Basics Map</a>
+                <a href="#dsa" class="sidebar-link">DSA Intro</a>
+                <a href="#data-structures" class="sidebar-link">Data Structures</a>
+                <a href="#concurrency" class="sidebar-link">Concurrency</a>
+                <a href="#caching" class="sidebar-link">Caching</a>
+                <a href="#queues" class="sidebar-link">Queues &amp; Jobs</a>
+                <a href="#architecture" class="sidebar-link">Modular Design</a>
+                <a href="#config" class="sidebar-link">Config &amp; Env</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">7. Daily Craft</div>
+            <div class="sidebar-links">
+                <a href="#git" class="sidebar-link">Git</a>
+                <a href="#linux" class="sidebar-link">Linux</a>
+                <a href="#debugging" class="sidebar-link">Debugging</a>
+                <a href="#testing" class="sidebar-link">Testing</a>
+                <a href="#observability" class="sidebar-link">Observability</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">8. Production</div>
+            <div class="sidebar-links">
+                <a href="#security" class="sidebar-link">Security</a>
+                <a href="#docker-intro" class="sidebar-link">Docker</a>
+                <a href="#ci-cd" class="sidebar-link">CI / CD</a>
+                <a href="#microservices" class="sidebar-link">Microservices</a>
+                <a href="#distributed" class="sidebar-link">Distributed Systems</a>
+                <a href="#resilience" class="sidebar-link">Resilience</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">9. Finish</div>
             <div class="sidebar-links">
                 <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
             </div>
         </div>
     </aside>
 
-    <div class="container">
+<div class="container">
         <header>
-            <h1>🧑‍💻 1. Software Engineering</h1>
-            <p>Step 1 of 12 — The foundation every Production AI Engineer needs before models, agents, or GPUs.</p>
+            <h1>🧑‍💻 Software Engineering — Introduction</h1>
+            <p>Category introduction — the map of how computers, networks, and software domains fit together so you can ship real systems (also Step 1 of the Production AI Engineer path).</p>
         </header>
 
-        <section id="overview">
-            <h2>Why this comes first</h2>
-            <p><span class="highlight">Production AI is software engineering with models in the loop.</span> If you cannot ship an API, persist data, test it, and run it on Linux, you cannot ship RAG, agents, or LLMOps. Models fail in interesting ways; engineering is what keeps the product up.</p>
+<section id="overview">
+            <h2>What this category is</h2>
+            <p><span class="highlight">Software engineering is how you turn ideas into running systems:</span> hardware and OS underneath, internet in between, then frontend, backend, data, AI, and cloud on top — with tests, Git, and operations so it stays up. This page is the <strong>introduction</strong> to that map. Deeper modules on this site cover each stack in more detail.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-hero.jpg" alt="Six-step foundation for production software: languages, APIs, databases, Git and Linux, testing, services and resilience" loading="lazy">
+                <div class="illustration-caption"><strong>How to use this intro:</strong> read Computer foundations → Domains → Languages → Application core → Engineering basics → Daily craft → Production. Then open the related category modules below for depth.</div>
+            </div>
 
             <div class="info-box">
                 <h3>What you will be able to do</h3>
                 <ul>
-                    <li>Write backend services in Python and Node.js</li>
+                    <li>Explain hardware, OS, and internet basics (and why GPUs/VRAM/latency matter)</li>
+                    <li>Map the five domains: frontend, backend, data science, AI/ML, and cloud</li>
+                    <li>Write backend services in Python and Node.js / TypeScript</li>
                     <li>Design REST/JSON APIs with auth, validation, and errors</li>
                     <li>Store and query data in SQL and document databases</li>
-                    <li>Use Git, Linux, and tests as daily tools</li>
-                    <li>Reason about services, queues, and failure in distributed systems</li>
+                    <li>Use Git, Linux, tests, and traces as daily tools</li>
+                    <li>Reason about services, queues, retries, and failure in distributed systems</li>
                 </ul>
             </div>
-        </section>
 
-        <section id="steps">
-            <h2>Learning steps (in order)</h2>
+            <div class="grid-3">
+                <div class="feature-card card-teal">
+                    <h4>Foundations</h4>
+                    <p>Hardware, OS, internet, files, and virtualization — what every program actually runs on.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Domains</h4>
+                    <p>Frontend, backend, data science, AI/ML, and cloud — one product needs all five.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Ship &amp; operate</h4>
+                    <p>APIs, Git, tests, Docker, CI/CD, and resilience — demos become products here.</p>
+                </div>
+            </div>
+
+            <h3>Related modules on this site</h3>
             <table>
-                <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
-                <tr><td>1</td><td>Python</td><td>You can build a CLI + FastAPI service without looking up basic syntax</td></tr>
-                <tr><td>2</td><td>JS / TypeScript</td><td>You can type APIs, handle async, and ship a small frontend or worker</td></tr>
-                <tr><td>3</td><td>Node.js</td><td>You can run an HTTP server, read env, and call other APIs</td></tr>
-                <tr><td>4</td><td>APIs</td><td>You can design resources, status codes, pagination, and auth</td></tr>
-                <tr><td>5</td><td>Databases</td><td>You can model tables/collections, write queries, and think about indexes</td></tr>
-                <tr><td>6</td><td>Git</td><td>You can branch, review diffs, and write useful commit messages</td></tr>
-                <tr><td>7</td><td>Linux</td><td>You can SSH, inspect logs, and run a process with systemd or Docker</td></tr>
-                <tr><td>8</td><td>Testing</td><td>You can write unit + API tests and mock external calls</td></tr>
-                <tr><td>9</td><td>Microservices</td><td>You can split a monolith at a real boundary and communicate over HTTP/queues</td></tr>
-                <tr><td>10</td><td>Distributed systems</td><td>You can explain consistency, retries, idempotency, and timeouts</td></tr>
+                <tr><th>After this intro…</th><th>Go deeper in</th></tr>
+                <tr><td>Frontend UI</td><td><a href="/category/frontend">Frontend Technology</a> (HTML, CSS, React)</td></tr>
+                <tr><td>JavaScript language</td><td><a href="/category/javascript">JavaScript</a></td></tr>
+                <tr><td>DSA practice</td><td><a href="/learn/javascript-data-structures">JS Data Structures</a> · <a href="/learn/python-data-structures">Python Data Structures</a></td></tr>
+                <tr><td>Python language</td><td><a href="/category/python">Python</a></td></tr>
+                <tr><td>Node / servers</td><td><a href="/category/backend">Backend &amp; Server</a></td></tr>
+                <tr><td>CS &amp; scale</td><td><a href="/category/cs-system-design">Computer Science &amp; System Design</a></td></tr>
+                <tr><td>Cloud (AWS)</td><td><a href="/category/aws">AWS</a></td></tr>
+                <tr><td>Databases</td><td><a href="/category/database">Databases</a></td></tr>
+                <tr><td>AI concepts</td><td><a href="/category/ai-ml">AI &amp; ML</a></td></tr>
+                <tr><td>Production AI path</td><td><a href="/category/ai">Production AI Engineer</a> (this intro is Step 1)</td></tr>
+                <tr><td>Tools</td><td><a href="/category/tools">Tools</a> (Linux, Docker, queues, Postman)</td></tr>
             </table>
         </section>
 
-        <section id="python">
+<section id="steps">
+            <h2>Learning steps (in order)</h2>
+            <p>Follow the sidebar top to bottom. Computer foundations first, then domains, languages, application core, engineering basics, daily craft, and production.</p>
+            <table>
+                <tr><th>Step</th><th>Block</th><th>Done when</th></tr>
+                <tr><td>1</td><td><strong>Computer foundations</strong></td><td>You can explain hardware, OS, internet, data representation, VMs/containers, and storage</td></tr>
+                <tr><td>2</td><td><strong>Domains</strong></td><td>You can name what frontend, backend, data science, AI/ML, and cloud each own</td></tr>
+                <tr><td>3</td><td><strong>Languages</strong></td><td>You know Python vs TypeScript vs Node roles and can write a small service in one</td></tr>
+                <tr><td>4</td><td><strong>Application core</strong></td><td>HTTP, APIs, AuthN/AuthZ, and databases click together for a chat product</td></tr>
+                <tr><td>5</td><td><strong>Engineering basics</strong></td><td>Structures, async, cache, queues, modular design, config — explain each in one minute</td></tr>
+                <tr><td>6</td><td><strong>Daily craft</strong></td><td>You can ship a PR, debug from logs/shell, and write unit tests (not model prose asserts)</td></tr>
+                <tr><td>7</td><td><strong>Production</strong></td><td>Security, Docker, CI/CD, and resilience patterns for timeouts/retries/idempotency</td></tr>
+            </table>
+        </section>
+
+<section id="foundations">
+            <h2>Computer foundations</h2>
+            <p>Before domains and frameworks, know what a computer <em>is</em>: <span class="highlight">hardware runs an OS, the OS talks to the internet, applications sit on top</span>. AI training and inference still sit on this stack — a GPU is hardware; CUDA needs a driver; your API is a process on an OS.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-foundations.jpg" alt="Four-layer computer foundations stack: hardware, operating system, internet and networks, and applications including AI services" loading="lazy">
+                <div class="illustration-caption"><strong>Bottom up.</strong> Hardware → OS → networks → apps. Skip this and “the model is slow” becomes guesswork about CPU, RAM, disk, or network.</div>
+            </div>
+        </section>
+
+<section id="hardware">
+            <h2>Hardware</h2>
+            <p>Software is instructions; hardware executes them. For Production AI you especially care about <strong>CPU</strong> (APIs, orchestration), <strong>RAM</strong> (context, KV cache, batch size), <strong>disk</strong> (models, corpora), and <strong>GPU</strong> (training and many inference workloads).</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-hardware.jpg" alt="Hardware diagram of CPU RAM disk GPU and NIC with a storage hierarchy from registers and cache to RAM SSD and network storage" loading="lazy">
+                <div class="illustration-caption"><strong>Hierarchy = speed vs size.</strong> Registers/cache are tiny and fast; SSD/network are large and slower. OOM kills are usually RAM (or GPU VRAM), not “Python being slow.”</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/concurrency/machine-software-hardware.png" alt="Relationship between machine hardware and software layers" loading="lazy">
+                <div class="illustration-caption">Hardware is the machine. The OS and your programs are software that schedule work onto that machine.</div>
+            </div>
+
+            <table>
+                <tr><th>Part</th><th>What it does</th><th>AI product note</th></tr>
+                <tr><td>CPU</td><td>General compute, few powerful cores</td><td>Runs APIs, workers, tokenization, orchestration</td></tr>
+                <tr><td>RAM</td><td>Fast volatile working memory</td><td>Limits concurrent requests, RAG context, batch size</td></tr>
+                <tr><td>Disk / SSD</td><td>Persistent storage</td><td>Model weights, document corpora, logs</td></tr>
+                <tr><td>GPU / accelerator</td><td>Massive parallel math</td><td>Training + much local inference; watch VRAM</td></tr>
+                <tr><td>NIC</td><td>Network interface</td><td>Vendor API latency; throughput for streaming</td></tr>
+            </table>
+        </section>
+
+<section id="os">
+            <h2>Operating systems</h2>
+            <p>The OS manages processes, memory, files, and devices. Linux dominates servers and GPU boxes; macOS/Windows are fine for local dev. Containers share a kernel; VMs virtualize hardware.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-os.jpg" alt="Operating system kernel coordinating processes memory filesystem and device drivers with user space versus kernel space" loading="lazy">
+                <div class="illustration-caption"><strong>Kernel in the middle.</strong> Your FastAPI process is user space. Disk, GPU, and NIC access go through the OS. Permissions and resource limits are OS features — use them.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/concurrency/threads-vs-processes.png" alt="Comparison of threads sharing memory versus separate processes" loading="lazy">
+                <div class="illustration-caption">Processes isolate memory (safer). Threads share memory (cheaper context switch, easier races). Know which model your runtime uses (e.g. Node event loop vs multi-process uvicorn).</div>
+            </div>
+
+            <table>
+                <tr><th>Concept</th><th>Why it matters</th></tr>
+                <tr><td>Process / PID</td><td>What you start, kill, and monitor (<code>ps</code>, systemd)</td></tr>
+                <tr><td>Virtual memory</td><td>Each process thinks it owns RAM; OOM killer when it lies</td></tr>
+                <tr><td>Filesystem + permissions</td><td>Who can read model files and secrets</td></tr>
+                <tr><td>Signals / exits</td><td>Graceful shutdown of workers on deploy</td></tr>
+                <tr><td>cgroups / limits</td><td>Containers cap CPU/RAM so one job cannot starve others</td></tr>
+            </table>
+        </section>
+
+<section id="internet">
+            <h2>Internet &amp; networks</h2>
+            <p>The internet moves packets between machines. Your chat UI reaches a model API through <strong>DNS → TCP → TLS → HTTP</strong>. Latency, packet loss, and DNS failures look like “AI bugs” until you check the network.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-internet.jpg" alt="Internet request path from app through DNS TCP TLS and HTTP across routers to a server with TCP IP stack layers" loading="lazy">
+                <div class="illustration-caption"><strong>Follow the path.</strong> Name → IP (DNS), reliable bytes (TCP), encrypted (TLS), then application protocol (HTTP). Ports select which program on the host.</div>
+            </div>
+
+            <table>
+                <tr><th>Idea</th><th>Plain English</th></tr>
+                <tr><td>IP address</td><td>Where a machine lives on a network</td></tr>
+                <tr><td>Port</td><td>Which process on that machine (80, 443, 8000…)</td></tr>
+                <tr><td>DNS</td><td>Human name → IP</td></tr>
+                <tr><td>TCP vs UDP</td><td>Reliable stream vs fast datagrams</td></tr>
+                <tr><td>Latency vs bandwidth</td><td>Delay per round trip vs bits per second — LLM chat is latency-sensitive</td></tr>
+                <tr><td>Public vs private</td><td>Internet-facing vs VPC-only services</td></tr>
+            </table>
+            <div class="info-box">
+                HTTP details come later under <strong>Application Core</strong>. Here you need the network path that HTTP rides on.
+            </div>
+        </section>
+
+<section id="binary">
+            <h2>Data representation</h2>
+            <p>Computers store bits. Engineers still hit encoding bugs daily: UTF-8 vs Latin-1, float precision, and “why is my JSON 2MB.”</p>
+            <table>
+                <tr><th>Topic</th><th>Practical takeaway</th></tr>
+                <tr><td>Bits / bytes</td><td>Sizes: KB → MB → GB; model weights are often GBs</td></tr>
+                <tr><td>Text encodings</td><td>Prefer UTF-8 everywhere; declare it in files and HTTP</td></tr>
+                <tr><td>Numbers</td><td>Ints vs floats; floats are approximate — money uses decimals</td></tr>
+                <tr><td>JSON / binary</td><td>JSON is text; protobuf/msgpack are denser for high volume</td></tr>
+                <tr><td>Tokens ≠ words</td><td>LLM billing uses tokenizer pieces, not English words</td></tr>
+            </table>
+        </section>
+
+<section id="virtualization">
+            <h2>Virtualization &amp; containers</h2>
+            <p><strong>VMs</strong> emulate machines (own guest OS). <strong>Containers</strong> share the host kernel and package your app + libs. Cloud instances are usually VMs; Docker images are containers. You will use both.</p>
+            <table>
+                <tr><th>Tech</th><th>Isolates</th><th>Use when</th></tr>
+                <tr><td>VM</td><td>Hardware + full OS</td><td>Strong isolation, different kernels, GPU passthrough setups</td></tr>
+                <tr><td>Container</td><td>Process + filesystem view</td><td>Ship the same API image to every environment</td></tr>
+                <tr><td>Serverless</td><td>Function invocation</td><td>Spiky, short work — watch cold starts for LLM calls</td></tr>
+            </table>
+            <div class="info-box">
+                Hands-on packaging is under <strong>Production → Docker</strong>. Here you only need the mental model.
+            </div>
+        </section>
+
+<section id="files-storage">
+            <h2>Files &amp; storage</h2>
+            <p>Everything durable is a file or a block device somewhere: code, logs, model checkpoints, uploaded PDFs. Know paths, permissions, and the difference between local disk and object storage (S3).</p>
+            <ul>
+                <li><strong>Local disk:</strong> fast for the machine; dies with the instance unless attached volumes</li>
+                <li><strong>Block volumes:</strong> cloud disks you attach to VMs</li>
+                <li><strong>Object storage:</strong> S3/GCS for corpora, artifacts, backups — cheap, durable, higher latency</li>
+                <li><strong>Permissions:</strong> least privilege on model and secret files; never world-readable keys</li>
+            </ul>
+        </section>
+
+<section id="domains">
+            <h2>Tech domains map</h2>
+            <p>A Production AI Engineer is not “only prompts.” You touch <span class="highlight">frontend, backend, data science, AI/ML, and cloud</span>. Depth varies by role, but you need a working map of each domain so you can ship and debug the whole product.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-domains.jpg" alt="Five engineering domain pillars: Frontend, Backend, Data Science, AI ML, and Cloud connected as one product" loading="lazy">
+                <div class="illustration-caption"><strong>Five pillars, one product.</strong> Chat UI (frontend) hits your API (backend), which may call a ranked model (data science / AI) running on cloud compute with IAM and monitoring. Skip any pillar and the demo dies in production.</div>
+            </div>
+
+            <table>
+                <tr><th>Domain</th><th>You own</th><th>Goes deeper in</th></tr>
+                <tr><td>Frontend</td><td>UI, streaming chat, citations, auth session</td><td>React / JS modules in this site</td></tr>
+                <tr><td>Backend</td><td>APIs, authz, DB, queues, workers</td><td>This step + Backend / Node / Python guides</td></tr>
+                <tr><td>Data Science</td><td>EDA, features, metrics, experiments</td><td>AI / ML Fundamentals</td></tr>
+                <tr><td>AI / ML</td><td>Models, RAG, agents, evals</td><td>Later Production AI steps</td></tr>
+                <tr><td>Cloud</td><td>Compute, storage, network, IAM, deploy</td><td>Cloud AI + AWS modules</td></tr>
+            </table>
+        </section>
+
+<section id="frontend">
+            <h2>Frontend technology</h2>
+            <p>The user experiences AI through the UI: typing, streaming tokens, citations, loading states, and errors. Frontend is not optional polish — it is where latency and trust show up.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-frontend.jpg" alt="Frontend for AI products: React Next UI typed client streaming SSE message list with citations and error states, with a warning never to put model keys in the browser" loading="lazy">
+                <div class="illustration-caption"><strong>Browser → your API only.</strong> Stream tokens over SSE/fetch. Show citations and failures clearly. Model vendor keys never ship in the JS bundle.</div>
+            </div>
+
+            <table>
+                <tr><th>Layer</th><th>Typical stack</th><th>AI product note</th></tr>
+                <tr><td>Markup &amp; style</td><td>HTML, CSS, accessible components</td><td>Keyboard + screen-reader for chat and controls</td></tr>
+                <tr><td>Language</td><td>TypeScript</td><td>Type message/tool payloads shared with the API</td></tr>
+                <tr><td>Framework</td><td>React, Next.js</td><td>SSR/CSR for app shells; API routes as BFF if needed</td></tr>
+                <tr><td>State</td><td>React state, context, or a small store</td><td>Thread list, in-flight stream, optimistic UI</td></tr>
+                <tr><td>Data fetching</td><td>fetch, React Query / SWR</td><td>Cancel streams on navigate; retry 429 carefully</td></tr>
+            </table>
+            <ul>
+                <li>Render partial tokens as they arrive — do not wait for the full completion</li>
+                <li>Surface “no evidence retrieved” and tool failures in the UI</li>
+                <li>Keep secrets and system prompts on the server</li>
+            </ul>
+        </section>
+
+<section id="backend">
+            <h2>Backend technology</h2>
+            <p>Backend is the control plane: auth, validation, persistence, tool execution, rate limits, and calls to models. This step’s Core sections (Python, Node, APIs, DBs) live here.</p>
+
+            <div class="illustration">
+                <img src="/images/backend/backend-architecture-overview.png" alt="Backend architecture overview with clients API layer services and data stores" loading="lazy">
+                <div class="illustration-caption">Clients hit an API layer; services own use-cases; data stores hold truth. Model vendors and vector DBs are extra dependencies — still behind your backend.</div>
+            </div>
+
+            <table>
+                <tr><th>Concern</th><th>Technologies</th><th>Job</th></tr>
+                <tr><td>HTTP APIs</td><td>FastAPI, Express/Nest, Django</td><td>Chat, retrieve, tools, admin</td></tr>
+                <tr><td>Auth</td><td>JWT, sessions, API keys, OAuth</td><td>Identity + tenant isolation</td></tr>
+                <tr><td>Data</td><td>PostgreSQL, Redis, MongoDB</td><td>Users, threads, cache, docs</td></tr>
+                <tr><td>Async work</td><td>Queues, workers, Temporal</td><td>Embed, eval, notifications</td></tr>
+                <tr><td>Integrations</td><td>MCP, webhooks, SaaS SDKs</td><td>Tools the model may call</td></tr>
+            </table>
+            <div class="warning-box">
+                Do not let the frontend call OpenAI/Anthropic directly in production products. Your backend enforces authz, budgets, and audit logs.
+            </div>
+        </section>
+
+<section id="data-science">
+            <h2>Data science</h2>
+            <p>Data science turns raw logs and labels into decisions: which metric matters, whether a model beat a baseline, and whether production drifted. It is the bridge between “we have data” and “we ship a model.”</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-data-science.jpg" alt="Data science to production pipeline from raw data through EDA features train evaluate register serve and monitor drift" loading="lazy">
+                <div class="illustration-caption"><strong>Notebooks explore; services serve.</strong> EDA and baselines live in Jupyter. Registration, serving, and drift monitoring are engineering. Skipping the baseline is how teams ship complexity for free.</div>
+            </div>
+
+            <table>
+                <tr><th>Skill</th><th>Tools</th><th>Why</th></tr>
+                <tr><td>EDA &amp; cleaning</td><td>pandas, SQL, profiling</td><td>Garbage in → confident nonsense out</td></tr>
+                <tr><td>Features</td><td>sklearn pipelines, feature stores</td><td>Leakage kills online metrics</td></tr>
+                <tr><td>Classical ML</td><td>sklearn, XGBoost, LightGBM</td><td>Often beats an LLM for ranking/fraud/churn</td></tr>
+                <tr><td>Metrics</td><td>precision/recall, AUC, MAE, calibration</td><td>Pick from the cost of being wrong</td></tr>
+                <tr><td>Experiment tracking</td><td>MLflow, W&amp;B, spreadsheets+</td><td>Reproduce what you shipped</td></tr>
+            </table>
+            <div class="info-box">
+                Full depth: <strong>AI / ML Fundamentals</strong> (next step). Here you only need the map and the habit of beating a cheap baseline.
+            </div>
+        </section>
+
+<section id="ai-domain">
+            <h2>AI &amp; ML (domain map)</h2>
+            <p>AI is the product capability layer: models that predict, generate, retrieve, or act. As a software engineer entering Production AI, learn the vocabulary and where each piece plugs into your API.</p>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-hierarchy.png" alt="Nested diagram of Artificial Intelligence containing Machine Learning containing Deep Learning with Transformers LLMs and Generative AI" loading="lazy">
+                <div class="illustration-caption">AI ⊃ ML ⊃ Deep Learning. Transformers/LLMs/GenAI are specializations you will wrap in services. Classical ML still owns many production decisions.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-rag-pipeline.png" alt="RAG pipeline from user question through embed retrieve prompt and grounded LLM answer" loading="lazy">
+                <div class="illustration-caption">RAG is the default pattern for “answer from our docs.” Engineering owns chunking, indexes, ACLs, and citations — not only the prompt.</div>
+            </div>
+
+            <table>
+                <tr><th>Area</th><th>What it is</th><th>Later in this path</th></tr>
+                <tr><td>Classical ML</td><td>Supervised/unsupervised models + metrics</td><td>AI / ML Fundamentals</td></tr>
+                <tr><td>Deep learning</td><td>NNs, transformers, embeddings</td><td>Deep Learning &amp; Transformers</td></tr>
+                <tr><td>LLMs / GenAI</td><td>Prompting, tokens, structured output</td><td>Generative AI &amp; LLM Engineering</td></tr>
+                <tr><td>RAG</td><td>Retrieve then generate with citations</td><td>RAG &amp; Knowledge Engineering</td></tr>
+                <tr><td>Agents</td><td>LLM + tools + loops with caps</td><td>AI Agents &amp; Multi-Agent</td></tr>
+                <tr><td>Evals / LLMOps</td><td>Quality gates, monitoring, cost</td><td>LLMOps / Production AI</td></tr>
+            </table>
+        </section>
+
+<section id="cloud">
+            <h2>Cloud</h2>
+            <p>Cloud is where production runs: compute for APIs and GPUs, storage for docs and models, networking and IAM for safety, and managed data services so you are not racking servers.</p>
+
+            <div class="illustration">
+                <img src="/images/aws/aws-architecture-overview.png" alt="AWS architecture overview showing regional services for compute storage database networking and security" loading="lazy">
+                <div class="illustration-caption">Think in building blocks: compute, storage, database, network, identity. Same ideas on GCP/Azure — learn one cloud deeply, map the others.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/aws/aws-compute-spectrum.png" alt="Spectrum of cloud compute from serverless functions to containers to virtual machines to specialized GPU instances" loading="lazy">
+                <div class="illustration-caption">Pick compute from the job: serverless for spiky APIs, containers for long workers, GPUs for training/inference. Paying for idle GPUs is a classic bill shock.</div>
+            </div>
+
+            <table>
+                <tr><th>Building block</th><th>Examples</th><th>AI use</th></tr>
+                <tr><td>Compute</td><td>VMs, ECS/EKS/GKE, Lambda, GPU instances</td><td>API, workers, training, inference</td></tr>
+                <tr><td>Storage</td><td>S3 / GCS / Blob</td><td>Docs, model artifacts, eval dumps</td></tr>
+                <tr><td>Data</td><td>RDS, DynamoDB, BigQuery, OpenSearch</td><td>System of record + search/analytics</td></tr>
+                <tr><td>Network</td><td>VPC, load balancers, private endpoints</td><td>Isolate model/data planes</td></tr>
+                <tr><td>IAM &amp; secrets</td><td>IAM roles, Secret Manager, KMS</td><td>No keys in images or prompts</td></tr>
+                <tr><td>Observe</td><td>CloudWatch, Stackdriver, OpenTelemetry</td><td>Latency, errors, $ per request</td></tr>
+            </table>
+            <div class="info-box">
+                Deeper cloud for AI serving and infra: <strong>Cloud AI &amp; AI Infrastructure</strong> later in this path, plus the AWS category modules.
+            </div>
+        </section>
+
+<section id="languages">
+            <h2>Language stack</h2>
+            <p>You do not need five languages. You need a clear split: <strong>Python for ML/RAG/agents</strong>, <strong>TypeScript for product UI and typed contracts</strong>, <strong>Node when the runtime or MCP/tooling ecosystem fits</strong>.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-languages.jpg" alt="Three-column language stack: Python for FastAPI ML RAG agents, TypeScript for React Next and Zod contracts, Node.js for MCP servers and workers, with HTTP between them" loading="lazy">
+                <div class="illustration-caption"><strong>Notebooks explore; services ship.</strong> Python owns model-adjacent backends. TypeScript owns UI and shared contracts. Node often hosts MCP servers and lightweight workers that call Python over HTTP.</div>
+            </div>
+        </section>
+
+<section id="python">
             <h2>Python</h2>
             <p>Primary language for ML, RAG, agents, and FastAPI backends. Learn syntax, typing, packaging, async, and how to structure a service — not just notebooks.</p>
             <div class="code-block"># FastAPI skeleton you should be able to write from memory
@@ -101,11 +466,18 @@ def ask(body: AskRequest):
         raise HTTPException(status_code=400, detail="question required")
     return {"answer": f"echo: {body.question}", "user_id": body.user_id}</div>
             <div class="info-box">
-                <strong>Practice:</strong> venv, pip/poetry, type hints, dataclasses, logging, pytest, and a 3-file project (api / services / tests).
+                <strong>Practice:</strong> venv, pip/poetry/uv, type hints, dataclasses, logging, pytest, and a 3-file project (<code>api</code> / <code>services</code> / <code>tests</code>).
             </div>
+            <table>
+                <tr><th>Skill</th><th>Why it matters for AI</th></tr>
+                <tr><td>Pydantic / typing</td><td>Tool schemas and request validation</td></tr>
+                <tr><td>async + httpx</td><td>Call model vendors without blocking the event loop</td></tr>
+                <tr><td>packaging</td><td>Reproducible workers and MCP servers</td></tr>
+                <tr><td>logging</td><td>Trace ids across retrieve → generate → tool</td></tr>
+            </table>
         </section>
 
-        <section id="js-ts">
+<section id="js-ts">
             <h2>JavaScript / TypeScript</h2>
             <p>Needed for AI apps (React/Next.js), tool UIs, and many agent SDKs. TypeScript is the production default — types catch contract bugs between frontend, APIs, and model JSON.</p>
             <div class="code-block">type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -120,9 +492,14 @@ async function sendChat(messages: ChatMessage[]): Promise&lt;string&gt; {
   const data = (await res.json()) as { reply: string };
   return data.reply;
 }</div>
+            <ul>
+                <li>Prefer Zod (or similar) at the boundary of every API route</li>
+                <li>Stream UI with SSE / fetch streams — do not block the page on full completion</li>
+                <li>Keep model keys on the server; the browser talks only to <em>your</em> API</li>
+            </ul>
         </section>
 
-        <section id="nodejs">
+<section id="nodejs">
             <h2>Node.js</h2>
             <p>Runtime for JS backends, MCP servers, and automation workers. Learn the event loop, streams, env config, and calling Python services over HTTP.</p>
             <div class="code-block">import express from "express";
@@ -137,23 +514,79 @@ app.post("/tools/search", async (req, res) => {
 });
 
 app.listen(3000);</div>
+            <div class="warning-box">
+                <strong>CPU-heavy embedding or inference?</strong> Put it in Python/GPU workers. Node shines at I/O and glue, not at matmul.
+            </div>
         </section>
 
-        <section id="apis">
-            <h2>APIs</h2>
-            <p>Every LLM feature is an API: chat, retrieve, tool-call, evaluate. Design resources, not ad-hoc functions. Always define auth, validation, idempotency keys, and error shapes.</p>
+<section id="http">
+            <h2>HTTP &amp; networking</h2>
+            <p>Almost every AI feature is an HTTP call: browser → your API → model vendor / vector DB / tools. Know methods, status codes, headers, TLS, and what “connection refused” vs “timeout” means.</p>
+
+            <div class="illustration">
+                <img src="/images/backend/http-request-response.png" alt="HTTP request and response cycle showing client request headers body and server response status headers body" loading="lazy">
+                <div class="illustration-caption">Request line + headers + body in; status + headers + body out. Streaming chat is still HTTP — just a long-lived response.</div>
+            </div>
+
             <table>
-                <tr><th>Concern</th><th>Production rule</th></tr>
-                <tr><td>Contracts</td><td>JSON Schema / OpenAPI / Pydantic / Zod — never "whatever the model returns"</td></tr>
-                <tr><td>Auth</td><td>API keys or JWT at the edge; never put model keys in the browser</td></tr>
-                <tr><td>Errors</td><td>Stable codes: 400 validation, 401/403 auth, 404 missing, 429 rate limit, 500 unexpected</td></tr>
-                <tr><td>Versioning</td><td><code>/v1/...</code> when clients are external; additive changes only</td></tr>
+                <tr><th>Concept</th><th>You should know</th></tr>
+                <tr><td>Methods</td><td>GET safe/idempotent; POST creates; PUT/PATCH update; DELETE removes</td></tr>
+                <tr><td>Headers</td><td><code>Authorization</code>, <code>Content-Type</code>, <code>Idempotency-Key</code>, <code>Retry-After</code></td></tr>
+                <tr><td>TLS</td><td>HTTPS everywhere; pin certs in internal mesh when required</td></tr>
+                <tr><td>DNS / ports</td><td>Debug “works on my machine” with <code>curl</code>, <code>dig</code>, <code>ss</code></td></tr>
             </table>
         </section>
 
-        <section id="databases">
+<section id="apis">
+            <h2>APIs</h2>
+            <p>Every LLM feature is an API: chat, retrieve, tool-call, evaluate. Design resources, not ad-hoc functions. Always define auth, validation, idempotency keys, and error shapes.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-apis.jpg" alt="API gateway with JWT auth routing to chat retrieve and tools endpoints, with status code panel and OpenAPI contract badge" loading="lazy">
+                <div class="illustration-caption"><strong>Gateway in the middle.</strong> Clients never hold vendor model keys. Contracts (OpenAPI / Pydantic / Zod) define the wire format. Status codes and idempotency keys are product features, not afterthoughts.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/backend/rest-api-crud.png" alt="REST API CRUD mapping of HTTP methods to create read update delete operations on resources" loading="lazy">
+                <div class="illustration-caption">Classic REST mapping still applies to AI products: threads, messages, documents, and eval runs are resources you can CRUD and paginate.</div>
+            </div>
+
+            <table>
+                <tr><th>Concern</th><th>Production rule</th></tr>
+                <tr><td>Contracts</td><td>JSON Schema / OpenAPI / Pydantic / Zod — never “whatever the model returns”</td></tr>
+                <tr><td>Auth</td><td>API keys or JWT at the edge; never put model keys in the browser</td></tr>
+                <tr><td>Errors</td><td>Stable codes: 400 validation, 401/403 auth, 404 missing, 429 rate limit, 500 unexpected</td></tr>
+                <tr><td>Versioning</td><td><code>/v1/...</code> when clients are external; additive changes only</td></tr>
+                <tr><td>Idempotency</td><td>Require <code>Idempotency-Key</code> on charges, ticket creates, and other writes</td></tr>
+                <tr><td>Pagination</td><td>Cursor-based for threads/messages; never unbounded list endpoints</td></tr>
+            </table>
+        </section>
+
+<section id="auth">
+            <h2>Authentication vs authorization</h2>
+            <p><strong>AuthN</strong> answers “who are you?” <strong>AuthZ</strong> answers “what may you do?” Mixing them up is how tenant data leaks into another user’s chat history.</p>
+
+            <div class="illustration">
+                <img src="/images/backend/auth-vs-authorization.png" alt="Diagram contrasting authentication who are you versus authorization what are you allowed to do" loading="lazy">
+                <div class="illustration-caption">Login proves identity. Permissions decide access to threads, documents, and admin tools. Always take <code>user_id</code> / tenant from the verified token — never from the JSON body alone.</div>
+            </div>
+
+            <ul>
+                <li>Common AuthN: session cookies, JWT bearer, API keys for services</li>
+                <li>Common AuthZ: RBAC roles, ABAC attributes, per-resource ACLs</li>
+                <li>AI-specific: scope tools per role; filter RAG by tenant <em>before</em> retrieval</li>
+            </ul>
+        </section>
+
+<section id="databases">
             <h2>Databases</h2>
             <p>AI apps still need users, threads, traces, documents, and billing. Learn SQL first (PostgreSQL), then a document store (MongoDB). Vector DBs come later in RAG — they are not a replacement for your system of record.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-databases.jpg" alt="ER diagram of users threads messages with token counts plus traces documents and billing tables, noting Postgres as system of record and vector DB for retrieval only" loading="lazy">
+                <div class="illustration-caption"><strong>System of record first.</strong> Users → threads → messages (with token meters). Traces, documents, and billing sit beside. Vectors answer “what’s similar?” — they do not own truth about who paid or what was said.</div>
+            </div>
+
             <div class="code-block">-- Typical AI product tables
 CREATE TABLE users (id uuid PRIMARY KEY, email text UNIQUE NOT NULL);
 CREATE TABLE threads (
@@ -168,18 +601,160 @@ CREATE TABLE messages (
   content text NOT NULL,
   tokens_in int, tokens_out int
 );</div>
+
+            <div class="illustration">
+                <img src="/images/backend/sql-vs-nosql.png" alt="Comparison of SQL relational databases versus NoSQL document stores" loading="lazy">
+                <div class="illustration-caption">Use SQL when relations and transactions matter (billing, ACLs). Use documents when the shape is nested and evolving (tool payloads, prompt versions). Many products use both.</div>
+            </div>
         </section>
 
-        <section id="git">
+<section id="fundamentals">
+            <h2>Engineering basics map</h2>
+            <p>After domains, languages, and app core, these are the <span class="highlight">cross-cutting engineering basics</span> every Production AI Engineer still needs. Models sit on top of structures, async, caches, queues, and modular code — they do not replace them.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-fundamentals.jpg" alt="Nine general software engineering topic cards: HTTP, AuthN vs AuthZ, Caching, Concurrency, Data Structures, Modular Design, Config, Debugging, and Queues" loading="lazy">
+                <div class="illustration-caption"><strong>Use as a checklist.</strong> HTTP and auth are covered in Application Core above. Here focus on structures, concurrency, caching, queues, modular design, and config. Debugging lives in Daily Craft next.</div>
+            </div>
+        </section>
+
+<section id="dsa">
+            <h2>DSA introduction</h2>
+            <p><span class="highlight">DSA = Data Structures + Algorithms.</span> A data structure is how you store and organize data. An algorithm is a step-by-step procedure that uses those structures to solve a problem. You pick a structure for access patterns, then an algorithm for the job — search, sort, traverse, or transform.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-dsa-intro.jpg" alt="DSA introduction with data structures on the left and algorithms on the right connected by choosing the right structure then the right algorithm, plus a Big-O note" loading="lazy">
+                <div class="illustration-caption"><strong>Left = shapes. Right = recipes.</strong> Arrays and hash maps for everyday APIs; trees and graphs when hierarchy or links matter. Search/sort/BFS/DFS are the starter algorithms. Big-O answers: “if input grows 10×, does cost grow 10× or 100×?”</div>
+            </div>
+
+            <table>
+                <tr><th>Piece</th><th>Meaning</th><th>Starter examples</th></tr>
+                <tr><td>Data structures</td><td>How data is laid out and accessed</td><td>Array, list, stack, queue, hash map, tree, graph</td></tr>
+                <tr><td>Algorithms</td><td>Steps that compute a result</td><td>Linear/binary search, sort, recursion, two pointers, BFS/DFS</td></tr>
+                <tr><td>Complexity (Big-O)</td><td>How time/memory grow with input size <em>n</em></td><td>O(1), O(log n), O(n), O(n log n), O(n²)</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Why engineers care (not only interviews)</h3>
+                <ul>
+                    <li>Wrong structure → slow APIs (e.g. scanning a list instead of a hash lookup)</li>
+                    <li>Wrong algorithm → timeouts on larger datasets (e.g. nested loops on 100k items)</li>
+                    <li>In AI products: top-k heaps, graph walks, dedupe sets, and queue BFS show up constantly</li>
+                </ul>
+            </div>
+
+            <p>This page is only the <strong>introduction</strong>. Next section maps structures to production use. For language-specific practice, see <a href="/learn/javascript-data-structures">JavaScript Data Structures</a> and <a href="/learn/python-data-structures">Python Data Structures</a>.</p>
+        </section>
+
+<section id="data-structures">
+            <h2>Data structures (practical)</h2>
+            <p>After the DSA intro: you are not grinding leetcode here — you are picking the right shape so production code stays fast and clear.</p>
+            <table>
+                <tr><th>Structure</th><th>Use in AI products</th></tr>
+                <tr><td>Hash map / dict</td><td>Idempotency keys, tool registries, config</td></tr>
+                <tr><td>Queue / deque</td><td>Job buffers, BFS over agent steps (with a cap)</td></tr>
+                <tr><td>Heap / priority queue</td><td>Top-k by score after retrieve or rerank</td></tr>
+                <tr><td>Set</td><td>Dedupe chunk ids across multi-query retrieval</td></tr>
+                <tr><td>Tree / trie</td><td>Routing, prefix caches, hierarchical docs (RAPTOR-style)</td></tr>
+                <tr><td>Graph</td><td>Service deps, knowledge graphs, workflow DAGs</td></tr>
+            </table>
+        </section>
+
+<section id="concurrency">
+            <h2>Concurrency &amp; async</h2>
+            <p>AI backends spend most of their time waiting on networks (model APIs, DBs). Async I/O lets one process handle many in-flight calls. Parallelism (multiple cores/GPUs) is different — know which one you need.</p>
+
+            <div class="illustration">
+                <img src="/images/concurrency/sync-vs-async.png" alt="Comparison of synchronous blocking calls versus asynchronous non-blocking concurrent IO" loading="lazy">
+                <div class="illustration-caption">Sync: one call blocks the worker. Async: await the vendor while other requests progress. Do not confuse “async” with “faster model” — it is about utilization.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/concurrency/concurrency-vs-parallelism.png" alt="Concurrency as interleaved tasks versus parallelism as simultaneous execution on multiple cores" loading="lazy">
+                <div class="illustration-caption">Concurrency = many tasks in progress. Parallelism = many tasks at the same instant. Embedding batches and GPU inference need parallelism; chat gateways mostly need concurrency.</div>
+            </div>
+        </section>
+
+<section id="caching">
+            <h2>Caching</h2>
+            <p>Cache what is expensive and stable: embeddings of unchanged chunks, rarely changing docs, repeated identical prompts (with care). Do not cache personalized or ACL-sensitive answers without including the principal in the key.</p>
+
+            <div class="illustration">
+                <img src="/images/backend/caching-layers.png" alt="Caching layers from browser CDN application cache and database cache" loading="lazy">
+                <div class="illustration-caption">Layers stack: CDN → app/redis → DB. Each layer needs a TTL and an invalidation story. Stale RAG embeddings after a doc edit are a product bug.</div>
+            </div>
+
+            <table>
+                <tr><th>Cache</th><th>Good for</th><th>Invalidate when</th></tr>
+                <tr><td>Embedding cache</td><td>Same text → same vector</td><td>Embedding model changes</td></tr>
+                <tr><td>Retrieval cache</td><td>Hot FAQ queries</td><td>Corpus or ACL changes</td></tr>
+                <tr><td>HTTP CDN</td><td>Static UI assets</td><td>Deploy / version bump</td></tr>
+                <tr><td>Full answer cache</td><td>Identical public prompts</td><td>Policy, model, or prompt version changes</td></tr>
+            </table>
+        </section>
+
+<section id="queues">
+            <h2>Queues &amp; background jobs</h2>
+            <p>Anything slow, bursty, or retriable belongs off the request path: embedding a corpus, batch evals, sending emails, tool side effects with HITL.</p>
+
+            <table>
+                <tr><th>Pattern</th><th>Use</th></tr>
+                <tr><td>At-least-once delivery</td><td>Default for most queues — make handlers idempotent</td></tr>
+                <tr><td>Visibility timeout</td><td>Worker crash → message returns for retry</td></tr>
+                <tr><td>Dead-letter queue</td><td>Poison messages after N failures</td></tr>
+                <tr><td>Scheduled / cron</td><td>Nightly evals, stale-doc reindex</td></tr>
+            </table>
+            <div class="info-box">
+                On the synchronous path, keep middleware thin (auth, logging, validation). Heavy work after that should <strong>enqueue</strong> — not block the user’s HTTP response.
+            </div>
+        </section>
+
+<section id="architecture">
+            <h2>Modular design</h2>
+            <p>Keep business rules free of vendor SDKs. Routes talk to use-cases; use-cases talk to ports; adapters implement DB, queue, and LLM providers. Swapping OpenAI for Anthropic should not rewrite billing or ACL logic.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-architecture.jpg" alt="Layered modular service layout from API routes through application services and domain rules down to adapters for database queue and LLM vendor" loading="lazy">
+                <div class="illustration-caption"><strong>Dependencies point inward.</strong> Domain does not import the OpenAI SDK. Adapters sit at the edge. That is how you add a second model or a mock in tests without surgery.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/backend/backend-architecture-overview.png" alt="Backend architecture overview showing clients API layer services and data stores" loading="lazy">
+                <div class="illustration-caption">Classic backend shape still applies: clients → API → services → data stores. AI adds model and vector dependencies as just more adapters.</div>
+            </div>
+        </section>
+
+<section id="config">
+            <h2>Config &amp; environments</h2>
+            <p>Follow 12-factor habits: config in env, secrets in a vault, one artifact across dev/stage/prod. Never bake model keys or tenant URLs into the image.</p>
+            <div class="code-block"># .env.example (commit this). Real .env stays local / in the secret manager.
+DATABASE_URL=postgres://...
+MODEL_API_KEY=
+MODEL_BASE_URL=https://api.openai.com/v1
+LOG_LEVEL=info
+MAX_TOOL_STEPS=8</div>
+            <ul>
+                <li>Fail fast on missing required env at boot</li>
+                <li>Feature flags for risky prompt or model rollouts</li>
+                <li>Separate rate limits and quotas per environment</li>
+            </ul>
+        </section>
+
+<section id="git">
             <h2>Git</h2>
             <p>Production teams live in PRs. Learn branching, rebasing vs merge, .gitignore, conventional commits, and how to review diffs that include prompts, evals, and infra.</p>
             <div class="code-block">git checkout -b feat/rag-rerank
 git add -p
 git commit -m "Add cross-encoder rerank step to retrieval pipeline"
 git push -u origin HEAD</div>
+            <ul>
+                <li>Version prompts and eval sets like code — not as unnamed Slack pastes</li>
+                <li>Never commit <code>.env</code>, model keys, or customer dumps</li>
+                <li>Small PRs: one retrieval change is easier to eval than a mega-diff</li>
+            </ul>
         </section>
 
-        <section id="linux">
+<section id="linux">
             <h2>Linux</h2>
             <p>Servers, containers, and GPU boxes are Linux. You need the shell, files, permissions, processes, logs, curl, and SSH. Docker comes in LLMOps; Linux is the base.</p>
             <div class="code-block"># Inspect a running AI API
@@ -187,11 +762,39 @@ curl -i http://127.0.0.1:8000/health
 journalctl -u my-api -n 100 --no-pager
 ss -tlnp | grep 8000
 tail -f /var/log/my-api/app.log</div>
+            <table>
+                <tr><th>Command habit</th><th>Use</th></tr>
+                <tr><td><code>curl -i</code></td><td>Headers + body when debugging APIs</td></tr>
+                <tr><td><code>journalctl</code> / logs</td><td>Why the worker died at 3am</td></tr>
+                <tr><td><code>ss</code> / <code>lsof</code></td><td>Who owns the port</td></tr>
+                <tr><td>permissions + users</td><td>Do not run the API as root</td></tr>
+            </table>
         </section>
 
-        <section id="testing">
+<section id="debugging">
+            <h2>Debugging</h2>
+            <p>Most “the model is broken” tickets are engineering: bad input, wrong tenant filter, timeout too low, or a silent 4xx from a tool.</p>
+            <ol>
+                <li>Reproduce with a request id / trace id</li>
+                <li>Check your logs before the vendor dashboard</li>
+                <li>Bisect: API validation → retrieval → prompt build → model → tool</li>
+                <li>Reduce: smallest payload that still fails</li>
+                <li>Fix + add a regression test or golden-set case</li>
+            </ol>
+            <div class="info-box">
+                Keep a <strong>debug checklist</strong> in the repo. When on-call is tired, checklists beat heroics.
+            </div>
+        </section>
+
+<section id="testing">
             <h2>Testing</h2>
             <p>Model output is non-deterministic, so tests must split: deterministic code (chunking, tools, parsers) vs evals (quality). Start with pytest / Vitest on everything that is not an LLM.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-testing.jpg" alt="Two-column testing diagram: deterministic unit tests for parsers tools schemas versus non-deterministic evals with golden sets, with CI always running units and evals on schedule" loading="lazy">
+                <div class="illustration-caption"><strong>Left is CI every PR. Right is quality.</strong> Mock the LLM in unit tests. Never assert exact prose. Golden sets and faithfulness/hit@k run on a schedule or before you change chunking/models.</div>
+            </div>
+
             <div class="code-block">def test_rejects_empty_question(client):
     r = client.post("/ask", json={"question": "  ", "user_id": "u1"})
     assert r.status_code == 400
@@ -201,17 +804,90 @@ def test_tool_schema_is_valid():
     assert "query" in schema["parameters"]["properties"]</div>
         </section>
 
-        <section id="microservices">
+<section id="observability">
+            <h2>Observability</h2>
+            <p>If you cannot answer “which request, which model, how many tokens, how much $,” you are flying blind.</p>
+            <table>
+                <tr><th>Signal</th><th>Why</th></tr>
+                <tr><td>request_id / trace_id</td><td>Join gateway → retrieve → generate → tool</td></tr>
+                <tr><td>latency p50/p95</td><td>Users feel p95; averages lie</td></tr>
+                <tr><td>tokens_in / tokens_out / USD</td><td>Catch prompt bloat and retry storms</td></tr>
+                <tr><td>error rate by dependency</td><td>Vendor vs your bug</td></tr>
+                <tr><td>queue depth / DLQ</td><td>Async paths dying quietly</td></tr>
+            </table>
+            <div class="info-box">
+                Log structured JSON. Redact secrets and PII. Keep raw prompts in a secure store if you need them for debugging — not in world-readable logs.
+            </div>
+        </section>
+
+<section id="security">
+            <h2>Security basics</h2>
+            <ul>
+                <li>Authn at the edge; authz on every resource (<code>user_id</code> / tenant from the token, not the body)</li>
+                <li>Secrets in a vault/env — never in prompts, repos, or client bundles</li>
+                <li>Treat model output and retrieved docs as untrusted (prompt injection)</li>
+                <li>Rate-limit per user and per IP; cap max tokens and tool calls</li>
+                <li>Least privilege for DB roles and cloud IAM used by workers</li>
+            </ul>
+            <div class="warning-box">
+                A leaked OpenAI/Anthropic key in a frontend build is an incident. Proxy model calls through your backend.
+            </div>
+        </section>
+
+<section id="docker-intro">
+            <h2>Docker intro</h2>
+            <p>Containers package your API the same way in dev and prod. You do not need Kubernetes on day one — you need a Dockerfile that runs migrations-less boot, a non-root user, and a healthcheck. Deeper container orchestration lands in Cloud AI / LLMOps.</p>
+            <div class="code-block"># Minimal API image sketch
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app ./app
+USER nobody
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]</div>
+            <ul>
+                <li>One process per container; put workers in another service</li>
+                <li>Pass secrets at runtime — never <code>ENV MODEL_API_KEY=sk-...</code> in the Dockerfile</li>
+                <li>Tag images by git SHA for rollback</li>
+            </ul>
+        </section>
+
+<section id="ci-cd">
+            <h2>CI / CD</h2>
+            <p>Ship through a pipeline: lint → unit tests → build image → deploy → smoke health check. Evals can run nightly or as a gate on model/chunking changes.</p>
+            <table>
+                <tr><th>Stage</th><th>Must pass</th></tr>
+                <tr><td>PR CI</td><td>Lint, typecheck, unit/API tests</td></tr>
+                <tr><td>Build</td><td>Reproducible image/artifact; pinned deps</td></tr>
+                <tr><td>Deploy</td><td>Rolling/blue-green; instant rollback</td></tr>
+                <tr><td>Post-deploy</td><td><code>/health</code> + one synthetic chat/retrieve</td></tr>
+                <tr><td>Eval gate</td><td>Hit@k / faithfulness not worse than baseline</td></tr>
+            </table>
+        </section>
+
+<section id="microservices">
             <h2>Microservices</h2>
             <p>Split when a team or scaling axis needs it — not because a blog said so. Common AI split: API gateway, retrieval service, inference/worker, eval job. Communicate with HTTP or a queue; share a contract, not a database, unless you must.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-microservices.jpg" alt="Comparison of a simple FastAPI monolith versus a split gateway retrieval inference and eval architecture connected by HTTP and a queue" loading="lazy">
+                <div class="illustration-caption"><strong>Left is often correct.</strong> One FastAPI chat+RAG process is fine. Split when retrieval and inference need different scale or owners — and accept the latency tax around every LLM call.</div>
+            </div>
+
             <div class="warning-box">
                 <strong>Rule:</strong> A chat app with one FastAPI process is not a failure. Premature microservices add latency around every LLM call.
             </div>
         </section>
 
-        <section id="distributed">
+<section id="distributed">
             <h2>Distributed systems</h2>
-            <p>LLMs time out, GPUs OOM, and vendors rate-limit. You need timeouts, retries with jitter, idempotency, circuit breakers, and "at least once" vs "exactly once" thinking for tool side effects.</p>
+            <p>LLMs time out, GPUs OOM, and vendors rate-limit. You need timeouts, retries with jitter, idempotency, circuit breakers, and “at least once” vs “exactly once” thinking for tool side effects.</p>
+
+            <div class="illustration">
+                <img src="/images/backend/background-job-queue.png" alt="Background job queue showing producers enqueueing work and workers processing jobs asynchronously" loading="lazy">
+                <div class="illustration-caption">Long or flaky work (embedding a corpus, batch evals, tool side effects) belongs on a queue — not on the request thread that holds the user’s HTTP connection.</div>
+            </div>
+
             <div class="code-block">import httpx
 
 async def call_model(prompt: str) -> str:
@@ -226,17 +902,43 @@ async def call_model(prompt: str) -> str:
                     raise</div>
         </section>
 
-        <section id="checkpoint">
+<section id="resilience">
+            <h2>Resilience patterns</h2>
+            <p>These five patterns show up in every production AI stack. Memorize them; you will implement them repeatedly.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-se/se-resilience.jpg" alt="Five resilience patterns: timeouts, retries with jitter, idempotency keys, circuit breaker, and dead-letter queue, with scenarios for vendor 429 GPU OOM and tool side effects" loading="lazy">
+                <div class="illustration-caption"><strong>Timeouts bound pain. Retries need jitter. Idempotency protects writes. Circuit breakers stop stampeding a dying vendor. DLQs catch what still fails.</strong> Map each to a real failure: 429, OOM, duplicate charge.</div>
+            </div>
+
+            <table>
+                <tr><th>Pattern</th><th>AI-specific note</th></tr>
+                <tr><td>Timeouts</td><td>Separate connect vs read; streaming needs idle timeouts too</td></tr>
+                <tr><td>Retries + jitter</td><td>Retry 429/5xx; do not retry non-idempotent POSTs without a key</td></tr>
+                <tr><td>Idempotency</td><td>Tool writes and billing must survive “at least once” delivery</td></tr>
+                <tr><td>Circuit breaker</td><td>Fail fast when the vendor is down; show a degraded UI</td></tr>
+                <tr><td>Bulkheads</td><td>Isolate retrieval vs generation pools so one cannot starve the other</td></tr>
+            </table>
+        </section>
+
+<section id="checkpoint">
             <h2>Checkpoint — move on when</h2>
             <ul>
+                <li>You can explain hardware (CPU/RAM/disk/GPU), OS processes/memory, and the internet path (DNS → TCP → TLS → HTTP)</li>
+                <li>You can map frontend, backend, data science, AI/ML, and cloud — and say what each owns in an AI product</li>
+                <li>You can explain engineering basics (structures, async, cache, queues, modules, config) and debug from logs</li>
                 <li>You can ship a small authenticated API with a database and tests</li>
                 <li>You can deploy it (even locally with Docker) and debug it from the shell</li>
                 <li>You can explain what happens if a downstream call fails twice</li>
+                <li>You split unit tests from LLM evals and never assert exact model prose in CI</li>
+                <li>You know when a monolith is enough and when a queue/worker earns its keep</li>
             </ul>
             <div class="info-box">
-                <strong>Next:</strong> AI / ML Fundamentals — so you know what a model is doing before you wrap it in an API.
+                <strong>Next on this site:</strong> pick a domain module from the table in Overview (Frontend, Python, AWS, …).
+                <br><strong>Next on the Production AI path:</strong> <a href="/learn/pai-ml-fundamentals">AI / ML Fundamentals</a> — so you know what a model is doing before you wrap it in an API.
             </div>
         </section>
+
     </div>
 
     <script>

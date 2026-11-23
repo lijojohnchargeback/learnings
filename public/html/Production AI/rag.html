@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAG & Knowledge Engineering — Production AI Engineer</title>
+    <title>RAG &amp; Knowledge Engineering — Production AI Engineer</title>
     <link rel="stylesheet" href="/css/docs.css">
 </head>
 <body>
@@ -11,31 +11,50 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-title">📚 RAG & Knowledge Engineering</div>
+            <div class="sidebar-title">📚 RAG &amp; Knowledge Engineering</div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-title">Path</div>
             <div class="sidebar-links">
                 <a href="#overview" class="sidebar-link">Overview</a>
                 <a href="#steps" class="sidebar-link">Learning Steps</a>
+                <a href="#top-techniques" class="sidebar-link">Top RAG Techniques</a>
             </div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-section-title">Core</div>
             <div class="sidebar-links">
                 <a href="#embeddings" class="sidebar-link">Embeddings</a>
                 <a href="#vectordb" class="sidebar-link">Vector DBs</a>
                 <a href="#chunking" class="sidebar-link">Chunking</a>
+                <a href="#ingestion" class="sidebar-link">Ingestion</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Retrieval</div>
+            <div class="sidebar-links">
                 <a href="#retrieval" class="sidebar-link">Retrieval</a>
+                <a href="#query-transform" class="sidebar-link">Query Transform</a>
                 <a href="#rerank" class="sidebar-link">Reranking</a>
                 <a href="#hybrid" class="sidebar-link">Hybrid Search</a>
+                <a href="#metadata" class="sidebar-link">Metadata &amp; ACLs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Advanced</div>
+            <div class="sidebar-links">
+                <a href="#advanced" class="sidebar-link">Advanced Patterns</a>
+                <a href="#graph-rag" class="sidebar-link">Graph RAG</a>
+                <a href="#agentic" class="sidebar-link">Agentic RAG</a>
                 <a href="#multimodal" class="sidebar-link">Multimodal RAG</a>
-                <a href="#eval" class="sidebar-link">RAG Evaluation</a>
+                <a href="#production" class="sidebar-link">Production Ops</a>
             </div>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-title">Finish</div>
             <div class="sidebar-links">
+                <a href="#eval" class="sidebar-link">RAG Evaluation</a>
+                <a href="#debug" class="sidebar-link">Debug Playbook</a>
                 <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
             </div>
         </div>
@@ -43,21 +62,47 @@
 
     <div class="container">
         <header>
-            <h1>📚 5. RAG & Knowledge Engineering</h1>
-            <p>Step 5 of 12 — Retrieve the right evidence, then generate. Most "hallucinations" are retrieval failures.</p>
+            <h1>📚 5. RAG &amp; Knowledge Engineering</h1>
+            <p>Step 5 of 12 — Retrieve the right evidence, then generate. Most “hallucinations” are retrieval failures.</p>
         </header>
 
         <section id="overview">
             <h2>What RAG is</h2>
             <p><span class="highlight">Retrieval-Augmented Generation</span> fetches relevant documents at query time and puts them in the prompt so the model answers from your data. Knowledge engineering is the boring work that makes it true: parsing, chunking, metadata, ACLs, freshness, and evals.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-hero.jpg" alt="Production RAG pipeline with an ingest row from documents through parse, chunk, embed, and index, and a query row from question through retrieve, rerank, LLM, and cited answer" loading="lazy">
+                <div class="illustration-caption"><strong>Two paths, one system.</strong> Ingest builds the index offline. Query walks the live path: embed → retrieve (with filters) → optional rerank → prompt → cited answer. The dashed loop is what notebooks skip: measure failures, then re-chunk or re-index.</div>
+            </div>
+
+            <div class="illustration">
+                <img src="/images/ai/ai-rag-pipeline.png" alt="Six-step RAG flow: user question, embed query, vector database chunks, retrieve top-k, build prompt with context, LLM generates grounded answer with citations" loading="lazy">
+                <div class="illustration-caption">Same idea at the call-site level. If the answer is wrong, open the retrieved chunks before you blame the model. No evidence in top-k → retrieval bug. Evidence present but ignored → prompt or generation bug.</div>
+            </div>
+
             <div class="info-box">
                 <h3>Canonical pipeline</h3>
                 <ol>
                     <li>Ingest: parse PDF/HTML/tickets → clean text + metadata</li>
-                    <li>Chunk + embed + index</li>
-                    <li>Query: embed question → retrieve → (optional) rerank</li>
-                    <li>Generate with citations → log → evaluate</li>
+                    <li>Chunk + embed + index (with delete-by-source-id)</li>
+                    <li>Query: rewrite → embed → retrieve → (optional) hybrid + rerank</li>
+                    <li>Generate with citations → log chunk ids → evaluate</li>
                 </ol>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-orange">
+                    <h4>Not a database</h4>
+                    <p>The LLM compresses context into fluent text. Citations and faithfulness checks are how you keep it honest.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Retrieval first</h4>
+                    <p>If the right chunk never enters the prompt, no amount of prompt craft or model upgrade will save you.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Knowledge engineering</h4>
+                    <p>Parsers, ACLs, freshness, and golden sets are the product. The vector DB is plumbing.</p>
+                </div>
             </div>
         </section>
 
@@ -65,20 +110,157 @@
             <h2>Learning steps (in order)</h2>
             <table>
                 <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
-                <tr><td>1</td><td>Embeddings</td><td>You pick a model and know cosine similarity is not magic</td></tr>
-                <tr><td>2</td><td>Vector DB</td><td>You can upsert, filter metadata, and delete by document id</td></tr>
-                <tr><td>3</td><td>Chunking</td><td>You choose size/overlap from the query type, not a tweet</td></tr>
-                <tr><td>4</td><td>Retrieval</td><td>You inspect top-k and see why a wrong chunk won</td></tr>
-                <tr><td>5</td><td>Rerank</td><td>You add a cross-encoder when recall is OK but precision is not</td></tr>
-                <tr><td>6</td><td>Hybrid</td><td>You combine BM25 + vectors for IDs, codes, and rare terms</td></tr>
-                <tr><td>7</td><td>Multimodal</td><td>You can retrieve from images/tables, not only markdown</td></tr>
-                <tr><td>8</td><td>Eval</td><td>You have a golden set: recall@k, faithfulness, answer relevance</td></tr>
+                <tr><td>1</td><td>Top techniques map</td><td>You can name the 12 techniques and the progression order</td></tr>
+                <tr><td>2</td><td>Embeddings</td><td>You pick a model and know cosine similarity is not magic</td></tr>
+                <tr><td>3</td><td>Vector DB</td><td>You can upsert, filter metadata, and delete by document id</td></tr>
+                <tr><td>4</td><td>Chunking</td><td>You choose size/overlap from the query type, not a tweet</td></tr>
+                <tr><td>5</td><td>Ingestion</td><td>You re-index a changed doc without duplicating chunks</td></tr>
+                <tr><td>6</td><td>Retrieval</td><td>You inspect top-k and see why a wrong chunk won</td></tr>
+                <tr><td>7</td><td>Query transform</td><td>You use multi-query / HyDE only when recall@k is low</td></tr>
+                <tr><td>8</td><td>Rerank + hybrid</td><td>You combine BM25 + vectors and rerank when precision lags</td></tr>
+                <tr><td>9</td><td>ACLs</td><td>You filter by tenant/role <em>before</em> ANN, not after</td></tr>
+                <tr><td>10</td><td>Advanced patterns</td><td>You can say when Graph / Agentic / Multimodal earns the cost</td></tr>
+                <tr><td>11</td><td>Eval &amp; debug</td><td>You have a golden set and a wrong-answer playbook</td></tr>
             </table>
+        </section>
+
+        <section id="top-techniques">
+            <h2>Top RAG techniques</h2>
+            <p>These are the techniques you will actually see in papers, vendor blogs, and production stacks. Treat them as a <span class="highlight">menu ordered by complexity</span> — ship vanilla + hybrid + rerank first; graduate only when a golden-set failure demands it.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-top-techniques.jpg" alt="Twelve top RAG techniques in a grid from Vanilla RAG through Hybrid, Rerank, Multi-Query, HyDE, Parent-Child, Contextual Retrieval, CRAG, Self-RAG, Adaptive Routing, Graph RAG, and Agentic RAG" loading="lazy">
+                <div class="illustration-caption"><strong>Left → right, then down.</strong> Teal = baseline. Orange = retrieval upgrades that usually win on docs/support. Purple = loops and graphs — high power, high cost. The footer rule is the whole curriculum: start left, move right only when eval fails.</div>
+            </div>
+
+            <table>
+                <tr><th>#</th><th>Technique</th><th>What it does</th><th>Use when</th><th>Cost / risk</th></tr>
+                <tr>
+                    <td>1</td><td><strong>Vanilla RAG</strong></td>
+                    <td>Embed query → top-k dense retrieve → stuff prompt → generate</td>
+                    <td>First prototype; single corpus; clear questions</td>
+                    <td>Low. Misses exact IDs and weak phrasing</td>
+                </tr>
+                <tr>
+                    <td>2</td><td><strong>Hybrid search</strong></td>
+                    <td>BM25/sparse + dense vectors, fused (often RRF)</td>
+                    <td>SKUs, error codes, names, mixed jargon</td>
+                    <td>Low–medium. Production default for support/docs</td>
+                </tr>
+                <tr>
+                    <td>3</td><td><strong>Cross-encoder rerank</strong></td>
+                    <td>Retrieve wide (30–50), score query+chunk jointly, keep 3–8</td>
+                    <td>Recall@50 OK but precision@5 poor</td>
+                    <td>+50–200ms. Best ROI after hybrid</td>
+                </tr>
+                <tr>
+                    <td>4</td><td><strong>Multi-query / RAG-Fusion</strong></td>
+                    <td>LLM writes paraphrases; retrieve per query; fuse ranks</td>
+                    <td>Vague or multi-intent user questions</td>
+                    <td>N× retrieve + 1 LLM call</td>
+                </tr>
+                <tr>
+                    <td>5</td><td><strong>HyDE</strong></td>
+                    <td>Generate a hypothetical answer doc; embed that for search</td>
+                    <td>Query style ≠ passage style (chatty vs formal docs)</td>
+                    <td>1 generation; can hallucinate a wrong “document”</td>
+                </tr>
+                <tr>
+                    <td>6</td><td><strong>Parent–child / sentence window</strong></td>
+                    <td>Retrieve small units; expand to parent section for generation</td>
+                    <td>Need precise hit + wide context</td>
+                    <td>Two ids to keep in sync</td>
+                </tr>
+                <tr>
+                    <td>7</td><td><strong>Contextual retrieval</strong></td>
+                    <td>Prepend doc/section context to each chunk before embed (Anthropic-style)</td>
+                    <td>Chunks lose title/scope (“the policy says…”)</td>
+                    <td>Ingest LLM rewrite = $ and latency</td>
+                </tr>
+                <tr>
+                    <td>8</td><td><strong>Corrective RAG (CRAG)</strong></td>
+                    <td>Grade retrieved docs; if weak, web/fallback search or rewrite</td>
+                    <td>Corpus gaps; open-domain facts</td>
+                    <td>Extra graders + tools; must cap steps</td>
+                </tr>
+                <tr>
+                    <td>9</td><td><strong>Self-RAG</strong></td>
+                    <td>Model decides when to retrieve and critiques its own answer</td>
+                    <td>Mixed questions that sometimes need no retrieval</td>
+                    <td>Needs special training or careful prompting</td>
+                </tr>
+                <tr>
+                    <td>10</td><td><strong>Adaptive / routed RAG</strong></td>
+                    <td>Classifier or LLM routes to FAQ / tickets / no-retrieve / agent</td>
+                    <td>Multiple indexes or product surfaces</td>
+                    <td>Mis-routes are silent failures — eval per route</td>
+                </tr>
+                <tr>
+                    <td>11</td><td><strong>Graph RAG</strong></td>
+                    <td>Retrieve entities/relations or a subgraph, then generate</td>
+                    <td>Multi-hop “who owns X / depends on Y”</td>
+                    <td>Entity quality and graph ops dominate</td>
+                </tr>
+                <tr>
+                    <td>12</td><td><strong>Agentic / multi-hop RAG</strong></td>
+                    <td>Plan → search → critique → search again under max_steps</td>
+                    <td>Research-style answers; one pass is not enough</td>
+                    <td>Cost, latency, loops — not for every chat turn</td>
+                </tr>
+            </table>
+
+            <h3>Honorary mentions (know the name)</h3>
+            <table>
+                <tr><th>Technique</th><th>One-liner</th></tr>
+                <tr><td><strong>RAPTOR</strong></td><td>Cluster + recursively summarize chunks into a tree; retrieve at the right abstraction level</td></tr>
+                <tr><td><strong>Late chunking</strong></td><td>Embed long context first, then pool token vectors into chunk embeddings (keeps cross-chunk context)</td></tr>
+                <tr><td><strong>ColBERT / multi-vector</strong></td><td>Store many token-level vectors per passage; MaxSim at query time — high recall, heavier index</td></tr>
+                <tr><td><strong>FLARE / iterative</strong></td><td>Generate until uncertain, then retrieve mid-generation and continue</td></tr>
+                <tr><td><strong>Speculative RAG</strong></td><td>Draft several candidate answers from different evidence bundles; verify / pick the best</td></tr>
+                <tr><td><strong>Cache / semantic cache</strong></td><td>Reuse embeddings or full answers for near-duplicate queries — ops technique, huge latency win</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Recommended progression (production)</h3>
+                <ol>
+                    <li><strong>Vanilla</strong> + structure-aware chunking + metadata filters</li>
+                    <li>Add <strong>hybrid</strong> (BM25 + dense)</li>
+                    <li>Add <strong>rerank</strong> when precision@k stalls</li>
+                    <li>Add <strong>multi-query / HyDE</strong> only if recall@k is still soft</li>
+                    <li>Upgrade chunking to <strong>parent–child</strong> or <strong>contextual</strong> if context is the failure</li>
+                    <li>Reach for <strong>Graph / Agentic / CRAG</strong> only with a labeled failure mode</li>
+                </ol>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-teal">
+                    <h4>Baseline stack</h4>
+                    <p>Vanilla + hybrid + rerank covers most internal docs and support bots. Measure before anything fancier.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Retrieval upgrades</h4>
+                    <p>Multi-query, HyDE, parent–child, contextual retrieval fix “wrong neighborhood” and “lost context” failures.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Control loops</h4>
+                    <p>CRAG, Self-RAG, adaptive routing, Graph, Agentic — powerful, expensive. Cap steps and eval each path.</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>Technique shopping is a smell.</strong> If you cannot name the metric that failed (hit@k, precision, faithfulness), do not add a new RAG pattern — fix chunking, filters, or freshness first.
+            </div>
         </section>
 
         <section id="embeddings">
             <h2>Embeddings</h2>
-            <p>An embedding is a dense vector that places similar meaning nearby. Use a dedicated embedding model (not a chat model). Same model at index time and query time. Watch dimension, multilingual support, and instruction prefixes (e.g. "query:" vs "passage:").</p>
+            <p>An embedding is a dense vector that places similar meaning nearby. Use a dedicated embedding model (not a chat model). Same model at index time and query time. Watch dimension, multilingual support, max tokens, and instruction prefixes (e.g. <code>query:</code> vs <code>passage:</code>).</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-embeddings.jpg" alt="Text snippets becoming embedding vectors, a 2D similarity scatter with a query near a refund cluster, and a cosine similarity angle diagram with a warning not to mix embedding models" loading="lazy">
+                <div class="illustration-caption"><strong>How to read this.</strong> Left: text → vectors. Center: nearest neighbors in meaning-space — the query star should land in the right cluster. Right: cosine cares about angle, not magnitude. The red badge is non-negotiable: one model per index.</div>
+            </div>
+
             <div class="code-block">from openai import OpenAI
 
 client = OpenAI()
@@ -86,52 +268,129 @@ client = OpenAI()
 def embed(texts: list[str]) -> list[list[float]]:
     r = client.embeddings.create(model="text-embedding-3-small", input=texts)
     return [d.embedding for d in r.data]</div>
+
+            <table>
+                <tr><th>Choice</th><th>Why it matters</th></tr>
+                <tr><td>Dimension</td><td>Higher dims can help quality; they always cost storage and ANN latency</td></tr>
+                <tr><td>Matryoshka / truncation</td><td>Some models let you keep the first N dims — measure before you cut</td></tr>
+                <tr><td>Domain</td><td>Legal/medical/code often need domain embeddings or fine-tuned ones</td></tr>
+                <tr><td>Batch + cache</td><td>Cache embeddings by content hash; never re-embed unchanged chunks</td></tr>
+            </table>
+
             <div class="warning-box">
-                <strong>Never mix models</strong> in one index. Re-embed everything if you change the embedding model.
+                <strong>Never mix models</strong> in one index. Re-embed everything if you change the embedding model — including the query path.
             </div>
         </section>
 
         <section id="vectordb">
             <h2>Vector databases</h2>
-            <p>Stores vectors + metadata and runs ANN search (HNSW, IVF). Options: pgvector (start here if you already have Postgres), Pinecone, Weaviate, Qdrant, Chroma, OpenSearch k-NN.</p>
+            <p>Stores vectors + metadata and runs ANN search (HNSW, IVF, DiskANN). Options: <strong>pgvector</strong> (start here if you already have Postgres), Pinecone, Weaviate, Qdrant, Chroma, OpenSearch / Elasticsearch k-NN, Milvus.</p>
             <table>
                 <tr><th>Need</th><th>Look for</th></tr>
-                <tr><td>ACLs</td><td>Metadata filters on tenant / role before ANN, not after</td></tr>
-                <tr><td>Updates</td><td>Delete-by-source-id and re-index a document</td></tr>
+                <tr><td>ACLs</td><td>Metadata filters on tenant / role <em>before</em> ANN, not after</td></tr>
+                <tr><td>Updates</td><td>Delete-by-source-id and re-index a document atomically</td></tr>
                 <tr><td>Hybrid</td><td>Sparse + dense in one query, or two indexes + fusion</td></tr>
-                <tr><td>Ops</td><td>Backups, replicas, SLO on p95 query latency</td></tr>
+                <tr><td>Ops</td><td>Backups, replicas, SLO on p95 query latency, index rebuild story</td></tr>
+                <tr><td>Scale</td><td>Sharding by tenant, quantized vectors (PQ/SQ) when RAM hurts</td></tr>
             </table>
+            <div class="info-box">
+                <strong>ANN is approximate.</strong> You trade perfect recall for speed. Raise <code>ef_search</code> / probes when eval recall is soft; do not “just take top-3” and hope.
+            </div>
         </section>
 
         <section id="chunking">
             <h2>Chunking</h2>
             <p>Chunks are the unit of retrieval. Too big: diluted similarity. Too small: missing context. Overlap helps sentences that straddle a boundary. Prefer structure: headings, pages, tickets, functions — not only N characters.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-chunking.jpg" alt="Four chunking strategies: fixed-size with overlap, structure-aware heading splits, parent-child retrieval units, and contextual chunking with a context prefix on each chunk" loading="lazy">
+                <div class="illustration-caption"><strong>Pick from the query, not from a blog default.</strong> Fixed size is a baseline. Structure-aware wins on docs. Parent-child retrieves small, generates with large. Contextual / late chunking prepends document context so every chunk knows where it came from.</div>
+            </div>
+
             <div class="code-block">def chunk(text: str, size: int = 800, overlap: int = 120) -> list[str]:
     out, i = [], 0
     while i &lt; len(text):
         out.append(text[i:i + size])
         i += size - overlap
     return out</div>
-            <p>Better: split on markdown headings, then pack until a token budget. Keep <code>source</code>, <code>title</code>, <code>page</code>, <code>updated_at</code> on every chunk.</p>
+
+            <p>Better: split on markdown headings, then pack until a token budget. Keep <code>source</code>, <code>title</code>, <code>page</code>, <code>updated_at</code>, <code>tenant</code> on every chunk.</p>
+
+            <table>
+                <tr><th>Strategy</th><th>When</th><th>Watch out</th></tr>
+                <tr><td>Fixed + overlap</td><td>Quick baseline, chat logs</td><td>Cuts mid-table / mid-code</td></tr>
+                <tr><td>Heading / section</td><td>Docs, wikis, policies</td><td>Huge sections still need packing</td></tr>
+                <tr><td>Parent–child</td><td>Need precise hit + wide context</td><td>Two indexes / two ids to keep in sync</td></tr>
+                <tr><td>Semantic / recursive</td><td>Mixed prose</td><td>Extra model cost at ingest</td></tr>
+                <tr><td>Contextual retrieval</td><td>Chunks that lose document title/scope</td><td>LLM rewrite at ingest = $ and latency</td></tr>
+            </table>
+        </section>
+
+        <section id="ingestion">
+            <h2>Ingestion &amp; freshness</h2>
+            <p>Production RAG dies on stale or duplicated chunks. Treat ingest like an ETL job with idempotent upserts.</p>
+            <div class="code-block">def upsert_document(doc_id: str, text: str, meta: dict):
+    vector_db.delete(filter={"source_id": doc_id})  # remove old chunks
+    pieces = structure_aware_chunk(text)
+    vectors = embed(pieces)
+    vector_db.upsert([
+        {"id": f"{doc_id}:{i}", "vector": v, "text": t,
+         "metadata": {**meta, "source_id": doc_id, "chunk_i": i}}
+        for i, (t, v) in enumerate(zip(pieces, vectors))
+    ])</div>
+            <ul>
+                <li><strong>Parsers:</strong> Unstructured, LlamaParse, custom HTML → markdown, OCR for scans</li>
+                <li><strong>Dedup:</strong> content hash; skip embed if unchanged</li>
+                <li><strong>Freshness:</strong> <code>updated_at</code> filter or boost; tombstone deleted docs</li>
+                <li><strong>PII:</strong> redact or segment before embed if policy requires</li>
+            </ul>
         </section>
 
         <section id="retrieval">
             <h2>Retrieval</h2>
-            <p>Query rewrite, HyDE (hypothetical document), and multi-query can lift recall. Always log the retrieved chunk ids. If the answer is wrong, first ask: was the evidence in top-k?</p>
+            <p>Always log the retrieved chunk ids and scores. If the answer is wrong, first ask: was the evidence in top-k?</p>
             <div class="code-block">def retrieve(q: str, k: int = 8, tenant: str | None = None):
     qv = embed([q])[0]
     filt = {"tenant": tenant} if tenant else None
     return vector_db.query(qv, top_k=k, filter=filt)</div>
+            <div class="info-box">
+                <strong>top-k is a product knob.</strong> Too small → miss evidence. Too large → noise, cost, and prompt dilution. Measure hit@k on a golden set before you “feel” a number.
+            </div>
+        </section>
+
+        <section id="query-transform">
+            <h2>Query transformation</h2>
+            <p>When users ask like humans (vague, multi-part, or jargon-light) and your corpus is written like docs, rewrite before you search.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-query-transform.jpg" alt="User question branching into multi-query paraphrases, HyDE hypothetical document embedding, and step-back abstraction, then merging into retrieve and optional rerank" loading="lazy">
+                <div class="illustration-caption"><strong>Three levers.</strong> Multi-query raises recall by unioning paraphrases. HyDE embeds a made-up answer document when queries and passages live in different styles. Step-back asks a more abstract question first. All of them spend tokens — gate them on low recall@k, not by default.</div>
+            </div>
+
+            <table>
+                <tr><th>Technique</th><th>Idea</th><th>Cost</th></tr>
+                <tr><td>Multi-query</td><td>Generate 3–5 paraphrases; union retrieve; dedupe</td><td>N× retrieve (+ 1 LLM call)</td></tr>
+                <tr><td>HyDE</td><td>LLM writes a hypothetical passage; embed that</td><td>1 generation + 1 embed</td></tr>
+                <tr><td>Step-back</td><td>Ask a broader question, then the specific one</td><td>Extra retrieve pass</td></tr>
+                <tr><td>Query routing</td><td>Classifier/LLM picks index or tool (FAQ vs tickets)</td><td>Small; huge when corpus is mixed</td></tr>
+            </table>
         </section>
 
         <section id="rerank">
             <h2>Reranking</h2>
-            <p>Bi-encoders (embeddings) are fast and approximate. A cross-encoder reranker reads query+chunk together and scores relevance. Pattern: retrieve 50, rerank to 5. Worth it when latency budget allows (~50–200ms extra).</p>
+            <p>Bi-encoders (embeddings) are fast and approximate. A <strong>cross-encoder</strong> reranker reads query+chunk together and scores relevance. Pattern: retrieve 30–50, rerank to 3–8.</p>
+            <p>Worth it when latency budget allows (~50–200ms extra) and eval shows recall@50 is fine but precision@5 is not.</p>
         </section>
 
         <section id="hybrid">
             <h2>Hybrid search</h2>
-            <p>Keyword search (BM25) wins on SKUs, error codes, names, and exact phrases. Vectors win on paraphrase. Fuse with RRF (reciprocal rank fusion) or a weighted score. This is the production default for support and docs.</p>
+            <p>Keyword search (BM25 / sparse) wins on SKUs, error codes, names, and exact phrases. Vectors win on paraphrase. Fuse with <strong>RRF</strong> (reciprocal rank fusion) or a weighted score. This is the production default for support and docs.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-hybrid-rerank.jpg" alt="BM25 keyword path and dense vector path merging via RRF fusion into a cross-encoder reranker that reduces fifty candidates to five chunks for the context window" loading="lazy">
+                <div class="illustration-caption"><strong>Keyword for IDs, vectors for meaning, rerank for precision.</strong> Do not skip BM25 because “embeddings are smarter” — users paste ticket numbers and product codes every day.</div>
+            </div>
+
             <div class="code-block">def rrf(rank_lists, k=60):
     scores = {}
     for ranks in rank_lists:
@@ -140,13 +399,94 @@ def embed(texts: list[str]) -> list[list[float]]:
     return sorted(scores, key=scores.get, reverse=True)</div>
         </section>
 
+        <section id="metadata">
+            <h2>Metadata filters &amp; ACLs</h2>
+            <p>Multi-tenant RAG without pre-filters is a data leak waiting to happen. Similarity search will happily return a neighbor from another customer.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-metadata-acls.jpg" alt="ANN search gated by tenant_id role and ACL chips before retrieval, with admin and support users getting different result sets for the same query" loading="lazy">
+                <div class="illustration-caption"><strong>Filter before ANN, not after.</strong> Post-filtering means you scored secret neighbors and then threw them away — and you may return fewer than top-k. Same query, different tenants → different worlds.</div>
+            </div>
+
+            <ul>
+                <li>Store <code>tenant</code>, <code>roles</code>, <code>doc_acl</code>, <code>sensitivity</code> on every chunk</li>
+                <li>Pass the authenticated principal into every retrieve call</li>
+                <li>Test with two tenants and the same query in CI</li>
+            </ul>
+            <div class="warning-box">
+                <strong>Never put retrieved text into the system prompt as trusted instructions.</strong> Treat corpus + user text as data. A poisoned doc can jailbreak as easily as a user message.
+            </div>
+        </section>
+
+        <section id="advanced">
+            <h2>Advanced patterns — pick from the failure mode</h2>
+            <p>Do not start with Graph RAG or agents. Start with hybrid + rerank + eval. Graduate when a specific failure shows up on the golden set.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-advanced-patterns.jpg" alt="Three advanced RAG patterns side by side: Graph RAG with entity-linked document nodes, Agentic RAG with a plan-search-critique loop, and Multimodal RAG with OCR and vision embeddings from PDFs" loading="lazy">
+                <div class="illustration-caption"><strong>Left → right by complexity.</strong> Graph when answers need multi-hop relations. Agentic when one retrieve pass is not enough. Multimodal when the truth lives in tables and screenshots, not markdown.</div>
+            </div>
+        </section>
+
+        <section id="graph-rag">
+            <h2>Graph RAG</h2>
+            <p>Extract entities and relations (or use an existing knowledge graph), retrieve a <em>subgraph</em> relevant to the question, then generate. Wins on “who owns X and what depends on it?” style questions where flat chunks miss the join.</p>
+            <table>
+                <tr><th>Use when</th><th>Skip when</th></tr>
+                <tr><td>Multi-hop facts across docs</td><td>FAQ / single-paragraph answers</td></tr>
+                <tr><td>You already have a KG or CRM graph</td><td>You cannot maintain entity quality</td></tr>
+                <tr><td>Eval shows missing relational evidence</td><td>You have not tried hybrid + rerank yet</td></tr>
+            </table>
+        </section>
+
+        <section id="agentic">
+            <h2>Agentic RAG</h2>
+            <p>An LLM loop that can search, read, critique, and search again — with a hard <code>max_steps</code> and timeout. Useful for research-style questions; dangerous for cost and latency if every chat message becomes an agent.</p>
+            <div class="code-block">def agentic_rag(question: str, max_steps: int = 4) -> str:
+    notes = []
+    for _ in range(max_steps):
+        plan = llm.decide(question, notes)  # search | answer | refuse
+        if plan.action == "answer":
+            return generate_with_citations(question, notes)
+        hits = hybrid_retrieve(plan.query, k=8)
+        notes.append(critique(question, hits))  # keep / drop / need more
+    return "Stopped: max retrieval steps."</div>
+            <div class="warning-box">
+                Cap steps, tokens, and wall time. Log every tool call. Prefer a fixed graph (retrieve → critique → maybe second retrieve) over an open-ended ReAct loop for customer-facing apps.
+            </div>
+        </section>
+
         <section id="multimodal">
             <h2>Multimodal RAG</h2>
             <p>PDFs are not text. Tables, screenshots, and diagrams need OCR, table extractors, or vision embeddings. Options: caption images into text and embed; or use a multimodal embedding space (image+text). Store the original asset URL so the UI can show the figure, not only the caption.</p>
+            <ul>
+                <li>Table → markdown / CSV chunk with page number</li>
+                <li>Figure → caption + thumbnail URL in metadata</li>
+                <li>Slide decks → one chunk per slide + speaker notes</li>
+            </ul>
+        </section>
+
+        <section id="production">
+            <h2>Production ops</h2>
+            <table>
+                <tr><th>Concern</th><th>Practice</th></tr>
+                <tr><td>Latency</td><td>Cache frequent queries; parallel BM25 + dense; stream the answer</td></tr>
+                <tr><td>Cost</td><td>Smaller embed model; rerank only when needed; trim context</td></tr>
+                <tr><td>Observability</td><td>Trace: query, transforms, chunk ids, scores, tokens, citations</td></tr>
+                <tr><td>Safety</td><td>ACL filters, prompt-injection resistant templates, PII redaction</td></tr>
+                <tr><td>Drift</td><td>Weekly golden-set run; alert on hit@k or faithfulness drop</td></tr>
+            </table>
         </section>
 
         <section id="eval">
             <h2>RAG evaluation</h2>
+            <p>Build a golden set of 50–200 real questions with labeled source docs. Automate with LLM-as-judge only after you sample-check the judge. Track regressions when you change chunking or models.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-rag/rag-eval-debug.jpg" alt="RAG metric cards for hit at k, context precision, faithfulness, answer relevance, and citation accuracy, plus a debug flowchart and golden-set regression gate" loading="lazy">
+                <div class="illustration-caption"><strong>Metrics tell you where it broke.</strong> Hit@k / context recall = did evidence arrive? Precision = was noise low? Faithfulness = did the model stick to context? Citation accuracy = do footnotes lie? The flowchart below the cards is the debug order.</div>
+            </div>
+
             <table>
                 <tr><th>Metric</th><th>Question it answers</th></tr>
                 <tr><td>Context recall / hit@k</td><td>Did we retrieve a chunk that contains the answer?</td></tr>
@@ -155,15 +495,30 @@ def embed(texts: list[str]) -> list[list[float]]:
                 <tr><td>Answer relevance</td><td>Does it address the user question?</td></tr>
                 <tr><td>Citation accuracy</td><td>Do cited chunks support the claims?</td></tr>
             </table>
-            <p>Build a golden set of 50–200 real questions with labeled source docs. Automate with LLM-as-judge only after you sample-check the judge. Track regressions when you change chunking or models.</p>
+        </section>
+
+        <section id="debug">
+            <h2>Debug playbook</h2>
+            <ol>
+                <li>Open the trace. List chunk ids and scores for the failing question.</li>
+                <li><strong>Evidence missing from top-k?</strong> Fix chunking, hybrid, query rewrite, filters, or index freshness — not the prompt.</li>
+                <li><strong>Evidence present?</strong> Tighten the system instructions, require citations, lower temperature, or add a faithfulness check.</li>
+                <li>Add the failure to the golden set before you change anything else.</li>
+            </ol>
+            <div class="info-box">
+                Frameworks (LangChain, LlamaIndex, Haystack) are fine once you can write the pipeline without them. Learn the failure modes first; then pick a library for connectors and tracing.
+            </div>
         </section>
 
         <section id="checkpoint">
             <h2>Checkpoint — move on when</h2>
             <ul>
+                <li>You can walk the top-12 techniques map and pick the next upgrade from a failed metric</li>
                 <li>You can ingest a corpus, retrieve with metadata filters, and cite sources</li>
-                <li>You have an eval set and know your hit@k</li>
+                <li>You run hybrid + optional rerank and know why each is on</li>
+                <li>You have an eval set and know your hit@k and faithfulness</li>
                 <li>You can debug a bad answer by looking at retrieved chunks first</li>
+                <li>You can explain when Graph / Agentic / Multimodal is worth the complexity</li>
             </ul>
             <div class="info-box">
                 <strong>Next:</strong> AI Agents — when one retrieval+generate pass is not enough and the system must plan and use tools.

@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Solving — Advanced</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧩 Advanced</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#how-to" class="sidebar-link">Daily practice</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Problems 1–15</div>
+            <div class="sidebar-links">
+                <a href="#coin-change" class="sidebar-link">1. Coin Change</a>
+                <a href="#lis" class="sidebar-link">2. Longest Increasing Subsequence</a>
+                <a href="#word-break" class="sidebar-link">3. Word Break</a>
+                <a href="#permutations" class="sidebar-link">4. Permutations</a>
+                <a href="#n-queens" class="sidebar-link">5. N-Queens</a>
+                <a href="#num-islands" class="sidebar-link">6. Number of Islands</a>
+                <a href="#dijkstra" class="sidebar-link">7. Dijkstra's Shortest Path</a>
+                <a href="#lru-cache" class="sidebar-link">8. LRU Cache</a>
+                <a href="#edit-distance" class="sidebar-link">9. Edit Distance</a>
+                <a href="#lcs" class="sidebar-link">10. Longest Common Subsequence</a>
+                <a href="#knapsack-01" class="sidebar-link">11. 0/1 Knapsack</a>
+                <a href="#partition-equal-subset" class="sidebar-link">12. Partition Equal Subset Sum</a>
+                <a href="#combination-sum" class="sidebar-link">13. Combination Sum</a>
+                <a href="#subsets" class="sidebar-link">14. Subsets</a>
+                <a href="#word-search" class="sidebar-link">15. Word Search</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Problems 16–30</div>
+            <div class="sidebar-links">
+                <a href="#trapping-rain" class="sidebar-link">16. Trapping Rain Water</a>
+                <a href="#median-two-sorted" class="sidebar-link">17. Median of Two Sorted Arrays</a>
+                <a href="#serialize-tree" class="sidebar-link">18. Serialize and Deserialize Binary Tree</a>
+                <a href="#max-path-sum" class="sidebar-link">19. Binary Tree Maximum Path Sum</a>
+                <a href="#sliding-window-max" class="sidebar-link">20. Sliding Window Maximum</a>
+                <a href="#merge-k-lists" class="sidebar-link">21. Merge k Sorted Lists</a>
+                <a href="#min-window-substr" class="sidebar-link">22. Minimum Window Substring</a>
+                <a href="#longest-valid-parens" class="sidebar-link">23. Longest Valid Parentheses</a>
+                <a href="#palindrome-partition" class="sidebar-link">24. Palindrome Partitioning</a>
+                <a href="#trie-implement" class="sidebar-link">25. Implement Trie (Prefix Tree)</a>
+                <a href="#network-delay" class="sidebar-link">26. Network Delay Time</a>
+                <a href="#alien-dictionary" class="sidebar-link">27. Alien Dictionary</a>
+                <a href="#wildcard-matching" class="sidebar-link">28. Wildcard Matching</a>
+                <a href="#critical-connections" class="sidebar-link">29. Critical Connections in a Network</a>
+                <a href="#time-based-kv" class="sidebar-link">30. Time Based Key-Value Store</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#cheatsheet" class="sidebar-link">Cheat Sheet</a>
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧩 Problem Solving — Advanced</h1>
+            <p>DP, backtracking, graphs, and design problems — <strong>Python</strong> and <strong>JavaScript</strong> for each.</p>
+            <p><strong>30 problems</strong> · every solution in Python and JavaScript · built for daily practice.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <p><span class="highlight">30 advanced problems</span> for deep practice after medium patterns are solid.</p>
+            <div class="grid-3">
+                <div class="feature-card card-teal">
+                    <h4>DP &amp; search</h4>
+                    <p>Coin change, LCS, edit distance, backtracking.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Graphs</h4>
+                    <p>Dijkstra, islands, bridges, network delay.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Design</h4>
+                    <p>LRU, Trie, time-based key-value.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-to">
+            <h2>Daily practice</h2>
+            <ol>
+                <li>Pick 2–4 problems (mix new + one review).</li>
+                <li>Solve in one language without peeking, then port to the other.</li>
+                <li>Write time/space complexity before checking the answer.</li>
+                <li>Mark tough ones and revisit after 2–3 days.</li>
+            </ol>
+            <div class="info-box">
+                <h3>Tip</h3>
+                <p>Same idea, different syntax: Python <code>dict</code>/<code>list</code> ↔ JavaScript <code>Map</code>/<code>Array</code>.</p>
+            </div>
+        </section>
+
+
+        <section id="coin-change">
+            <h2>1. Coin Change</h2>
+            <p><strong>Problem:</strong> Fewest coins that make up amount, or -1 if impossible.</p>
+            <p><strong>Example:</strong> <code>coins=[1,2,5], amount=11 → 3</code></p>
+            <p><strong>Approach:</strong> Bottom-up DP: dp[a] = 1 + min(dp[a - c]) over all coins c ≤ a.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def coin_change(coins, amount):
+    INF = float("inf")
+    dp = [0] + [INF] * amount
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c &lt;= a:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+    return dp[amount] if dp[amount] != INF else -1</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function coinChange(coins, amount) {
+  const dp = Array(amount + 1).fill(Infinity);
+  dp[0] = 0;
+  for (let a = 1; a &lt;= amount; a++)
+    for (const c of coins)
+      if (c &lt;= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+  return dp[amount] === Infinity ? -1 : dp[amount];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(amount·n)</td><td>O(amount)</td><td>Unbounded Knapsack DP</td></tr>
+            </table>
+        </section>
+
+
+        <section id="lis">
+            <h2>2. Longest Increasing Subsequence</h2>
+            <p><strong>Problem:</strong> Length of the longest strictly increasing subsequence.</p>
+            <p><strong>Example:</strong> <code>[10,9,2,5,3,7,101,18] → 4</code></p>
+            <p><strong>Approach:</strong> Patience sorting: keep the smallest tail for each length; binary-search the slot for each number.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from bisect import bisect_left
+def length_of_lis(nums):
+    tails = []
+    for x in nums:
+        i = bisect_left(tails, x)
+        if i == len(tails):
+            tails.append(x)
+        else:
+            tails[i] = x
+    return len(tails)</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function lengthOfLIS(nums) {
+  const tails = [];
+  for (const x of nums) {
+    let lo = 0, hi = tails.length;
+    while (lo &lt; hi) {
+      const m = (lo + hi) &gt;&gt; 1;
+      if (tails[m] &lt; x) lo = m + 1;
+      else hi = m;
+    }
+    tails[lo] = x;
+  }
+  return tails.length;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n log n)</td><td>O(n)</td><td>DP + Binary Search</td></tr>
+            </table>
+        </section>
+
+
+        <section id="word-break">
+            <h2>3. Word Break</h2>
+            <p><strong>Problem:</strong> Can s be segmented into words from a dictionary?</p>
+            <p><strong>Example:</strong> <code>"leetcode", ["leet","code"] → true</code></p>
+            <p><strong>Approach:</strong> dp[i] is true if some j &lt; i has dp[j] true and s[j:i] in the dictionary.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def word_break(s, words):
+    ws = set(words)
+    dp = [True] + [False] * len(s)
+    for i in range(1, len(s) + 1):
+        dp[i] = any(dp[j] and s[j:i] in ws for j in range(i))
+    return dp[-1]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function wordBreak(s, words) {
+  const ws = new Set(words);
+  const dp = Array(s.length + 1).fill(false);
+  dp[0] = true;
+  for (let i = 1; i &lt;= s.length; i++)
+    for (let j = 0; j &lt; i; j++)
+      if (dp[j] &amp;&amp; ws.has(s.slice(j, i))) { dp[i] = true; break; }
+  return dp[s.length];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n²)</td><td>O(n)</td><td>String DP</td></tr>
+            </table>
+        </section>
+
+
+        <section id="permutations">
+            <h2>4. Permutations</h2>
+            <p><strong>Problem:</strong> Return all permutations of distinct integers.</p>
+            <p><strong>Example:</strong> <code>[1,2,3] → [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</code></p>
+            <p><strong>Approach:</strong> Backtracking: choose an unused element, recurse, then undo the choice.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def permute(nums):
+    res, used = [], [False] * len(nums)
+    def bt(path):
+        if len(path) == len(nums):
+            res.append(path[:])
+            return
+        for i, x in enumerate(nums):
+            if not used[i]:
+                used[i] = True
+                path.append(x)
+                bt(path)
+                path.pop()
+                used[i] = False
+    bt([])
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function permute(nums) {
+  const res = [], used = Array(nums.length).fill(false);
+  const bt = path =&gt; {
+    if (path.length === nums.length) { res.push([...path]); return; }
+    for (let i = 0; i &lt; nums.length; i++) {
+      if (used[i]) continue;
+      used[i] = true;
+      path.push(nums[i]);
+      bt(path);
+      path.pop();
+      used[i] = false;
+    }
+  };
+  bt([]);
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n·n!)</td><td>O(n)</td><td>Backtracking</td></tr>
+            </table>
+        </section>
+
+
+        <section id="n-queens">
+            <h2>5. N-Queens</h2>
+            <p><strong>Problem:</strong> Place n queens on an n×n board so none attack each other; return all boards.</p>
+            <p><strong>Example:</strong> <code>n=4 → [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]</code></p>
+            <p><strong>Approach:</strong> Place row by row; track used columns and both diagonals (r−c, r+c) in sets.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def solve_n_queens(n):
+    res, q = [], []
+    cols, d1, d2 = set(), set(), set()
+    def bt(r):
+        if r == n:
+            res.append(["." * c + "Q" + "." * (n - c - 1) for c in q])
+            return
+        for c in range(n):
+            if c in cols or r - c in d1 or r + c in d2:
+                continue
+            cols.add(c); d1.add(r - c); d2.add(r + c); q.append(c)
+            bt(r + 1)
+            cols.remove(c); d1.remove(r - c); d2.remove(r + c); q.pop()
+    bt(0)
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function solveNQueens(n) {
+  const res = [], q = [];
+  const cols = new Set(), d1 = new Set(), d2 = new Set();
+  const bt = r =&gt; {
+    if (r === n) {
+      res.push(q.map(c =&gt; ".".repeat(c) + "Q" + ".".repeat(n - c - 1)));
+      return;
+    }
+    for (let c = 0; c &lt; n; c++) {
+      if (cols.has(c) || d1.has(r - c) || d2.has(r + c)) continue;
+      cols.add(c); d1.add(r - c); d2.add(r + c); q.push(c);
+      bt(r + 1);
+      cols.delete(c); d1.delete(r - c); d2.delete(r + c); q.pop();
+    }
+  };
+  bt(0);
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n!)</td><td>O(n)</td><td>Backtracking + Pruning</td></tr>
+            </table>
+        </section>
+
+
+        <section id="num-islands">
+            <h2>6. Number of Islands</h2>
+            <p><strong>Problem:</strong> Count connected groups of '1' cells in a grid (4-directional).</p>
+            <p><strong>Example:</strong> <code>[["1","1","0"],["0","1","0"],["0","0","1"]] → 2</code></p>
+            <p><strong>Approach:</strong> Scan the grid; on each unvisited land cell, flood-fill (sink) the island and count it.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def num_islands(grid):
+    R, C = len(grid), len(grid[0])
+    def sink(r, c):
+        if 0 &lt;= r &lt; R and 0 &lt;= c &lt; C and grid[r][c] == "1":
+            grid[r][c] = "0"
+            sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1)
+    cnt = 0
+    for r in range(R):
+        for c in range(C):
+            if grid[r][c] == "1":
+                cnt += 1
+                sink(r, c)
+    return cnt</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function numIslands(grid) {
+  const R = grid.length, C = grid[0].length;
+  const sink = (r, c) =&gt; {
+    if (r &lt; 0 || c &lt; 0 || r &gt;= R || c &gt;= C || grid[r][c] !== "1") return;
+    grid[r][c] = "0";
+    sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1);
+  };
+  let cnt = 0;
+  for (let r = 0; r &lt; R; r++)
+    for (let c = 0; c &lt; C; c++)
+      if (grid[r][c] === "1") { cnt++; sink(r, c); }
+  return cnt;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(R·C)</td><td>O(R·C)</td><td>Grid DFS / Flood Fill</td></tr>
+            </table>
+        </section>
+
+
+        <section id="dijkstra">
+            <h2>7. Dijkstra's Shortest Path</h2>
+            <p><strong>Problem:</strong> Shortest distance from src to every node in a graph with non-negative weights.</p>
+            <p><strong>Example:</strong> <code>n=3, edges=[[0,1,4],[0,2,1],[2,1,2]], src=0 → [0,3,1]</code></p>
+            <p><strong>Approach:</strong> Greedy relaxation: repeatedly settle the closest unsettled node (min-heap in Python, simple O(V²) scan in JS).</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">import heapq
+def dijkstra(n, edges, src):
+    g = [[] for _ in range(n)]
+    for u, v, w in edges:
+        g[u].append((v, w))
+    dist = [float("inf")] * n
+    dist[src] = 0
+    h = [(0, src)]
+    while h:
+        d, u = heapq.heappop(h)
+        if d &gt; dist[u]:
+            continue
+        for v, w in g[u]:
+            if d + w &lt; dist[v]:
+                dist[v] = d + w
+                heapq.heappush(h, (dist[v], v))
+    return dist</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function dijkstra(n, edges, src) {
+  const g = Array.from({ length: n }, () =&gt; []);
+  for (const [u, v, w] of edges) g[u].push([v, w]);
+  const dist = Array(n).fill(Infinity), done = Array(n).fill(false);
+  dist[src] = 0;
+  for (let k = 0; k &lt; n; k++) {
+    let u = -1;
+    for (let i = 0; i &lt; n; i++)
+      if (!done[i] &amp;&amp; (u &lt; 0 || dist[i] &lt; dist[u])) u = i;
+    if (dist[u] === Infinity) break;
+    done[u] = true;
+    for (const [v, w] of g[u])
+      if (dist[u] + w &lt; dist[v]) dist[v] = dist[u] + w;
+  }
+  return dist;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O((V+E) log V)</td><td>O(V+E)</td><td>Shortest Path (Greedy + Heap)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="lru-cache">
+            <h2>8. LRU Cache</h2>
+            <p><strong>Problem:</strong> Cache with get/put in O(1) that evicts the least recently used entry at capacity.</p>
+            <p><strong>Example:</strong> <code>cap=2: put(1,1), put(2,2), get(1)→1, put(3,3), get(2)→-1</code></p>
+            <p><strong>Approach:</strong> Ordered hash map: move a key to the end on every access; evict from the front.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from collections import OrderedDict
+class LRUCache:
+    def __init__(self, cap):
+        self.cap, self.d = cap, OrderedDict()
+    def get(self, k):
+        if k not in self.d:
+            return -1
+        self.d.move_to_end(k)
+        return self.d[k]
+    def put(self, k, v):
+        self.d[k] = v
+        self.d.move_to_end(k)
+        if len(self.d) &gt; self.cap:
+            self.d.popitem(last=False)</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">class LRUCache {
+  constructor(cap) { this.cap = cap; this.d = new Map(); }
+  get(k) {
+    if (!this.d.has(k)) return -1;
+    const v = this.d.get(k);
+    this.d.delete(k);
+    this.d.set(k, v);
+    return v;
+  }
+  put(k, v) {
+    this.d.delete(k);
+    this.d.set(k, v);
+    if (this.d.size &gt; this.cap) this.d.delete(this.d.keys().next().value);
+  }
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(1)</td><td>O(capacity)</td><td>Design + Ordered Hash Map</td></tr>
+            </table>
+        </section>
+
+
+        <section id="edit-distance">
+            <h2>9. Edit Distance</h2>
+            <p><strong>Problem:</strong> Minimum insert/delete/replace operations to turn word1 into word2.</p>
+            <p><strong>Example:</strong> <code>"horse","ros" → 3</code></p>
+            <p><strong>Approach:</strong> DP over prefixes: match → diagonal; else 1 + min(delete, insert, replace). Keep one previous row.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def min_distance(a, b):
+    prev = list(range(len(b) + 1))
+    for i in range(1, len(a) + 1):
+        cur = [i] + [0] * len(b)
+        for j in range(1, len(b) + 1):
+            if a[i - 1] == b[j - 1]:
+                cur[j] = prev[j - 1]
+            else:
+                cur[j] = 1 + min(prev[j], cur[j - 1], prev[j - 1])
+        prev = cur
+    return prev[-1]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function minDistance(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) =&gt; j);
+  for (let i = 1; i &lt;= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j &lt;= b.length; j++) {
+      cur[j] = a[i - 1] === b[j - 1]
+        ? prev[j - 1]
+        : 1 + Math.min(prev[j], cur[j - 1], prev[j - 1]);
+    }
+    prev = cur;
+  }
+  return prev[b.length];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(m·n)</td><td>O(n)</td><td>2D DP (Strings)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="lcs">
+            <h2>10. Longest Common Subsequence</h2>
+            <p><strong>Problem:</strong> Length of the longest subsequence common to two strings.</p>
+            <p><strong>Example:</strong> <code>"abcde","ace" → 3</code></p>
+            <p><strong>Approach:</strong> DP over prefixes: equal chars extend the diagonal, otherwise take the max of skipping either char.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def lcs(a, b):
+    prev = [0] * (len(b) + 1)
+    for i in range(1, len(a) + 1):
+        cur = [0] * (len(b) + 1)
+        for j in range(1, len(b) + 1):
+            if a[i - 1] == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+            else:
+                cur[j] = max(prev[j], cur[j - 1])
+        prev = cur
+    return prev[-1]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function lcs(a, b) {
+  let prev = Array(b.length + 1).fill(0);
+  for (let i = 1; i &lt;= a.length; i++) {
+    const cur = Array(b.length + 1).fill(0);
+    for (let j = 1; j &lt;= b.length; j++) {
+      cur[j] = a[i - 1] === b[j - 1]
+        ? prev[j - 1] + 1
+        : Math.max(prev[j], cur[j - 1]);
+    }
+    prev = cur;
+  }
+  return prev[b.length];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(m·n)</td><td>O(n)</td><td>2D DP (Strings)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="knapsack-01">
+            <h2>11. 0/1 Knapsack</h2>
+            <p><strong>Problem:</strong> Max value from items (each used at most once) within a weight capacity.</p>
+            <p><strong>Example:</strong> <code>w=[1,3,4,5], v=[1,4,5,7], cap=7 → 9</code></p>
+            <p><strong>Approach:</strong> 1D DP iterating capacity downward so each item is counted once.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def knapsack(weights, values, cap):
+    dp = [0] * (cap + 1)
+    for w, v in zip(weights, values):
+        for c in range(cap, w - 1, -1):
+            dp[c] = max(dp[c], dp[c - w] + v)
+    return dp[cap]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function knapsack(weights, values, cap) {
+  const dp = Array(cap + 1).fill(0);
+  weights.forEach((w, i) =&gt; {
+    for (let c = cap; c &gt;= w; c--)
+      dp[c] = Math.max(dp[c], dp[c - w] + values[i]);
+  });
+  return dp[cap];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n·cap)</td><td>O(cap)</td><td>0/1 Knapsack DP</td></tr>
+            </table>
+        </section>
+
+
+        <section id="partition-equal-subset">
+            <h2>12. Partition Equal Subset Sum</h2>
+            <p><strong>Problem:</strong> Can the array be split into two subsets with equal sum?</p>
+            <p><strong>Example:</strong> <code>[1,5,11,5] → true</code></p>
+            <p><strong>Approach:</strong> Subset-sum to total/2 using a boolean DP array iterated downward.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def can_partition(nums):
+    t = sum(nums)
+    if t % 2:
+        return False
+    half = t // 2
+    dp = [True] + [False] * half
+    for x in nums:
+        for s in range(half, x - 1, -1):
+            dp[s] = dp[s] or dp[s - x]
+    return dp[half]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function canPartition(nums) {
+  const t = nums.reduce((a, b) =&gt; a + b, 0);
+  if (t % 2) return false;
+  const half = t / 2;
+  const dp = Array(half + 1).fill(false);
+  dp[0] = true;
+  for (const x of nums)
+    for (let s = half; s &gt;= x; s--) dp[s] = dp[s] || dp[s - x];
+  return dp[half];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n·sum)</td><td>O(sum)</td><td>Subset-Sum DP</td></tr>
+            </table>
+        </section>
+
+
+        <section id="combination-sum">
+            <h2>13. Combination Sum</h2>
+            <p><strong>Problem:</strong> All unique combinations of candidates (reusable) that sum to target.</p>
+            <p><strong>Example:</strong> <code>[2,3,6,7], 7 → [[2,2,3],[7]]</code></p>
+            <p><strong>Approach:</strong> Sorted backtracking; recurse from the same index to allow reuse, break when the number exceeds the remainder.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def combination_sum(cands, target):
+    cands.sort()
+    res = []
+    def bt(i, path, rem):
+        if rem == 0:
+            res.append(path[:])
+            return
+        for j in range(i, len(cands)):
+            if cands[j] &gt; rem:
+                break
+            path.append(cands[j])
+            bt(j, path, rem - cands[j])
+            path.pop()
+    bt(0, [], target)
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function combinationSum(cands, target) {
+  cands.sort((a, b) =&gt; a - b);
+  const res = [];
+  const bt = (i, path, rem) =&gt; {
+    if (rem === 0) { res.push([...path]); return; }
+    for (let j = i; j &lt; cands.length; j++) {
+      if (cands[j] &gt; rem) break;
+      path.push(cands[j]);
+      bt(j, path, rem - cands[j]);
+      path.pop();
+    }
+  };
+  bt(0, [], target);
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(2^t)</td><td>O(t)</td><td>Backtracking</td></tr>
+            </table>
+        </section>
+
+
+        <section id="subsets">
+            <h2>14. Subsets</h2>
+            <p><strong>Problem:</strong> Return all subsets (the power set) of distinct integers.</p>
+            <p><strong>Example:</strong> <code>[1,2,3] → [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]</code></p>
+            <p><strong>Approach:</strong> Start with [[]]; for each number, append it to a copy of every existing subset.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def subsets(nums):
+    res = [[]]
+    for x in nums:
+        res += [s + [x] for s in res]
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function subsets(nums) {
+  const res = [[]];
+  for (const x of nums) res.push(...res.map(s =&gt; [...s, x]));
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n·2ⁿ)</td><td>O(n·2ⁿ)</td><td>Subsets / Power Set</td></tr>
+            </table>
+        </section>
+
+
+        <section id="word-search">
+            <h2>15. Word Search</h2>
+            <p><strong>Problem:</strong> Does the word exist in the grid via adjacent cells without reusing a cell?</p>
+            <p><strong>Example:</strong> <code>[["A","B"],["C","D"]], "ABDC" → true</code></p>
+            <p><strong>Approach:</strong> DFS from every cell; mark visited in place and restore on backtrack.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def exist(board, word):
+    R, C = len(board), len(board[0])
+    def dfs(r, c, i):
+        if i == len(word):
+            return True
+        if not (0 &lt;= r &lt; R and 0 &lt;= c &lt; C) or board[r][c] != word[i]:
+            return False
+        ch, board[r][c] = board[r][c], "#"
+        ok = any(dfs(r + dr, c + dc, i + 1) for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        board[r][c] = ch
+        return ok
+    return any(dfs(r, c, 0) for r in range(R) for c in range(C))</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function exist(board, word) {
+  const R = board.length, C = board[0].length;
+  const dfs = (r, c, i) =&gt; {
+    if (i === word.length) return true;
+    if (r &lt; 0 || c &lt; 0 || r &gt;= R || c &gt;= C || board[r][c] !== word[i]) return false;
+    const ch = board[r][c];
+    board[r][c] = "#";
+    const ok = dfs(r + 1, c, i + 1) || dfs(r - 1, c, i + 1) || dfs(r, c + 1, i + 1) || dfs(r, c - 1, i + 1);
+    board[r][c] = ch;
+    return ok;
+  };
+  for (let r = 0; r &lt; R; r++)
+    for (let c = 0; c &lt; C; c++)
+      if (dfs(r, c, 0)) return true;
+  return false;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(R·C·3^L)</td><td>O(L)</td><td>Grid Backtracking</td></tr>
+            </table>
+        </section>
+
+
+        <section id="trapping-rain">
+            <h2>16. Trapping Rain Water</h2>
+            <p><strong>Problem:</strong> How much water is trapped between elevation bars after rain?</p>
+            <p><strong>Example:</strong> <code>[0,1,0,2,1,0,1,3,2,1,2,1] → 6</code></p>
+            <p><strong>Approach:</strong> Two pointers; the side with the lower bar is bounded by its running max, so add max − height.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def trap(h):
+    l, r = 0, len(h) - 1
+    lm = rm = res = 0
+    while l &lt; r:
+        if h[l] &lt; h[r]:
+            lm = max(lm, h[l])
+            res += lm - h[l]
+            l += 1
+        else:
+            rm = max(rm, h[r])
+            res += rm - h[r]
+            r -= 1
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function trap(h) {
+  let l = 0, r = h.length - 1, lm = 0, rm = 0, res = 0;
+  while (l &lt; r) {
+    if (h[l] &lt; h[r]) { lm = Math.max(lm, h[l]); res += lm - h[l]; l++; }
+    else { rm = Math.max(rm, h[r]); res += rm - h[r]; r--; }
+  }
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Two Pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="median-two-sorted">
+            <h2>17. Median of Two Sorted Arrays</h2>
+            <p><strong>Problem:</strong> Median of two sorted arrays in O(log(min(m,n))).</p>
+            <p><strong>Example:</strong> <code>[1,3],[2] → 2.0; [1,2],[3,4] → 2.5</code></p>
+            <p><strong>Approach:</strong> Binary search the partition of the smaller array so left halves ≤ right halves.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def find_median(a, b):
+    if len(a) &gt; len(b):
+        a, b = b, a
+    m, n = len(a), len(b)
+    half = (m + n + 1) // 2
+    lo, hi = 0, m
+    inf = float("inf")
+    while lo &lt;= hi:
+        i = (lo + hi) // 2
+        j = half - i
+        al = a[i - 1] if i &gt; 0 else -inf
+        ar = a[i] if i &lt; m else inf
+        bl = b[j - 1] if j &gt; 0 else -inf
+        br = b[j] if j &lt; n else inf
+        if al &lt;= br and bl &lt;= ar:
+            if (m + n) % 2:
+                return max(al, bl)
+            return (max(al, bl) + min(ar, br)) / 2
+        if al &gt; br:
+            hi = i - 1
+        else:
+            lo = i + 1</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function findMedian(a, b) {
+  if (a.length &gt; b.length) [a, b] = [b, a];
+  const m = a.length, n = b.length, half = (m + n + 1) &gt;&gt; 1;
+  let lo = 0, hi = m;
+  while (lo &lt;= hi) {
+    const i = (lo + hi) &gt;&gt; 1, j = half - i;
+    const al = i &gt; 0 ? a[i - 1] : -Infinity, ar = i &lt; m ? a[i] : Infinity;
+    const bl = j &gt; 0 ? b[j - 1] : -Infinity, br = j &lt; n ? b[j] : Infinity;
+    if (al &lt;= br &amp;&amp; bl &lt;= ar)
+      return (m + n) % 2 ? Math.max(al, bl) : (Math.max(al, bl) + Math.min(ar, br)) / 2;
+    if (al &gt; br) hi = i - 1;
+    else lo = i + 1;
+  }
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(log min(m,n))</td><td>O(1)</td><td>Binary Search on Partition</td></tr>
+            </table>
+        </section>
+
+
+        <section id="serialize-tree">
+            <h2>18. Serialize and Deserialize Binary Tree</h2>
+            <p><strong>Problem:</strong> Convert a binary tree to a string and rebuild it.</p>
+            <p><strong>Example:</strong> <code>[1,2,3,null,null,4,5] → "1,2,#,#,3,4,#,#,5,#,#" → same tree</code></p>
+            <p><strong>Approach:</strong> Pre-order traversal with a marker (#) for null children; rebuild by consuming tokens in the same order.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val, self.left, self.right = val, left, right
+def serialize(root):
+    out = []
+    def go(n):
+        if not n:
+            out.append("#")
+            return
+        out.append(str(n.val))
+        go(n.left)
+        go(n.right)
+    go(root)
+    return ",".join(out)
+def deserialize(s):
+    it = iter(s.split(","))
+    def go():
+        v = next(it)
+        if v == "#":
+            return None
+        n = TreeNode(int(v))
+        n.left = go()
+        n.right = go()
+        return n
+    return go()</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function TreeNode(val, left = null, right = null) { this.val = val; this.left = left; this.right = right; }
+function serialize(root) {
+  const out = [];
+  const go = n =&gt; {
+    if (!n) { out.push("#"); return; }
+    out.push(n.val);
+    go(n.left);
+    go(n.right);
+  };
+  go(root);
+  return out.join(",");
+}
+function deserialize(s) {
+  const a = s.split(",");
+  let i = 0;
+  const go = () =&gt; {
+    const v = a[i++];
+    if (v === "#") return null;
+    const n = new TreeNode(Number(v));
+    n.left = go();
+    n.right = go();
+    return n;
+  };
+  return go();
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Tree DFS (Pre-order)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="max-path-sum">
+            <h2>19. Binary Tree Maximum Path Sum</h2>
+            <p><strong>Problem:</strong> Max sum over any path (not necessarily through the root) in a binary tree.</p>
+            <p><strong>Example:</strong> <code>[-10,9,20,null,null,15,7] → 42</code></p>
+            <p><strong>Approach:</strong> Post-order DFS returning the best downward gain (ignore negatives); update the global best with left + node + right.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def max_path_sum(root):
+    best = float("-inf")
+    def gain(n):
+        nonlocal best
+        if not n:
+            return 0
+        l = max(gain(n.left), 0)
+        r = max(gain(n.right), 0)
+        best = max(best, n.val + l + r)
+        return n.val + max(l, r)
+    gain(root)
+    return best</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function maxPathSum(root) {
+  let best = -Infinity;
+  const gain = n =&gt; {
+    if (!n) return 0;
+    const l = Math.max(gain(n.left), 0), r = Math.max(gain(n.right), 0);
+    best = Math.max(best, n.val + l + r);
+    return n.val + Math.max(l, r);
+  };
+  gain(root);
+  return best;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(h)</td><td>Tree DFS (Post-order)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="sliding-window-max">
+            <h2>20. Sliding Window Maximum</h2>
+            <p><strong>Problem:</strong> Max of each window of size k as it slides across the array.</p>
+            <p><strong>Example:</strong> <code>[1,3,-1,-3,5,3,6,7], k=3 → [3,3,5,5,6,7]</code></p>
+            <p><strong>Approach:</strong> Monotonic decreasing deque of indices; the front is always the window maximum.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from collections import deque
+def max_sliding_window(nums, k):
+    dq, res = deque(), []
+    for i, x in enumerate(nums):
+        while dq and nums[dq[-1]] &lt;= x:
+            dq.pop()
+        dq.append(i)
+        if dq[0] &lt;= i - k:
+            dq.popleft()
+        if i &gt;= k - 1:
+            res.append(nums[dq[0]])
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function maxSlidingWindow(nums, k) {
+  const dq = [], res = [];
+  let h = 0;
+  for (let i = 0; i &lt; nums.length; i++) {
+    while (dq.length &gt; h &amp;&amp; nums[dq[dq.length - 1]] &lt;= nums[i]) dq.pop();
+    dq.push(i);
+    if (dq[h] &lt;= i - k) h++;
+    if (i &gt;= k - 1) res.push(nums[dq[h]]);
+  }
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(k)</td><td>Monotonic Deque</td></tr>
+            </table>
+        </section>
+
+
+        <section id="merge-k-lists">
+            <h2>21. Merge k Sorted Lists</h2>
+            <p><strong>Problem:</strong> Merge k sorted linked lists into one sorted list.</p>
+            <p><strong>Example:</strong> <code>[[1,4,5],[1,3,4],[2,6]] → [1,1,2,3,4,4,5,6]</code></p>
+            <p><strong>Approach:</strong> Python: min-heap of list heads. JavaScript: pairwise (divide &amp; conquer) merging.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">import heapq
+def merge_k_lists(lists):
+    h = [(l.val, i, l) for i, l in enumerate(lists) if l]
+    heapq.heapify(h)
+    dummy = cur = ListNode(0)
+    while h:
+        _, i, n = heapq.heappop(h)
+        cur.next = n
+        cur = n
+        if n.next:
+            heapq.heappush(h, (n.next.val, i, n.next))
+    return dummy.next</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function mergeKLists(lists) {
+  const merge = (a, b) =&gt; {
+    const d = { next: null };
+    let c = d;
+    while (a &amp;&amp; b) {
+      if (a.val &lt;= b.val) { c.next = a; a = a.next; }
+      else { c.next = b; b = b.next; }
+      c = c.next;
+    }
+    c.next = a || b;
+    return d.next;
+  };
+  if (!lists.length) return null;
+  while (lists.length &gt; 1) {
+    const nx = [];
+    for (let i = 0; i &lt; lists.length; i += 2)
+      nx.push(i + 1 &lt; lists.length ? merge(lists[i], lists[i + 1]) : lists[i]);
+    lists = nx;
+  }
+  return lists[0];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(N log k)</td><td>O(k)</td><td>Heap / Divide &amp; Conquer</td></tr>
+            </table>
+        </section>
+
+
+        <section id="min-window-substr">
+            <h2>22. Minimum Window Substring</h2>
+            <p><strong>Problem:</strong> Smallest substring of s containing every character of t (with multiplicity).</p>
+            <p><strong>Example:</strong> <code>"ADOBECODEBANC","ABC" → "BANC"</code></p>
+            <p><strong>Approach:</strong> Sliding window with a need-count map and a 'missing' counter; shrink from the left once the window is valid.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from collections import Counter
+def min_window(s, t):
+    need, missing = Counter(t), len(t)
+    best, l = "", 0
+    for r, ch in enumerate(s):
+        if need[ch] &gt; 0:
+            missing -= 1
+        need[ch] -= 1
+        if missing == 0:
+            while need[s[l]] &lt; 0:
+                need[s[l]] += 1
+                l += 1
+            if not best or r - l + 1 &lt; len(best):
+                best = s[l:r + 1]
+            need[s[l]] += 1
+            missing += 1
+            l += 1
+    return best</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function minWindow(s, t) {
+  const need = {};
+  for (const ch of t) need[ch] = (need[ch] || 0) + 1;
+  let missing = t.length, best = "", l = 0;
+  for (let r = 0; r &lt; s.length; r++) {
+    const ch = s[r];
+    if ((need[ch] || 0) &gt; 0) missing--;
+    need[ch] = (need[ch] || 0) - 1;
+    if (missing === 0) {
+      while (need[s[l]] &lt; 0) { need[s[l]]++; l++; }
+      if (!best || r - l + 1 &lt; best.length) best = s.slice(l, r + 1);
+      need[s[l]]++;
+      missing++;
+      l++;
+    }
+  }
+  return best;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(m+n)</td><td>O(k)</td><td>Sliding Window</td></tr>
+            </table>
+        </section>
+
+
+        <section id="longest-valid-parens">
+            <h2>23. Longest Valid Parentheses</h2>
+            <p><strong>Problem:</strong> Length of the longest well-formed parentheses substring.</p>
+            <p><strong>Example:</strong> <code>")()())" → 4</code></p>
+            <p><strong>Approach:</strong> Stack of indices seeded with -1; on ')' pop and measure from the new top, or push as a new base.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def longest_valid_parentheses(s):
+    st, best = [-1], 0
+    for i, ch in enumerate(s):
+        if ch == "(":
+            st.append(i)
+        else:
+            st.pop()
+            if st:
+                best = max(best, i - st[-1])
+            else:
+                st.append(i)
+    return best</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function longestValidParentheses(s) {
+  const st = [-1];
+  let best = 0;
+  for (let i = 0; i &lt; s.length; i++) {
+    if (s[i] === "(") st.push(i);
+    else {
+      st.pop();
+      if (st.length) best = Math.max(best, i - st[st.length - 1]);
+      else st.push(i);
+    }
+  }
+  return best;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Stack of Indices</td></tr>
+            </table>
+        </section>
+
+
+        <section id="palindrome-partition">
+            <h2>24. Palindrome Partitioning</h2>
+            <p><strong>Problem:</strong> Partition s so every substring is a palindrome; return all partitions.</p>
+            <p><strong>Example:</strong> <code>"aab" → [["a","a","b"],["aa","b"]]</code></p>
+            <p><strong>Approach:</strong> Backtracking: try each prefix that is a palindrome, then recurse on the rest.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def partition(s):
+    res = []
+    def bt(i, path):
+        if i == len(s):
+            res.append(path[:])
+            return
+        for j in range(i + 1, len(s) + 1):
+            p = s[i:j]
+            if p == p[::-1]:
+                path.append(p)
+                bt(j, path)
+                path.pop()
+    bt(0, [])
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function partition(s) {
+  const res = [];
+  const isPal = p =&gt; p === [...p].reverse().join("");
+  const bt = (i, path) =&gt; {
+    if (i === s.length) { res.push([...path]); return; }
+    for (let j = i + 1; j &lt;= s.length; j++) {
+      const p = s.slice(i, j);
+      if (isPal(p)) { path.push(p); bt(j, path); path.pop(); }
+    }
+  };
+  bt(0, []);
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n·2ⁿ)</td><td>O(n)</td><td>Backtracking</td></tr>
+            </table>
+        </section>
+
+
+        <section id="trie-implement">
+            <h2>25. Implement Trie (Prefix Tree)</h2>
+            <p><strong>Problem:</strong> Build a trie with insert, search and starts_with.</p>
+            <p><strong>Example:</strong> <code>insert("apple"); search("apple")→true; search("app")→false; starts_with("app")→true</code></p>
+            <p><strong>Approach:</strong> Nested maps, one level per character, with an end-of-word marker.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">class Trie:
+    def __init__(self):
+        self.root = {}
+    def insert(self, w):
+        n = self.root
+        for ch in w:
+            n = n.setdefault(ch, {})
+        n["$"] = True
+    def _find(self, p):
+        n = self.root
+        for ch in p:
+            if ch not in n:
+                return None
+            n = n[ch]
+        return n
+    def search(self, w):
+        n = self._find(w)
+        return bool(n and "$" in n)
+    def starts_with(self, p):
+        return self._find(p) is not None</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">class Trie {
+  constructor() { this.root = { c: new Map(), end: false }; }
+  insert(w) {
+    let n = this.root;
+    for (const ch of w) {
+      if (!n.c.has(ch)) n.c.set(ch, { c: new Map(), end: false });
+      n = n.c.get(ch);
+    }
+    n.end = true;
+  }
+  _find(p) {
+    let n = this.root;
+    for (const ch of p) {
+      n = n.c.get(ch);
+      if (!n) return null;
+    }
+    return n;
+  }
+  search(w) { const n = this._find(w); return !!n &amp;&amp; n.end; }
+  startsWith(p) { return this._find(p) !== null; }
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(L)</td><td>O(total chars)</td><td>Trie</td></tr>
+            </table>
+        </section>
+
+
+        <section id="network-delay">
+            <h2>26. Network Delay Time</h2>
+            <p><strong>Problem:</strong> Time for a signal from node k to reach all n nodes, or -1.</p>
+            <p><strong>Example:</strong> <code>times=[[2,1,1],[2,3,1],[3,4,1]], n=4, k=2 → 2</code></p>
+            <p><strong>Approach:</strong> Bellman-Ford: relax every edge up to n−1 times; answer is the largest distance.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def network_delay_time(times, n, k):
+    INF = float("inf")
+    dist = [INF] * (n + 1)
+    dist[k] = 0
+    for _ in range(n - 1):
+        for u, v, w in times:
+            if dist[u] + w &lt; dist[v]:
+                dist[v] = dist[u] + w
+    m = max(dist[1:])
+    return m if m &lt; INF else -1</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function networkDelayTime(times, n, k) {
+  const dist = Array(n + 1).fill(Infinity);
+  dist[k] = 0;
+  for (let i = 0; i &lt; n - 1; i++)
+    for (const [u, v, w] of times)
+      if (dist[u] + w &lt; dist[v]) dist[v] = dist[u] + w;
+  const m = Math.max(...dist.slice(1));
+  return m === Infinity ? -1 : m;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(V·E)</td><td>O(V)</td><td>Shortest Path (Bellman-Ford)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="alien-dictionary">
+            <h2>27. Alien Dictionary</h2>
+            <p><strong>Problem:</strong> Given words sorted in an alien language, derive the letter order (or "" if invalid).</p>
+            <p><strong>Example:</strong> <code>["wrt","wrf","er","ett","rftt"] → "wertf"</code></p>
+            <p><strong>Approach:</strong> Compare adjacent words to get letter edges, then topological sort (Kahn); a cycle or bad prefix means invalid.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from collections import deque
+def alien_order(words):
+    adj = {c: set() for w in words for c in w}
+    indeg = {c: 0 for c in adj}
+    for a, b in zip(words, words[1:]):
+        if len(a) &gt; len(b) and a.startswith(b):
+            return ""
+        for x, y in zip(a, b):
+            if x != y:
+                if y not in adj[x]:
+                    adj[x].add(y)
+                    indeg[y] += 1
+                break
+    q = deque(c for c in indeg if indeg[c] == 0)
+    out = []
+    while q:
+        c = q.popleft()
+        out.append(c)
+        for n in adj[c]:
+            indeg[n] -= 1
+            if indeg[n] == 0:
+                q.append(n)
+    return "".join(out) if len(out) == len(adj) else ""</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function alienOrder(words) {
+  const adj = new Map();
+  for (const w of words) for (const c of w) if (!adj.has(c)) adj.set(c, new Set());
+  const indeg = new Map([...adj.keys()].map(c =&gt; [c, 0]));
+  for (let i = 0; i + 1 &lt; words.length; i++) {
+    const a = words[i], b = words[i + 1];
+    if (a.length &gt; b.length &amp;&amp; a.startsWith(b)) return "";
+    for (let j = 0; j &lt; Math.min(a.length, b.length); j++) {
+      if (a[j] !== b[j]) {
+        if (!adj.get(a[j]).has(b[j])) {
+          adj.get(a[j]).add(b[j]);
+          indeg.set(b[j], indeg.get(b[j]) + 1);
+        }
+        break;
+      }
+    }
+  }
+  const q = [...indeg.keys()].filter(c =&gt; indeg.get(c) === 0);
+  let out = "";
+  for (let h = 0; h &lt; q.length; h++) {
+    const c = q[h];
+    out += c;
+    for (const n of adj.get(c)) {
+      indeg.set(n, indeg.get(n) - 1);
+      if (indeg.get(n) === 0) q.push(n);
+    }
+  }
+  return out.length === adj.size ? out : "";
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(C)</td><td>O(1)</td><td>Topological Sort</td></tr>
+            </table>
+        </section>
+
+
+        <section id="wildcard-matching">
+            <h2>28. Wildcard Matching</h2>
+            <p><strong>Problem:</strong> Match s against pattern p where ? matches one char and * matches any sequence.</p>
+            <p><strong>Example:</strong> <code>"adceb","*a*b" → true</code></p>
+            <p><strong>Approach:</strong> Greedy two pointers; remember the last * and backtrack to it, consuming one more char each time.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_match(s, p):
+    i = j = 0
+    star, mark = -1, 0
+    while i &lt; len(s):
+        if j &lt; len(p) and (p[j] == s[i] or p[j] == "?"):
+            i += 1
+            j += 1
+        elif j &lt; len(p) and p[j] == "*":
+            star, mark = j, i
+            j += 1
+        elif star != -1:
+            mark += 1
+            i, j = mark, star + 1
+        else:
+            return False
+    while j &lt; len(p) and p[j] == "*":
+        j += 1
+    return j == len(p)</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isMatch(s, p) {
+  let i = 0, j = 0, star = -1, mark = 0;
+  while (i &lt; s.length) {
+    if (j &lt; p.length &amp;&amp; (p[j] === s[i] || p[j] === "?")) { i++; j++; }
+    else if (j &lt; p.length &amp;&amp; p[j] === "*") { star = j; mark = i; j++; }
+    else if (star !== -1) { mark++; i = mark; j = star + 1; }
+    else return false;
+  }
+  while (j &lt; p.length &amp;&amp; p[j] === "*") j++;
+  return j === p.length;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(m·n)</td><td>O(1)</td><td>Greedy Two Pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="critical-connections">
+            <h2>29. Critical Connections in a Network</h2>
+            <p><strong>Problem:</strong> Find all bridges: edges whose removal disconnects the network.</p>
+            <p><strong>Example:</strong> <code>n=4, [[0,1],[1,2],[2,0],[1,3]] → [[1,3]]</code></p>
+            <p><strong>Approach:</strong> Tarjan: DFS with discovery time and low-link; edge (u,v) is a bridge if low[v] &gt; disc[u].</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def critical_connections(n, connections):
+    g = [[] for _ in range(n)]
+    for a, b in connections:
+        g[a].append(b)
+        g[b].append(a)
+    disc, low, res, t = [-1] * n, [0] * n, [], [0]
+    def dfs(u, p):
+        disc[u] = low[u] = t[0]
+        t[0] += 1
+        for v in g[u]:
+            if v == p:
+                continue
+            if disc[v] == -1:
+                dfs(v, u)
+                low[u] = min(low[u], low[v])
+                if low[v] &gt; disc[u]:
+                    res.append([u, v])
+            else:
+                low[u] = min(low[u], disc[v])
+    dfs(0, -1)
+    return res</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function criticalConnections(n, connections) {
+  const g = Array.from({ length: n }, () =&gt; []);
+  for (const [a, b] of connections) { g[a].push(b); g[b].push(a); }
+  const disc = Array(n).fill(-1), low = Array(n).fill(0), res = [];
+  let t = 0;
+  const dfs = (u, p) =&gt; {
+    disc[u] = low[u] = t++;
+    for (const v of g[u]) {
+      if (v === p) continue;
+      if (disc[v] === -1) {
+        dfs(v, u);
+        low[u] = Math.min(low[u], low[v]);
+        if (low[v] &gt; disc[u]) res.push([u, v]);
+      } else low[u] = Math.min(low[u], disc[v]);
+    }
+  };
+  dfs(0, -1);
+  return res;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(V+E)</td><td>O(V+E)</td><td>Tarjan's Bridges (DFS Low-Link)</td></tr>
+            </table>
+        </section>
+
+
+        <section id="time-based-kv">
+            <h2>30. Time Based Key-Value Store</h2>
+            <p><strong>Problem:</strong> set(key, value, timestamp) and get(key, timestamp) returning the latest value with ts ≤ timestamp.</p>
+            <p><strong>Example:</strong> <code>set("a","x",1); get("a",3)→"x"; get("a",0)→""</code></p>
+            <p><strong>Approach:</strong> Per key keep time-ordered entries (timestamps increase); binary-search for the rightmost ts ≤ query.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from bisect import bisect_right
+from collections import defaultdict
+class TimeMap:
+    def __init__(self):
+        self.d = defaultdict(lambda: ([], []))
+    def set(self, k, v, t):
+        ts, vs = self.d[k]
+        ts.append(t)
+        vs.append(v)
+    def get(self, k, t):
+        if k not in self.d:
+            return ""
+        ts, vs = self.d[k]
+        i = bisect_right(ts, t)
+        return vs[i - 1] if i else ""</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">class TimeMap {
+  constructor() { this.d = new Map(); }
+  set(k, v, t) {
+    if (!this.d.has(k)) this.d.set(k, []);
+    this.d.get(k).push([t, v]);
+  }
+  get(k, t) {
+    const a = this.d.get(k) || [];
+    let lo = 0, hi = a.length;
+    while (lo &lt; hi) {
+      const m = (lo + hi) &gt;&gt; 1;
+      if (a[m][0] &lt;= t) lo = m + 1;
+      else hi = m;
+    }
+    return lo ? a[lo - 1][1] : "";
+  }
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>set O(1), get O(log n)</td><td>O(n)</td><td>Design + Binary Search</td></tr>
+            </table>
+        </section>
+
+
+        <section id="cheatsheet">
+            <h2>Cheat sheet</h2>
+            <table>
+                <tr><th>Pattern</th><th>Ask</th></tr>
+                <tr><td>DP</td><td>Optimal over smaller states?</td></tr>
+                <tr><td>Backtracking</td><td>All / any valid configs?</td></tr>
+                <tr><td>Graphs</td><td>Shortest / bridges / topo?</td></tr>
+                <tr><td>Design</td><td>O(1) ops with hash + order?</td></tr>
+            </table>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint</h2>
+            <ul>
+                <li>Write coin-change and edit-distance DP from scratch</li>
+                <li>Implement N-Queens and word-search with undo</li>
+                <li>Sketch LRU and sliding-window maximum</li>
+            </ul>
+            <div class="info-box">
+                <h4>Continue</h4>
+                <p>Review: <a href="/learn/ps-beginner">Beginner</a> · <a href="/learn/ps-medium">Medium</a> · <a href="/learn/dsa-fundamentals">DSA</a>.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

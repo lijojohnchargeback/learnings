@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Solving — Beginner</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧩 Beginner</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#how-to" class="sidebar-link">Daily practice</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Problems 1–15</div>
+            <div class="sidebar-links">
+                <a href="#fizzbuzz" class="sidebar-link">1. FizzBuzz</a>
+                <a href="#reverse-string" class="sidebar-link">2. Reverse String</a>
+                <a href="#palindrome-number" class="sidebar-link">3. Palindrome Number</a>
+                <a href="#two-sum" class="sidebar-link">4. Two Sum</a>
+                <a href="#max-min" class="sidebar-link">5. Max and Min</a>
+                <a href="#count-vowels" class="sidebar-link">6. Count Vowels</a>
+                <a href="#remove-duplicates" class="sidebar-link">7. Remove Duplicates (Sorted)</a>
+                <a href="#factorial" class="sidebar-link">8. Factorial</a>
+                <a href="#sum-array" class="sidebar-link">9. Sum of Array</a>
+                <a href="#average" class="sidebar-link">10. Average of Array</a>
+                <a href="#even-odd-count" class="sidebar-link">11. Count Even and Odd</a>
+                <a href="#fibonacci" class="sidebar-link">12. Nth Fibonacci</a>
+                <a href="#is-prime" class="sidebar-link">13. Check Prime</a>
+                <a href="#power-of-two" class="sidebar-link">14. Power of Two</a>
+                <a href="#contains-duplicate" class="sidebar-link">15. Contains Duplicate</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Problems 16–30</div>
+            <div class="sidebar-links">
+                <a href="#missing-number" class="sidebar-link">16. Missing Number</a>
+                <a href="#move-zeroes" class="sidebar-link">17. Move Zeroes</a>
+                <a href="#plus-one" class="sidebar-link">18. Plus One</a>
+                <a href="#intersection" class="sidebar-link">19. Intersection of Two Arrays</a>
+                <a href="#majority-element" class="sidebar-link">20. Majority Element</a>
+                <a href="#single-number" class="sidebar-link">21. Single Number</a>
+                <a href="#climb-stairs" class="sidebar-link">22. Climbing Stairs</a>
+                <a href="#best-time-stock" class="sidebar-link">23. Best Time to Buy/Sell Stock I</a>
+                <a href="#valid-parentheses" class="sidebar-link">24. Valid Parentheses</a>
+                <a href="#merge-sorted-arrays" class="sidebar-link">25. Merge Two Sorted Arrays</a>
+                <a href="#reverse-linked-list" class="sidebar-link">26. Reverse Linked List</a>
+                <a href="#middle-linked-list" class="sidebar-link">27. Middle of Linked List</a>
+                <a href="#happy-number" class="sidebar-link">28. Happy Number</a>
+                <a href="#roman-to-int" class="sidebar-link">29. Roman to Integer</a>
+                <a href="#longest-common-prefix" class="sidebar-link">30. Longest Common Prefix</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Problems 31–40</div>
+            <div class="sidebar-links">
+                <a href="#search-insert" class="sidebar-link">31. Search Insert Position</a>
+                <a href="#length-last-word" class="sidebar-link">32. Length of Last Word</a>
+                <a href="#isomorphic" class="sidebar-link">33. Isomorphic Strings</a>
+                <a href="#first-unique-char" class="sidebar-link">34. First Unique Character</a>
+                <a href="#ransom-note" class="sidebar-link">35. Ransom Note</a>
+                <a href="#add-digits" class="sidebar-link">36. Add Digits (Digital Root)</a>
+                <a href="#sqrt-x" class="sidebar-link">37. Sqrt(x)</a>
+                <a href="#valid-perfect-square" class="sidebar-link">38. Valid Perfect Square</a>
+                <a href="#hamming-weight" class="sidebar-link">39. Number of 1 Bits</a>
+                <a href="#pascal-row" class="sidebar-link">40. Pascal Triangle Row</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#cheatsheet" class="sidebar-link">Cheat Sheet</a>
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧩 Problem Solving — Beginner</h1>
+            <p>Warm-up problems with full solutions in <strong>Python</strong> and <strong>JavaScript</strong>.</p>
+            <p><strong>40 problems</strong> · every solution in Python and JavaScript · built for daily practice.</p>
+        </header>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <p><span class="highlight">40 beginner problems</span> for loops, arrays, strings, bits, and hash maps — ideal for daily reps.</p>
+            <div class="grid-3">
+                <div class="feature-card card-teal">
+                    <h4>Skills</h4>
+                    <p>Loops, arrays, strings, hash maps, linked-list basics.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Pace</h4>
+                    <p>2–4 problems/day → finish this set in ~2 weeks.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Languages</h4>
+                    <p>Every problem has matching Python and JavaScript.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-to">
+            <h2>Daily practice</h2>
+            <ol>
+                <li>Pick 2–4 problems (mix new + one review).</li>
+                <li>Solve in one language without peeking, then port to the other.</li>
+                <li>Write time/space complexity before checking the answer.</li>
+                <li>Mark tough ones and revisit after 2–3 days.</li>
+            </ol>
+            <div class="info-box">
+                <h3>Tip</h3>
+                <p>Same idea, different syntax: Python <code>dict</code>/<code>list</code> ↔ JavaScript <code>Map</code>/<code>Array</code>.</p>
+            </div>
+        </section>
+
+
+        <section id="fizzbuzz">
+            <h2>1. FizzBuzz</h2>
+            <p><strong>Problem:</strong> Print 1..n; multiples of 3→Fizz, 5→Buzz, both→FizzBuzz.</p>
+            <p><strong>Example:</strong> <code>n=5 → ["1","2","Fizz","4","Buzz"]</code></p>
+            <p><strong>Approach:</strong> Loop; check %15 before %3/%5.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def fizzbuzz(n):
+    out=[]
+    for i in range(1,n+1):
+        if i%15==0: out.append("FizzBuzz")
+        elif i%3==0: out.append("Fizz")
+        elif i%5==0: out.append("Buzz")
+        else: out.append(str(i))
+    return out</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function fizzbuzz(n){
+  const out=[];
+  for(let i=1;i&lt;=n;i++){
+    if(i%15===0) out.push("FizzBuzz");
+    else if(i%3===0) out.push("Fizz");
+    else if(i%5===0) out.push("Buzz");
+    else out.push(String(i));
+  }
+  return out;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Conditionals</td></tr>
+            </table>
+        </section>
+
+
+        <section id="reverse-string">
+            <h2>2. Reverse String</h2>
+            <p><strong>Problem:</strong> Return the reverse of a string.</p>
+            <p><strong>Example:</strong> <code>"hello" → "olleh"</code></p>
+            <p><strong>Approach:</strong> Slice or two pointers on a char array.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def reverse_string(s):
+    return s[::-1]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function reverseString(s){
+  return s.split("").reverse().join("");
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Two pointers / built-in</td></tr>
+            </table>
+        </section>
+
+
+        <section id="palindrome-number">
+            <h2>3. Palindrome Number</h2>
+            <p><strong>Problem:</strong> True if integer reads the same forward/backward.</p>
+            <p><strong>Example:</strong> <code>121 → true; -121 → false</code></p>
+            <p><strong>Approach:</strong> String reverse or reverse half the digits.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_palindrome(x):
+    if x&lt;0: return False
+    s=str(x)
+    return s==s[::-1]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isPalindrome(x){
+  if(x&lt;0) return false;
+  const s=String(x);
+  return s===s.split("").reverse().join("");
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(d)</td><td>O(d)</td><td>Two pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="two-sum">
+            <h2>4. Two Sum</h2>
+            <p><strong>Problem:</strong> Return indices of two numbers that add to target.</p>
+            <p><strong>Example:</strong> <code>[2,7,11,15], 9 → [0,1]</code></p>
+            <p><strong>Approach:</strong> One-pass hash map of value→index.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def two_sum(nums,target):
+    seen={}
+    for i,n in enumerate(nums):
+        if target-n in seen: return [seen[target-n],i]
+        seen[n]=i
+    return []</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function twoSum(nums,target){
+  const seen=new Map();
+  for(let i=0;i&lt;nums.length;i++){
+    const need=target-nums[i];
+    if(seen.has(need)) return [seen.get(need),i];
+    seen.set(nums[i],i);
+  }
+  return [];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Hash map</td></tr>
+            </table>
+        </section>
+
+
+        <section id="max-min">
+            <h2>5. Max and Min</h2>
+            <p><strong>Problem:</strong> Return max and min in an array.</p>
+            <p><strong>Example:</strong> <code>[3,1,9,2] → {max:9,min:1}</code></p>
+            <p><strong>Approach:</strong> Single pass track running max/min.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def max_min(nums):
+    mx=mn=nums[0]
+    for n in nums[1:]:
+        mx=max(mx,n); mn=min(mn,n)
+    return {"max":mx,"min":mn}</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function maxMin(nums){
+  let mx=mn=nums[0];
+  for(let i=1;i&lt;nums.length;i++){
+    mx=Math.max(mx,nums[i]); mn=Math.min(mn,nums[i]);
+  }
+  return {max:mx,min:mn};
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Single pass</td></tr>
+            </table>
+        </section>
+
+
+        <section id="count-vowels">
+            <h2>6. Count Vowels</h2>
+            <p><strong>Problem:</strong> Count aeiou (case-insensitive) in a string.</p>
+            <p><strong>Example:</strong> <code>"Hello" → 2</code></p>
+            <p><strong>Approach:</strong> Set of vowels; count membership.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def count_vowels(s):
+    v=set("aeiouAEIOU")
+    return sum(1 for c in s if c in v)</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function countVowels(s){
+  const v=new Set("aeiouAEIOU");
+  let c=0; for(const ch of s) if(v.has(ch)) c++;
+  return c;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Set</td></tr>
+            </table>
+        </section>
+
+
+        <section id="remove-duplicates">
+            <h2>7. Remove Duplicates (Sorted)</h2>
+            <p><strong>Problem:</strong> In-place unique prefix on sorted array; return new length.</p>
+            <p><strong>Example:</strong> <code>[1,1,2] → 2, [1,2,_]</code></p>
+            <p><strong>Approach:</strong> Slow/fast two pointers.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def remove_duplicates(nums):
+    if not nums: return 0
+    s=0
+    for f in range(1,len(nums)):
+        if nums[f]!=nums[s]:
+            s+=1; nums[s]=nums[f]
+    return s+1</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function removeDuplicates(nums){
+  if(!nums.length) return 0;
+  let s=0;
+  for(let f=1;f&lt;nums.length;f++){
+    if(nums[f]!==nums[s]){ s++; nums[s]=nums[f]; }
+  }
+  return s+1;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Two pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="factorial">
+            <h2>8. Factorial</h2>
+            <p><strong>Problem:</strong> Compute n! (0!=1).</p>
+            <p><strong>Example:</strong> <code>5 → 120</code></p>
+            <p><strong>Approach:</strong> Iterative multiply 2..n.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def factorial(n):
+    r=1
+    for i in range(2,n+1): r*=i
+    return r</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function factorial(n){
+  let r=1; for(let i=2;i&lt;=n;i++) r*=i; return r;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Loop</td></tr>
+            </table>
+        </section>
+
+
+        <section id="sum-array">
+            <h2>9. Sum of Array</h2>
+            <p><strong>Problem:</strong> Return the sum of all elements.</p>
+            <p><strong>Example:</strong> <code>[1,2,3,4] → 10</code></p>
+            <p><strong>Approach:</strong> Accumulate in one pass.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def sum_array(nums):
+    return sum(nums)</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function sumArray(nums){
+  return nums.reduce((a,b)=&gt;a+b,0);
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Reduce</td></tr>
+            </table>
+        </section>
+
+
+        <section id="average">
+            <h2>10. Average of Array</h2>
+            <p><strong>Problem:</strong> Return the arithmetic mean.</p>
+            <p><strong>Example:</strong> <code>[2,4,6] → 4</code></p>
+            <p><strong>Approach:</strong> Sum / length (guard empty).</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def average(nums):
+    return sum(nums)/len(nums) if nums else 0</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function average(nums){
+  if(!nums.length) return 0;
+  return nums.reduce((a,b)=&gt;a+b,0)/nums.length;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Aggregate</td></tr>
+            </table>
+        </section>
+
+
+        <section id="even-odd-count">
+            <h2>11. Count Even and Odd</h2>
+            <p><strong>Problem:</strong> Count how many even and odd numbers.</p>
+            <p><strong>Example:</strong> <code>[1,2,3,4] → {even:2,odd:2}</code></p>
+            <p><strong>Approach:</strong> Check n%2.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def even_odd(nums):
+    e=sum(1 for n in nums if n%2==0)
+    return {"even":e,"odd":len(nums)-e}</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function evenOdd(nums){
+  let e=0; for(const n of nums) if(n%2===0) e++;
+  return {even:e,odd:nums.length-e};
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Parity</td></tr>
+            </table>
+        </section>
+
+
+        <section id="fibonacci">
+            <h2>12. Nth Fibonacci</h2>
+            <p><strong>Problem:</strong> Return F(n) with F(0)=0, F(1)=1.</p>
+            <p><strong>Example:</strong> <code>n=6 → 8</code></p>
+            <p><strong>Approach:</strong> Iterative a,b rolling pair.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def fib(n):
+    a,b=0,1
+    for _ in range(n): a,b=b,a+b
+    return a</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function fib(n){
+  let a=0,b=1;
+  for(let i=0;i&lt;n;i++){ [a,b]=[b,a+b]; }
+  return a;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Iteration</td></tr>
+            </table>
+        </section>
+
+
+        <section id="is-prime">
+            <h2>13. Check Prime</h2>
+            <p><strong>Problem:</strong> True if n is prime (n&gt;1).</p>
+            <p><strong>Example:</strong> <code>7 → true; 9 → false</code></p>
+            <p><strong>Approach:</strong> Trial divide up to sqrt(n).</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">import math
+def is_prime(n):
+    if n&lt;=1: return False
+    for i in range(2,int(math.sqrt(n))+1):
+        if n%i==0: return False
+    return True</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isPrime(n){
+  if(n&lt;=1) return false;
+  for(let i=2;i*i&lt;=n;i++) if(n%i===0) return false;
+  return true;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(√n)</td><td>O(1)</td><td>Math</td></tr>
+            </table>
+        </section>
+
+
+        <section id="power-of-two">
+            <h2>14. Power of Two</h2>
+            <p><strong>Problem:</strong> True if n is a power of 2.</p>
+            <p><strong>Example:</strong> <code>16 → true; 18 → false</code></p>
+            <p><strong>Approach:</strong> n&gt;0 and (n &amp; (n-1))==0.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_power_of_two(n):
+    return n&gt;0 and (n &amp; (n-1))==0</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isPowerOfTwo(n){
+  return n&gt;0 &amp;&amp; (n &amp; (n-1))===0;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(1)</td><td>O(1)</td><td>Bit tricks</td></tr>
+            </table>
+        </section>
+
+
+        <section id="contains-duplicate">
+            <h2>15. Contains Duplicate</h2>
+            <p><strong>Problem:</strong> True if any value appears at least twice.</p>
+            <p><strong>Example:</strong> <code>[1,2,3,1] → true</code></p>
+            <p><strong>Approach:</strong> Hash set of seen values.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def contains_duplicate(nums):
+    return len(nums)!=len(set(nums))</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function containsDuplicate(nums){
+  return new Set(nums).size!==nums.length;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Hash set</td></tr>
+            </table>
+        </section>
+
+
+        <section id="missing-number">
+            <h2>16. Missing Number</h2>
+            <p><strong>Problem:</strong> Array of n distinct in 0..n; find the missing one.</p>
+            <p><strong>Example:</strong> <code>[3,0,1] → 2</code></p>
+            <p><strong>Approach:</strong> XOR all indices and values, or Gauss sum.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def missing_number(nums):
+    n=len(nums)
+    return n*(n+1)//2 - sum(nums)</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function missingNumber(nums){
+  const n=nums.length;
+  return n*(n+1)/2 - nums.reduce((a,b)=&gt;a+b,0);
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Math / XOR</td></tr>
+            </table>
+        </section>
+
+
+        <section id="move-zeroes">
+            <h2>17. Move Zeroes</h2>
+            <p><strong>Problem:</strong> Move all 0s to end, keep relative order of others.</p>
+            <p><strong>Example:</strong> <code>[0,1,0,3,12] → [1,3,12,0,0]</code></p>
+            <p><strong>Approach:</strong> Slow pointer for next non-zero write.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def move_zeroes(nums):
+    s=0
+    for f in range(len(nums)):
+        if nums[f]!=0:
+            nums[s],nums[f]=nums[f],nums[s]
+            s+=1
+    return nums</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function moveZeroes(nums){
+  let s=0;
+  for(let f=0;f&lt;nums.length;f++){
+    if(nums[f]!==0){ [nums[s],nums[f]]=[nums[f],nums[s]]; s++; }
+  }
+  return nums;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Two pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="plus-one">
+            <h2>18. Plus One</h2>
+            <p><strong>Problem:</strong> Digits of a large integer as array; add one.</p>
+            <p><strong>Example:</strong> <code>[1,2,9] → [1,3,0]</code></p>
+            <p><strong>Approach:</strong> Carry from the end; prepend 1 if needed.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def plus_one(digits):
+    for i in range(len(digits)-1,-1,-1):
+        if digits[i]&lt;9:
+            digits[i]+=1; return digits
+        digits[i]=0
+    return [1]+digits</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function plusOne(digits){
+  for(let i=digits.length-1;i&gt;=0;i--){
+    if(digits[i]&lt;9){ digits[i]++; return digits; }
+    digits[i]=0;
+  }
+  return [1,...digits];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Carry</td></tr>
+            </table>
+        </section>
+
+
+        <section id="intersection">
+            <h2>19. Intersection of Two Arrays</h2>
+            <p><strong>Problem:</strong> Return unique intersection of two arrays.</p>
+            <p><strong>Example:</strong> <code>[1,2,2,1],[2,2] → [2]</code></p>
+            <p><strong>Approach:</strong> Set intersection.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def intersection(a,b):
+    return list(set(a)&amp;set(b))</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function intersection(a,b){
+  const sb=new Set(b);
+  return [...new Set(a.filter(x=&gt;sb.has(x)))];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n+m)</td><td>O(n+m)</td><td>Set</td></tr>
+            </table>
+        </section>
+
+
+        <section id="majority-element">
+            <h2>20. Majority Element</h2>
+            <p><strong>Problem:</strong> Element appearing more than n/2 times (guaranteed).</p>
+            <p><strong>Example:</strong> <code>[2,2,1,1,1,2,2] → 2</code></p>
+            <p><strong>Approach:</strong> Boyer-Moore voting or hash count.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def majority_element(nums):
+    cand=None; count=0
+    for n in nums:
+        if count==0: cand=n
+        count+=1 if n==cand else -1
+    return cand</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function majorityElement(nums){
+  let cand=null,count=0;
+  for(const n of nums){
+    if(count===0) cand=n;
+    count+= n===cand?1:-1;
+  }
+  return cand;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Boyer-Moore</td></tr>
+            </table>
+        </section>
+
+
+        <section id="single-number">
+            <h2>21. Single Number</h2>
+            <p><strong>Problem:</strong> Every element appears twice except one; find it.</p>
+            <p><strong>Example:</strong> <code>[4,1,2,1,2] → 4</code></p>
+            <p><strong>Approach:</strong> XOR all numbers.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def single_number(nums):
+    r=0
+    for n in nums: r^=n
+    return r</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function singleNumber(nums){
+  return nums.reduce((a,b)=&gt;a^b,0);
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>XOR</td></tr>
+            </table>
+        </section>
+
+
+        <section id="climb-stairs">
+            <h2>22. Climbing Stairs</h2>
+            <p><strong>Problem:</strong> n steps; 1 or 2 at a time. Ways to climb.</p>
+            <p><strong>Example:</strong> <code>n=3 → 3</code></p>
+            <p><strong>Approach:</strong> Fibonacci DP: ways(i)=ways(i-1)+ways(i-2).</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def climb_stairs(n):
+    a,b=1,1
+    for _ in range(n): a,b=b,a+b
+    return a</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function climbStairs(n){
+  let a=1,b=1;
+  for(let i=0;i&lt;n;i++) [a,b]=[b,a+b];
+  return a;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>DP intro</td></tr>
+            </table>
+        </section>
+
+
+        <section id="best-time-stock">
+            <h2>23. Best Time to Buy/Sell Stock I</h2>
+            <p><strong>Problem:</strong> Max profit from one buy and one sell.</p>
+            <p><strong>Example:</strong> <code>[7,1,5,3,6,4] → 5</code></p>
+            <p><strong>Approach:</strong> Track min price so far; max profit = price-min.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def max_profit(prices):
+    mn=float("inf"); best=0
+    for p in prices:
+        mn=min(mn,p); best=max(best,p-mn)
+    return best</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function maxProfit(prices){
+  let mn=Infinity,best=0;
+  for(const p of prices){ mn=Math.min(mn,p); best=Math.max(best,p-mn); }
+  return best;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Running min</td></tr>
+            </table>
+        </section>
+
+
+        <section id="valid-parentheses">
+            <h2>24. Valid Parentheses</h2>
+            <p><strong>Problem:</strong> True if brackets (),{},[] are correctly matched.</p>
+            <p><strong>Example:</strong> <code>"()[]{}" → true</code></p>
+            <p><strong>Approach:</strong> Stack of opening brackets.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_valid(s):
+    pair={")":"(","]":"[","}":"{"}; st=[]
+    for c in s:
+        if c in pair:
+            if not st or st.pop()!=pair[c]: return False
+        else: st.append(c)
+    return not st</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isValid(s){
+  const pair={")":"(","]":"[","}":"{"}, st=[];
+  for(const c of s){
+    if(c in pair){ if(st.pop()!==pair[c]) return false; }
+    else st.push(c);
+  }
+  return st.length===0;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Stack</td></tr>
+            </table>
+        </section>
+
+
+        <section id="merge-sorted-arrays">
+            <h2>25. Merge Two Sorted Arrays</h2>
+            <p><strong>Problem:</strong> Merge two sorted arrays into one sorted array.</p>
+            <p><strong>Example:</strong> <code>[1,3],[2,4] → [1,2,3,4]</code></p>
+            <p><strong>Approach:</strong> Two pointers from starts.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def merge(a,b):
+    i=j=0; out=[]
+    while i&lt;len(a) and j&lt;len(b):
+        if a[i]&lt;=b[j]: out.append(a[i]); i+=1
+        else: out.append(b[j]); j+=1
+    return out+a[i:]+b[j:]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function merge(a,b){
+  let i=0,j=0; const out=[];
+  while(i&lt;a.length&amp;&amp;j&lt;b.length){
+    if(a[i]&lt;=b[j]) out.push(a[i++]); else out.push(b[j++]);
+  }
+  return out.concat(a.slice(i),b.slice(j));
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n+m)</td><td>O(n+m)</td><td>Two pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="reverse-linked-list">
+            <h2>26. Reverse Linked List</h2>
+            <p><strong>Problem:</strong> Reverse a singly linked list; return new head.</p>
+            <p><strong>Example:</strong> <code>1→2→3 → 3→2→1</code></p>
+            <p><strong>Approach:</strong> Iterative prev/curr/next pointers.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def reverse_list(head):
+    prev=None
+    while head:
+        nxt=head.next
+        head.next=prev
+        prev=head
+        head=nxt
+    return prev</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function reverseList(head){
+  let prev=null;
+  while(head){
+    const nxt=head.next;
+    head.next=prev;
+    prev=head;
+    head=nxt;
+  }
+  return prev;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Linked list</td></tr>
+            </table>
+        </section>
+
+
+        <section id="middle-linked-list">
+            <h2>27. Middle of Linked List</h2>
+            <p><strong>Problem:</strong> Return the middle node (second middle if even).</p>
+            <p><strong>Example:</strong> <code>1→2→3→4→5 → 3</code></p>
+            <p><strong>Approach:</strong> Slow/fast: fast moves 2, slow 1.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def middle_node(head):
+    slow=fast=head
+    while fast and fast.next:
+        slow=slow.next; fast=fast.next.next
+    return slow</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function middleNode(head){
+  let slow=head,fast=head;
+  while(fast&amp;&amp;fast.next){ slow=slow.next; fast=fast.next.next; }
+  return slow;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Two pointers</td></tr>
+            </table>
+        </section>
+
+
+        <section id="happy-number">
+            <h2>28. Happy Number</h2>
+            <p><strong>Problem:</strong> Replace n by sum of squares of digits; true if reaches 1.</p>
+            <p><strong>Example:</strong> <code>19 → true</code></p>
+            <p><strong>Approach:</strong> Floyd cycle or set of seen values.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_happy(n):
+    def nxt(x): return sum(int(d)**2 for d in str(x))
+    seen=set()
+    while n!=1 and n not in seen:
+        seen.add(n); n=nxt(n)
+    return n==1</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isHappy(n){
+  const nxt=x=&gt;String(x).split("").reduce((a,d)=&gt;a+(+d)**2,0);
+  const seen=new Set();
+  while(n!==1&amp;&amp;!seen.has(n)){ seen.add(n); n=nxt(n); }
+  return n===1;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(log n)</td><td>O(log n)</td><td>Cycle detection</td></tr>
+            </table>
+        </section>
+
+
+        <section id="roman-to-int">
+            <h2>29. Roman to Integer</h2>
+            <p><strong>Problem:</strong> Convert Roman numeral string to integer.</p>
+            <p><strong>Example:</strong> <code>"MCMXCIV" → 1994</code></p>
+            <p><strong>Approach:</strong> Scan; if next &gt; current, subtract.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def roman_to_int(s):
+    val={"I":1,"V":5,"X":10,"L":50,"C":100,"D":500,"M":1000}
+    total=0
+    for i,c in enumerate(s):
+        if i+1&lt;len(s) and val[c]&lt;val[s[i+1]]: total-=val[c]
+        else: total+=val[c]
+    return total</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function romanToInt(s){
+  const val={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+  let total=0;
+  for(let i=0;i&lt;s.length;i++){
+    if(i+1&lt;s.length&amp;&amp;val[s[i]]&lt;val[s[i+1]]) total-=val[s[i]];
+    else total+=val[s[i]];
+  }
+  return total;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(1)</td><td>Map lookup</td></tr>
+            </table>
+        </section>
+
+
+        <section id="longest-common-prefix">
+            <h2>30. Longest Common Prefix</h2>
+            <p><strong>Problem:</strong> Longest shared prefix among string array.</p>
+            <p><strong>Example:</strong> <code>["flower","flow","flight"] → "fl"</code></p>
+            <p><strong>Approach:</strong> Vertical scan char by char.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def longest_common_prefix(strs):
+    if not strs: return ""
+    for i,ch in enumerate(strs[0]):
+        for s in strs[1:]:
+            if i&gt;=len(s) or s[i]!=ch: return strs[0][:i]
+    return strs[0]</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function longestCommonPrefix(strs){
+  if(!strs.length) return "";
+  for(let i=0;i&lt;strs[0].length;i++){
+    const ch=strs[0][i];
+    for(let j=1;j&lt;strs.length;j++){
+      if(i&gt;=strs[j].length||strs[j][i]!==ch) return strs[0].slice(0,i);
+    }
+  }
+  return strs[0];
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n·m)</td><td>O(1)</td><td>String scan</td></tr>
+            </table>
+        </section>
+
+
+        <section id="search-insert">
+            <h2>31. Search Insert Position</h2>
+            <p><strong>Problem:</strong> Index where target is or should be inserted (sorted).</p>
+            <p><strong>Example:</strong> <code>[1,3,5,6], 2 → 1</code></p>
+            <p><strong>Approach:</strong> Binary search lower bound.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def search_insert(nums,target):
+    lo,hi=0,len(nums)
+    while lo&lt;hi:
+        mid=(lo+hi)//2
+        if nums[mid]&lt;target: lo=mid+1
+        else: hi=mid
+    return lo</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function searchInsert(nums,target){
+  let lo=0,hi=nums.length;
+  while(lo&lt;hi){
+    const mid=(lo+hi)&gt;&gt;1;
+    if(nums[mid]&lt;target) lo=mid+1; else hi=mid;
+  }
+  return lo;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(log n)</td><td>O(1)</td><td>Binary search</td></tr>
+            </table>
+        </section>
+
+
+        <section id="length-last-word">
+            <h2>32. Length of Last Word</h2>
+            <p><strong>Problem:</strong> Length of last word in a string (spaces).</p>
+            <p><strong>Example:</strong> <code>"Hello World" → 5</code></p>
+            <p><strong>Approach:</strong> Trim; count from end until space.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def length_of_last_word(s):
+    return len(s.strip().split()[-1])</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function lengthOfLastWord(s){
+  const parts=s.trim().split(/\s+/);
+  return parts[parts.length-1].length;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>String</td></tr>
+            </table>
+        </section>
+
+
+        <section id="isomorphic">
+            <h2>33. Isomorphic Strings</h2>
+            <p><strong>Problem:</strong> True if characters map 1:1 between s and t.</p>
+            <p><strong>Example:</strong> <code>"egg","add" → true</code></p>
+            <p><strong>Approach:</strong> Two maps (or map+set) for bijection.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_isomorphic(s,t):
+    if len(s)!=len(t): return False
+    m1,m2={},{}
+    for a,b in zip(s,t):
+        if m1.get(a,b)!=b or m2.get(b,a)!=a: return False
+        m1[a]=b; m2[b]=a
+    return True</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isIsomorphic(s,t){
+  if(s.length!==t.length) return false;
+  const m1=new Map(), m2=new Map();
+  for(let i=0;i&lt;s.length;i++){
+    const a=s[i],b=t[i];
+    if((m1.has(a)&amp;&amp;m1.get(a)!==b)||(m2.has(b)&amp;&amp;m2.get(b)!==a)) return false;
+    m1.set(a,b); m2.set(b,a);
+  }
+  return true;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(k)</td><td>Hash map</td></tr>
+            </table>
+        </section>
+
+
+        <section id="first-unique-char">
+            <h2>34. First Unique Character</h2>
+            <p><strong>Problem:</strong> Index of first non-repeating char; else -1.</p>
+            <p><strong>Example:</strong> <code>"leetcode" → 0</code></p>
+            <p><strong>Approach:</strong> Frequency count then second pass.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from collections import Counter
+def first_uniq_char(s):
+    c=Counter(s)
+    for i,ch in enumerate(s):
+        if c[ch]==1: return i
+    return -1</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function firstUniqChar(s){
+  const c=new Map();
+  for(const ch of s) c.set(ch,(c.get(ch)||0)+1);
+  for(let i=0;i&lt;s.length;i++) if(c.get(s[i])===1) return i;
+  return -1;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(k)</td><td>Frequency</td></tr>
+            </table>
+        </section>
+
+
+        <section id="ransom-note">
+            <h2>35. Ransom Note</h2>
+            <p><strong>Problem:</strong> True if ransomNote can be built from magazine letters.</p>
+            <p><strong>Example:</strong> <code>"aa","aab" → true</code></p>
+            <p><strong>Approach:</strong> Count magazine; decrement for note.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">from collections import Counter
+def can_construct(note,mag):
+    return not (Counter(note)-Counter(mag))</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function canConstruct(note,mag){
+  const c=new Map();
+  for(const ch of mag) c.set(ch,(c.get(ch)||0)+1);
+  for(const ch of note){
+    if(!c.get(ch)) return false;
+    c.set(ch,c.get(ch)-1);
+  }
+  return true;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n+m)</td><td>O(k)</td><td>Frequency</td></tr>
+            </table>
+        </section>
+
+
+        <section id="add-digits">
+            <h2>36. Add Digits (Digital Root)</h2>
+            <p><strong>Problem:</strong> Repeatedly sum digits until single digit.</p>
+            <p><strong>Example:</strong> <code>38 → 2</code></p>
+            <p><strong>Approach:</strong> Loop or O(1): 1+(n-1)%9.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def add_digits(n):
+    return 0 if n==0 else 1+(n-1)%9</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function addDigits(n){
+  return n===0?0:1+(n-1)%9;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(1)</td><td>O(1)</td><td>Math</td></tr>
+            </table>
+        </section>
+
+
+        <section id="sqrt-x">
+            <h2>37. Sqrt(x)</h2>
+            <p><strong>Problem:</strong> Integer square root (floor) of non-negative x.</p>
+            <p><strong>Example:</strong> <code>8 → 2</code></p>
+            <p><strong>Approach:</strong> Binary search on 0..x.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def my_sqrt(x):
+    lo,hi=0,x
+    while lo&lt;=hi:
+        mid=(lo+hi)//2
+        if mid*mid&lt;=x: lo=mid+1
+        else: hi=mid-1
+    return hi</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function mySqrt(x){
+  let lo=0,hi=x;
+  while(lo&lt;=hi){
+    const mid=(lo+hi)&gt;&gt;1;
+    if(mid*mid&lt;=x) lo=mid+1; else hi=mid-1;
+  }
+  return hi;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(log x)</td><td>O(1)</td><td>Binary search</td></tr>
+            </table>
+        </section>
+
+
+        <section id="valid-perfect-square">
+            <h2>38. Valid Perfect Square</h2>
+            <p><strong>Problem:</strong> True if num is a perfect square.</p>
+            <p><strong>Example:</strong> <code>16 → true</code></p>
+            <p><strong>Approach:</strong> Binary search; mid*mid == num.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def is_perfect_square(num):
+    lo,hi=1,num
+    while lo&lt;=hi:
+        mid=(lo+hi)//2
+        sq=mid*mid
+        if sq==num: return True
+        if sq&lt;num: lo=mid+1
+        else: hi=mid-1
+    return False</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function isPerfectSquare(num){
+  let lo=1,hi=num;
+  while(lo&lt;=hi){
+    const mid=(lo+hi)&gt;&gt;1, sq=mid*mid;
+    if(sq===num) return true;
+    if(sq&lt;num) lo=mid+1; else hi=mid-1;
+  }
+  return false;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(log n)</td><td>O(1)</td><td>Binary search</td></tr>
+            </table>
+        </section>
+
+
+        <section id="hamming-weight">
+            <h2>39. Number of 1 Bits</h2>
+            <p><strong>Problem:</strong> Count set bits in unsigned integer.</p>
+            <p><strong>Example:</strong> <code>11 (1011) → 3</code></p>
+            <p><strong>Approach:</strong> n &amp;= n-1 clears lowest set bit.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def hamming_weight(n):
+    c=0
+    while n:
+        n&amp;=n-1; c+=1
+    return c</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function hammingWeight(n){
+  let c=0;
+  while(n){ n&amp;=n-1; c++; }
+  return c;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(bits)</td><td>O(1)</td><td>Bit tricks</td></tr>
+            </table>
+        </section>
+
+
+        <section id="pascal-row">
+            <h2>40. Pascal Triangle Row</h2>
+            <p><strong>Problem:</strong> Return row index (0-based) of Pascal's triangle.</p>
+            <p><strong>Example:</strong> <code>rowIndex=3 → [1,3,3,1]</code></p>
+            <p><strong>Approach:</strong> Build row using C(n,k) ratios.</p>
+            <h3>🐍 Python</h3>
+            <div class="code-block">def get_row(row_index):
+    row=[1]
+    for k in range(1,row_index+1):
+        row.append(row[-1]*(row_index-k+1)//k)
+    return row</div>
+            <h3>⚡ JavaScript</h3>
+            <div class="code-block">function getRow(rowIndex){
+  const row=[1];
+  for(let k=1;k&lt;=rowIndex;k++){
+    row.push(Math.floor(row[row.length-1]*(rowIndex-k+1)/k));
+  }
+  return row;
+}</div>
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Pattern</th></tr>
+                <tr><td>O(n)</td><td>O(n)</td><td>Combinatorics</td></tr>
+            </table>
+        </section>
+
+
+        <section id="cheatsheet">
+            <h2>Cheat sheet</h2>
+            <table>
+                <tr><th>Need</th><th>Python</th><th>JavaScript</th></tr>
+                <tr><td>Hash map</td><td><code>dict</code></td><td><code>Map</code> / <code>{}</code></td></tr>
+                <tr><td>Set</td><td><code>set()</code></td><td><code>new Set()</code></td></tr>
+                <tr><td>Indexed loop</td><td><code>enumerate</code></td><td><code>for (let i=0;…)</code></td></tr>
+                <tr><td>Integer divide</td><td><code>//</code></td><td><code>Math.floor</code></td></tr>
+            </table>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint</h2>
+            <ul>
+                <li>Solve Two Sum, Valid Parentheses, and Move Zeroes cold in both languages</li>
+                <li>Explain Boyer-Moore majority and XOR single-number</li>
+                <li>State time/space for each problem you practiced this week</li>
+            </ul>
+            <div class="info-box">
+                <h4>Continue</h4>
+                <p>Next: <a href="/learn/ps-medium">Medium</a> (35 problems).</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA — Data Structures &amp; Algorithms</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📐 DSA</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Overview</a>
+                <a href="#complexity" class="sidebar-link">Big-O Complexity</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Data Structures</div>
+            <div class="sidebar-links">
+                <a href="#arrays-lists" class="sidebar-link">Arrays &amp; Linked Lists</a>
+                <a href="#stack-queue" class="sidebar-link">Stacks &amp; Queues</a>
+                <a href="#hash" class="sidebar-link">Hash Tables</a>
+                <a href="#trees" class="sidebar-link">Trees</a>
+                <a href="#graphs" class="sidebar-link">Graphs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Searching</div>
+            <div class="sidebar-links">
+                <a href="#searching" class="sidebar-link">Search Overview</a>
+                <a href="#linear-search" class="sidebar-link">Linear Search</a>
+                <a href="#binary-search" class="sidebar-link">Binary Search</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Sorting</div>
+            <div class="sidebar-links">
+                <a href="#sorting" class="sidebar-link">Sort Overview</a>
+                <a href="#bubble-sort" class="sidebar-link">Bubble Sort</a>
+                <a href="#selection-sort" class="sidebar-link">Selection Sort</a>
+                <a href="#insertion-sort" class="sidebar-link">Insertion Sort</a>
+                <a href="#merge-sort" class="sidebar-link">Merge Sort</a>
+                <a href="#quick-sort" class="sidebar-link">Quick Sort</a>
+                <a href="#heap-sort" class="sidebar-link">Heap Sort</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Graph Algorithms</div>
+            <div class="sidebar-links">
+                <a href="#bfs-algo" class="sidebar-link">BFS</a>
+                <a href="#dfs-algo" class="sidebar-link">DFS</a>
+                <a href="#dijkstra" class="sidebar-link">Dijkstra</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Patterns</div>
+            <div class="sidebar-links">
+                <a href="#patterns" class="sidebar-link">Pattern Map</a>
+                <a href="#two-pointers" class="sidebar-link">Two Pointers</a>
+                <a href="#sliding-window" class="sidebar-link">Sliding Window</a>
+                <a href="#recursion-algo" class="sidebar-link">Recursion</a>
+                <a href="#dp" class="sidebar-link">Dynamic Programming</a>
+                <a href="#greedy" class="sidebar-link">Greedy</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Finish</div>
+            <div class="sidebar-links">
+                <a href="#cheatsheet" class="sidebar-link">Cheat Sheet</a>
+                <a href="#checkpoint" class="sidebar-link">Checkpoint</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>📐 Data Structures &amp; Algorithms</h1>
+            <p>Complete DSA guide — data structures, full algorithms with steps and walkthroughs, Big-O, graph algorithms, and problem-solving patterns.</p>
+        </header>
+
+        <section id="overview">
+            <h2>What is DSA?</h2>
+            <p><span class="highlight">DSA = Data Structures + Algorithms.</span> A <strong>data structure</strong> is how you store and organize data. An <strong>algorithm</strong> is a step-by-step procedure that uses those structures to solve a problem. You pick a structure for access patterns, then an algorithm for the job — search, sort, traverse, or transform.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-hero.jpg" alt="DSA overview: data structures on the left and algorithms on the right connected by choosing the right structure then the right algorithm" loading="lazy">
+                <div class="illustration-caption"><strong>Left = shapes. Right = recipes.</strong> Arrays and hash maps for everyday APIs; trees and graphs when hierarchy or links matter. Search, sort, BFS, and DFS are starter algorithms. Big-O answers: “if input grows 10×, does cost grow 10× or 100×?”</div>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-teal">
+                    <h4>Data structures</h4>
+                    <p>Array, linked list, stack, queue, hash map, tree, graph — choose by how you insert, find, and update.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Algorithms</h4>
+                    <p>Search, sort, traverse, recurse, and optimize. Same problem can have many recipes with different costs.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Complexity</h4>
+                    <p>Big-O describes how time and memory grow with input size <em>n</em> — the language of tradeoffs.</p>
+                </div>
+            </div>
+
+            <table>
+                <tr><th>Piece</th><th>Meaning</th><th>Starter examples</th></tr>
+                <tr><td>Data structures</td><td>How data is laid out and accessed</td><td>Array, list, stack, queue, hash map, tree, graph</td></tr>
+                <tr><td>Algorithms</td><td>Steps that compute a result</td><td>Linear/binary search, sort, recursion, BFS/DFS</td></tr>
+                <tr><td>Complexity (Big-O)</td><td>How time/memory grow with <em>n</em></td><td>O(1), O(log n), O(n), O(n log n), O(n²)</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h3>Why it matters in production</h3>
+                <ul>
+                    <li>Idempotency keys and caches → <strong>hash maps</strong></li>
+                    <li>Job workers and BFS → <strong>queues</strong></li>
+                    <li>Undo, call stacks, DFS → <strong>stacks</strong></li>
+                    <li>Org charts, file trees, indexes → <strong>trees</strong></li>
+                    <li>Social graphs, dependency graphs → <strong>graphs</strong></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="complexity">
+            <h2>Big-O complexity</h2>
+            <p>Big-O describes the <span class="highlight">worst-case growth rate</span> of an algorithm as input size <em>n</em> gets large. Constants and lower-order terms are dropped so you can compare shapes of growth.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-big-o.jpg" alt="Big-O time complexity curves for O(1), O(log n), O(n), O(n log n), O(n squared), and O(2 to the n)" loading="lazy">
+                <div class="illustration-caption"><strong>Flatter is better as n grows.</strong> O(1) and O(log n) stay cheap. O(n²) and exponential blow up quickly — fine for tiny n, dangerous at scale.</div>
+            </div>
+
+            <table>
+                <tr><th>Notation</th><th>Name</th><th>Intuition</th><th>Example</th></tr>
+                <tr><td><strong>O(1)</strong></td><td>Constant</td><td>Same cost regardless of n</td><td>Array index, hash map get (avg)</td></tr>
+                <tr><td><strong>O(log n)</strong></td><td>Logarithmic</td><td>Halves the problem each step</td><td>Binary search</td></tr>
+                <tr><td><strong>O(n)</strong></td><td>Linear</td><td>One pass over the input</td><td>Linear search, simple loop</td></tr>
+                <tr><td><strong>O(n log n)</strong></td><td>Linearithmic</td><td>Typical efficient sort</td><td>Merge sort, heap sort</td></tr>
+                <tr><td><strong>O(n²)</strong></td><td>Quadratic</td><td>Nested loops over n</td><td>Bubble / selection sort</td></tr>
+                <tr><td><strong>O(2ⁿ)</strong></td><td>Exponential</td><td>Explodes with n</td><td>Naive recursive subsets</td></tr>
+            </table>
+
+            <div class="grid-2">
+                <div class="feature-card card-blue">
+                    <h4>Time complexity</h4>
+                    <p>How the number of operations grows. Dominates latency when data is large.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Space complexity</h4>
+                    <p>Extra memory beyond the input. Recursion depth, copies, and DP tables all count.</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>Practical tip</h4>
+                <p>Big-O ignores constants. An O(n) algorithm with heavy work per element can lose to a tight O(n log n) for moderate n. Measure hot paths — use Big-O to eliminate clearly bad designs first.</p>
+            </div>
+        </section>
+
+        <section id="arrays-lists">
+            <h2>Arrays &amp; linked lists</h2>
+            <p>Both store sequences. Arrays pack elements in contiguous memory; linked lists chain nodes with pointers.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-array-linkedlist.jpg" alt="Side-by-side comparison of contiguous array indexing versus linked list nodes with next pointers" loading="lazy">
+                <div class="illustration-caption"><strong>Array = fast index, costly middle insert.</strong> Linked list = cheap insert/delete at a known node, slow random access.</div>
+            </div>
+
+            <table>
+                <tr><th>Operation</th><th>Array (dynamic)</th><th>Singly linked list</th></tr>
+                <tr><td>Access by index</td><td>O(1)</td><td>O(n)</td></tr>
+                <tr><td>Search (unsorted)</td><td>O(n)</td><td>O(n)</td></tr>
+                <tr><td>Insert / delete at end</td><td>Amortized O(1)*</td><td>O(1) with tail / O(n) without</td></tr>
+                <tr><td>Insert / delete in middle</td><td>O(n) shifts</td><td>O(1) if you hold the node</td></tr>
+            </table>
+            <p><em>*Dynamic arrays occasionally resize (copy) — amortized constant for append.</em></p>
+
+            <div class="info-box">
+                <h4>When to use which</h4>
+                <ul>
+                    <li><strong>Array / slice / list (Python/JS):</strong> default choice — cache-friendly, simple indexing</li>
+                    <li><strong>Linked list:</strong> frequent insert/delete in the middle when you already have a node pointer; rare in high-level app code</li>
+                    <li><strong>Deque:</strong> fast push/pop at both ends (queues, sliding windows)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="stack-queue">
+            <h2>Stacks &amp; queues</h2>
+            <p>Restricted access sequences. A <strong>stack</strong> is LIFO (last in, first out). A <strong>queue</strong> is FIFO (first in, first out).</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-stack-queue.jpg" alt="Stack LIFO with push and pop versus Queue FIFO with enqueue and dequeue" loading="lazy">
+                <div class="illustration-caption"><strong>Stack = undo / call frames / DFS.</strong> Queue = task workers / BFS / fair scheduling.</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="feature-card card-orange">
+                    <h4>Stack</h4>
+                    <ul>
+                        <li>push / pop / peek → O(1)</li>
+                        <li>Function call stack</li>
+                        <li>Undo history, matching brackets</li>
+                        <li>DFS (explicit stack)</li>
+                    </ul>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Queue</h4>
+                    <ul>
+                        <li>enqueue / dequeue → O(1)</li>
+                        <li>Job / message workers</li>
+                        <li>BFS level-order traversal</li>
+                        <li>Print / request buffering</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Mental models</h4>
+                <p><strong>Stack:</strong> a pile of plates — you only touch the top plate.</p>
+                <p><strong>Queue:</strong> a ticket line — the person who arrived first is served first.</p>
+            </div>
+        </section>
+
+        <section id="hash">
+            <h2>Hash tables</h2>
+            <p>A <span class="highlight">hash table</span> (dict / Map / object) maps keys to values in average <strong>O(1)</strong> time by hashing the key into a bucket index.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-hash-table.jpg" alt="Hash table showing a key passed through a hash function into buckets with a collision chain" loading="lazy">
+                <div class="illustration-caption"><strong>Hash → bucket → value.</strong> Collisions are normal; chaining or open addressing resolves them. Worst case degrades toward O(n) if everything collides.</div>
+            </div>
+
+            <table>
+                <tr><th>Operation</th><th>Average</th><th>Worst</th></tr>
+                <tr><td>Insert</td><td>O(1)</td><td>O(n)</td></tr>
+                <tr><td>Lookup</td><td>O(1)</td><td>O(n)</td></tr>
+                <tr><td>Delete</td><td>O(1)</td><td>O(n)</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Production uses</h4>
+                <ul>
+                    <li>Caches and memoization</li>
+                    <li>Idempotency / dedupe keys</li>
+                    <li>Counting frequencies (word count)</li>
+                    <li>Tool registries and config maps</li>
+                    <li>Set membership tests</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>Gotchas</h4>
+                <ul>
+                    <li>Keys must be hashable / stable (mutable keys break lookups)</li>
+                    <li>Order is not sorted (use a tree map / sorted structure if you need order)</li>
+                    <li>Hash floods and bad hash functions hurt — language runtimes mitigate this</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="trees">
+            <h2>Trees</h2>
+            <p>A <span class="highlight">tree</span> is a hierarchy: one root, children, no cycles. A <strong>binary search tree (BST)</strong> keeps left &lt; parent &lt; right so search can be logarithmic when balanced.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-tree.jpg" alt="Binary search tree with root and left-right children showing ordering and O(log n) search on a balanced tree" loading="lazy">
+                <div class="illustration-caption"><strong>Balanced BST ≈ O(log n) search/insert.</strong> Skewed trees become O(n) — like a linked list. Self-balancing trees (AVL, red-black) keep height small.</div>
+            </div>
+
+            <h3>Common tree types</h3>
+            <table>
+                <tr><th>Type</th><th>Idea</th><th>Use</th></tr>
+                <tr><td>Binary tree</td><td>Each node ≤ 2 children</td><td>Expression trees, heaps</td></tr>
+                <tr><td>BST</td><td>Ordered binary tree</td><td>Sorted sets/maps</td></tr>
+                <tr><td>Heap</td><td>Parent ≥ or ≤ children</td><td>Priority queues</td></tr>
+                <tr><td>Trie</td><td>Prefix tree of characters</td><td>Autocomplete, dictionaries</td></tr>
+                <tr><td>B-Tree / B+</td><td>Wide balanced tree</td><td>Database / filesystem indexes</td></tr>
+            </table>
+
+            <h3>Traversals</h3>
+            <ul>
+                <li><strong>Pre-order:</strong> node → left → right (copy / serialize)</li>
+                <li><strong>In-order:</strong> left → node → right (BST sorted order)</li>
+                <li><strong>Post-order:</strong> left → right → node (delete / evaluate)</li>
+                <li><strong>Level-order:</strong> BFS by depth (pretty print, shortest path in unweighted tree)</li>
+            </ul>
+        </section>
+
+        <section id="graphs">
+            <h2>Graphs</h2>
+            <p>A <span class="highlight">graph</span> is nodes (vertices) plus edges. Edges may be directed or undirected, weighted or unweighted. Represented as adjacency lists (common) or matrices.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-graph-bfs-dfs.jpg" alt="BFS exploring level by level with a queue versus DFS going deep with a stack" loading="lazy">
+                <div class="illustration-caption"><strong>BFS = closest first (queue).</strong> <strong>DFS = deep dive (stack/recursion).</strong> Same graph, different visit order and use cases.</div>
+            </div>
+
+            <table>
+                <tr><th>Traversal</th><th>Structure</th><th>Good for</th></tr>
+                <tr><td><strong>BFS</strong></td><td>Queue</td><td>Shortest path in unweighted graphs, level order</td></tr>
+                <tr><td><strong>DFS</strong></td><td>Stack / recursion</td><td>Cycle detect, topological ideas, connectivity, backtracking</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h4>Where graphs show up</h4>
+                <ul>
+                    <li>Social networks and recommendations</li>
+                    <li>Service dependency / package graphs</li>
+                    <li>Routing and maps (weighted → Dijkstra / A*)</li>
+                    <li>Knowledge graphs and RAG entity links</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="searching">
+            <h2>Searching — overview</h2>
+            <p>Find a target in a collection. Choice depends on whether data is sorted and how often you search.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-searching.jpg" alt="Linear search scanning one by one versus binary search halving a sorted array with low mid high pointers" loading="lazy">
+                <div class="illustration-caption"><strong>Unsorted → linear O(n).</strong> <strong>Sorted → binary O(log n).</strong> If you search often, pay once to sort or keep a hash set / tree.</div>
+            </div>
+
+            <table>
+                <tr><th>Algorithm</th><th>Requires</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+                <tr><td>Linear search</td><td>Any list</td><td>O(n)</td><td>O(1)</td><td>Simple; fine for tiny n</td></tr>
+                <tr><td>Binary search</td><td>Sorted array</td><td>O(log n)</td><td>O(1)</td><td>Classic interview staple</td></tr>
+                <tr><td>Hash lookup</td><td>Hash set/map</td><td>O(1) avg</td><td>O(n)</td><td>Best for exact membership</td></tr>
+            </table>
+        </section>
+
+        <section id="linear-search">
+            <h2>Linear search (full algorithm)</h2>
+            <p>Scan from left to right until the target is found or the list ends. Works on <strong>any</strong> sequence — sorted or not.</p>
+
+            <h3>Idea</h3>
+            <ol>
+                <li>Start at index <code>0</code></li>
+                <li>Compare <code>a[i]</code> with <code>target</code></li>
+                <li>If equal → return index</li>
+                <li>Else increment <code>i</code> and repeat</li>
+                <li>If loop ends → not found</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Array: <code>[4, 2, 9, 7, 1]</code> · Target: <code>7</code></p>
+            <table>
+                <tr><th>Step</th><th>i</th><th>a[i]</th><th>Compare</th><th>Action</th></tr>
+                <tr><td>1</td><td>0</td><td>4</td><td>4 ≠ 7</td><td>Continue</td></tr>
+                <tr><td>2</td><td>1</td><td>2</td><td>2 ≠ 7</td><td>Continue</td></tr>
+                <tr><td>3</td><td>2</td><td>9</td><td>9 ≠ 7</td><td>Continue</td></tr>
+                <tr><td>4</td><td>3</td><td>7</td><td>7 = 7</td><td>Return 3</td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function linearSearch(a, target):
+  for i from 0 to length(a) - 1:
+    if a[i] == target:
+      return i
+  return -1   // not found</div>
+            </div>
+
+            <table>
+                <tr><th>Best</th><th>Average</th><th>Worst</th><th>Space</th></tr>
+                <tr><td>O(1) — first element</td><td>O(n)</td><td>O(n) — last / missing</td><td>O(1)</td></tr>
+            </table>
+
+            <div class="info-box">
+                <h4>When to use</h4>
+                <ul>
+                    <li>Small lists, or unsorted data you will search once</li>
+                    <li>Streaming / one-pass checks</li>
+                    <li>Not for large repeated lookups (prefer hash / binary)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="binary-search">
+            <h2>Binary search (full algorithm)</h2>
+            <p>On a <span class="highlight">sorted</span> array, repeatedly discard half of the remaining range by comparing the middle element to the target.</p>
+
+            <h3>Idea</h3>
+            <ol>
+                <li>Set <code>lo = 0</code>, <code>hi = n - 1</code></li>
+                <li>While <code>lo ≤ hi</code>: compute <code>mid = (lo + hi) // 2</code></li>
+                <li>If <code>a[mid] == target</code> → found</li>
+                <li>If <code>a[mid] &lt; target</code> → search right half (<code>lo = mid + 1</code>)</li>
+                <li>Else search left half (<code>hi = mid - 1</code>)</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Sorted array: <code>[1, 3, 5, 7, 9, 11, 13]</code> · Target: <code>9</code></p>
+            <table>
+                <tr><th>Step</th><th>lo</th><th>hi</th><th>mid</th><th>a[mid]</th><th>Decision</th></tr>
+                <tr><td>1</td><td>0</td><td>6</td><td>3</td><td>7</td><td>7 &lt; 9 → lo = 4</td></tr>
+                <tr><td>2</td><td>4</td><td>6</td><td>5</td><td>11</td><td>11 &gt; 9 → hi = 4</td></tr>
+                <tr><td>3</td><td>4</td><td>4</td><td>4</td><td>9</td><td>Found at index 4</td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode (iterative)</h4>
+                <div class="code-block">function binarySearch(a, target):
+  lo = 0
+  hi = length(a) - 1
+  while lo &lt;= hi:
+    mid = lo + (hi - lo) // 2   // avoids overflow style
+    if a[mid] == target:
+      return mid
+    else if a[mid] &lt; target:
+      lo = mid + 1
+    else:
+      hi = mid - 1
+  return -1</div>
+            </div>
+
+            <div class="example-box">
+                <h4>Pseudocode (recursive)</h4>
+                <div class="code-block">function binarySearchRec(a, target, lo, hi):
+  if lo &gt; hi:
+    return -1
+  mid = lo + (hi - lo) // 2
+  if a[mid] == target:
+    return mid
+  if a[mid] &lt; target:
+    return binarySearchRec(a, target, mid + 1, hi)
+  return binarySearchRec(a, target, lo, mid - 1)</div>
+            </div>
+
+            <table>
+                <tr><th>Time</th><th>Space (iterative)</th><th>Space (recursive)</th><th>Prerequisite</th></tr>
+                <tr><td>O(log n)</td><td>O(1)</td><td>O(log n) stack</td><td>Sorted ascending (or known order)</td></tr>
+            </table>
+
+            <div class="warning-box">
+                <h4>Common bugs</h4>
+                <ul>
+                    <li>Array not sorted → wrong answers</li>
+                    <li>Infinite loop if <code>lo</code>/<code>hi</code> updates wrong (<code>mid+1</code> / <code>mid-1</code>)</li>
+                    <li>Off-by-one on empty array or single element</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sorting">
+            <h2>Sorting — overview</h2>
+            <p>Ordering data unlocks binary search, ranking, and cleaner merges. Below: full algorithms with steps, complexity, and when to use each.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-sorting.jpg" alt="Sorting algorithms overview: Bubble Sort, Merge Sort, Quick Sort, and Heap Sort with complexity labels" loading="lazy">
+                <div class="illustration-caption"><strong>Prefer O(n log n) for large n.</strong> Languages ship tuned sorts (Timsort, introsort). Learn the classics; call library sort in production.</div>
+            </div>
+
+            <table>
+                <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable?</th></tr>
+                <tr><td>Bubble</td><td>O(n)*</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr>
+                <tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr>
+                <tr><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr>
+                <tr><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr>
+                <tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No*</td></tr>
+                <tr><td>Heap</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td>No</td></tr>
+            </table>
+            <p><em>*Bubble best-case with early-exit flag. Classic quicksort is unstable.</em></p>
+        </section>
+
+        <section id="bubble-sort">
+            <h2>Bubble sort (full algorithm)</h2>
+            <p>Repeatedly compare adjacent pairs and swap if out of order. Largest values “bubble” to the end each pass.</p>
+
+            <h3>Steps</h3>
+            <ol>
+                <li>For pass <code>i = 0 .. n-2</code>:</li>
+                <li>Scan <code>j = 0 .. n-2-i</code></li>
+                <li>If <code>a[j] &gt; a[j+1]</code> → swap them</li>
+                <li>Optional: if a pass had zero swaps → already sorted, stop early</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Start: <code>[5, 1, 4, 2]</code></p>
+            <table>
+                <tr><th>Pass</th><th>Comparisons / swaps</th><th>Array after pass</th></tr>
+                <tr><td>1</td><td>5↔1, 5↔4, 5↔2</td><td><code>[1, 4, 2, 5]</code></td></tr>
+                <tr><td>2</td><td>4↔2</td><td><code>[1, 2, 4, 5]</code></td></tr>
+                <tr><td>3</td><td>no swaps</td><td><code>[1, 2, 4, 5]</code> done</td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function bubbleSort(a):
+  n = length(a)
+  for i from 0 to n - 2:
+    swapped = false
+    for j from 0 to n - 2 - i:
+      if a[j] &gt; a[j + 1]:
+        swap(a[j], a[j + 1])
+        swapped = true
+    if not swapped:
+      break</div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Use for:</strong> teaching only. Too slow for large n. Stable, in-place.</p>
+            </div>
+        </section>
+
+        <section id="selection-sort">
+            <h2>Selection sort (full algorithm)</h2>
+            <p>For each position, find the minimum in the unsorted suffix and swap it into place.</p>
+
+            <h3>Steps</h3>
+            <ol>
+                <li>For <code>i = 0 .. n-2</code>: assume min index = <code>i</code></li>
+                <li>Scan <code>j = i+1 .. n-1</code>; update min index if smaller</li>
+                <li>Swap <code>a[i]</code> with <code>a[minIndex]</code></li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Start: <code>[64, 25, 12, 22]</code></p>
+            <table>
+                <tr><th>i</th><th>Min found</th><th>Swap</th><th>Array</th></tr>
+                <tr><td>0</td><td>12 at index 2</td><td>64 ↔ 12</td><td><code>[12, 25, 64, 22]</code></td></tr>
+                <tr><td>1</td><td>22 at index 3</td><td>25 ↔ 22</td><td><code>[12, 22, 64, 25]</code></td></tr>
+                <tr><td>2</td><td>25 at index 3</td><td>64 ↔ 25</td><td><code>[12, 22, 25, 64]</code></td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function selectionSort(a):
+  n = length(a)
+  for i from 0 to n - 2:
+    minIndex = i
+    for j from i + 1 to n - 1:
+      if a[j] &lt; a[minIndex]:
+        minIndex = j
+    swap(a[i], a[minIndex])</div>
+            </div>
+
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Stable?</th><th>Notes</th></tr>
+                <tr><td>Always O(n²)</td><td>O(1)</td><td>No</td><td>Few swaps (at most n−1) — useful when writes are expensive</td></tr>
+            </table>
+        </section>
+
+        <section id="insertion-sort">
+            <h2>Insertion sort (full algorithm)</h2>
+            <p>Build a sorted prefix. Take the next element and insert it into the correct place by shifting larger elements right.</p>
+
+            <h3>Steps</h3>
+            <ol>
+                <li>For <code>i = 1 .. n-1</code>: let <code>key = a[i]</code></li>
+                <li>Shift elements <code>a[j] &gt; key</code> one step right while <code>j ≥ 0</code></li>
+                <li>Place <code>key</code> in the opened slot</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Start: <code>[3, 1, 4, 2]</code></p>
+            <table>
+                <tr><th>i</th><th>key</th><th>Action</th><th>Array</th></tr>
+                <tr><td>1</td><td>1</td><td>Shift 3 right; place 1</td><td><code>[1, 3, 4, 2]</code></td></tr>
+                <tr><td>2</td><td>4</td><td>Already in place</td><td><code>[1, 3, 4, 2]</code></td></tr>
+                <tr><td>3</td><td>2</td><td>Shift 4,3; place 2</td><td><code>[1, 2, 3, 4]</code></td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function insertionSort(a):
+  for i from 1 to length(a) - 1:
+    key = a[i]
+    j = i - 1
+    while j &gt;= 0 and a[j] &gt; key:
+      a[j + 1] = a[j]
+      j = j - 1
+    a[j + 1] = key</div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Best O(n)</strong> on nearly sorted data. Used inside Timsort for small runs. Stable, in-place.</p>
+            </div>
+        </section>
+
+        <section id="merge-sort">
+            <h2>Merge sort (full algorithm)</h2>
+            <p><span class="highlight">Divide and conquer:</span> split the array in half, sort each half recursively, then merge two sorted halves into one sorted array.</p>
+
+            <h3>Steps</h3>
+            <ol>
+                <li><strong>Base case:</strong> length ≤ 1 → already sorted</li>
+                <li><strong>Divide:</strong> mid = n/2; left = a[0..mid), right = a[mid..n)</li>
+                <li><strong>Conquer:</strong> recursively merge-sort left and right</li>
+                <li><strong>Merge:</strong> walk both halves with two pointers; always take the smaller head into the result</li>
+            </ol>
+
+            <h3>Merge step detail</h3>
+            <p>Left <code>[1, 4, 7]</code> · Right <code>[2, 3, 8]</code></p>
+            <table>
+                <tr><th>Compare</th><th>Pick</th><th>Result so far</th></tr>
+                <tr><td>1 vs 2</td><td>1</td><td><code>[1]</code></td></tr>
+                <tr><td>4 vs 2</td><td>2</td><td><code>[1, 2]</code></td></tr>
+                <tr><td>4 vs 3</td><td>3</td><td><code>[1, 2, 3]</code></td></tr>
+                <tr><td>4 vs 8</td><td>4</td><td><code>[1, 2, 3, 4]</code></td></tr>
+                <tr><td>7 vs 8</td><td>7</td><td><code>[1, 2, 3, 4, 7]</code></td></tr>
+                <tr><td>—</td><td>8</td><td><code>[1, 2, 3, 4, 7, 8]</code></td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function mergeSort(a):
+  if length(a) &lt;= 1:
+    return a
+  mid = length(a) // 2
+  left = mergeSort(a[0 .. mid])
+  right = mergeSort(a[mid .. end])
+  return merge(left, right)
+
+function merge(left, right):
+  result = []
+  i = 0, j = 0
+  while i &lt; length(left) and j &lt; length(right):
+    if left[i] &lt;= right[j]:
+      result.append(left[i]); i += 1
+    else:
+      result.append(right[j]); j += 1
+  append remaining left[i..] and right[j..]
+  return result</div>
+            </div>
+
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Stable?</th><th>Why learn it</th></tr>
+                <tr><td>Always O(n log n)</td><td>O(n)</td><td>Yes</td><td>Predictable; foundation for external sort</td></tr>
+            </table>
+        </section>
+
+        <section id="quick-sort">
+            <h2>Quick sort (full algorithm)</h2>
+            <p>Pick a <strong>pivot</strong>, partition so smaller elements go left and larger go right, then recursively sort both sides.</p>
+
+            <h3>Lomuto partition (common teaching version)</h3>
+            <ol>
+                <li>Choose pivot = last element <code>a[hi]</code></li>
+                <li>Maintain boundary <code>i</code> for “less than pivot” region</li>
+                <li>Scan <code>j</code> from <code>lo</code> to <code>hi-1</code>; if <code>a[j] &lt; pivot</code>, swap into place and bump <code>i</code></li>
+                <li>Swap pivot into index <code>i</code>; return pivot index</li>
+                <li>Recurse on left of pivot and right of pivot</li>
+            </ol>
+
+            <h3>Walkthrough (one partition)</h3>
+            <p>Array: <code>[3, 7, 1, 4]</code> · pivot = <code>4</code></p>
+            <table>
+                <tr><th>j</th><th>a[j]</th><th>Action</th><th>Array</th></tr>
+                <tr><td>0</td><td>3</td><td>3 &lt; 4 → swap with i, i++</td><td><code>[3, 7, 1, 4]</code></td></tr>
+                <tr><td>1</td><td>7</td><td>7 ≥ 4 → skip</td><td><code>[3, 7, 1, 4]</code></td></tr>
+                <tr><td>2</td><td>1</td><td>1 &lt; 4 → swap</td><td><code>[3, 1, 7, 4]</code></td></tr>
+                <tr><td>—</td><td>—</td><td>Place pivot</td><td><code>[3, 1, 4, 7]</code></td></tr>
+            </table>
+            <p>Pivot at index 2. Recurse on <code>[3, 1]</code> and <code>[7]</code>.</p>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function quickSort(a, lo, hi):
+  if lo &gt;= hi:
+    return
+  p = partition(a, lo, hi)
+  quickSort(a, lo, p - 1)
+  quickSort(a, p + 1, hi)
+
+function partition(a, lo, hi):
+  pivot = a[hi]
+  i = lo
+  for j from lo to hi - 1:
+    if a[j] &lt; pivot:
+      swap(a[i], a[j])
+      i += 1
+  swap(a[i], a[hi])
+  return i</div>
+            </div>
+
+            <div class="warning-box">
+                <h4>Worst case O(n²)</h4>
+                <p>Already sorted data + always picking last element as pivot → unbalanced partitions. Fix: random pivot, median-of-three, or introsort (quick + heap fallback).</p>
+            </div>
+        </section>
+
+        <section id="heap-sort">
+            <h2>Heap sort (full algorithm)</h2>
+            <p>Use a <strong>max-heap</strong>: parent ≥ children. Build a heap, then repeatedly extract the max into the sorted suffix.</p>
+
+            <h3>Steps</h3>
+            <ol>
+                <li><strong>Heapify:</strong> build max-heap in-place (bottom-up from last parent)</li>
+                <li>For end = n−1 down to 1:</li>
+                <li>Swap root (max) with <code>a[end]</code></li>
+                <li>Reduce heap size by 1; sift-down the new root</li>
+            </ol>
+
+            <h3>Index math (0-based array heap)</h3>
+            <ul>
+                <li>Parent of <code>i</code>: <code>(i - 1) // 2</code></li>
+                <li>Left child: <code>2*i + 1</code></li>
+                <li>Right child: <code>2*i + 2</code></li>
+            </ul>
+
+            <div class="example-box">
+                <h4>Pseudocode (sift-down + sort)</h4>
+                <div class="code-block">function siftDown(a, start, end):
+  root = start
+  while 2*root + 1 &lt;= end:
+    child = 2*root + 1
+    swapIdx = root
+    if a[swapIdx] &lt; a[child]:
+      swapIdx = child
+    if child + 1 &lt;= end and a[swapIdx] &lt; a[child + 1]:
+      swapIdx = child + 1
+    if swapIdx == root:
+      return
+    swap(a[root], a[swapIdx])
+    root = swapIdx
+
+function heapSort(a):
+  n = length(a)
+  // build heap
+  for start from (n // 2 - 1) down to 0:
+    siftDown(a, start, n - 1)
+  // extract max
+  for end from n - 1 down to 1:
+    swap(a[0], a[end])
+    siftDown(a, 0, end - 1)</div>
+            </div>
+
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Stable?</th><th>Notes</th></tr>
+                <tr><td>O(n log n)</td><td>O(1)</td><td>No</td><td>Guaranteed bound; often slower than well-tuned quicksort in practice</td></tr>
+            </table>
+        </section>
+
+        <section id="bfs-algo">
+            <h2>BFS — Breadth-First Search (full algorithm)</h2>
+            <p>Explore a graph <strong>level by level</strong> using a queue. First time you reach a node is a shortest path in an unweighted graph.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-graph-bfs-dfs.jpg" alt="BFS exploring level by level with a queue versus DFS going deep with a stack" loading="lazy">
+                <div class="illustration-caption"><strong>BFS uses a queue.</strong> Visit neighbors before going deeper — closest nodes first.</div>
+            </div>
+
+            <h3>Steps</h3>
+            <ol>
+                <li>Enqueue start; mark visited</li>
+                <li>While queue not empty: dequeue <code>u</code></li>
+                <li>Process <code>u</code> (record order / distance)</li>
+                <li>For each neighbor <code>v</code> of <code>u</code>: if not visited → mark, enqueue, set parent/dist</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Edges: A–B, A–C, B–D, C–D · Start A</p>
+            <table>
+                <tr><th>Step</th><th>Dequeue</th><th>Enqueue</th><th>Queue</th><th>Visited</th></tr>
+                <tr><td>0</td><td>—</td><td>A</td><td>[A]</td><td>{A}</td></tr>
+                <tr><td>1</td><td>A</td><td>B, C</td><td>[B, C]</td><td>{A,B,C}</td></tr>
+                <tr><td>2</td><td>B</td><td>D</td><td>[C, D]</td><td>{A,B,C,D}</td></tr>
+                <tr><td>3</td><td>C</td><td>—</td><td>[D]</td><td>{A,B,C,D}</td></tr>
+                <tr><td>4</td><td>D</td><td>—</td><td>[]</td><td>done</td></tr>
+            </table>
+            <p>Visit order: <strong>A, B, C, D</strong>. Distances from A: B=1, C=1, D=2.</p>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function BFS(graph, start):
+  queue = [start]
+  visited = {start}
+  order = []
+  while queue is not empty:
+    u = queue.dequeue()
+    order.append(u)
+    for v in graph.neighbors(u):
+      if v not in visited:
+        visited.add(v)
+        queue.enqueue(v)
+  return order</div>
+            </div>
+
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Best for</th></tr>
+                <tr><td>O(V + E)</td><td>O(V)</td><td>Shortest path (unweighted), level order, nearby nodes</td></tr>
+            </table>
+        </section>
+
+        <section id="dfs-algo">
+            <h2>DFS — Depth-First Search (full algorithm)</h2>
+            <p>Go as deep as possible along one path, then backtrack. Implement with recursion or an explicit stack.</p>
+
+            <h3>Steps (recursive)</h3>
+            <ol>
+                <li>Mark current node visited; process it</li>
+                <li>For each unvisited neighbor: recurse</li>
+                <li>Backtrack when no unvisited neighbors remain</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Same graph as BFS. One possible DFS from A (neighbors ordered B then C): <strong>A → B → D → C</strong>.</p>
+            <table>
+                <tr><th>Action</th><th>Stack / call</th><th>Visited</th></tr>
+                <tr><td>Enter A</td><td>A</td><td>{A}</td></tr>
+                <tr><td>Enter B</td><td>A, B</td><td>{A,B}</td></tr>
+                <tr><td>Enter D</td><td>A, B, D</td><td>{A,B,D}</td></tr>
+                <tr><td>Backtrack to B, A</td><td>A</td><td>{A,B,D}</td></tr>
+                <tr><td>Enter C</td><td>A, C</td><td>{A,B,D,C}</td></tr>
+            </table>
+
+            <div class="example-box">
+                <h4>Pseudocode (recursive)</h4>
+                <div class="code-block">function DFS(graph, u, visited, order):
+  visited.add(u)
+  order.append(u)
+  for v in graph.neighbors(u):
+    if v not in visited:
+      DFS(graph, v, visited, order)
+
+function DFSStart(graph, start):
+  visited = {}
+  order = []
+  DFS(graph, start, visited, order)
+  return order</div>
+            </div>
+
+            <div class="example-box">
+                <h4>Pseudocode (iterative stack)</h4>
+                <div class="code-block">function DFSIter(graph, start):
+  stack = [start]
+  visited = {}
+  order = []
+  while stack is not empty:
+    u = stack.pop()
+    if u in visited:
+      continue
+    visited.add(u)
+    order.append(u)
+    for v in reverse(graph.neighbors(u)):  // optional order control
+      if v not in visited:
+        stack.push(v)
+  return order</div>
+            </div>
+
+            <table>
+                <tr><th>Time</th><th>Space</th><th>Best for</th></tr>
+                <tr><td>O(V + E)</td><td>O(V)</td><td>Cycle detection, topological ideas, connected components, backtracking</td></tr>
+            </table>
+        </section>
+
+        <section id="dijkstra">
+            <h2>Dijkstra’s algorithm (full details)</h2>
+            <p>Shortest paths from a source in a graph with <span class="highlight">non-negative edge weights</span>. Greedy: always expand the unsettled node with the smallest known distance.</p>
+
+            <h3>Steps</h3>
+            <ol>
+                <li>Set <code>dist[start] = 0</code>, all others = ∞</li>
+                <li>Put all nodes in a priority queue keyed by distance (or start with only start)</li>
+                <li>While PQ not empty: pop node <code>u</code> with smallest dist</li>
+                <li>For each edge <code>u → v</code> with weight <code>w</code>: if <code>dist[u] + w &lt; dist[v]</code> → relax and update PQ</li>
+            </ol>
+
+            <h3>Walkthrough</h3>
+            <p>Edges: A→B (4), A→C (2), C→B (1), B→D (5), C→D (8) · Start A</p>
+            <table>
+                <tr><th>Pop</th><th>Relax</th><th>dist A,B,C,D</th></tr>
+                <tr><td>A (0)</td><td>B=4, C=2</td><td>0, 4, 2, ∞</td></tr>
+                <tr><td>C (2)</td><td>B=min(4,2+1)=3; D=10</td><td>0, 3, 2, 10</td></tr>
+                <tr><td>B (3)</td><td>D=min(10,3+5)=8</td><td>0, 3, 2, 8</td></tr>
+                <tr><td>D (8)</td><td>—</td><td>done</td></tr>
+            </table>
+            <p>Shortest A→D = <strong>8</strong> via A→C→B→D.</p>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function dijkstra(graph, start):
+  dist = map all nodes → ∞
+  dist[start] = 0
+  pq = min-priority-queue of (distance, node)
+  pq.push(0, start)
+  while pq not empty:
+    (d, u) = pq.popMin()
+    if d &gt; dist[u]:
+      continue   // stale entry
+    for (v, w) in graph.edgesFrom(u):
+      nd = dist[u] + w
+      if nd &lt; dist[v]:
+        dist[v] = nd
+        pq.push(nd, v)
+  return dist</div>
+            </div>
+
+            <table>
+                <tr><th>Time (binary heap)</th><th>Space</th><th>Fails when</th></tr>
+                <tr><td>O((V + E) log V)</td><td>O(V)</td><td>Negative edge weights (use Bellman-Ford)</td></tr>
+            </table>
+        </section>
+
+        <section id="patterns">
+            <h2>Common algorithm patterns</h2>
+            <p>Most interview and production problems are combinations of a few patterns. Learn the shapes, then adapt.</p>
+
+            <div class="illustration">
+                <img src="/images/dsa/dsa-patterns.jpg" alt="Six common algorithm patterns: Two Pointers, Sliding Window, Recursion, Dynamic Programming, Greedy, and Divide and Conquer" loading="lazy">
+                <div class="illustration-caption"><strong>Pattern first, code second.</strong> Name the pattern out loud — it narrows the approach before you touch the keyboard.</div>
+            </div>
+        </section>
+
+        <section id="two-pointers">
+            <h2>Two pointers (full algorithm pattern)</h2>
+            <p>Two indices move through a structure (often from ends toward center, or both forward at different speeds).</p>
+
+            <h3>Classic: pair sum in sorted array</h3>
+            <p>Find two numbers that add to <code>target</code>.</p>
+            <ol>
+                <li><code>lo = 0</code>, <code>hi = n-1</code></li>
+                <li>While <code>lo &lt; hi</code>: sum = a[lo]+a[hi]</li>
+                <li>If sum == target → found</li>
+                <li>If sum &lt; target → lo++</li>
+                <li>If sum &gt; target → hi--</li>
+            </ol>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function twoSumSorted(a, target):
+  lo = 0
+  hi = length(a) - 1
+  while lo &lt; hi:
+    s = a[lo] + a[hi]
+    if s == target:
+      return (lo, hi)
+    else if s &lt; target:
+      lo += 1
+    else:
+      hi -= 1
+  return not found</div>
+            </div>
+
+            <p><strong>Time O(n)</strong>, space O(1). Also used for: palindrome check, remove duplicates in-place, container-with-most-water.</p>
+        </section>
+
+        <section id="sliding-window">
+            <h2>Sliding window (full algorithm pattern)</h2>
+            <p>Maintain a contiguous window <code>[left, right]</code> that grows/shrinks to satisfy a constraint while tracking a metric (sum, distinct count, etc.).</p>
+
+            <h3>Classic: longest substring with ≤ k distinct characters</h3>
+            <ol>
+                <li>Expand <code>right</code>; add s[right] into a frequency map</li>
+                <li>While distinct count &gt; k: remove s[left], left++</li>
+                <li>Update max length = right − left + 1</li>
+            </ol>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function longestWithKDistinct(s, k):
+  freq = {}
+  left = 0
+  best = 0
+  for right from 0 to length(s) - 1:
+    freq[s[right]] = freq.get(s[right], 0) + 1
+    while number of keys in freq &gt; k:
+      freq[s[left]] -= 1
+      if freq[s[left]] == 0:
+        delete freq[s[left]]
+      left += 1
+    best = max(best, right - left + 1)
+  return best</div>
+            </div>
+
+            <p><strong>Time O(n)</strong> for typical char/ascii alphabets. Also used for: max sum subarray of size k, minimum window substring.</p>
+        </section>
+
+        <section id="recursion-algo">
+            <h2>Recursion (full details)</h2>
+            <p>A function solves a problem by calling itself on a smaller instance until a base case.</p>
+
+            <h3>Checklist</h3>
+            <ol>
+                <li><strong>Base case</strong> — when to stop</li>
+                <li><strong>Recursive case</strong> — shrink toward the base</li>
+                <li><strong>Stack depth</strong> — O(depth) extra space</li>
+                <li><strong>Memoize</strong> — if the same inputs repeat (path to DP)</li>
+            </ol>
+
+            <div class="example-box">
+                <h4>Example: factorial</h4>
+                <div class="code-block">function factorial(n):
+  if n &lt;= 1:          // base
+    return 1
+  return n * factorial(n - 1)  // recursive</div>
+            </div>
+
+            <div class="example-box">
+                <h4>Example: binary tree in-order</h4>
+                <div class="code-block">function inorder(node):
+  if node is null:
+    return
+  inorder(node.left)
+  visit(node)
+  inorder(node.right)</div>
+            </div>
+
+            <div class="warning-box">
+                <h4>Naive Fibonacci trap</h4>
+                <p><code>fib(n) = fib(n-1) + fib(n-2)</code> without memo is O(2ⁿ). Same recurrence with memo / DP is O(n).</p>
+            </div>
+        </section>
+
+        <section id="dp">
+            <h2>Dynamic programming (full details)</h2>
+            <p>DP solves problems with <strong>overlapping subproblems</strong> and <strong>optimal substructure</strong> by storing answers instead of recomputing.</p>
+
+            <h3>Steps to design a DP</h3>
+            <ol>
+                <li>Define state: what does <code>dp[i]</code> / <code>dp[i][j]</code> mean?</li>
+                <li>Write recurrence relating states</li>
+                <li>Identify base cases</li>
+                <li>Choose order: bottom-up (iterate) or top-down (memoized recursion)</li>
+                <li>Extract the answer from the table / memo</li>
+            </ol>
+
+            <h3>Example: Fibonacci bottom-up</h3>
+            <div class="example-box">
+                <div class="code-block">function fib(n):
+  if n &lt;= 1:
+    return n
+  dp = array of size n + 1
+  dp[0] = 0
+  dp[1] = 1
+  for i from 2 to n:
+    dp[i] = dp[i - 1] + dp[i - 2]
+  return dp[n]
+// Time O(n), Space O(n) — can optimize to O(1) with two variables</div>
+            </div>
+
+            <h3>Example: 0/1 knapsack idea</h3>
+            <p>For each item, either skip it or take it if weight allows:</p>
+            <div class="code-block">dp[i][w] = max(
+  dp[i-1][w],                           // skip item i
+  dp[i-1][w - weight[i]] + value[i]     // take item i (if w allows)
+)</div>
+
+            <table>
+                <tr><th>Style</th><th>How</th><th>Pros</th></tr>
+                <tr><td>Top-down</td><td>Recursion + memo map</td><td>Only computes needed states</td></tr>
+                <tr><td>Bottom-up</td><td>Iterate table</td><td>Clear complexity; no stack risk</td></tr>
+            </table>
+        </section>
+
+        <section id="greedy">
+            <h2>Greedy algorithms (full details)</h2>
+            <p>At each step, pick the locally best option and never undo it. Works only when a <strong>greedy choice property</strong> holds.</p>
+
+            <h3>Classic: activity / interval scheduling</h3>
+            <ol>
+                <li>Sort intervals by <strong>end time</strong></li>
+                <li>Pick the first interval; then repeatedly pick the next that starts after the last chosen end</li>
+            </ol>
+
+            <div class="example-box">
+                <h4>Pseudocode</h4>
+                <div class="code-block">function maxActivities(intervals):
+  sort intervals by end ascending
+  chosen = []
+  currentEnd = -∞
+  for (start, end) in intervals:
+    if start &gt;= currentEnd:
+      chosen.append((start, end))
+      currentEnd = end
+  return chosen</div>
+            </div>
+
+            <div class="info-box">
+                <h4>Other greedy examples</h4>
+                <ul>
+                    <li>Coin change with canonical denominations (not always optimal for arbitrary coins → then DP)</li>
+                    <li>Huffman coding</li>
+                    <li>Dijkstra (greedy on distances with non-negative weights)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <p>If you cannot prove the greedy choice is safe, default to DP or exhaustive search with pruning.</p>
+            </div>
+        </section>
+
+        <section id="cheatsheet">
+            <h2>Cheat sheet</h2>
+            <h3>Structure choice</h3>
+            <table>
+                <tr><th>Need</th><th>Reach for</th></tr>
+                <tr><td>Fast index + iteration</td><td>Array / list</td></tr>
+                <tr><td>Fast key → value</td><td>Hash map</td></tr>
+                <tr><td>Fast membership</td><td>Hash set</td></tr>
+                <tr><td>LIFO</td><td>Stack</td></tr>
+                <tr><td>FIFO / BFS</td><td>Queue / deque</td></tr>
+                <tr><td>Priority ordering</td><td>Heap / priority queue</td></tr>
+                <tr><td>Sorted keys + range queries</td><td>Balanced BST / tree map</td></tr>
+                <tr><td>Hierarchy</td><td>Tree</td></tr>
+                <tr><td>Relationships / networks</td><td>Graph</td></tr>
+            </table>
+
+            <h3>Algorithm choice</h3>
+            <table>
+                <tr><th>Problem</th><th>Algorithm</th></tr>
+                <tr><td>Find in unsorted list (once)</td><td>Linear search</td></tr>
+                <tr><td>Find in sorted array</td><td>Binary search</td></tr>
+                <tr><td>Membership many times</td><td>Hash set</td></tr>
+                <tr><td>Sort large data, need guarantee</td><td>Merge / heap / library sort</td></tr>
+                <tr><td>Shortest path, equal weights</td><td>BFS</td></tr>
+                <tr><td>Shortest path, non-negative weights</td><td>Dijkstra</td></tr>
+                <tr><td>Explore / cycles / components</td><td>DFS</td></tr>
+                <tr><td>Overlapping subproblems</td><td>DP</td></tr>
+                <tr><td>Contiguous subarray constraint</td><td>Sliding window</td></tr>
+            </table>
+
+            <p>Language-specific practice:</p>
+            <ul>
+                <li><a href="/learn/javascript-data-structures">JavaScript Data Structures</a></li>
+                <li><a href="/learn/python-data-structures">Python Data Structures</a></li>
+            </ul>
+        </section>
+
+        <section id="checkpoint">
+            <h2>Checkpoint</h2>
+            <p>You are done with this module when you can:</p>
+            <ul>
+                <li>Explain DSA as structures + algorithms + Big-O</li>
+                <li>Walk through linear and binary search with a concrete array</li>
+                <li>Implement or hand-simulate bubble, insertion, merge, and quick sort</li>
+                <li>State time/space/stability for the main sorts</li>
+                <li>Run BFS and DFS on a small graph and explain the difference</li>
+                <li>Relax edges in one Dijkstra round</li>
+                <li>Code two-pointers and a basic sliding window</li>
+                <li>Write a DP recurrence for Fibonacci or knapsack-style state</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Next steps</h4>
+                <ul>
+                    <li>Implement each algorithm once in your preferred language</li>
+                    <li>Solve a few problems per pattern (not hundreds blindly)</li>
+                    <li>Return to <a href="/learn/pai-software-engineering#dsa">Software Engineering → DSA intro</a> for the production framing</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

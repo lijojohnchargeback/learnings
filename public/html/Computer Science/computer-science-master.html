@@ -76,7 +76,23 @@
         <section id="intro">
             <h2>🏠 Introduction to Computers</h2>
             
-            <p>A <span class="highlight">computer</span> is an electronic device that takes input, processes it using software and hardware, stores it, and produces output.</p>
+            <p>A <span class="highlight">computer</span> is an electronic device that takes input, processes it using software and hardware, stores it, and produces output. Every laptop, phone, server, and smart device follows the same fundamental pattern — only the scale and packaging change.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-ipo-cycle.jpg" alt="Input Process Output Storage cycle showing keyboard and mouse feeding the CPU, then storage, then monitor and printer" loading="lazy">
+                <div class="illustration-caption"><strong>The IPO + Storage model.</strong> Data enters through input devices, the CPU processes it, results go to output devices, and storage keeps data for later. Almost every computing task is a variation of this loop.</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="feature-card card-blue">
+                    <h4>Why programmable matters</h4>
+                    <p>Unlike a fixed calculator, a computer runs different programs. The same hardware can edit a document, stream video, or train a model — only the software changes.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Hardware vs software</h4>
+                    <p><strong>Hardware</strong> is the physical machine. <strong>Software</strong> is the set of instructions that tell that machine what to do. You need both for useful work.</p>
+                </div>
+            </div>
 
             <h3>What is a Computer?</h3>
             <div class="info-box">
@@ -90,6 +106,7 @@
             </div>
 
             <h3>The IPO Cycle (Input-Process-Output)</h3>
+            <p>Think of the IPO cycle as the computer's daily workflow. Example: you type a message (input) → the CPU formats and encrypts it (process) → it is saved and sent (storage + network) → it appears on another screen (output).</p>
             <div class="diagram-box">
 ┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
 │    INPUT    │  →   │   PROCESS   │  →   │   STORAGE   │  →   │   OUTPUT    │
@@ -149,6 +166,34 @@
                 </ul>
             </div>
 
+            <h3>Real-World IPO Examples</h3>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Input</th>
+                    <th>Process</th>
+                    <th>Output / Storage</th>
+                </tr>
+                <tr>
+                    <td><strong>Editing a photo</strong></td>
+                    <td>Image file + mouse clicks</td>
+                    <td>CPU/GPU apply filters</td>
+                    <td>Edited image on screen + saved to SSD</td>
+                </tr>
+                <tr>
+                    <td><strong>Online banking</strong></td>
+                    <td>Login + transfer form</td>
+                    <td>Server validates and updates ledger</td>
+                    <td>Confirmation page + database record</td>
+                </tr>
+                <tr>
+                    <td><strong>Voice assistant</strong></td>
+                    <td>Microphone audio</td>
+                    <td>Speech-to-text + AI intent</td>
+                    <td>Spoken reply + action (e.g. set alarm)</td>
+                </tr>
+            </table>
+
             <h3>Basic Steps to Use a Computer</h3>
             <ol>
                 <li><strong>Start the Computer:</strong> Press the power button</li>
@@ -162,6 +207,13 @@
 
         <section id="generations">
             <h2>📅 Generations of Computers</h2>
+
+            <p>Computer history is usually taught as five <span class="highlight">generations</span>. Each generation swapped a key technology — vacuum tubes → transistors → ICs → microprocessors → AI/quantum — and that change reshaped size, cost, speed, and who could use computers.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-generations.jpg" alt="Timeline of five computer generations from vacuum tubes through transistors, integrated circuits, microprocessors, to AI and quantum" loading="lazy">
+                <div class="illustration-caption"><strong>Technology leaps, not just years.</strong> Each generation's breakthrough made machines smaller, cheaper, and more capable — until personal computing and AI became everyday tools.</div>
+            </div>
 
             <table>
                 <tr>
@@ -276,6 +328,13 @@
         <section id="types">
             <h2>🖥️ Types of Computers</h2>
 
+            <p>Computers are classified by <strong>size/power</strong> (supercomputer down to PC) and by <strong>purpose</strong> (general vs special). Knowing the type helps you pick the right tool — a weather model needs a supercomputer; email needs a PC or phone.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-computer-types.jpg" alt="Pyramid of computer types from supercomputer at the top through mainframe, minicomputer, workstation, to microcomputer PC" loading="lazy">
+                <div class="illustration-caption"><strong>Power vs access.</strong> Top tiers handle massive shared workloads for science and enterprise. Bottom tiers are personal and affordable. Workstations sit in between for demanding creative and engineering jobs.</div>
+            </div>
+
             <h3>Based on Size and Power</h3>
             <table>
                 <tr>
@@ -372,6 +431,18 @@
                 <p><strong>Examples:</strong> HP Z-series, Dell Precision</p>
             </div>
 
+            <h3>Choosing the Right Class</h3>
+            <div class="grid-2">
+                <div class="feature-card card-orange">
+                    <h4>When you need raw compute</h4>
+                    <p>Scientific simulation, climate models, molecular docking → <strong>supercomputers / HPC clusters</strong>.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>When you need reliability at scale</h4>
+                    <p>Banking ledgers, airline booking, huge transaction volumes → <strong>mainframes</strong> or carefully engineered distributed systems.</p>
+                </div>
+            </div>
+
             <h3>Based on Purpose</h3>
             <table>
                 <tr>
@@ -414,6 +485,13 @@
 
         <section id="hardware">
             <h2>🔧 Computer Hardware</h2>
+
+            <p><span class="highlight">Hardware</span> is everything you can touch: chips, boards, cables, disks, and peripherals. Software tells this physical system what to do. Inside a typical PC, the motherboard is the highway that connects CPU, memory, storage, and I/O.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-hardware.jpg" alt="Labeled PC hardware diagram with motherboard, CPU, RAM, GPU, SSD storage, power supply, and I/O ports" loading="lazy">
+                <div class="illustration-caption"><strong>Follow the board.</strong> CPU thinks, RAM holds active work, SSD/HDD keep files, GPU draws graphics (and often AI math), and the PSU feeds power. Ports connect the outside world.</div>
+            </div>
 
             <table>
                 <tr>
@@ -463,12 +541,35 @@
                     <li>📤 <strong>Output:</strong> Display result (monitor, printer)</li>
                 </ul>
             </div>
+
+            <h3>How Components Work Together</h3>
+            <ol>
+                <li>You open a browser → OS loads program code from <strong>SSD</strong> into <strong>RAM</strong>.</li>
+                <li><strong>CPU</strong> fetches instructions from RAM and executes them.</li>
+                <li>Web page graphics are prepared with help from the <strong>GPU</strong>.</li>
+                <li>Pixels go to the <strong>monitor</strong>; downloads write back to the SSD.</li>
+            </ol>
+
+            <div class="warning-box">
+                <h4>Quick troubleshooting map</h4>
+                <ul>
+                    <li><strong>Slow with many apps open</strong> → often low RAM (swapping to disk).</li>
+                    <li><strong>Long boot / slow file copy</strong> → storage bottleneck (HDD vs SSD).</li>
+                    <li><strong>Games/AI lag</strong> → GPU or VRAM limits.</li>
+                    <li><strong>No power / sudden shutdown</strong> → check PSU and cooling.</li>
+                </ul>
+            </div>
         </section>
 
         <section id="os">
             <h2>🖱️ Operating Systems</h2>
 
-            <p>An <span class="highlight">Operating System (OS)</span> manages hardware and software resources and provides services for applications.</p>
+            <p>An <span class="highlight">Operating System (OS)</span> manages hardware and software resources and provides services for applications. Without an OS, every program would need its own drivers for disk, keyboard, and display — which is impractical.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-operating-system.jpg" alt="Three-layer stack showing applications on top, operating system in the middle, and hardware at the bottom" loading="lazy">
+                <div class="illustration-caption"><strong>OS as the bridge.</strong> Apps ask the OS for files, memory, and devices. The OS talks to hardware through drivers and schedules CPU time fairly among processes.</div>
+            </div>
 
             <h3>Functions of OS</h3>
             <ul>
@@ -522,18 +623,31 @@
 
             <h3>Popular Operating Systems</h3>
             <ul>
-                <li>💻 <strong>Windows:</strong> Most widely used desktop OS</li>
-                <li>💻 <strong>macOS:</strong> Apple's desktop OS</li>
-                <li>💻 <strong>Linux:</strong> Open-source, various distributions</li>
-                <li>📱 <strong>Android:</strong> Most popular mobile OS</li>
-                <li>📱 <strong>iOS:</strong> Apple's mobile OS</li>
+                <li>💻 <strong>Windows:</strong> Most widely used desktop OS — strong app ecosystem and enterprise support</li>
+                <li>💻 <strong>macOS:</strong> Apple's desktop OS — Unix-based, tightly integrated with Apple hardware</li>
+                <li>💻 <strong>Linux:</strong> Open-source family (Ubuntu, Fedora, Debian) — dominates servers, cloud, and embedded</li>
+                <li>📱 <strong>Android:</strong> Most popular mobile OS — Linux kernel + Google services/app model</li>
+                <li>📱 <strong>iOS:</strong> Apple's mobile OS — sandboxed apps, strong privacy/security defaults</li>
             </ul>
+
+            <h3>What Happens at Boot?</h3>
+            <ol>
+                <li><strong>Power on</strong> → firmware (BIOS/UEFI) runs POST hardware checks</li>
+                <li><strong>Bootloader</strong> loads from disk (often GRUB or Windows Boot Manager)</li>
+                <li><strong>Kernel</strong> starts, initializes drivers and memory management</li>
+                <li><strong>User space</strong> starts services and shows login / desktop</li>
+            </ol>
+
+            <div class="info-box">
+                <h4>Process vs thread (quick idea)</h4>
+                <p>A <strong>process</strong> is a running program with its own memory. A <strong>thread</strong> is a path of execution inside a process. Modern OS schedulers switch CPU time among many processes/threads so multitasking feels smooth.</p>
+            </div>
         </section>
 
         <section id="network">
             <h2>🌐 Computer Networks</h2>
 
-            <p>A <span class="highlight">network</span> is a collection of interconnected devices that communicate and share resources.</p>
+            <p>A <span class="highlight">network</span> is a collection of interconnected devices that communicate and share resources — files, printers, internet access, or APIs between services.</p>
 
             <h3>Types of Networks</h3>
             <table>
@@ -581,16 +695,30 @@
             </ul>
 
             <h3>Network Topologies</h3>
+            <div class="illustration">
+                <img src="/images/computer-science/cs-network-topologies.jpg" alt="Four network topologies side by side: Bus, Star, Ring, and Mesh with nodes and connection lines" loading="lazy">
+                <div class="illustration-caption"><strong>Shape affects failure and cost.</strong> Star is common in homes/offices (one switch). Mesh adds redundancy for critical links. Bus and ring appear more in legacy or specialized designs.</div>
+            </div>
             <ul>
-                <li>⭐ <strong>Bus:</strong> All devices on single cable</li>
-                <li>⭐ <strong>Star:</strong> All devices connect to central hub</li>
-                <li>⭐ <strong>Ring:</strong> Devices in circular configuration</li>
-                <li>⭐ <strong>Mesh:</strong> Every device connects to every other</li>
+                <li>⭐ <strong>Bus:</strong> All devices on a single shared cable — simple, but one cable fault can affect many</li>
+                <li>⭐ <strong>Star:</strong> All devices connect to a central hub/switch — easy to manage; hub is a single point of failure</li>
+                <li>⭐ <strong>Ring:</strong> Devices in a circle — data may travel in one or both directions</li>
+                <li>⭐ <strong>Mesh:</strong> Many-to-many links — high reliability, higher cabling/cost</li>
             </ul>
+
+            <h3>How a Packet Travels (Home Wi-Fi example)</h3>
+            <ol>
+                <li>Your laptop creates an IP packet for a website.</li>
+                <li>Wi-Fi sends it to the <strong>router</strong>.</li>
+                <li>Router forwards via your ISP toward the destination.</li>
+                <li>Servers respond; packets return the same layered path.</li>
+            </ol>
         </section>
 
         <section id="languages">
             <h2>💬 Programming Languages</h2>
+
+            <p>A <span class="highlight">programming language</span> is a formal way to write instructions for a computer. Lower generations are closer to hardware; higher generations are closer to human problem descriptions.</p>
 
             <h3>Generations of Programming Languages</h3>
             <table>
@@ -632,7 +760,18 @@
                 </tr>
             </table>
 
-            <h3>Data Representation</h3>
+            <h3>How High-Level Code Reaches the CPU</h3>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Compiler</strong> (C, Go, Rust): translates whole program to machine code ahead of time</li>
+                    <li><strong>Interpreter</strong> (classic Python/JS engines): executes statements more directly, often with a VM</li>
+                    <li><strong>JIT</strong> (HotSpot, V8): starts interpreted/bytecode, then compiles hot paths to native code</li>
+                    <li><strong>Assembler</strong>: converts mnemonic assembly into opcodes the CPU understands</li>
+                </ul>
+            </div>
+
+            <h3>Data Representation (preview)</h3>
+            <p>See the dedicated <a href="#data">Data Representation</a> section for full detail. Quick reference:</p>
             <div class="info-box">
                 <h4>Number Systems:</h4>
                 <ul>
@@ -658,7 +797,12 @@
         <section id="hierarchy">
             <h2>🏗️ Computer Level Hierarchy</h2>
 
-            <p>The <span class="highlight">Computer Level Hierarchy</span> breaks down a computer system into layers, from user interaction to physical hardware.</p>
+            <p>The <span class="highlight">Computer Level Hierarchy</span> breaks down a computer system into layers, from user interaction to physical hardware. Each layer hides complexity below it — that is why you can write Python without thinking about transistors.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-level-hierarchy.jpg" alt="Seven-level computer hierarchy from user level down through high-level language, assembly, system software, ISA, microarchitecture, to digital logic" loading="lazy">
+                <div class="illustration-caption"><strong>Top is human-friendly; bottom is physics.</strong> Compilers, OS, and ISA form the translation chain from apps down to gates and transistors.</div>
+            </div>
 
             <h3>The 7-Level Hierarchy</h3>
             <table>
@@ -740,6 +884,8 @@
 
         <section id="organization">
             <h2>🏛️ Computer Organization vs Architecture</h2>
+
+            <p><strong>Architecture</strong> is the "what" a programmer sees (instruction set, word size, addressing). <strong>Organization</strong> is the "how" engineers build it (pipelines, caches, bus widths). Two CPUs can share an architecture (same ISA) but differ in organization (different clock, cache, cores).</p>
 
             <h3>Computer Organization</h3>
             <div class="info-box">
@@ -827,7 +973,12 @@
         <section id="cpu">
             <h2>⚙️ CPU & Processing</h2>
 
-            <p>The <span class="highlight">Central Processing Unit (CPU)</span> is the brain of the computer that executes instructions.</p>
+            <p>The <span class="highlight">Central Processing Unit (CPU)</span> is the brain of the computer that executes instructions. Modern CPUs pack multiple cores, large caches, and sophisticated pipelines onto a single chip.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-cpu.jpg" alt="CPU internals diagram showing Control Unit, ALU, registers, and cache connected to RAM via data address and control buses" loading="lazy">
+                <div class="illustration-caption"><strong>CU orchestrates, ALU computes, registers hold hot data.</strong> Buses move addresses and values to/from RAM. Cache sits between CPU and RAM so the processor waits less often.</div>
+            </div>
 
             <h3>CPU Components</h3>
             <table>
@@ -894,12 +1045,22 @@
                     <td>Intel x86, AMD</td>
                 </tr>
             </table>
+
+            <h3>Multi-core &amp; Parallelism</h3>
+            <div class="info-box">
+                <p>A <strong>core</strong> can run its own instruction stream. Dual/quad/octa-core chips increase throughput for multitasking and parallel workloads. Hyper-threading / SMT lets one core present multiple logical threads so idle pipeline slots get used — it is not the same as doubling cores.</p>
+            </div>
         </section>
 
         <section id="cycle">
             <h2>🔄 Fetch-Decode-Execute Cycle</h2>
 
-            <p>Also called the <span class="highlight">Instruction Cycle</span>, this is the basic cycle through which a computer processes each instruction.</p>
+            <p>Also called the <span class="highlight">Instruction Cycle</span>, this is the basic cycle through which a computer processes each instruction — millions or billions of times per second.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-instruction-cycle.jpg" alt="Circular fetch decode execute store instruction cycle flowchart for the CPU" loading="lazy">
+                <div class="illustration-caption"><strong>Repeat forever.</strong> Fetch the next instruction, decode what it means, execute it, optionally store a result, then advance the Program Counter and loop.</div>
+            </div>
 
             <h3>The Four Stages</h3>
 
@@ -1022,7 +1183,12 @@ Step 4 (Store):   Result already in R1</div>
         <section id="registers">
             <h2>📋 Special Purpose Registers</h2>
 
-            <p><span class="highlight">Special Purpose Registers (SPRs)</span> are CPU registers that perform specific control or tracking functions during instruction execution.</p>
+            <p><span class="highlight">Special Purpose Registers (SPRs)</span> are CPU registers that perform specific control or tracking functions during instruction execution. General-purpose registers hold data; SPRs steer the machine's control flow and memory access.</p>
+
+            <div class="info-box">
+                <h4>Fetch path (registers in action)</h4>
+                <p><strong>PC</strong> → address copied to <strong>MAR</strong> → memory returns bytes into <strong>MBR/MDR</strong> → instruction moved to <strong>IR</strong> → Control Unit decodes → <strong>ALU/ACC</strong> may compute → <strong>FLAGS</strong> update for the next branch decision.</p>
+            </div>
 
             <h3>Common Special Purpose Registers</h3>
             <table>
@@ -1188,7 +1354,36 @@ Step 4 (Store):   Result already in R1</div>
         </section>
 
         <section id="memory">
-            <h2>💾 Memory & Storage</h2>
+            <h2>💾 Memory &amp; Storage</h2>
+
+            <p>Computers use a <span class="highlight">memory hierarchy</span>: tiny ultra-fast storage near the CPU, then larger slower layers farther away. Designers place hot data high in the hierarchy to keep programs fast without making everything expensive SRAM.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-memory-hierarchy.jpg" alt="Memory hierarchy pyramid from registers and cache down through RAM, SSD, HDD, and cloud archive" loading="lazy">
+                <div class="illustration-caption"><strong>Faster and smaller at the top; cheaper and larger at the bottom.</strong> Registers/cache feed the CPU instantly. RAM holds working sets. SSD/HDD and cloud keep durable data.</div>
+            </div>
+
+            <h3>Volatile vs Non-Volatile</h3>
+            <table>
+                <tr>
+                    <th>Kind</th>
+                    <th>Keeps data without power?</th>
+                    <th>Examples</th>
+                    <th>Typical role</th>
+                </tr>
+                <tr>
+                    <td><strong>Volatile</strong></td>
+                    <td>No — contents vanish on power loss</td>
+                    <td>Registers, cache, RAM</td>
+                    <td>Active work / running programs</td>
+                </tr>
+                <tr>
+                    <td><strong>Non-volatile</strong></td>
+                    <td>Yes</td>
+                    <td>ROM, flash, SSD, HDD</td>
+                    <td>OS, apps, documents, firmware</td>
+                </tr>
+            </table>
 
             <h3>Types of Memory</h3>
 
@@ -1286,7 +1481,7 @@ Step 4 (Store):   Result already in R1</div>
         <section id="system-software">
             <h2>📦 System Software</h2>
 
-            <p><span class="highlight">System software</span> is designed to run a computer's hardware and application programs.</p>
+            <p><span class="highlight">System software</span> is designed to run a computer's hardware and application programs. It sits between you and the silicon: OS kernels, drivers, firmware, utilities, and language translators.</p>
 
             <h3>Types of System Software</h3>
 
@@ -1422,7 +1617,12 @@ Step 4 (Store):   Result already in R1</div>
         <section id="data">
             <h2>📊 Data Representation in Computers</h2>
 
-            <p>Computers do not understand letters or symbols directly. <span class="highlight">All data (text, images, sound, video) is represented in binary form (0s and 1s)</span>.</p>
+            <p>Computers do not understand letters or symbols directly. <span class="highlight">All data (text, images, sound, video) is represented in binary form (0s and 1s)</span>. Encoding schemes map human meaning onto bit patterns the machine can store and process.</p>
+
+            <div class="illustration">
+                <img src="/images/computer-science/cs-data-representation.jpg" alt="Four panels showing how text numbers images and sound are represented as binary data" loading="lazy">
+                <div class="illustration-caption"><strong>One language, many encodings.</strong> Text uses ASCII/Unicode, numbers use binary/two's complement/floats, images use pixels/RGB, audio uses sampled amplitudes — all ultimately bits.</div>
+            </div>
 
             <h3>1. Number Systems</h3>
             <table>
@@ -1555,6 +1755,19 @@ Step 4 (Store):   Result already in R1</div>
                     <td>Data centers</td>
                 </tr>
             </table>
+
+            <h3>Quick Binary Conversion Example</h3>
+            <div class="example-box">
+                <p>Convert decimal <strong>13</strong> to binary:</p>
+                <ul>
+                    <li>13 ÷ 2 = 6 remainder <strong>1</strong></li>
+                    <li>6 ÷ 2 = 3 remainder <strong>0</strong></li>
+                    <li>3 ÷ 2 = 1 remainder <strong>1</strong></li>
+                    <li>1 ÷ 2 = 0 remainder <strong>1</strong></li>
+                </ul>
+                <p>Read remainders bottom → top: <strong>1101<sub>2</sub></strong>. Check: 8+4+0+1 = 13.</p>
+                <p>Hex shorthand: <code>1101</code> = <strong>D<sub>16</sub></strong>. Hex is popular because one hex digit maps cleanly to 4 bits (a nibble).</p>
+            </div>
 
             <h3>Why Is Data Representation Important?</h3>
             <ul>

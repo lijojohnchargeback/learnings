@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete Redis guide: data types, caching, Pub/Sub, Streams, persistence, replication, Sentinel, Cluster, Lua, pipelines, and production patterns.">
+    <title>Redis - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>🔴 Redis Guide</h2>
+            <p>In-Memory Data Store</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">🏠 Introduction</a>
+                <a href="#architecture" class="sidebar-link">🏗️ Architecture</a>
+                <a href="#install" class="sidebar-link">⚙️ Install &amp; Connect</a>
+                <a href="#keys" class="sidebar-link">🔑 Keys &amp; TTL</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Data Types</div>
+            <div class="sidebar-links">
+                <a href="#data-types" class="sidebar-link">📦 Overview</a>
+                <a href="#strings" class="sidebar-link">📝 Strings</a>
+                <a href="#hashes" class="sidebar-link">🗂️ Hashes</a>
+                <a href="#lists" class="sidebar-link">📋 Lists</a>
+                <a href="#sets" class="sidebar-link">🔷 Sets</a>
+                <a href="#zsets" class="sidebar-link">🏆 Sorted Sets</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Core Patterns</div>
+            <div class="sidebar-links">
+                <a href="#caching" class="sidebar-link">⚡ Caching</a>
+                <a href="#eviction" class="sidebar-link">🧹 Eviction Policies</a>
+                <a href="#sessions" class="sidebar-link">🎫 Sessions &amp; Rate Limits</a>
+                <a href="#pubsub" class="sidebar-link">📣 Pub/Sub</a>
+                <a href="#streams" class="sidebar-link">🌊 Streams</a>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Advanced</div>
+            <div class="sidebar-links">
+                <a href="#pipeline" class="sidebar-link">🚀 Pipelines &amp; Transactions</a>
+                <a href="#lua" class="sidebar-link">📜 Lua Scripts</a>
+                <a href="#persistence" class="sidebar-link">💾 Persistence</a>
+                <a href="#replication" class="sidebar-link">🔄 Replication &amp; Sentinel</a>
+                <a href="#cluster" class="sidebar-link">🧩 Redis Cluster</a>
+                <a href="#modules" class="sidebar-link">🧩 Modules</a>
+                <a href="#security" class="sidebar-link">🔒 Security</a>
+                <a href="#nodejs" class="sidebar-link">🟢 Node.js</a>
+                <a href="#best" class="sidebar-link">✨ Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="container">
+            <style>
+                .illustration {
+                    text-align: center;
+                    margin: 2.5rem 0;
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, #fff5f5 0%, #f8fafc 100%);
+                    border-radius: 20px;
+                    border: 1px solid #fecaca;
+                }
+                .illustration img {
+                    width: 100%;
+                    max-width: 100%;
+                    height: auto;
+                    display: block;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(220, 56, 45, 0.1);
+                }
+                .illustration-caption {
+                    margin-top: 0.85rem;
+                    font-size: 0.9rem;
+                    color: #64748b;
+                    font-weight: 500;
+                }
+                .grid-2, .grid-3 {
+                    display: grid;
+                    gap: 1.25rem;
+                    margin: 1.75rem 0;
+                }
+                .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+                .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+                .feature-card {
+                    background: #fff;
+                    padding: 1.5rem 1.6rem;
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+                    border-top: 4px solid #dc382d;
+                }
+                .feature-card h4 { margin-top: 0; }
+                .card-blue { border-top-color: #3b82f6; }
+                .card-green { border-top-color: #10b981; }
+                .card-purple { border-top-color: #8b5cf6; }
+                .card-orange { border-top-color: #f59e0b; }
+                .card-teal { border-top-color: #14b8a6; }
+                .card-red { border-top-color: #dc382d; }
+                .compare-split {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                    gap: 1rem;
+                    margin: 1.5rem 0;
+                }
+                .wrong-box, .right-box {
+                    padding: 1.25rem 1.4rem;
+                    border-radius: 14px;
+                    border: 1px solid #e2e8f0;
+                    font-size: 0.95rem;
+                }
+                .wrong-box { background: #fef2f2; border-color: #fecaca; }
+                .right-box { background: #f0fdf4; border-color: #bbf7d0; }
+            </style>
+
+            <header>
+                <h1>🔴 Redis Complete Guide</h1>
+                <p>In-memory data structure store — caching, messaging, streams, and distributed building blocks</p>
+            </header>
+
+            <!-- INTRO -->
+            <section id="intro">
+                <h2>🏠 Introduction to Redis</h2>
+                <p><span class="highlight">Redis</span> (Remote Dictionary Server) is an open-source, in-memory data structure store used as a database, cache, message broker, and streaming engine. Data lives primarily in RAM, which is why Redis is extremely fast — often sub-millisecond latency.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-hero.jpg" alt="Redis as an in-memory data store connected to apps for cache, sessions, pub/sub, queues, and leaderboards with optional disk persistence" loading="lazy">
+                    <div class="illustration-caption"><strong>Redis is not “just a cache.”</strong> It is a Swiss-army knife of data structures that happen to live in memory — with optional durability on disk.</div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="feature-card card-red">
+                        <h4>What Redis is</h4>
+                        <p>An in-memory key-value store with rich types (strings, hashes, lists, sets, sorted sets, streams, bitmaps, HyperLogLog, geospatial).</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>What Redis is for</h4>
+                        <p>Caching, sessions, rate limiting, leaderboards, real-time analytics, job queues, pub/sub, and short-lived coordination.</p>
+                    </div>
+                    <div class="feature-card card-teal">
+                        <h4>What Redis is not</h4>
+                        <p>A full replacement for your primary relational/document DB when you need complex queries, large durable datasets, or strong multi-key ACID across shards.</p>
+                    </div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>Senior Tip: Memory is the product</h3>
+                    <p>Every Redis design decision starts with memory. Keys cost memory. Values cost memory. Expired keys still occupy memory until Redis lazily or actively removes them. Plan capacity, TTLs, and eviction before you ship traffic.</p>
+                </div>
+
+                <h3>Why teams choose Redis</h3>
+                <table>
+                    <tr>
+                        <th>Benefit</th>
+                        <th>Why it matters</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Speed</strong></td>
+                        <td>In-memory + efficient data structures → typically &lt;1ms ops</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rich types</strong></td>
+                        <td>You model problems with lists/sets/zsets instead of inventing schemas in app code</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atomic commands</strong></td>
+                        <td>Single-threaded command execution makes many ops race-free without locks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Versatility</strong></td>
+                        <td>One service covers cache, sessions, queues, pub/sub, and streams</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ecosystem</strong></td>
+                        <td>Clients for every language; managed Redis on AWS, GCP, Azure, Redis Cloud</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- ARCHITECTURE -->
+            <section id="architecture">
+                <h2>🏗️ Redis Architecture</h2>
+                <p>Redis uses a <strong>client–server</strong> model. Clients speak a simple text protocol (RESP) over TCP (default port <code>6379</code>). The server keeps the dataset in memory and processes commands through an event loop.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-architecture.jpg" alt="Redis architecture showing clients connecting to a single-threaded event loop that updates an in-memory dataset with optional RDB/AOF persistence" loading="lazy">
+                    <div class="illustration-caption"><strong>Main thread mental model.</strong> Commands are executed one at a time on the main thread. That is why individual commands feel atomic — and why a slow command can block everyone.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Single-threaded core</h4>
+                        <p>The command processor is single-threaded. No two commands mutate data concurrently. Complex ops (large KEYS, big SORT) can stall the whole server.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>I/O &amp; background work</h4>
+                        <p>Modern Redis can use I/O threads for network. Persistence, AOF rewrite, and replication use background processes / threads so the main loop stays responsive.</p>
+                    </div>
+                </div>
+
+                <h3>Core components</h3>
+                <table>
+                    <tr>
+                        <th>Component</th>
+                        <th>Role</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Clients</strong></td>
+                        <td>redis-cli, node-redis, ioredis, redis-py, Jedis, etc.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event loop</strong></td>
+                        <td>Accepts connections, parses RESP, runs commands</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dict / dataset</strong></td>
+                        <td>In-memory hash table of keys → typed values</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Persistence</strong></td>
+                        <td>RDB snapshots and/or AOF log to disk</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Replication</strong></td>
+                        <td>Async copy of data to replicas</td>
+                    </tr>
+                </table>
+
+                <div class="info-box">
+                    <h3>RESP protocol (simplified)</h3>
+                    <p>Commands look like arrays of bulk strings. Example: <code>SET user:1 "Ada"</code> is sent as an array of two bulk strings. You almost never hand-write RESP — clients do it for you.</p>
+                </div>
+            </section>
+
+            <!-- INSTALL -->
+            <section id="install">
+                <h2>⚙️ Install &amp; Connect</h2>
+
+                <h3>Docker (fastest for local)</h3>
+                <div class="code-block"><span class="comment"># Run Redis 7+</span>
+docker run -d --name redis -p <span class="number">6379</span>:<span class="number">6379</span> redis:7-alpine
+
+<span class="comment"># With persistence volume</span>
+docker run -d --name redis -p <span class="number">6379</span>:<span class="number">6379</span> \
+  -v redis-data:/data \
+  redis:7-alpine redis-server --appendonly yes
+
+<span class="comment"># Open CLI</span>
+docker exec -it redis redis-cli</div>
+
+                <h3>First commands</h3>
+                <div class="code-block">PING
+<span class="comment"># PONG</span>
+
+SET greeting <span class="string">"hello redis"</span>
+GET greeting
+<span class="comment"># "hello redis"</span>
+
+INFO server
+DBSIZE
+FLUSHDB   <span class="comment"># wipe current DB (careful!)</span></div>
+
+                <h3>Logical databases</h3>
+                <p>By default Redis has 16 logical DBs (<code>0</code>–<code>15</code>). Switch with <code>SELECT n</code>. In Cluster mode, only DB <code>0</code> is supported. Prefer key prefixes (<code>app:users:</code>) over juggling DBs.</p>
+            </section>
+
+            <!-- KEYS -->
+            <section id="keys">
+                <h2>🔑 Keys, Namespaces &amp; TTL</h2>
+                <p>Every value in Redis is addressed by a <strong>string key</strong>. Good key design is half of Redis mastery.</p>
+
+                <div class="info-box">
+                    <h3>Key naming conventions</h3>
+                    <ul>
+                        <li><code>user:1001</code> — entity by id</li>
+                        <li><code>user:1001:profile</code> — related object</li>
+                        <li><code>session:abc123</code> — opaque tokens</li>
+                        <li><code>cache:product:55</code> — cached query/result</li>
+                        <li><code>ratelimit:ip:1.2.3.4</code> — counters</li>
+                    </ul>
+                    <p>Use <code>:</code> as a separator. Keep keys short but readable. Avoid huge key names — they consume memory too.</p>
+                </div>
+
+                <h3>Essential key commands</h3>
+                <div class="code-block">EXISTS user:<span class="number">1001</span>
+TYPE user:<span class="number">1001</span>
+DEL user:<span class="number">1001</span>
+UNLINK big:key          <span class="comment"># async delete (safer for large values)</span>
+RENAME old:key new:key
+RANDOMKEY
+SCAN <span class="number">0</span> MATCH user:* COUNT <span class="number">100</span>   <span class="comment"># NEVER use KEYS * in production</span></div>
+
+                <h3>TTL (Time To Live)</h3>
+                <div class="code-block">SET session:abc <span class="string">"payload"</span> EX <span class="number">3600</span>   <span class="comment"># expire in 1 hour</span>
+SETNX lock:job1 <span class="string">"1"</span>
+EXPIRE lock:job1 <span class="number">30</span>
+TTL lock:job1                      <span class="comment"># seconds remaining (-1 no expiry, -2 missing)</span>
+PTTL lock:job1                     <span class="comment"># milliseconds</span>
+PERSIST lock:job1                  <span class="comment"># remove expiry</span></div>
+
+                <div class="info-box premium">
+                    <h3>KEYS vs SCAN</h3>
+                    <p><code>KEYS pattern</code> blocks the server while it walks the whole keyspace. Use <code>SCAN</code> cursor iteration in production tooling, admin scripts, and migrations.</p>
+                </div>
+            </section>
+
+            <!-- DATA TYPES OVERVIEW -->
+            <section id="data-types">
+                <h2>📦 Data Types Overview</h2>
+                <p>Redis values are typed. The type determines which commands you can run. Pick the structure that matches the access pattern — not just “whatever fits as JSON.”</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-data-types.jpg" alt="Six Redis data types: String, Hash, List, Set, Sorted Set, and Stream shown as labeled cards with icons" loading="lazy">
+                    <div class="illustration-caption"><strong>Six workhorse types.</strong> Master these first. Bitmaps, HyperLogLog, and geospatial indexes build on strings/zsets.</div>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Best for</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>String</strong></td>
+                        <td>Cache blobs, counters, flags</td>
+                        <td><code>cache:page:/home</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hash</strong></td>
+                        <td>Objects with fields</td>
+                        <td><code>user:42</code> → name, email</td>
+                    </tr>
+                    <tr>
+                        <td><strong>List</strong></td>
+                        <td>Queues, recent activity</td>
+                        <td><code>queue:emails</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Set</strong></td>
+                        <td>Unique membership, tags</td>
+                        <td><code>user:42:roles</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sorted Set</strong></td>
+                        <td>Leaderboards, ranked feeds</td>
+                        <td><code>game:scores</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stream</strong></td>
+                        <td>Event logs, consumer groups</td>
+                        <td><code>orders:stream</code></td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- STRINGS -->
+            <section id="strings">
+                <h2>📝 Strings</h2>
+                <p>Strings are binary-safe blobs up to 512 MB (don’t store 512 MB values). They also power counters and bit operations.</p>
+
+                <div class="code-block">SET page:home <span class="string">"&lt;html&gt;..."</span>
+GET page:home
+MSET a <span class="number">1</span> b <span class="number">2</span> c <span class="number">3</span>
+MGET a b c
+
+SET visits:<span class="number">2026-03-24</span> <span class="number">0</span>
+INCR visits:<span class="number">2026-03-24</span>
+INCRBY visits:<span class="number">2026-03-24</span> <span class="number">10</span>
+GETSET token old-value   <span class="comment"># set new, return old</span>
+
+SET lock:resource <span class="string">"owner-id"</span> NX EX <span class="number">30</span>  <span class="comment"># distributed lock attempt</span></div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>NX / XX options</h4>
+                        <p><code>NX</code> = set only if not exists. <code>XX</code> = set only if exists. Combined with <code>EX</code>/<code>PX</code> they form the basis of locks and idempotent writes.</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>Bitmaps &amp; HyperLogLog</h4>
+                        <p><code>SETBIT</code>/<code>GETBIT</code> for dense boolean flags. <code>PFADD</code>/<code>PFCOUNT</code> for approximate unique counts with tiny memory.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HASHES -->
+            <section id="hashes">
+                <h2>🗂️ Hashes</h2>
+                <p>Hashes store field → value maps under one key. Ideal for user profiles, config objects, and shopping carts — without serializing a whole JSON blob when you only need one field.</p>
+
+                <div class="code-block">HSET user:<span class="number">42</span> name <span class="string">"Ada"</span> email <span class="string">"ada@example.com"</span> plan <span class="string">"pro"</span>
+HGET user:<span class="number">42</span> email
+HMGET user:<span class="number">42</span> name plan
+HGETALL user:<span class="number">42</span>
+HINCRBY user:<span class="number">42</span> login_count <span class="number">1</span>
+HEXISTS user:<span class="number">42</span> plan
+HDEL user:<span class="number">42</span> plan
+HLEN user:<span class="number">42</span></div>
+
+                <div class="info-box">
+                    <h3>Hash vs JSON string</h3>
+                    <p>Store a Hash when you frequently read/update individual fields. Store a JSON string when you always load/replace the whole document and want a simple cache of an API response.</p>
+                </div>
+            </section>
+
+            <!-- LISTS -->
+            <section id="lists">
+                <h2>📋 Lists</h2>
+                <p>Lists are linked lists of strings. Use them for queues, stacks, and “latest N items” feeds.</p>
+
+                <div class="code-block">LPUSH queue:emails <span class="string">"job-1"</span> <span class="string">"job-2"</span>
+RPUSH feed:user:<span class="number">1</span> <span class="string">"post-9"</span>
+LPOP queue:emails
+BRPOP queue:emails <span class="number">30</span>     <span class="comment"># blocking pop, 30s timeout</span>
+LRANGE feed:user:<span class="number">1</span> <span class="number">0</span> <span class="number">19</span>  <span class="comment"># latest 20</span>
+LLEN queue:emails
+LTRIM feed:user:<span class="number">1</span> <span class="number">0</span> <span class="number">99</span>   <span class="comment"># keep only newest 100</span></div>
+
+                <div class="compare-split">
+                    <div class="wrong-box">
+                        <strong>Naive queue</strong><br>
+                        <code>LPUSH</code> + <code>LPOP</code> alone can lose jobs if the worker crashes after pop.
+                    </div>
+                    <div class="right-box">
+                        <strong>Reliable pattern</strong><br>
+                        Prefer <strong>Streams</strong> with consumer groups + ACK, or move jobs to a processing list and acknowledge by deletion.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SETS -->
+            <section id="sets">
+                <h2>🔷 Sets</h2>
+                <p>Sets store unique unordered members. Perfect for tags, unique visitors (exact), and relationship membership.</p>
+
+                <div class="code-block">SADD article:<span class="number">10</span>:tags redis cache database
+SISMEMBER article:<span class="number">10</span>:tags redis
+SMEMBERS article:<span class="number">10</span>:tags
+SCARD article:<span class="number">10</span>:tags
+SREM article:<span class="number">10</span>:tags cache
+
+SINTER user:<span class="number">1</span>:friends user:<span class="number">2</span>:friends
+SUNION tag:redis tag:nodejs
+SDIFF set:a set:b</div>
+            </section>
+
+            <!-- SORTED SETS -->
+            <section id="zsets">
+                <h2>🏆 Sorted Sets (ZSets)</h2>
+                <p>Sorted sets associate each member with a floating-point <strong>score</strong>. Members are unique; scores define order. This is the classic leaderboard structure.</p>
+
+                <div class="code-block">ZADD game:scores <span class="number">1200</span> alice <span class="number">950</span> bob <span class="number">1800</span> cara
+ZINCRBY game:scores <span class="number">50</span> bob
+ZRANGE game:scores <span class="number">0</span> <span class="number">2</span> WITHSCORES          <span class="comment"># lowest scores</span>
+ZREVRANGE game:scores <span class="number">0</span> <span class="number">9</span> WITHSCORES       <span class="comment"># top 10</span>
+ZRANK game:scores alice
+ZSCORE game:scores cara
+ZCOUNT game:scores <span class="number">1000</span> <span class="number">2000</span>
+ZREMRANGEBYRANK game:scores <span class="number">0</span> <span class="number">-101</span>  <span class="comment"># keep top 100</span></div>
+
+                <div class="info-box premium">
+                    <h3>Advanced ZSet uses</h3>
+                    <ul>
+                        <li><strong>Time-ordered feeds:</strong> score = timestamp</li>
+                        <li><strong>Delay queues:</strong> score = run-at time; worker polls <code>ZRANGEBYSCORE</code></li>
+                        <li><strong>Rate windows:</strong> score = event time; prune old members</li>
+                        <li><strong>Geospatial:</strong> Redis GEO commands are built on ZSets</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- CACHING -->
+            <section id="caching">
+                <h2>⚡ Caching Patterns</h2>
+                <p>Caching is the most common Redis use case. The pattern you choose determines consistency vs speed tradeoffs.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-caching.jpg" alt="Three Redis caching patterns: Cache-Aside, Write-Through, and Write-Behind showing app, Redis, and database interactions" loading="lazy">
+                    <div class="illustration-caption"><strong>Cache-aside</strong> is the default for most apps. Write-through favors consistency. Write-behind favors write throughput with more complexity.</div>
+                </div>
+
+                <h3>1. Cache-aside (lazy loading)</h3>
+                <div class="code-block"><span class="comment"># Pseudocode</span>
+value = redis.GET(<span class="string">"product:55"</span>)
+<span class="keyword">if</span> value is nil:
+    value = db.query(<span class="string">"SELECT ..."</span>)
+    redis.SET(<span class="string">"product:55"</span>, value, EX=<span class="number">600</span>)
+<span class="keyword">return</span> value</div>
+
+                <h3>2. Write-through</h3>
+                <p>On every write, update Redis <em>and</em> the database in the same request path. Reads almost always hit Redis. Simpler consistency; slower writes.</p>
+
+                <h3>3. Write-behind (write-back)</h3>
+                <p>Write to Redis immediately; asynchronously flush to DB. Highest write speed, hardest correctness (crash windows, ordering).</p>
+
+                <div class="grid-2">
+                    <div class="feature-card card-orange">
+                        <h4>Cache stampede</h4>
+                        <p>When a hot key expires, many requests miss at once and hammer the DB. Mitigate with locking, probabilistic early expiry, or staggered TTLs.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>Negative caching</h4>
+                        <p>Cache “not found” briefly so missing keys don’t repeatedly hit the DB. Use a short TTL sentinel value.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EVICTION -->
+            <section id="eviction">
+                <h2>🧹 Memory &amp; Eviction Policies</h2>
+                <p>When Redis hits <code>maxmemory</code>, it must evict keys or reject writes — depending on policy.</p>
+
+                <table>
+                    <tr>
+                        <th>Policy</th>
+                        <th>Behavior</th>
+                    </tr>
+                    <tr>
+                        <td><code>noeviction</code></td>
+                        <td>Return errors on writes when full (default in many installs)</td>
+                    </tr>
+                    <tr>
+                        <td><code>allkeys-lru</code></td>
+                        <td>Evict least-recently-used among all keys — common for pure caches</td>
+                    </tr>
+                    <tr>
+                        <td><code>volatile-lru</code></td>
+                        <td>LRU only among keys that have a TTL</td>
+                    </tr>
+                    <tr>
+                        <td><code>allkeys-lfu</code></td>
+                        <td>Evict least-frequently-used keys</td>
+                    </tr>
+                    <tr>
+                        <td><code>volatile-ttl</code></td>
+                        <td>Evict keys with nearest expire time first</td>
+                    </tr>
+                </table>
+
+                <div class="code-block">CONFIG GET maxmemory*
+INFO memory
+MEMORY USAGE user:<span class="number">42</span>
+MEMORY DOCTOR</div>
+            </section>
+
+            <!-- SESSIONS / RATE LIMIT -->
+            <section id="sessions">
+                <h2>🎫 Sessions, Locks &amp; Rate Limiting</h2>
+
+                <h3>Session store</h3>
+                <div class="code-block">SET session:s3cr3t <span class="string">'{"userId":42,"role":"admin"}'</span> EX <span class="number">86400</span>
+GET session:s3cr3t
+DEL session:s3cr3t   <span class="comment"># logout</span></div>
+
+                <h3>Simple fixed-window rate limit</h3>
+                <div class="code-block">INCR ratelimit:ip:<span class="number">1.2.3.4</span>
+EXPIRE ratelimit:ip:<span class="number">1.2.3.4</span> <span class="number">60</span>   <span class="comment"># only on first hit</span>
+<span class="comment"># if count &gt; 100 → reject</span></div>
+
+                <h3>Distributed lock (basics)</h3>
+                <div class="code-block">SET lock:invoice:<span class="number">99</span> <span class="string">"worker-7"</span> NX EX <span class="number">30</span>
+<span class="comment"># do work...</span>
+<span class="comment"># release only if value still matches (use Lua for safety)</span></div>
+
+                <div class="info-box premium">
+                    <h3>Production locks</h3>
+                    <p>For serious distributed locking, study the <strong>Redlock</strong> algorithm and libraries like Redisson — or prefer a consensus system when correctness is critical. Always set a TTL so dead holders cannot lock forever.</p>
+                </div>
+            </section>
+
+            <!-- PUBSUB -->
+            <section id="pubsub">
+                <h2>📣 Pub/Sub</h2>
+                <p>Redis Pub/Sub is a lightweight fire-and-forget messaging channel. Publishers send to a channel; active subscribers receive messages in real time.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-pubsub.jpg" alt="Redis Pub/Sub fan-out from a publisher through Redis channels to Email, Analytics, and Inventory subscribers" loading="lazy">
+                    <div class="illustration-caption"><strong>No persistence.</strong> If a subscriber is offline, it misses the message. Use Streams when you need durability and replay.</div>
+                </div>
+
+                <div class="code-block"><span class="comment"># Subscriber</span>
+SUBSCRIBE orders
+PSUBSCRIBE order.*
+
+<span class="comment"># Publisher (other connection)</span>
+PUBLISH orders <span class="string">'{"id":123,"status":"created"}'</span>
+PUBLISH order.shipped <span class="string">'{"id":123}'</span></div>
+
+                <div class="compare-split">
+                    <div class="feature-card card-teal">
+                        <h4>Good for</h4>
+                        <p>Live notifications, cache invalidation signals, presence, ephemeral fan-out.</p>
+                    </div>
+                    <div class="feature-card card-red">
+                        <h4>Not good for</h4>
+                        <p>Job queues, audit logs, anything that must survive disconnects or require ACK/retry.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STREAMS -->
+            <section id="streams">
+                <h2>🌊 Redis Streams</h2>
+                <p>Streams are an append-only log with consumer groups — Redis’s answer to lightweight Kafka-style processing inside Redis.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-streams.jpg" alt="Redis Streams with XADD producing entries and a consumer group with workers reading and acknowledging messages via PEL" loading="lazy">
+                    <div class="illustration-caption"><strong>Consumer groups + PEL.</strong> Each message is delivered to one consumer in the group. Unacked entries stay in the Pending Entries List for reclaim.</div>
+                </div>
+
+                <div class="code-block"><span class="comment"># Produce</span>
+XADD orders:stream * orderId <span class="number">123</span> total <span class="number">49.99</span>
+
+<span class="comment"># Create group starting from new messages</span>
+XGROUP CREATE orders:stream payments <span class="number">0</span> MKSTREAM
+
+<span class="comment"># Consume</span>
+XREADGROUP GROUP payments worker-a COUNT <span class="number">10</span> BLOCK <span class="number">5000</span> STREAMS orders:stream &gt;
+
+<span class="comment"># Acknowledge</span>
+XACK orders:stream payments <span class="number">1710000000000-0</span>
+
+<span class="comment"># Inspect pending</span>
+XPENDING orders:stream payments
+XCLAIM orders:stream payments worker-b <span class="number">60000</span> <span class="number">1710000000000-0</span></div>
+
+                <div class="info-box">
+                    <h3>When to use Streams vs Lists vs Pub/Sub</h3>
+                    <ul>
+                        <li><strong>Pub/Sub</strong> — ephemeral realtime fan-out</li>
+                        <li><strong>Lists</strong> — simple queues, prototypes</li>
+                        <li><strong>Streams</strong> — durable processing, consumer groups, replay, ACKs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- PIPELINES & TRANSACTIONS -->
+            <section id="pipeline">
+                <h2>🚀 Pipelines &amp; Transactions</h2>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-advanced.jpg" alt="Advanced Redis features: pipelining, MULTI/EXEC transactions, Lua EVAL scripts, and modules like RedisJSON and RedisSearch" loading="lazy">
+                    <div class="illustration-caption"><strong>Cut round trips and keep logic close to the data.</strong> Pipelines batch network calls. Transactions queue commands. Lua runs atomically on the server.</div>
+                </div>
+
+                <h3>Pipelining</h3>
+                <p>Sending one command per network round trip wastes latency. Pipelines batch many commands, then read all replies.</p>
+                <div class="code-block"><span class="comment"># redis-cli --pipe or client pipeline API</span>
+SET a <span class="number">1</span>
+SET b <span class="number">2</span>
+INCR counter
+GET a</div>
+
+                <h3>MULTI / EXEC transactions</h3>
+                <div class="code-block">MULTI
+INCRBY wallet:42 <span class="number">-50</span>
+INCRBY wallet:99 <span class="number">50</span>
+EXEC</div>
+                <p>All queued commands run sequentially and atomically relative to other clients. Redis transactions do <strong>not</strong> roll back on runtime errors inside EXEC the way SQL does — validate carefully. Use <code>WATCH</code> for optimistic locking:</p>
+                <div class="code-block">WATCH balance:42
+val = GET balance:42
+MULTI
+SET balance:42 (val - <span class="number">10</span>)
+EXEC   <span class="comment"># fails (nil) if key changed since WATCH</span></div>
+            </section>
+
+            <!-- LUA -->
+            <section id="lua">
+                <h2>📜 Lua Scripts</h2>
+                <p>Lua scripts run inside Redis atomically. They are the right tool for compare-and-delete locks, custom rate limiters, and multi-key logic that must not interleave.</p>
+
+                <div class="code-block"><span class="comment"># Release lock only if we still own it</span>
+EVAL <span class="string">"if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end"</span> \
+  <span class="number">1</span> lock:invoice:<span class="number">99</span> worker-<span class="number">7</span>
+
+<span class="comment"># Load once, run by SHA</span>
+SCRIPT LOAD <span class="string">"..."</span>
+EVALSHA &lt;sha&gt; <span class="number">1</span> lock:invoice:<span class="number">99</span> worker-<span class="number">7</span></div>
+
+                <div class="info-box premium">
+                    <h3>Lua rules of thumb</h3>
+                    <ul>
+                        <li>Keep scripts short and deterministic</li>
+                        <li>Declare all keys in <code>KEYS[]</code> (required for Cluster compatibility)</li>
+                        <li>Avoid long loops — scripts block the server</li>
+                        <li>Prefer <code>EVALSHA</code> after warm-up to reduce bandwidth</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- PERSISTENCE -->
+            <section id="persistence">
+                <h2>💾 Persistence (RDB &amp; AOF)</h2>
+                <p>Redis can survive restarts by writing to disk. You choose durability vs performance.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-persistence.jpg" alt="Redis RDB snapshot persistence versus AOF append-only log persistence with hybrid recovery" loading="lazy">
+                    <div class="illustration-caption"><strong>RDB</strong> = periodic compact snapshots. <strong>AOF</strong> = log of write commands. Many production setups enable both.</div>
+                </div>
+
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>RDB</th>
+                        <th>AOF</th>
+                    </tr>
+                    <tr>
+                        <td><strong>What</strong></td>
+                        <td>Point-in-time binary snapshot</td>
+                        <td>Append-only log of write ops</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pros</strong></td>
+                        <td>Small files, fast restarts</td>
+                        <td>Better durability, finer recovery</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cons</strong></td>
+                        <td>Can lose minutes of data</td>
+                        <td>Larger files; rewrite needed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Config</strong></td>
+                        <td><code>save 60 1000</code> etc.</td>
+                        <td><code>appendonly yes</code>, <code>appendfsync everysec</code></td>
+                    </tr>
+                </table>
+
+                <div class="code-block">BGSAVE                 <span class="comment"># trigger RDB in background</span>
+LASTSAVE
+BGREWRITEAOF           <span class="comment"># compact AOF</span>
+CONFIG GET appendonly
+CONFIG GET save</div>
+
+                <div class="info-box">
+                    <h3>Durability reality check</h3>
+                    <p>Even with AOF <code>everysec</code>, you can lose ~1 second of writes on crash. For cache-only workloads, you may disable persistence entirely and treat Redis as disposable.</p>
+                </div>
+            </section>
+
+            <!-- REPLICATION -->
+            <section id="replication">
+                <h2>🔄 Replication &amp; Sentinel</h2>
+                <p>Replication copies data from a <strong>primary</strong> to one or more <strong>replicas</strong> asynchronously. Reads can scale out; writes go to the primary.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-replication.jpg" alt="Redis primary replicating to replicas with Redis Sentinel monitoring and performing automatic failover" loading="lazy">
+                    <div class="illustration-caption"><strong>Sentinel</strong> watches the primary, agrees on failure via quorum, and promotes a replica automatically.</div>
+                </div>
+
+                <h3>Manual replication</h3>
+                <div class="code-block"><span class="comment"># On replica</span>
+REPLICAOF <span class="number">10.0.0.5</span> <span class="number">6379</span>
+INFO replication
+
+<span class="comment"># Promote manually</span>
+REPLICAOF NO ONE</div>
+
+                <h3>Redis Sentinel</h3>
+                <ul>
+                    <li>Monitors primary + replicas</li>
+                    <li>Notifies clients/apps of topology changes</li>
+                    <li>Performs automatic failover with quorum</li>
+                    <li>Typically run 3+ Sentinel processes</li>
+                </ul>
+
+                <div class="info-box premium">
+                    <h3>Async replication caveat</h3>
+                    <p>Replicas can lag. A failover may promote a replica that is slightly behind — accepting possible loss of the last few unreplicated writes. Design for idempotent writes when that matters.</p>
+                </div>
+            </section>
+
+            <!-- CLUSTER -->
+            <section id="cluster">
+                <h2>🧩 Redis Cluster</h2>
+                <p>Redis Cluster shards data across multiple primary nodes for horizontal scale. The keyspace is divided into <strong>16384 hash slots</strong>.</p>
+
+                <div class="illustration">
+                    <img src="/images/redis/redis-cluster.jpg" alt="Redis Cluster hash slots distributed across three master nodes each with a replica, client redirected with MOVED" loading="lazy">
+                    <div class="illustration-caption"><strong>Slot = CRC16(key) mod 16384.</strong> Clients follow <code>MOVED</code>/<code>ASK</code> redirects. Hash tags <code>{user}:profile</code> keep related keys on the same node.</div>
+                </div>
+
+                <h3>Hash tags</h3>
+                <div class="code-block"><span class="comment"># These share the same slot because of {user42}</span>
+SET {user42}:profile <span class="string">"..."</span>
+SET {user42}:cart <span class="string">"..."</span>
+<span class="comment"># Multi-key ops only work when all keys map to one slot</span></div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Cluster strengths</h4>
+                        <p>Horizontal memory scale, high availability (each master has replicas), automatic resharding tools.</p>
+                    </div>
+                    <div class="feature-card card-orange">
+                        <h4>Cluster tradeoffs</h4>
+                        <p>Multi-key commands limited to one slot. Transactions/Lua across arbitrary keys fail. Slightly more client complexity.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULES -->
+            <section id="modules">
+                <h2>🧩 Redis Modules &amp; Modern Features</h2>
+                <p>Modules extend Redis beyond core types. On Redis Stack / Redis Cloud you often get them preloaded.</p>
+
+                <table>
+                    <tr>
+                        <th>Module</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><strong>RedisJSON</strong></td>
+                        <td>Native JSON documents with path updates</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RediSearch</strong></td>
+                        <td>Full-text and secondary indexing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RedisBloom</strong></td>
+                        <td>Bloom, Cuckoo, Count-Min, Top-K filters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RedisTimeSeries</strong></td>
+                        <td>Time-series metrics with downsampling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RedisGraph</strong> (legacy)</td>
+                        <td>Graph queries (community shifted; check current status)</td>
+                    </tr>
+                </table>
+
+                <h3>Other advanced building blocks</h3>
+                <ul>
+                    <li><strong>Geospatial:</strong> <code>GEOADD</code>, <code>GEOSEARCH</code> for nearby queries</li>
+                    <li><strong>Bitfields:</strong> packed counters in a string</li>
+                    <li><strong>Functions (Redis 7+):</strong> registered libraries as a modern alternative to ad-hoc Lua</li>
+                    <li><strong>ACLs:</strong> fine-grained user permissions</li>
+                    <li><strong>Client-side caching:</strong> server-assisted tracking to invalidate local caches</li>
+                </ul>
+            </section>
+
+            <!-- SECURITY -->
+            <section id="security">
+                <h2>🔒 Security</h2>
+                <ul>
+                    <li>Never expose Redis to the public internet without auth + TLS</li>
+                    <li>Use <code>requirepass</code> / ACL users (Redis 6+)</li>
+                    <li>Bind to private interfaces; firewall port 6379</li>
+                    <li>Disable dangerous commands (<code>FLUSHALL</code>, <code>CONFIG</code>, <code>KEYS</code>) via <code>rename-command</code> or ACL</li>
+                    <li>Enable TLS for in-transit encryption in production</li>
+                    <li>Run as non-root; keep Redis updated</li>
+                </ul>
+
+                <div class="code-block">ACL SETUSER app on &gt;strongpass ~app:* +@read +@write -@dangerous
+AUTH app strongpass
+ACL WHOAMI</div>
+            </section>
+
+            <!-- NODE.JS -->
+            <section id="nodejs">
+                <h2>🟢 Redis with Node.js</h2>
+                <p>Popular clients: <code>redis</code> (node-redis) and <code>ioredis</code> (great Cluster support).</p>
+
+                <div class="code-block"><span class="comment">// npm i redis</span>
+<span class="keyword">import</span> { createClient } <span class="keyword">from</span> <span class="string">'redis'</span>;
+
+<span class="keyword">const</span> client = createClient({ url: <span class="string">'redis://127.0.0.1:6379'</span> });
+client.on(<span class="string">'error'</span>, (err) =&gt; console.error(<span class="string">'Redis'</span>, err));
+<span class="keyword">await</span> client.connect();
+
+<span class="keyword">await</span> client.set(<span class="string">'cache:hello'</span>, <span class="string">'world'</span>, { EX: <span class="number">60</span> });
+<span class="keyword">const</span> value = <span class="keyword">await</span> client.get(<span class="string">'cache:hello'</span>);
+
+<span class="comment">// Pipeline</span>
+<span class="keyword">const</span> pipe = client.multi();
+pipe.set(<span class="string">'a'</span>, <span class="string">'1'</span>);
+pipe.incr(<span class="string">'counter'</span>);
+<span class="keyword">await</span> pipe.exec();
+
+<span class="comment">// Pub/Sub</span>
+<span class="keyword">const</span> sub = client.duplicate();
+<span class="keyword">await</span> sub.connect();
+<span class="keyword">await</span> sub.subscribe(<span class="string">'orders'</span>, (message) =&gt; {
+  console.log(<span class="string">'got'</span>, message);
+});</div>
+
+                <div class="info-box">
+                    <h3>Connection hygiene</h3>
+                    <p>Reuse one client (or a small pool) per process. Always handle reconnect. In serverless, prefer short commands and managed Redis with connection multiplexing / proxies (e.g. Redis Cluster + good client, or AWS MemoryDB/ElastiCache best practices).</p>
+                </div>
+            </section>
+
+            <!-- BEST PRACTICES -->
+            <section id="best">
+                <h2>✨ Best Practices &amp; Mental Models</h2>
+
+                <div class="grid-2">
+                    <div class="feature-card card-green">
+                        <h4>Do</h4>
+                        <ul>
+                            <li>Design keys with prefixes and TTLs</li>
+                            <li>Use <code>SCAN</code>, never <code>KEYS *</code> in prod</li>
+                            <li>Pipeline bulk work</li>
+                            <li>Monitor memory, hit rate, evictions, latency</li>
+                            <li>Pick Streams for durable jobs</li>
+                            <li>Test failover before you need it</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card card-red">
+                        <h4>Don’t</h4>
+                        <ul>
+                            <li>Store unbounded collections without trim</li>
+                            <li>Run huge synchronous commands on hot instances</li>
+                            <li>Treat Redis as your only source of truth blindly</li>
+                            <li>Expose Redis without ACL/TLS</li>
+                            <li>Ignore replica lag in read-your-writes paths</li>
+                            <li>Use Pub/Sub as a job queue</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Cheat-sheet: which Redis feature?</h3>
+                <table>
+                    <tr>
+                        <th>Need</th>
+                        <th>Use</th>
+                    </tr>
+                    <tr>
+                        <td>Speed up DB reads</td>
+                        <td>Strings/Hashes + cache-aside + TTL</td>
+                    </tr>
+                    <tr>
+                        <td>Login sessions</td>
+                        <td>String/Hash + EXPIRE</td>
+                    </tr>
+                    <tr>
+                        <td>Leaderboard</td>
+                        <td>Sorted Set</td>
+                    </tr>
+                    <tr>
+                        <td>Unique tags / relations</td>
+                        <td>Set</td>
+                    </tr>
+                    <tr>
+                        <td>Background jobs</td>
+                        <td>Streams (+ consumer groups)</td>
+                    </tr>
+                    <tr>
+                        <td>Live notifications</td>
+                        <td>Pub/Sub</td>
+                    </tr>
+                    <tr>
+                        <td>HA single shard</td>
+                        <td>Primary/replica + Sentinel</td>
+                    </tr>
+                    <tr>
+                        <td>Horizontal scale</td>
+                        <td>Redis Cluster</td>
+                    </tr>
+                    <tr>
+                        <td>Atomic custom logic</td>
+                        <td>Lua / Functions</td>
+                    </tr>
+                </table>
+
+                <div class="info-box premium">
+                    <h3>The sentence to remember</h3>
+                    <p><strong>Redis is a memory-first data structure server.</strong> Use the right type for the access pattern, expire what you can, and graduate from “cache box” to Streams, Sentinel, and Cluster only when your reliability and scale requirements demand it.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+
+            if (window.innerWidth <= 1024 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(e.target) &&
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar a');
+
+        function highlightNav() {
+            let current = '';
+            sections.forEach(section => {
+                const top = section.offsetTop - 120;
+                if (window.scrollY >= top) current = section.getAttribute('id');
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+            });
+        }
+
+        window.addEventListener('scroll', highlightNav);
+        highlightNav();
+    </script>
+</body>
+</html>

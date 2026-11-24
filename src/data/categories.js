@@ -1,4 +1,5 @@
 export const categories = [
+    // SE path: 1. Start
     {
         id: 'software-engineering',
         name: 'Software Engineering',
@@ -9,26 +10,42 @@ export const categories = [
             { id: 'pai-software-engineering', title: 'Introduction', file: 'Production AI/software-engineering.html' }
         ]
     },
+    // SE path: 2. Computer foundations only
     {
-        id: 'javascript',
-        name: 'JavaScript',
-        icon: '⚡',
-        color: '#f7df1e',
-        description: 'Master JavaScript from basics to advanced concepts',
+        id: 'computer-fundamentals',
+        name: 'Computer Fundamentals',
+        icon: '💻',
+        color: '#2563eb',
+        description: 'Hardware, OS, memory, networking, and core computer science basics',
         topics: [
-            { id: 'javascript-basics', title: 'JavaScript Basics', file: 'Javascript/javascript-basics.html' },
-            { id: 'javascript-objects', title: 'Objects', file: 'Javascript/javascript-objects.html' },
-            { id: 'javascript-arrays', title: 'Arrays', file: 'Javascript/javascript-arrays.html' },
-            { id: 'javascript-functions', title: 'Functions', file: 'Javascript/javascript-functions.html' },
-            { id: 'javascript-strings', title: 'Strings', file: 'Javascript/javascript-strings.html' },
-            { id: 'javascript-es6', title: 'ES6 Features', file: 'Javascript/javascript-es6.html' },
-            { id: 'javascript-how-it-works', title: 'How It Works', file: 'Javascript/javascript-how-it-works.html' },
-            { id: 'javascript-extra', title: 'Extra Concepts', file: 'Javascript/javascript-extra.html' },
-            { id: 'javascript-data-structures', title: 'Data Structures', file: 'Javascript/javascript-data-structures.html' },
-            { id: 'javascript-methods', title: 'Methods', file: 'Javascript/javascript-methods.html' },
-            { id: 'javascript-tools', title: 'Tools', file: 'Javascript/javascript-tools.html' }
+            { id: 'computer-science-master', title: 'Computer Fundamentals', file: 'Computer Science/computer-science-master.html' }
         ]
     },
+    // SE path: Engineering basics — DSA
+    {
+        id: 'dsa',
+        name: 'DSA',
+        icon: '📐',
+        color: '#0891b2',
+        description: 'Data structures, algorithms, Big-O, searching, sorting, and common problem patterns',
+        topics: [
+            { id: 'dsa-fundamentals', title: 'Data Structures & Algorithms', file: 'DSA/dsa-fundamentals.html' }
+        ]
+    },
+    // SE path: Problem solving practice — Python + JavaScript
+    {
+        id: 'problem-solving',
+        name: 'Problem Solving',
+        icon: '🧩',
+        color: '#0d9488',
+        description: '105 coding problems for daily practice (beginner → advanced) — every solution in Python and JavaScript',
+        topics: [
+            { id: 'ps-beginner', title: 'Beginner (40)', file: 'Problem Solving/ps-beginner.html' },
+            { id: 'ps-medium', title: 'Medium (35)', file: 'Problem Solving/ps-medium.html' },
+            { id: 'ps-advanced', title: 'Advanced (30)', file: 'Problem Solving/ps-advanced.html' }
+        ]
+    },
+    // SE path: Domains — Frontend
     {
         id: 'frontend',
         name: 'Frontend Technology',
@@ -55,6 +72,7 @@ export const categories = [
             { id: 'redux-toolkit', title: 'Redux Toolkit', file: 'State Management/redux-toolkit.html' }
         ]
     },
+    // SE path: 4. Languages — Python, JS/TS, Node
     {
         id: 'python',
         name: 'Python',
@@ -75,29 +93,48 @@ export const categories = [
         ]
     },
     {
+        id: 'javascript',
+        name: 'JavaScript',
+        icon: '⚡',
+        color: '#f7df1e',
+        description: 'Master JavaScript from basics to advanced concepts',
+        topics: [
+            { id: 'javascript-basics', title: 'JavaScript Basics', file: 'Javascript/javascript-basics.html' },
+            { id: 'javascript-objects', title: 'Objects', file: 'Javascript/javascript-objects.html' },
+            { id: 'javascript-arrays', title: 'Arrays', file: 'Javascript/javascript-arrays.html' },
+            { id: 'javascript-functions', title: 'Functions', file: 'Javascript/javascript-functions.html' },
+            { id: 'javascript-strings', title: 'Strings', file: 'Javascript/javascript-strings.html' },
+            { id: 'javascript-es6', title: 'ES6 Features', file: 'Javascript/javascript-es6.html' },
+            { id: 'javascript-how-it-works', title: 'How It Works', file: 'Javascript/javascript-how-it-works.html' },
+            { id: 'javascript-extra', title: 'Extra Concepts', file: 'Javascript/javascript-extra.html' },
+            { id: 'javascript-data-structures', title: 'Data Structures', file: 'Javascript/javascript-data-structures.html' },
+            { id: 'javascript-methods', title: 'Methods', file: 'Javascript/javascript-methods.html' },
+            { id: 'javascript-tools', title: 'Tools', file: 'Javascript/javascript-tools.html' }
+        ]
+    },
+    {
         id: 'backend',
-        name: 'Backend & Server',
-        icon: '⚙️',
+        name: 'Node.js',
+        icon: '🟢',
         color: '#10b981',
         description: 'Server-side development with Node.js 24 LTS and Node.js 26',
         topics: [
             { id: 'nodejs-documentation', title: 'Node.js', file: 'Nodejs/nodejs-documentation.html' }
         ]
     },
+    // SE path: 5. Application core — Databases
     {
-        id: 'cs-system-design',
-        name: 'Computer Science & System Design',
-        icon: '🎓',
-        color: '#7c3aed',
-        description: 'Core CS fundamentals, concurrency, backend architecture, and scalable system design',
+        id: 'database',
+        name: 'Databases',
+        icon: '🗄️',
+        color: '#4db33d',
+        description: 'Database management and design',
         topics: [
-            { id: 'computer-science-master', title: 'Computer Fundamentals', file: 'Computer Science/computer-science-master.html' },
-            { id: 'concurrency-parallelism', title: 'Concurrency & Parallelism', file: 'Computer Science/concurrency-parallelism.html' },
-            { id: 'backend-system', title: 'Backend Systems', file: 'Backend/backend-system.html' },
-            { id: 'system-design', title: 'System Design', file: 'System Design/system-design.html' },
-            { id: 'essential-engineering-concepts', title: 'Essential Engineering Concepts', file: 'System Design/essential-engineering-concepts.html' }
+            { id: 'mongodb', title: 'MongoDB', file: 'Database/mongodb.html' },
+            { id: 'mysql', title: 'MySQL', file: 'Database/mysql.html' }
         ]
     },
+    // SE path: Domains — Cloud
     {
         id: 'aws',
         name: 'AWS',
@@ -112,17 +149,7 @@ export const categories = [
             { id: 'aws-security', title: 'Security', file: 'AWS/aws-security.html' }
         ]
     },
-    {
-        id: 'database',
-        name: 'Databases',
-        icon: '🗄️',
-        color: '#4db33d',
-        description: 'Database management and design',
-        topics: [
-            { id: 'mongodb', title: 'MongoDB', file: 'Database/mongodb.html' },
-            { id: 'mysql', title: 'MySQL', file: 'Database/mysql.html' }
-        ]
-    },
+    // SE path: Domains — AI & ML, then Production AI path
     {
         id: 'ai-ml',
         name: 'AI & ML',
@@ -155,6 +182,7 @@ export const categories = [
             { id: 'pai-enterprise-ai', title: 'Enterprise AI Architecture', file: 'Production AI/enterprise-ai.html' }
         ]
     },
+    // SE path: Daily craft + production tooling
     {
         id: 'tools',
         name: 'Tools',
@@ -162,11 +190,26 @@ export const categories = [
         color: '#ff6c37',
         description: 'Development tools and utilities',
         topics: [
-            { id: 'message-queue', title: 'Message Queue', file: 'Message Queue/message-queue.html' },
-            { id: 'postman', title: 'Postman', file: 'Postman/postman.html' },
             { id: 'linux', title: 'Linux', file: 'Linux/linux.html' },
             { id: 'docker', title: 'Docker', file: 'Docker/docker.html' },
+            { id: 'redis', title: 'Redis', file: 'Redis/redis.html' },
+            { id: 'message-queue', title: 'Message Queue', file: 'Message Queue/message-queue.html' },
+            { id: 'postman', title: 'Postman', file: 'Postman/postman.html' },
             { id: 'socket-io', title: 'Socket.IO', file: 'Socket.IO/socket-io.html' }
+        ]
+    },
+    // Last: CS scale / system design (remaining topics)
+    {
+        id: 'cs-system-design',
+        name: 'Computer Science & System Design',
+        icon: '🎓',
+        color: '#7c3aed',
+        description: 'Concurrency, backend architecture, engineering concepts, and scalable system design',
+        topics: [
+            { id: 'backend-system', title: 'Backend Systems', file: 'Backend/backend-system.html' },
+            { id: 'concurrency-parallelism', title: 'Concurrency & Parallelism', file: 'Computer Science/concurrency-parallelism.html' },
+            { id: 'essential-engineering-concepts', title: 'Essential Engineering Concepts', file: 'System Design/essential-engineering-concepts.html' },
+            { id: 'system-design', title: 'System Design', file: 'System Design/system-design.html' }
         ]
     }
 ];

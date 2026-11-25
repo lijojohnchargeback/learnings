@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agents & Multi-Agent Systems — Production AI Engineer</title>
+    <meta name="description" content="AI agents and multi-agent systems for production: loops, planning, tools, memory, durable state, LangGraph, CrewAI, OpenAI Agents, and Google ADK.">
+    <title>AI Agents &amp; Multi-Agent Systems — Production AI Engineer</title>
     <link rel="stylesheet" href="/css/docs.css">
 </head>
 <body>
@@ -18,16 +19,31 @@
             <div class="sidebar-links">
                 <a href="#overview" class="sidebar-link">Overview</a>
                 <a href="#steps" class="sidebar-link">Learning Steps</a>
+                <a href="#when" class="sidebar-link">When to Use</a>
             </div>
         </div>
         <div class="sidebar-section">
-            <div class="sidebar-section-title">Topics</div>
+            <div class="sidebar-section-title">Core</div>
             <div class="sidebar-links">
                 <a href="#loops" class="sidebar-link">Agent Loops</a>
                 <a href="#planning" class="sidebar-link">Planning</a>
                 <a href="#tools" class="sidebar-link">Tools</a>
                 <a href="#memory" class="sidebar-link">Memory</a>
                 <a href="#state" class="sidebar-link">State</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Multi-agent</div>
+            <div class="sidebar-links">
+                <a href="#multi" class="sidebar-link">Multi-Agent Patterns</a>
+                <a href="#hitl" class="sidebar-link">Human-in-the-Loop</a>
+                <a href="#observability" class="sidebar-link">Observability</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Frameworks</div>
+            <div class="sidebar-links">
+                <a href="#frameworks" class="sidebar-link">Framework Map</a>
                 <a href="#langgraph" class="sidebar-link">LangGraph</a>
                 <a href="#langchain" class="sidebar-link">LangChain</a>
                 <a href="#crewai" class="sidebar-link">CrewAI</a>
@@ -45,31 +61,74 @@
 
     <div class="container">
         <header>
-            <h1>🤝 6. AI Agents & Multi-Agent Systems</h1>
+            <h1>🤝 6. AI Agents &amp; Multi-Agent Systems</h1>
             <p>Step 6 of 12 — An agent is an LLM in a loop with tools, state, and a stop condition — not a personality.</p>
         </header>
 
         <section id="overview">
-            <h2>When to use an agent</h2>
-            <p>Use an agent when the task needs <span class="highlight">multiple steps, unknown tool order, or branching</span>. Do not use an agent for a single RAG call or a form fill. Agents multiply cost, latency, and failure modes. Production agents need timeouts, max steps, human-in-the-loop for side effects, and full traces.</p>
+            <h2>What an agent is</h2>
+            <p>An <span class="highlight">agent</span> is a model that can choose actions, see results, and continue until a goal is met or a budget runs out. The control loop owns retries, permissions, and stop conditions. The model proposes the next step; your code decides whether that step is allowed.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-hero.jpg" alt="Agent architecture: circular observe think act append loop with inputs for user goal tools and system prompt, and guards for max steps timeouts human-in-the-loop and traces" loading="lazy">
+                <div class="illustration-caption"><strong>Loop in the middle, constraints on the sides.</strong> Inputs are the goal, tool catalog, and system prompt. Guards are max steps, timeouts, HITL, and traces. Without the guards, an agent is a billing and safety incident waiting to happen.</div>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-purple">
+                    <h4>Not a chatbot</h4>
+                    <p>Chat answers once. An agent can call tools, branch, and keep going until done or capped.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Not a personality</h4>
+                    <p>“Helpful assistant” is branding. Production value is schemas, state, and hard stop conditions.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Cost multiplier</h4>
+                    <p>Each step is another model call + tool latency. Agents fail louder and cost more than single-shot RAG.</p>
+                </div>
+            </div>
         </section>
 
         <section id="steps">
             <h2>Learning steps (in order)</h2>
             <table>
                 <tr><th>Step</th><th>Focus</th><th>Done when</th></tr>
-                <tr><td>1</td><td>Loop</td><td>You can write observe → think → act → observe without a framework</td></tr>
-                <tr><td>2</td><td>Planning</td><td>You know plan-then-act vs ReAct vs graph routing</td></tr>
-                <tr><td>3</td><td>Tools</td><td>Every tool has a schema, timeout, and idempotency story</td></tr>
-                <tr><td>4</td><td>Memory</td><td>You split working memory vs long-term vs RAG</td></tr>
-                <tr><td>5</td><td>State</td><td>You persist thread state so a crash can resume</td></tr>
-                <tr><td>6</td><td>Frameworks</td><td>You pick one graph-style runtime and ignore the rest until you need them</td></tr>
+                <tr><td>1</td><td>When to use</td><td>You refuse agents for single RAG calls and form fills</td></tr>
+                <tr><td>2</td><td>Loop</td><td>You can write observe → think → act → observe without a framework</td></tr>
+                <tr><td>3</td><td>Planning</td><td>You know plan-then-act vs ReAct vs graph routing</td></tr>
+                <tr><td>4</td><td>Tools</td><td>Every tool has a schema, timeout, and idempotency story</td></tr>
+                <tr><td>5</td><td>Memory</td><td>You split working memory vs long-term vs RAG</td></tr>
+                <tr><td>6</td><td>State</td><td>You persist thread state so a crash can resume</td></tr>
+                <tr><td>7</td><td>Multi-agent</td><td>You prefer supervisor → specialists over a debating committee</td></tr>
+                <tr><td>8</td><td>Frameworks</td><td>You pick one graph-style runtime and ignore the rest until you need them</td></tr>
             </table>
+        </section>
+
+        <section id="when">
+            <h2>When to use an agent</h2>
+            <p>Use an agent when the task needs <span class="highlight">multiple steps, unknown tool order, or branching</span>. Skip it when one retrieval + one generation is enough.</p>
+            <table>
+                <tr><th>Use an agent when</th><th>Do not use an agent when</th></tr>
+                <tr><td>Tool order depends on intermediate results</td><td>A single RAG call answers the question</td></tr>
+                <tr><td>You must branch (refund vs escalate vs FAQ)</td><td>You are filling a form from structured extraction</td></tr>
+                <tr><td>Long workflows need checkpoints and approvals</td><td>Latency budget is a few hundred ms end-to-end</td></tr>
+                <tr><td>A human must approve side effects mid-flow</td><td>The “agent” would only call one fixed tool once</td></tr>
+            </table>
+            <div class="warning-box">
+                <strong>Default to less autonomy.</strong> Agents multiply cost, latency, and failure modes. Prefer a deterministic graph with LLM decision points over a free-form ReAct loop for production paths.
+            </div>
         </section>
 
         <section id="loops">
             <h2>Agent loops</h2>
             <p>The minimal loop: model chooses a tool or a final answer; you execute the tool; you append the result; repeat until done or <code>max_steps</code>.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-loop.jpg" alt="Agent loop flowchart from user message through LLM tool choice execute tool append result and repeat until final answer or max steps timeout token budget" loading="lazy">
+                <div class="illustration-caption"><strong>Happy path is teal; stop conditions are red.</strong> Cap steps, wall-clock time, and tokens on every production loop. “I’ll let it cook” is how teams burn five figures overnight.</div>
+            </div>
+
             <div class="code-block">def run_agent(user: str, tools: dict, max_steps: int = 8) -> str:
     messages = [{"role": "user", "content": user}]
     for _ in range(max_steps):
@@ -82,6 +141,15 @@
             continue
         return msg.content
     return "Stopped: max steps reached."</div>
+
+            <table>
+                <tr><th>Budget</th><th>Why it matters</th></tr>
+                <tr><td><code>max_steps</code></td><td>Stops wander / retry storms</td></tr>
+                <tr><td>Wall-clock timeout</td><td>User and worker SLAs</td></tr>
+                <tr><td>Token / $ ceiling</td><td>Protects the bill</td></tr>
+                <tr><td>Per-tool timeout</td><td>One hung API must not hold the loop forever</td></tr>
+            </table>
+
             <div class="warning-box">
                 <strong>Always cap steps, tokens, and wall-clock time.</strong> Infinite loops are a billing incident.
             </div>
@@ -89,11 +157,18 @@
 
         <section id="planning">
             <h2>Planning</h2>
+            <p>How the agent decides <em>what to do next</em> is the planning style. Demos love free-form ReAct; production prefers graphs you can audit.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-planning.jpg" alt="Three planning styles compared: ReAct interleaved thought and action, Plan-and-execute with numbered steps, and Router Graph with deterministic nodes and LLM only at decision points" loading="lazy">
+                <div class="illustration-caption"><strong>Left → right = more control.</strong> ReAct is flexible and wanders. Plan-and-execute goes stale when the world changes. Graphs let you own auth, retries, and approvals on the edges.</div>
+            </div>
+
             <table>
-                <tr><th>Style</th><th>How</th><th>Risk</th></tr>
-                <tr><td>ReAct</td><td>Interleave thought + tool in one model</td><td>Verbose; can wander</td></tr>
-                <tr><td>Plan-and-execute</td><td>Write a plan, then run steps</td><td>Stale plans when the world changes</td></tr>
-                <tr><td>Router / graph</td><td>Deterministic nodes + LLM only at decision points</td><td>More code, much more control</td></tr>
+                <tr><th>Style</th><th>How</th><th>Risk</th><th>Best for</th></tr>
+                <tr><td>ReAct</td><td>Interleave thought + tool in one model</td><td>Verbose; can wander</td><td>Exploration, research prototypes</td></tr>
+                <tr><td>Plan-and-execute</td><td>Write a plan, then run steps</td><td>Stale plans when the world changes</td><td>Stable, well-scoped tasks</td></tr>
+                <tr><td>Router / graph</td><td>Deterministic nodes + LLM only at decision points</td><td>More code, much more control</td><td>Support bots, ops, payments, compliance</td></tr>
             </table>
             <p>Production systems trend toward <strong>graphs</strong>: you own the edges (auth, retries, approvals); the LLM fills slots, not the whole control plane.</p>
         </section>
@@ -101,6 +176,12 @@
         <section id="tools">
             <h2>Tools</h2>
             <p>Tools are functions with JSON schemas. Treat them like public APIs: validate args, least privilege, no raw SQL from the model, confirm before emails/payments/deletes.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-tools.jpg" alt="Safe agent tool pipeline from tool_call through schema validate allowlist secret store timeout sanitize and audit log, with banned arbitrary SQL open HTTP and shell" loading="lazy">
+                <div class="illustration-caption"><strong>Happy path is teal; red is banned.</strong> Schema → allowlist → secrets from a vault → timeout → truncate → audit. Never expose arbitrary SQL, an open HTTP proxy, or a shell on a shared host.</div>
+            </div>
+
             <div class="code-block">TOOLS = [{
   "type": "function",
   "function": {
@@ -113,22 +194,106 @@
     }
   }
 }]</div>
+
+            <table>
+                <tr><th>Rule</th><th>Practice</th></tr>
+                <tr><td>Narrow &gt; generic</td><td><code>get_order(id)</code> beats <code>http_request(url)</code></td></tr>
+                <tr><td>Validate twice</td><td>JSON Schema at the edge; business rules in the handler</td></tr>
+                <tr><td>Idempotent writes</td><td>Client-supplied idempotency key for creates/charges</td></tr>
+                <tr><td>Errors are data</td><td>Map 4xx → clear message; 5xx → “retry later”, not a stack dump</td></tr>
+                <tr><td>Confirm side effects</td><td>HITL before email, payment, delete, or privilege change</td></tr>
+            </table>
         </section>
 
         <section id="memory">
             <h2>Memory</h2>
+            <p>Memory is not “whatever fits in the context window.” Split kinds of memory so you can summarize, retrieve, and store facts deliberately.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-memory.jpg" alt="Four agent memory layers: working memory messages, episodic summaries of past threads, semantic RAG over facts, and profile prefs in a database" loading="lazy">
+                <div class="illustration-caption"><strong>Four layers, four stores.</strong> Working = current thread. Episodic = past-thread summaries. Semantic = RAG over facts/tickets/code. Profile = structured prefs in a DB — never “hope the prompt remembers.”</div>
+            </div>
+
             <ul>
                 <li><strong>Working:</strong> the current messages / scratchpad (fits in context)</li>
                 <li><strong>Episodic:</strong> summaries of past threads</li>
                 <li><strong>Semantic:</strong> RAG over facts, tickets, code</li>
                 <li><strong>Profile:</strong> user prefs stored in a DB, not hoped-for in the prompt</li>
             </ul>
-            <p>Do not "let the agent remember" by stuffing unbounded history. Summarize, retrieve, and store structured facts.</p>
+            <p>Do not “let the agent remember” by stuffing unbounded history. Summarize, retrieve, and store structured facts.</p>
         </section>
 
         <section id="state">
             <h2>State</h2>
             <p>Durable state is a checkpoint: thread id, node, tool results, pending approval. If the process dies mid-tool, you must not double-charge a customer. Use idempotency keys on side-effecting tools.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-state.jpg" alt="Durable agent state checkpoint with thread id current node tool results and pending approval, showing crash then resume into retrieve act approve reply graph" loading="lazy">
+                <div class="illustration-caption"><strong>Crash → resume from checkpoint.</strong> Persist thread id, current node, tool results, and pending approvals. Side-effecting tools need idempotency keys so a replay cannot double-charge.</div>
+            </div>
+
+            <table>
+                <tr><th>Field</th><th>Why store it</th></tr>
+                <tr><td>Thread / run id</td><td>Correlate logs, resume, and user history</td></tr>
+                <tr><td>Current node</td><td>Know where the graph stopped</td></tr>
+                <tr><td>Tool results</td><td>Avoid re-running expensive or mutating calls blindly</td></tr>
+                <tr><td>Pending approval</td><td>Pause for HITL without losing context</td></tr>
+            </table>
+            <div class="info-box">
+                <strong>Idempotency:</strong> every create/charge/send tool should accept a key you generate once per logical action. Retries with the same key must be no-ops.
+            </div>
+        </section>
+
+        <section id="multi">
+            <h2>Multi-agent patterns</h2>
+            <p>More agents are not more intelligence. They are more latency, more contradictory tool use, and more surface area for prompt injection. Prefer a <span class="highlight">supervisor that routes to specialists</span>.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-multi.jpg" alt="Prefer supervisor routing to researcher writer reviewer specialists with shared retrieval versus avoid debating committee of equal agents all with write access" loading="lazy">
+                <div class="illustration-caption"><strong>Left = prefer; right = avoid.</strong> One supervisor routes to specialists that share retrieval and logging. Do not give every agent write access to production or let them debate forever.</div>
+            </div>
+
+            <table>
+                <tr><th>Pattern</th><th>Shape</th><th>Use when</th></tr>
+                <tr><td>Supervisor → specialists</td><td>Router picks researcher / writer / ops</td><td>Most production multi-agent work</td></tr>
+                <tr><td>Pipeline</td><td>Fixed A → B → C with optional LLM per stage</td><td>Content, review, or ETL-like flows</td></tr>
+                <tr><td>Debate / committee</td><td>Peers argue then vote</td><td>Rare research; almost never ops</td></tr>
+            </table>
+            <div class="warning-box">
+                <strong>Multi-agent rule:</strong> Specialists should not all have write access to production. Put mutations behind the supervisor or a HITL gate.
+            </div>
+        </section>
+
+        <section id="hitl">
+            <h2>Human-in-the-loop</h2>
+            <p>HITL is a first-class node, not a Slack message you hope someone sees. Interrupt the graph, persist pending approval, resume only after an authenticated decision.</p>
+            <ul>
+                <li>Require HITL for money, PII export, deletes, and privilege changes</li>
+                <li>Show the human the tool args and the evidence that led there</li>
+                <li>Expire stale approvals; do not resume a week-old charge silently</li>
+            </ul>
+        </section>
+
+        <section id="observability">
+            <h2>Observability</h2>
+            <p>If you cannot replay a failed run, you cannot ship agents. Log every model call, tool call, and routing decision with the same run id.</p>
+            <table>
+                <tr><th>Signal</th><th>What to capture</th></tr>
+                <tr><td>Trace</td><td>Spans for LLM, tools, retrieval, HITL waits</td></tr>
+                <tr><td>Cost</td><td>Tokens and $ per run; alert on outliers</td></tr>
+                <tr><td>Quality</td><td>Success / escalate / user undo rates</td></tr>
+                <tr><td>Safety</td><td>Blocked tools, injection flags, policy denials</td></tr>
+            </table>
+        </section>
+
+        <section id="frameworks">
+            <h2>Framework map</h2>
+            <p>Pick <strong>one</strong> graph-style runtime for production control flow. Use the others only when your stack or team already depends on them.</p>
+
+            <div class="illustration">
+                <img src="/images/pai-agents/agents-frameworks.jpg" alt="Five agent framework cards: LangGraph explicit control, LangChain keep surface small, CrewAI content workflows, OpenAI Agents if on that stack, Google ADK if on GCP" loading="lazy">
+                <div class="illustration-caption"><strong>One runtime first.</strong> LangGraph for explicit graphs. LangChain for loaders/prototypes. CrewAI for role-based content. OpenAI Agents / Google ADK when you are already on that cloud stack.</div>
+            </div>
         </section>
 
         <section id="langgraph">
@@ -137,28 +302,48 @@
             <div class="info-box">
                 <strong>Learn:</strong> StateGraph, reducers, checkpointers, human-in-the-loop interrupts.
             </div>
+            <ul>
+                <li>Model each step as a node you can test in isolation</li>
+                <li>Use checkpointers so crashes resume mid-graph</li>
+                <li>Put approvals on interrupt nodes, not in prompt text</li>
+            </ul>
         </section>
 
         <section id="langchain">
             <h2>LangChain</h2>
             <p>Ecosystem of model/tool/document loaders. Useful for prototyping. In production, keep the surface small: you own prompts, retrieval, and tracing. Avoid mega-chains you cannot debug.</p>
+            <ul>
+                <li>Use for adapters (models, vector stores, parsers)</li>
+                <li>Do not bury business rules inside opaque chain objects</li>
+                <li>Prefer LangGraph when control flow grows beyond a linear chain</li>
+            </ul>
         </section>
 
         <section id="crewai">
             <h2>CrewAI</h2>
             <p>Role-based multi-agent: researcher, writer, reviewer. Fine for content workflows with a human editor. Risky for ops: more agents = more latency and contradictory tools. If you use it, pin tasks, share one retrieval layer, and log every agent’s output.</p>
+            <ul>
+                <li>Pin roles and tools; do not let every agent invent new actions</li>
+                <li>Share one retrieval / knowledge layer across roles</li>
+                <li>Keep a human editor for anything customer-facing</li>
+            </ul>
         </section>
 
         <section id="openai-agents">
             <h2>OpenAI Agents</h2>
             <p>OpenAI’s agents SDK: handoffs, tools, tracing, guardrails, close to their API. Good if you are already on that stack. Same rules apply: schemas, max turns, approvals.</p>
+            <ul>
+                <li>Use handoffs as supervisor → specialist, not free-for-all</li>
+                <li>Enable tracing before you ship; debug from spans, not vibes</li>
+                <li>Guardrails are filters — still validate tools server-side</li>
+            </ul>
         </section>
 
         <section id="adk">
             <h2>Google ADK</h2>
             <p>Google Agent Development Kit — agents, tools, and orchestration aimed at Gemini / Vertex. Use when your enterprise is already on GCP. Compare on tracing, eval, and how tools map to IAM — not on demo videos.</p>
             <div class="info-box">
-                <strong>Multi-agent rule:</strong> Prefer a supervisor that routes to specialists over a debating committee. Specialists should not all have write access to production.
+                <strong>Evaluate ADK on:</strong> IAM mapping for tools, Vertex tracing/eval hooks, and how multi-agent state persists — not on marketing demos.
             </div>
         </section>
 
@@ -168,9 +353,10 @@
                 <li>You can implement a tool loop with max steps without a framework</li>
                 <li>You can draw a graph for a real workflow (retrieve, act, approve, reply)</li>
                 <li>You persist state and never fire a payment tool twice by accident</li>
+                <li>You prefer supervisor → specialists over a debating committee</li>
             </ul>
             <div class="info-box">
-                <strong>Next:</strong> MCP, Tools & AI Automation — standard tool protocols and workflow products around the agent.
+                <strong>Next:</strong> MCP, Tools &amp; AI Automation — standard tool protocols and workflow products around the agent.
             </div>
         </section>
     </div>

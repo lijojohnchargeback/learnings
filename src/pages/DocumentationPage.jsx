@@ -194,6 +194,7 @@ function DocumentationPage() {
     }
 
     const isAwsTopic = topic.categoryId === 'aws';
+    const isGcpTopic = topic.categoryId === 'gcp';
     const isDockerTopic = topicId === 'docker';
     const isNodejsTopic = topicId === 'nodejs-documentation';
     const isSystemDesignTopic = topicId === 'system-design';
@@ -204,9 +205,11 @@ function DocumentationPage() {
     const isJsExtraTopic = topicId === 'javascript-extra';
     const isSocketIoTopic = topicId === 'socket-io';
     const isMessageQueueTopic = topicId === 'message-queue';
-    const docThemeClass = isAwsTopic ? ' doc-aws' : isDockerTopic ? ' doc-docker' : isNodejsTopic ? ' doc-nodejs' : isSystemDesignTopic ? ' doc-system-design' : isLlmTopic ? ' doc-llm' : isPaiGenAiTopic ? ' doc-pai-genai' : isSocketIoTopic ? ' doc-socketio' : isMessageQueueTopic ? ' doc-message-queue' : '';
+    const isHtmlGuideTopic = topicId === 'html-guide';
+    const docThemeClass = isAwsTopic ? ' doc-aws' : isGcpTopic ? ' doc-gcp' : isDockerTopic ? ' doc-docker' : isNodejsTopic ? ' doc-nodejs' : isSystemDesignTopic ? ' doc-system-design' : isLlmTopic ? ' doc-llm' : isPaiGenAiTopic ? ' doc-pai-genai' : isSocketIoTopic ? ' doc-socketio' : isMessageQueueTopic ? ' doc-message-queue' : '';
     const isAwsComputeTopic = topicId === 'aws-compute';
-    const hasHeroCover = topicId === 'aws-overview' || isAwsComputeTopic || isNodejsTopic || isSystemDesignTopic || isLlmTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic || isMessageQueueTopic;
+    const isGcpComputeTopic = topicId === 'gcp-compute';
+    const hasHeroCover = topicId === 'aws-overview' || isAwsComputeTopic || topicId === 'gcp-overview' || isGcpComputeTopic || isNodejsTopic || isSystemDesignTopic || isLlmTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic || isMessageQueueTopic || isHtmlGuideTopic;
 
     const sectionCount = pageSections.reduce((sum, section) => sum + section.links.length, 0);
 
@@ -315,6 +318,22 @@ function DocumentationPage() {
                                 />
                             </div>
                         )}
+                        {topicId === 'gcp-overview' && (
+                            <div className="doc-hero-cover">
+                                <img
+                                    src="/images/gcp/gcp-architecture-overview.jpg"
+                                    alt="How a request travels on GCP: users through Cloud DNS and Cloud CDN to a load balancer, then Cloud Run or GKE, then storage and data services"
+                                />
+                            </div>
+                        )}
+                        {isGcpComputeTopic && (
+                            <div className="doc-hero-cover">
+                                <img
+                                    src="/images/gcp/gcp-compute.jpg"
+                                    alt="Processor on a circuit board representing GCP compute hardware"
+                                />
+                            </div>
+                        )}
                         {isNodejsTopic && (
                             <div className="doc-hero-cover">
                                 <img
@@ -379,6 +398,14 @@ function DocumentationPage() {
                                 />
                             </div>
                         )}
+                        {isHtmlGuideTopic && (
+                            <div className="doc-hero-cover">
+                                <img
+                                    src="/images/html/html-hero.jpg"
+                                    alt="How a web page is built: HTML for structure, CSS for style, JavaScript for behavior"
+                                />
+                            </div>
+                        )}
                         <div className={hasHeroCover ? 'doc-header-copy' : undefined}>
                             <div className="doc-breadcrumb">
                                 <span onClick={() => navigate('/')}>Dashboard</span>
@@ -401,6 +428,21 @@ function DocumentationPage() {
                                     From EC2 virtual machines to Lambda functions: how AWS runs your code, who patches
                                     the OS, and how to choose among ECS, EKS, Fargate, Batch, and Beanstalk — with
                                     architecture diagrams, pricing levers, and production checklists.
+                                </p>
+                            )}
+                            {topicId === 'gcp-overview' && (
+                                <p className="doc-header-lead">
+                                    Google Cloud Platform is a toolkit of on-demand building blocks on Google&apos;s
+                                    global network. Follow a request from DNS to data, then go deeper on regions and
+                                    zones, resource hierarchy, compute, storage, BigQuery, Vertex AI, and serverless —
+                                    with diagrams that name every hop and AWS↔GCP mappings for production choices.
+                                </p>
+                            )}
+                            {isGcpComputeTopic && (
+                                <p className="doc-header-lead">
+                                    From Compute Engine VMs to Cloud Run and GKE: how GCP runs your code, who patches
+                                    the OS, and how to choose among Cloud Functions, App Engine, Batch, and Autopilot —
+                                    with spectrum diagrams, pricing levers, and production checklists.
                                 </p>
                             )}
                             {isNodejsTopic && (
@@ -466,6 +508,13 @@ function DocumentationPage() {
                                     a thread, and how rooms, namespaces, and Redis adapters scale real-time apps.
                                 </p>
                             )}
+                            {isHtmlGuideTopic && (
+                                <p className="doc-header-lead">
+                                    The markup language that structures every web page — document trees, semantic
+                                    landmarks, forms, images, media, links, lists, and tables — with illustrations
+                                    that show how browsers turn tags into a DOM and a usable interface.
+                                </p>
+                            )}
                             <div className="doc-meta">
                                 <span className="doc-badge" style={{
                                     background: `linear-gradient(135deg, ${topic.categoryColor} 0%, #000 150%)`,
@@ -474,10 +523,10 @@ function DocumentationPage() {
                                     {topic.categoryIcon} {topic.category} Specialist
                                 </span>
                                 <span className="doc-read-time">
-                                    {topicId === 'aws-overview' ? '45 min read' : isAwsComputeTopic ? '30 min read' : topicId === 'docker' ? '40 min read' : topicId === 'backend-system' ? '25 min read' : topicId === 'essential-engineering-concepts' ? '35 min read' : isNodejsTopic ? '40 min read' : isSystemDesignTopic ? '35 min read' : isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic || isMessageQueueTopic ? '40 min read' : '12 min read'}
+                                    {topicId === 'aws-overview' || topicId === 'gcp-overview' ? '45 min read' : isAwsComputeTopic || isGcpComputeTopic ? '30 min read' : topicId === 'docker' ? '40 min read' : topicId === 'backend-system' ? '25 min read' : topicId === 'essential-engineering-concepts' ? '35 min read' : isNodejsTopic ? '40 min read' : isSystemDesignTopic ? '35 min read' : isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic || isMessageQueueTopic || isHtmlGuideTopic ? '40 min read' : '12 min read'}
                                 </span>
                                 <span className="doc-read-time">
-                                    {topicId === 'aws-overview' ? 'Visual Deep Dive' : isAwsComputeTopic || topicId === 'docker' || isMessageQueueTopic ? 'Illustrated Guide' : topicId === 'backend-system' || topicId === 'essential-engineering-concepts' || isNodejsTopic || isSystemDesignTopic || isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic ? 'Illustrated Guide' : 'Advanced Level'}
+                                    {topicId === 'aws-overview' || topicId === 'gcp-overview' ? 'Visual Deep Dive' : isAwsComputeTopic || isGcpComputeTopic || topicId === 'docker' || isMessageQueueTopic || isHtmlGuideTopic ? 'Illustrated Guide' : topicId === 'backend-system' || topicId === 'essential-engineering-concepts' || isNodejsTopic || isSystemDesignTopic || isLlmTopic || isAiFundamentalsTopic || isPaiGenAiTopic || isJsHowItWorksTopic || isJsExtraTopic || isSocketIoTopic ? 'Illustrated Guide' : 'Advanced Level'}
                                 </span>
                             </div>
                         </div>

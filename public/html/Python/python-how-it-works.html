@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How Python really runs: CPython, bytecode, the GIL, memory model, garbage collection, and the import system.">
+    <title>How Python Works - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔧 How Python Works</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Start Here</div>
+            <div class="sidebar-links">
+                <a href="#big-picture" class="sidebar-link">The Big Picture</a>
+                <a href="#implementations" class="sidebar-link">Implementations</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Execution Pipeline</div>
+            <div class="sidebar-links">
+                <a href="#pipeline" class="sidebar-link">Source → Running</a>
+                <a href="#bytecode" class="sidebar-link">Bytecode &amp; .pyc</a>
+                <a href="#eval-loop" class="sidebar-link">Evaluation Loop</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Objects &amp; Memory</div>
+            <div class="sidebar-links">
+                <a href="#everything-object" class="sidebar-link">Everything is an Object</a>
+                <a href="#names-vs-values" class="sidebar-link">Names vs Values</a>
+                <a href="#mutability" class="sidebar-link">Mutability</a>
+                <a href="#memory" class="sidebar-link">Memory Layout</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Concurrency</div>
+            <div class="sidebar-links">
+                <a href="#gil" class="sidebar-link">The GIL</a>
+                <a href="#gil-when" class="sidebar-link">When GIL Matters</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Lifecycle</div>
+            <div class="sidebar-links">
+                <a href="#gc" class="sidebar-link">Garbage Collection</a>
+                <a href="#import-system" class="sidebar-link">Import System</a>
+                <a href="#remember" class="sidebar-link">How to Remember</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🔧 How Python Works</h1>
+            <p>CPython, bytecode, the GIL, memory, and garbage collection — what actually happens when your code runs.</p>
+        </header>
+
+        <section id="big-picture">
+            <h2>🗺️ The Big Picture</h2>
+            <p><span class="highlight">Python is an interpreted, high-level language</span> whose most common implementation is <strong>CPython</strong>. Your <code>.py</code> file is not executed as raw text — it is compiled to <strong>bytecode</strong>, then run by a virtual machine written in C.</p>
+
+            <table>
+                <tr><th>Layer</th><th>What it does</th></tr>
+                <tr><td><strong>Your code</strong></td><td><code>.py</code> source files</td></tr>
+                <tr><td><strong>Compiler</strong></td><td>Parses source → AST → bytecode (<code>.pyc</code>)</td></tr>
+                <tr><td><strong>CPython VM</strong></td><td>Eval loop executes bytecode opcodes</td></tr>
+                <tr><td><strong>Runtime</strong></td><td>Objects, memory, GIL, GC, import system</td></tr>
+                <tr><td><strong>OS / CPU</strong></td><td>Actual process, threads, and machine instructions</td></tr>
+            </table>
+
+            <div class="code-block"># Mental model (not literal code)
+.py source
+    → tokenize &amp; parse
+    → Abstract Syntax Tree (AST)
+    → compile to bytecode
+    → CPython evaluation loop
+    → object model + C extensions
+    → OS threads / memory / I/O</div>
+
+            <div class="info-box">
+                <h3>The rule this page uses</h3>
+                <p>Python code runs on <strong>one bytecode evaluation loop per thread</strong>, and CPython’s <strong>GIL</strong> means only one thread executes Python bytecode at a time. Parallelism for CPU work needs processes, native extensions that release the GIL, or free-threaded builds (3.13+ experimental).</p>
+            </div>
+        </section>
+
+        <section id="implementations">
+            <h2>🐍 Implementations</h2>
+            <p>“Python” is a language specification. Several runtimes implement it:</p>
+            <table>
+                <tr><th>Runtime</th><th>Notes</th></tr>
+                <tr><td><strong>CPython</strong></td><td>Reference implementation. What almost everyone means by “Python.”</td></tr>
+                <tr><td><strong>PyPy</strong></td><td>JIT compiler — often faster for long-running pure-Python workloads.</td></tr>
+                <tr><td><strong>Jython / IronPython</strong></td><td>Run on JVM / .NET (limited C-extension support).</td></tr>
+                <tr><td><strong>MicroPython</strong></td><td>Tiny subset for microcontrollers.</td></tr>
+            </table>
+            <p>This guide focuses on <strong>CPython</strong> — the engine behind <code>python</code> / <code>python3</code> on most machines.</p>
+        </section>
+
+        <section id="pipeline">
+            <h2>⚙️ Source → Running Code</h2>
+            <p>When you run <code>python app.py</code>:</p>
+            <ol>
+                <li><strong>Read</strong> the source file</li>
+                <li><strong>Lex &amp; parse</strong> into an AST (<code>ast</code> module can show this)</li>
+                <li><strong>Compile</strong> the AST to a code object (bytecode + metadata)</li>
+                <li><strong>Execute</strong> that code object in a frame on the call stack</li>
+            </ol>
+
+            <div class="code-block">import ast, dis
+
+src = "x = 1 + 2"
+tree = ast.parse(src)
+print(ast.dump(tree, indent=2))
+# Module(
+#   body=[Assign(targets=[Name(id='x')], value=BinOp(...))]
+# )
+
+code = compile(src, "&lt;string&gt;", "exec")
+dis.dis(code)
+#   1           LOAD_CONST               0 (1)
+#               LOAD_CONST               1 (2)
+#               BINARY_OP                0 (+)
+#               STORE_NAME               0 (x)
+#               RETURN_CONST             2 (None)</div>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> <code>dis.dis(fn)</code> is the best way to see what the VM actually runs for a function.
+            </div>
+        </section>
+
+        <section id="bytecode">
+            <h2>📦 Bytecode &amp; <code>.pyc</code> Files</h2>
+            <p>Bytecode is a compact, platform-independent instruction set for the CPython VM. Cached copies live under <code>__pycache__/</code> as <code>.pyc</code> files so imports skip recompilation when the source is unchanged.</p>
+
+            <div class="code-block"># After: python -c "import mymodule"
+# You get something like:
+# __pycache__/mymodule.cpython-312.pyc
+
+import importlib.util
+spec = importlib.util.find_spec("os")
+print(spec.origin)  # path to os.py or extension</div>
+
+            <table>
+                <tr><th>Concept</th><th>Meaning</th></tr>
+                <tr><td><strong>Code object</strong></td><td>Bytecode + constants + names + stack size</td></tr>
+                <tr><td><strong>Frame</strong></td><td>Running instance of a code object (locals, IP, stack)</td></tr>
+                <tr><td><strong>Opcode</strong></td><td>One VM instruction (<code>LOAD_FAST</code>, <code>CALL</code>, …)</td></tr>
+            </table>
+        </section>
+
+        <section id="eval-loop">
+            <h2>🔁 The Evaluation Loop</h2>
+            <p>CPython’s heart is a giant switch/dispatch loop (historically in <code>ceval.c</code>). For each opcode it:</p>
+            <ul>
+                <li>Reads the next instruction</li>
+                <li>Manipulates the value stack and locals</li>
+                <li>May call into C for builtins / extensions</li>
+                <li>Periodically checks signals and GIL release points</li>
+            </ul>
+
+            <div class="code-block">def add(a, b):
+    return a + b
+
+# Roughly at the VM level:
+# LOAD_FAST a
+# LOAD_FAST b
+# BINARY_OP +
+# RETURN_VALUE
+
+# Locals like `a` and `b` use LOAD_FAST (array index) —
+# much cheaper than LOAD_GLOBAL / LOAD_NAME (dict lookup).</div>
+        </section>
+
+        <section id="everything-object">
+            <h2>🧱 Everything is an Object</h2>
+            <p>In CPython, integers, functions, classes, modules, and even types are <strong>heap objects</strong> with a shared header: type pointer, reference count, and (for many types) GC headers.</p>
+
+            <div class="code-block">x = 42
+print(type(x))          # &lt;class 'int'&gt;
+print(type(type(x)))    # &lt;class 'type'&gt;  — types are objects too
+print(type(type))       # &lt;class 'type'&gt;  — type is an instance of itself
+
+def f(): pass
+print(f.__code__.co_code)  # raw bytecode bytes
+print(f.__globals__)       # module dict the function closes over</div>
+
+            <div class="info-box">
+                <p>Even small ints are objects. CPython caches a range of small integers (−5…256) so <code>a is b</code> can be true for equal small ints — but never rely on <code>is</code> for value equality. Use <code>==</code>.</p>
+            </div>
+        </section>
+
+        <section id="names-vs-values">
+            <h2>🏷️ Names vs Values</h2>
+            <p>Python variables are <strong>names bound to objects</strong>, not boxes that hold values. Assignment rebinds a name; it does not copy the object.</p>
+
+            <div class="code-block">a = [1, 2, 3]
+b = a          # b points to the SAME list
+b.append(4)
+print(a)       # [1, 2, 3, 4]
+
+c = a[:]       # shallow copy — new list object
+c.append(5)
+print(a)       # [1, 2, 3, 4]
+print(c)       # [1, 2, 3, 4, 5]
+
+# Function args work the same way:
+def append_x(lst):
+    lst.append("x")   # mutates the caller's list
+
+def rebind(lst):
+    lst = lst + ["y"] # rebinds local name only; caller unchanged</div>
+
+            <table>
+                <tr><th>Operation</th><th>What happens</th></tr>
+                <tr><td><code>x = y</code></td><td>Name <code>x</code> now refers to same object as <code>y</code></td></tr>
+                <tr><td><code>x = x + 1</code> (int)</td><td>Creates new int; rebinds <code>x</code></td></tr>
+                <tr><td><code>x.append(1)</code></td><td>Mutates the list object in place</td></tr>
+                <tr><td><code>x is y</code></td><td>Same object identity (same pointer)</td></tr>
+                <tr><td><code>x == y</code></td><td>Value equality (calls <code>__eq__</code>)</td></tr>
+            </table>
+        </section>
+
+        <section id="mutability">
+            <h2>🔒 Mutability</h2>
+            <table>
+                <tr><th>Immutable</th><th>Mutable</th></tr>
+                <tr>
+                    <td><code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code>, <code>frozenset</code>, <code>bytes</code></td>
+                    <td><code>list</code>, <code>dict</code>, <code>set</code>, <code>bytearray</code>, most custom objects</td>
+                </tr>
+            </table>
+
+            <div class="code-block"># Classic pitfall: mutable default argument
+def add_item(item, bucket=[]):  # BAD — one list shared forever
+    bucket.append(item)
+    return bucket
+
+print(add_item(1))  # [1]
+print(add_item(2))  # [1, 2]  ← surprise
+
+def add_item_ok(item, bucket=None):
+    if bucket is None:
+        bucket = []
+    bucket.append(item)
+    return bucket</div>
+        </section>
+
+        <section id="memory">
+            <h2>🧠 Memory Layout (CPython)</h2>
+            <ul>
+                <li><strong>Stack</strong>: C call stack for the interpreter itself + Python frame objects for running code</li>
+                <li><strong>Heap</strong>: virtually all Python objects live here</li>
+                <li><strong>Arenas / pools</strong>: CPython’s pymalloc allocator optimizes small-object allocation</li>
+            </ul>
+
+            <div class="code-block">import sys
+
+x = []
+print(sys.getsizeof(x))      # empty list overhead (implementation-dependent)
+x.append(1)
+print(sys.getsizeof(x))      # grows in overallocation chunks
+
+# Reference count (CPython-specific; may not exist elsewhere)
+print(sys.getrefcount(x))    # includes the temporary arg to getrefcount</div>
+        </section>
+
+        <section id="gil">
+            <h2>🧵 The Global Interpreter Lock (GIL)</h2>
+            <p>The <strong>GIL</strong> is a mutex in CPython that protects the interpreter’s internal state. Only one thread can execute Python bytecode at a time.</p>
+
+            <div class="code-block"># Two CPU-bound threads do NOT use two cores for Python bytecode
+import threading
+
+def burn(n):
+    x = 0
+    for i in range(n):
+        x += i
+    return x
+
+# This takes ~2× a single thread, not ~1× — GIL serializes bytecode
+t1 = threading.Thread(target=burn, args=(10_000_000,))
+t2 = threading.Thread(target=burn, args=(10_000_000,))
+t1.start(); t2.start()
+t1.join(); t2.join()</div>
+
+            <div class="info-box">
+                <h3>Why the GIL exists</h3>
+                <p>It keeps reference counting simple and fast, and makes the C API easier. The cost is limited multi-core parallelism for pure-Python CPU work.</p>
+            </div>
+        </section>
+
+        <section id="gil-when">
+            <h2>⏱️ When the GIL Matters</h2>
+            <table>
+                <tr><th>Workload</th><th>Threads help?</th><th>Better tool</th></tr>
+                <tr><td>CPU-bound pure Python</td><td>❌ No</td><td><code>multiprocessing</code>, ProcessPool</td></tr>
+                <tr><td>I/O-bound (network, disk)</td><td>✅ Yes</td><td>threads or <code>asyncio</code></td></tr>
+                <tr><td>NumPy / many C extensions</td><td>✅ Often</td><td>They release the GIL in C</td></tr>
+                <tr><td>Many independent tasks</td><td>✅</td><td>processes or a job queue</td></tr>
+            </table>
+
+            <div class="code-block">from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+
+# CPU-bound → processes
+with ProcessPoolExecutor() as pool:
+    results = list(pool.map(expensive_fn, data))
+
+# I/O-bound → threads (or asyncio)
+with ThreadPoolExecutor(max_workers=32) as pool:
+    results = list(pool.map(fetch_url, urls))</div>
+
+            <p>Python 3.13 introduced an experimental <strong>free-threaded</strong> (no-GIL) build. Treat it as opt-in until ecosystem support is mature.</p>
+        </section>
+
+        <section id="gc">
+            <h2>♻️ Garbage Collection</h2>
+            <p>CPython uses <strong>reference counting</strong> as the primary memory manager, plus a cyclic <strong>garbage collector</strong> for reference cycles.</p>
+
+            <div class="code-block">import gc, sys
+
+a = []
+b = []
+a.append(b)
+b.append(a)   # cycle: a ↔ b
+
+del a, b      # refcounts drop but cycle remains
+gc.collect()  # cyclic GC can reclaim them
+
+# Inspect generations
+print(gc.get_stats())
+print(gc.get_threshold())  # (700, 10, 10) typical defaults</div>
+
+            <table>
+                <tr><th>Mechanism</th><th>Role</th></tr>
+                <tr><td><strong>Refcounting</strong></td><td>Frees an object as soon as refcount hits 0</td></tr>
+                <tr><td><strong>Generational GC</strong></td><td>Finds unreachable cycles (young → old generations)</td></tr>
+                <tr><td><strong><code>__del__</code></strong></td><td>Finalizer — can complicate cycle collection; prefer context managers</td></tr>
+            </table>
+        </section>
+
+        <section id="import-system">
+            <h2>📥 The Import System</h2>
+            <p>Imports are dynamic lookups through <code>sys.meta_path</code> finders and loaders. Successful imports are cached in <code>sys.modules</code>.</p>
+
+            <div class="code-block">import sys
+
+# 1. Check sys.modules cache
+# 2. Ask finders on sys.meta_path
+# 3. Loader executes module code, binds into sys.modules
+
+print("json" in sys.modules)
+import json
+print(sys.modules["json"])
+
+# Circular imports fail when module A needs B before B finishes loading.
+# Fix: local imports, rearrange, or lazy import inside functions.</div>
+
+            <div class="info-box">
+                <strong>💡 Backend tip:</strong> Heavy imports at module top-level slow cold starts. For CLI tools and serverless, consider lazy imports inside functions that need them.
+            </div>
+        </section>
+
+        <section id="remember">
+            <h2>📌 How to Remember</h2>
+            <table>
+                <tr><th>Idea</th><th>One-liner</th></tr>
+                <tr><td>Pipeline</td><td>Source → AST → bytecode → eval loop</td></tr>
+                <tr><td>Objects</td><td>Names point at heap objects; assignment rebinds</td></tr>
+                <tr><td>GIL</td><td>One thread runs bytecode at a time</td></tr>
+                <tr><td>I/O vs CPU</td><td>Threads/async for I/O; processes for CPU</td></tr>
+                <tr><td>Memory</td><td>Refcount frees ASAP; GC cleans cycles</td></tr>
+                <tr><td>Imports</td><td>Cached in <code>sys.modules</code>; circular imports hurt</td></tr>
+            </table>
+
+            <div class="code-block"># Handy introspection toolkit
+import dis, sys, gc, tracemalloc
+dis.dis(your_function)
+sys.getsizeof(obj)
+gc.collect()
+# tracemalloc.start()  # find where memory is allocated</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

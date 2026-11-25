@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Type Hints - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📝 Type Hints</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Basics</div>
+            <div class="sidebar-links">
+                <a href="#why" class="sidebar-link">Why Typing?</a>
+                <a href="#basics" class="sidebar-link">Basic Annotations</a>
+                <a href="#collections" class="sidebar-link">Collections</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Advanced</div>
+            <div class="sidebar-links">
+                <a href="#optional-union" class="sidebar-link">Optional &amp; Union</a>
+                <a href="#generics" class="sidebar-link">Generics</a>
+                <a href="#protocols" class="sidebar-link">Protocols</a>
+                <a href="#typeddict" class="sidebar-link">TypedDict &amp; more</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Practice</div>
+            <div class="sidebar-links">
+                <a href="#pydantic" class="sidebar-link">Pydantic</a>
+                <a href="#mypy" class="sidebar-link">mypy / pyright</a>
+                <a href="#tips" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>📝 Python Type Hints &amp; Static Typing</h1>
+            <p>Annotations, generics, protocols, Pydantic, and checkers for safer backends</p>
+        </header>
+
+        <section id="why">
+            <h2>🎯 Why Typing?</h2>
+            <p>Type hints are <strong>optional</strong> at runtime — CPython ignores them for execution. Tools like <strong>mypy</strong>, <strong>pyright</strong>, and IDEs use them to catch bugs early and document APIs.</p>
+            <table>
+                <tr><th>Benefit</th><th>Example</th></tr>
+                <tr><td>Catch bugs before prod</td><td>Passing <code>None</code> where <code>str</code> expected</td></tr>
+                <tr><td>Better editor help</td><td>Autocomplete on return types</td></tr>
+                <tr><td>Living docs</td><td>Function signatures explain contracts</td></tr>
+                <tr><td>Safer refactors</td><td>Rename / change shapes with confidence</td></tr>
+            </table>
+        </section>
+
+        <section id="basics">
+            <h2>✍️ Basic Annotations</h2>
+            <div class="code-block">def greet(name: str, times: int = 1) -&gt; str:
+    return ("Hello, " + name + "! ") * times
+
+age: int = 30
+pi: float = 3.14
+active: bool = True
+data: bytes = b"raw"
+
+# Python 3.9+: builtins are generic
+def first(items: list[str]) -&gt; str:
+    return items[0]
+
+# Python 3.8 and earlier:
+from typing import List
+def first_old(items: List[str]) -&gt; str:
+    return items[0]</div>
+        </section>
+
+        <section id="collections">
+            <h2>📚 Collections</h2>
+            <div class="code-block">from collections.abc import Mapping, Sequence, Iterable, Callable
+
+def total(nums: Sequence[int]) -&gt; int:
+    return sum(nums)
+
+def merge(a: Mapping[str, int], b: Mapping[str, int]) -&gt; dict[str, int]:
+    return {**a, **b}
+
+Handler = Callable[[str, int], bool]
+
+def apply(fn: Handler, name: str, n: int) -&gt; bool:
+    return fn(name, n)
+
+# tuple length/types
+Pair = tuple[str, int]
+point: tuple[float, float] = (1.0, 2.0)
+row: tuple[str, ...] = ("a", "b", "c")  # variable length</div>
+        </section>
+
+        <section id="optional-union">
+            <h2>🔀 Optional, Union &amp; Literals</h2>
+            <div class="code-block"># Python 3.10+ union with |
+def find_user(user_id: int) -&gt; dict | None:
+    ...
+
+def parse(value: str | int) -&gt; int:
+    return int(value)
+
+from typing import Literal, Final
+
+Mode = Literal["r", "w", "a"]
+
+def open_file(path: str, mode: Mode) -&gt; None:
+    ...
+
+MAX_RETRIES: Final = 3
+
+# Type narrowing
+def length(x: str | None) -&gt; int:
+    if x is None:
+        return 0
+    return len(x)  # x is str here</div>
+        </section>
+
+        <section id="generics">
+            <h2>🧬 Generics</h2>
+            <div class="code-block">from typing import TypeVar, Generic
+
+T = TypeVar("T")
+
+class Repo(Generic[T]):
+    def __init__(self) -&gt; None:
+        self._items: list[T] = []
+
+    def add(self, item: T) -&gt; None:
+        self._items.append(item)
+
+    def get(self, index: int) -&gt; T:
+        return self._items[index]
+
+users: Repo[dict] = Repo()
+
+# Python 3.12+ shorter syntax
+class Stack[T]:
+    def __init__(self) -&gt; None:
+        self._data: list[T] = []
+
+    def push(self, item: T) -&gt; None:
+        self._data.append(item)
+
+    def pop(self) -&gt; T:
+        return self._data.pop()
+
+# Bounded TypeVar
+from typing import TypeVar
+Number = TypeVar("Number", int, float)
+
+def double(x: Number) -&gt; Number:
+    return x * 2</div>
+        </section>
+
+        <section id="protocols">
+            <h2>🦆 Protocols</h2>
+            <div class="code-block">from typing import Protocol
+
+class SupportsClose(Protocol):
+    def close(self) -&gt; None: ...
+
+def cleanup(resource: SupportsClose) -&gt; None:
+    resource.close()
+
+# Structural — no inheritance required
+class Connection:
+    def close(self) -&gt; None:
+        ...
+
+cleanup(Connection())</div>
+        </section>
+
+        <section id="typeddict">
+            <h2>📋 TypedDict, NamedTuple, NewType</h2>
+            <div class="code-block">from typing import TypedDict, NamedTuple, NewType, NotRequired
+
+class UserDict(TypedDict):
+    id: int
+    email: str
+    nickname: NotRequired[str]
+
+user: UserDict = {"id": 1, "email": "a@b.com"}
+
+class Point(NamedTuple):
+    x: float
+    y: float
+
+UserId = NewType("UserId", int)
+
+def load_user(user_id: UserId) -&gt; None:
+    ...
+
+load_user(UserId(42))
+# load_user(42)  # type checker error</div>
+        </section>
+
+        <section id="pydantic">
+            <h2>✅ Pydantic (Runtime Validation)</h2>
+            <p>Type hints document intent; <strong>Pydantic</strong> enforces them at runtime — ideal for API request/response models.</p>
+
+            <div class="code-block">from pydantic import BaseModel, EmailStr, Field, field_validator
+
+class CreateUser(BaseModel):
+    email: EmailStr
+    age: int = Field(ge=0, le=150)
+    roles: list[str] = Field(default_factory=list)
+
+    @field_validator("roles")
+    @classmethod
+    def non_empty_roles(cls, v: list[str]) -&gt; list[str]:
+        if not v:
+            return ["user"]
+        return v
+
+payload = CreateUser(email="dev@example.com", age=25)
+print(payload.model_dump())
+# FastAPI uses these models for parsing + OpenAPI docs</div>
+        </section>
+
+        <section id="mypy">
+            <h2>🔍 mypy &amp; pyright</h2>
+            <div class="code-block"># pyproject.toml (example)
+# [tool.mypy]
+# python_version = "3.12"
+# strict = true
+# warn_return_any = true
+# exclude = ["migrations/"]
+
+# CLI
+# mypy src/
+# pyright src/
+
+# Escape hatches (use sparingly)
+from typing import Any, cast, TYPE_CHECKING
+
+def parse_raw(data: Any) -&gt; dict[str, str]:
+    return cast(dict[str, str], data)
+
+if TYPE_CHECKING:
+    from expensive import HeavyModel  # import only for type checkers</div>
+        </section>
+
+        <section id="tips">
+            <h2>📌 Best Practices</h2>
+            <ul>
+                <li>Annotate <strong>public APIs</strong> first (services, routers, domain models)</li>
+                <li>Prefer <code>list[str]</code> / <code>X | None</code> (3.10+) over legacy <code>typing</code> aliases</li>
+                <li>Use <code>collections.abc</code> for parameters (<code>Sequence</code>, <code>Mapping</code>)</li>
+                <li>Keep <code>Any</code> rare — it turns the checker off</li>
+                <li>Pair hints with Pydantic/FastAPI for HTTP boundaries</li>
+                <li>Enable strict mode gradually; don’t block the team overnight</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Remember:</strong> Hints don’t replace tests. They catch a different class of mistakes — shape and contract errors — before runtime.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

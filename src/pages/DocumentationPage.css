@@ -1164,6 +1164,408 @@
     }
 }
 
+/* GCP-themed documentation page (teal/blue) */
+.documentation-page.doc-gcp {
+    --sidebar-accent: #4285f4;
+}
+
+.documentation-page.doc-gcp .nav-link-item.active {
+    background: rgba(66, 133, 244, 0.12);
+    color: #1a73e8;
+    box-shadow: none;
+}
+
+.documentation-page.doc-gcp .back-btn:hover,
+.documentation-page.doc-gcp .doc-sidebar-close:hover {
+    background: #4285f4;
+    border-color: #4285f4;
+    box-shadow: none;
+}
+
+.documentation-page.doc-gcp .doc-content-body h2::before {
+    background: #4285f4;
+}
+
+.documentation-page.doc-gcp .doc-content-body .comparison-item {
+    border-left-color: #4285f4;
+}
+
+.documentation-page.doc-gcp .doc-content-body .service-card {
+    border-top-color: #4285f4;
+}
+
+.documentation-page.doc-gcp .doc-content-body .service-card h4 {
+    color: #1a73e8;
+}
+
+.documentation-page.doc-gcp .doc-content-body code {
+    background: rgba(66, 133, 244, 0.1);
+    color: #1a73e8;
+}
+
+.documentation-page.doc-gcp .doc-content-body .info-box.premium {
+    border-left-color: #4285f4;
+}
+
+.documentation-page.doc-gcp .doc-content-body .info-box.premium::before {
+    background: #4285f4;
+}
+
+.documentation-page.doc-gcp .doc-header-glass {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+.documentation-page.doc-gcp .doc-hero-cover {
+    margin: -1.5rem -1.5rem 1.5rem;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+}
+
+.documentation-page.doc-gcp .doc-hero-cover img {
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+    display: block;
+}
+
+.documentation-page.doc-gcp .doc-header-copy {
+    position: relative;
+    z-index: 1;
+}
+
+.documentation-page.doc-gcp .doc-title-large {
+    max-width: 18ch;
+}
+
+.documentation-page.doc-gcp .doc-header-lead {
+    max-width: 52rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #475569;
+    margin: 0.75rem 0 1.25rem;
+}
+
+.documentation-page.doc-gcp .doc-content-body .illustration {
+    background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+    border-color: #bfdbfe;
+}
+
+.documentation-page.doc-gcp .doc-content-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.documentation-page.doc-gcp .topic-hero {
+    position: relative;
+    margin: 0 0 2rem;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #0b1220;
+}
+
+.documentation-page.doc-gcp .topic-hero img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.documentation-page.doc-gcp .topic-hero figcaption {
+    padding: 0.9rem 1.15rem 1.05rem;
+    font-size: 0.88rem;
+    color: #64748b;
+    background: #f8fafc;
+    border-top: 1px solid #eef2f6;
+}
+
+.documentation-page.doc-gcp .visual-gallery {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 1rem;
+    margin: 0 0 2rem;
+}
+
+.documentation-page.doc-gcp .visual-gallery figure {
+    margin: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #0b1220;
+}
+
+.documentation-page.doc-gcp .visual-gallery img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.documentation-page.doc-gcp .visual-gallery figcaption {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    background: #0f172a;
+}
+
+.documentation-page.doc-gcp .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.85rem;
+    margin: 0 0 2rem;
+}
+
+.documentation-page.doc-gcp .stat-chip {
+    background: linear-gradient(180deg, #fff 0%, #eff6ff 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 1.1rem 1rem;
+    text-align: center;
+}
+
+.documentation-page.doc-gcp .stat-chip strong {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #1a73e8;
+    letter-spacing: -0.03em;
+}
+
+.documentation-page.doc-gcp .stat-chip span {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #1e40af;
+}
+
+.documentation-page.doc-gcp .topic-lede {
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: #334155;
+    margin: 0 0 1.5rem;
+}
+
+.documentation-page.doc-gcp .split-visual {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+    margin: 0 0 2rem;
+}
+
+.documentation-page.doc-gcp .split-visual img {
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.documentation-page.doc-gcp .split-copy {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.5rem 1.6rem;
+}
+
+.documentation-page.doc-gcp .split-copy h3 {
+    margin-top: 0;
+}
+
+.documentation-page.doc-gcp .arch-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.documentation-page.doc-gcp .arch-node {
+    background: #0f172a;
+    color: #fff;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.documentation-page.doc-gcp .arch-node.accent {
+    background: #4285f4;
+    color: #1c1917;
+}
+
+.documentation-page.doc-gcp .arch-node.soft {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.documentation-page.doc-gcp .arch-arrow {
+    color: #60a5fa;
+    font-weight: 800;
+}
+
+.documentation-page.doc-gcp .layer-stack {
+    display: grid;
+    gap: 0.55rem;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.documentation-page.doc-gcp .layer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1.2rem;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.documentation-page.doc-gcp .layer-row span {
+    font-weight: 500;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.documentation-page.doc-gcp .layer-1 { background: #1e3a5f; }
+.documentation-page.doc-gcp .layer-2 { background: #334155; }
+.documentation-page.doc-gcp .layer-3 { background: #1a73e8; }
+.documentation-page.doc-gcp .layer-4 { background: #4285f4; color: #1c1917; }
+
+.documentation-page.doc-gcp .vpc-diagram {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border-radius: 20px;
+    background: #0f172a;
+    color: #e2e8f0;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.documentation-page.doc-gcp .vpc-diagram .vpc-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4285f4;
+}
+
+.documentation-page.doc-gcp .vpc-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.documentation-page.doc-gcp .vpc-box {
+    border: 1px dashed rgba(66, 133, 244, 0.45);
+    border-radius: 14px;
+    padding: 0.9rem;
+    background: rgba(66, 133, 244, 0.06);
+}
+
+.documentation-page.doc-gcp .vpc-box strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #fff;
+}
+
+.documentation-page.doc-gcp .vpc-box p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+}
+
+.documentation-page.doc-gcp .use-when {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.documentation-page.doc-gcp .use-card {
+    border-radius: 18px;
+    padding: 1.3rem 1.4rem;
+    border: 1px solid #e2e8f0;
+}
+
+.documentation-page.doc-gcp .use-card.yes {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+.documentation-page.doc-gcp .use-card.no {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.documentation-page.doc-gcp .use-card h4 {
+    margin-top: 0;
+}
+
+.documentation-page.doc-gcp .scenario-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    border-radius: 20px;
+    padding: 1.6rem 1.7rem;
+    margin: 1.5rem 0;
+}
+
+.documentation-page.doc-gcp .scenario-card h3,
+.documentation-page.doc-gcp .scenario-card h4,
+.documentation-page.doc-gcp .scenario-card p,
+.documentation-page.doc-gcp .scenario-card li {
+    color: #e2e8f0;
+}
+
+.documentation-page.doc-gcp .scenario-card h3,
+.documentation-page.doc-gcp .scenario-card h4 {
+    color: #fff;
+    margin-top: 0;
+}
+
+.documentation-page.doc-gcp .kicker {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4285f4;
+    margin-bottom: 0.4rem;
+}
+
+@media (max-width: 900px) {
+    .documentation-page.doc-gcp .stat-strip,
+    .documentation-page.doc-gcp .visual-gallery,
+    .documentation-page.doc-gcp .split-visual,
+    .documentation-page.doc-gcp .use-when,
+    .documentation-page.doc-gcp .vpc-row {
+        grid-template-columns: 1fr;
+    }
+
+    .documentation-page.doc-gcp .topic-hero img {
+        height: 200px;
+    }
+
+    .documentation-page.doc-gcp .doc-hero-cover {
+        margin: -1rem -1rem 1rem;
+    }
+
+    .documentation-page.doc-gcp .doc-hero-cover img {
+        max-height: 260px;
+    }
+}
+
+
 /* Docker-themed documentation page */
 .documentation-page.doc-docker {
     --sidebar-accent: #2496ed;

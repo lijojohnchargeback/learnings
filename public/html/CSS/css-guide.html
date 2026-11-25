@@ -63,31 +63,46 @@
                 <h2>1) Introduction to CSS</h2>
                 <div class="example-box">
                     <h3>What is CSS?</h3>
-                    <p><strong>CSS (Cascading Style Sheets)</strong> is used to style and layout web pages.</p>
+                    <p><strong>CSS (Cascading Style Sheets)</strong> is the language that describes how HTML should look and behave on screen, paper, or other media. HTML builds the document tree; CSS paints, spaces, and lays out that tree.</p>
+                    <p>The word <strong>cascading</strong> matters: when several rules target the same element, the browser resolves conflicts using origin, specificity, and source order — then inherits many values down the tree.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-cascade-overview.jpg" alt="How CSS styles HTML: document tree, stylesheet rule, and rendered page connected by cascade" loading="lazy">
+                        <div class="illustration-caption"><strong>Structure → Style → Render.</strong> CSS rules match nodes in the HTML tree and produce the painted page you see.</div>
+                    </div>
                     
                     <h4>Main Features:</h4>
                     <ul>
-                        <li>✅ <strong>Style</strong> - Make webpages beautiful</li>
-                        <li>✅ <strong>Responsive Design</strong> - Adapt to different screen sizes</li>
-                        <li>✅ <strong>Animations</strong> - Create 2D and 3D animations</li>
-                        <li>✅ <strong>Rotation & Effects</strong> - Transform elements</li>
-                        <li>✅ <strong>Fast Development</strong> - Global CSS for consistency</li>
+                        <li>✅ <strong>Style</strong> — Colors, typography, borders, shadows, and visual polish</li>
+                        <li>✅ <strong>Layout</strong> — Box model, Flexbox, Grid, and positioning</li>
+                        <li>✅ <strong>Responsive Design</strong> — Adapt layouts to phones, tablets, and desktops</li>
+                        <li>✅ <strong>Motion</strong> — Transitions, keyframe animations, and transforms</li>
+                        <li>✅ <strong>Consistency</strong> — One stylesheet shared across many pages</li>
                     </ul>
 
                     <div class="tip">
-                        <strong>💡 Key Point:</strong> HTML is required for structure, CSS allows you to style that structure beautifully.
+                        <strong>💡 Key Point:</strong> HTML = structure and meaning. CSS = presentation. Keep them separated so you can redesign without rewriting content.
                     </div>
                 </div>
 
                 <div class="example-box">
-                    <h3>CSS Syntax</h3>
+                    <h3>CSS Syntax Anatomy</h3>
+                    <p>Every rule has a <strong>selector</strong> (who) and a <strong>declaration block</strong> (what). Inside the block, each line is a <strong>property: value;</strong> pair.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-syntax-anatomy.jpg" alt="CSS rule anatomy labeled selector, property, value, and declaration" loading="lazy">
+                        <div class="illustration-caption"><strong>Read it left to right:</strong> find the element(s), then apply each property until the closing brace.</div>
+                    </div>
+
                     <pre><code>h1 {
     color: red;
+    font-size: 2rem;
 }</code></pre>
                     <ul>
-                        <li><strong>Selector:</strong> <code>h1</code> - Targets the element</li>
-                        <li><strong>Property:</strong> <code>color</code> - What to style</li>
-                        <li><strong>Value:</strong> <code>red</code> - How to style it</li>
+                        <li><strong>Selector:</strong> <code>h1</code> — which elements to style</li>
+                        <li><strong>Property:</strong> <code>color</code> — which visual aspect to change</li>
+                        <li><strong>Value:</strong> <code>red</code> — the setting for that property</li>
+                        <li><strong>Declaration:</strong> <code>color: red;</code> — property + value + semicolon</li>
                     </ul>
                 </div>
             </section>
@@ -132,10 +147,18 @@
             <!-- IMPLEMENTATION -->
             <section id="implementation">
                 <h2>3) Ways to Implement CSS</h2>
+                <div class="example-box">
+                    <p>You can attach CSS in three places. Prefer <strong>external stylesheets</strong> for real projects; use internal CSS for small demos; reserve inline styles for one-off overrides or dynamic values from JavaScript.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-implementation-ways.jpg" alt="Three ways to add CSS: inline style attribute, internal style tag, and external stylesheet linked to multiple pages" loading="lazy">
+                        <div class="illustration-caption"><strong>Same cascade, different homes.</strong> External CSS wins for reuse, caching, and team workflows.</div>
+                    </div>
+                </div>
 
                 <h3>Method 1: Inline Styles</h3>
                 <div class="example-box">
-                    <p>Apply styles directly to HTML elements using the <code>style</code> attribute.</p>
+                    <p>Apply styles directly to HTML elements using the <code>style</code> attribute. Inline declarations have very high specificity, so they easily override class rules.</p>
                     <pre><code>&lt;h1 style="color: green; background-color: blue;"&gt;Hello&lt;/h1&gt;</code></pre>
                     
                     <div class="demo">
@@ -144,7 +167,7 @@
                     </div>
 
                     <div class="warning">
-                        <strong>⚠️ Drawback:</strong> Not reusable, harder to maintain, mixes HTML and CSS.
+                        <strong>⚠️ Drawback:</strong> Not reusable, harder to maintain, mixes HTML and CSS, and fights the cascade.
                     </div>
                 </div>
 
@@ -192,7 +215,12 @@ body {
             <section id="selectors">
                 <h2>4) CSS Selectors</h2>
                 <div class="example-box">
-                    <p><strong>CSS selectors</strong> are used to "find" (or select) the HTML elements you want to style.</p>
+                    <p><strong>CSS selectors</strong> tell the browser which nodes in the document tree should receive a rule. Think of them as search queries over HTML: by tag name, class, id, attribute, state, or relationship.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-selectors.jpg" alt="CSS selector types: element, class, id, and attribute with matching HTML examples" loading="lazy">
+                        <div class="illustration-caption"><strong>Match precisely.</strong> Prefer classes for reusable UI; reserve IDs for unique landmarks; use attributes for form controls and links.</div>
+                    </div>
                 </div>
 
                 <h3>1. Element Selector</h3>
@@ -277,7 +305,12 @@ input[type="text"] {
 
                 <h3>Selector Specificity (Priority)</h3>
                 <div class="example-box">
-                    <p>When multiple selectors target the same element, specificity determines which style wins:</p>
+                    <p>When multiple selectors target the same element, <strong>specificity</strong> decides the winner. Count roughly: inline beats ID, ID beats class, class beats element. Equal specificity → last rule in the stylesheet wins.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-specificity.jpg" alt="CSS specificity pyramid from elements at the bottom to inline styles at the top" loading="lazy">
+                        <div class="illustration-caption"><strong>Climb carefully.</strong> High specificity is hard to override later — keep selectors as light as you can.</div>
+                    </div>
                     
                     <table>
                         <thead>
@@ -437,30 +470,24 @@ h1 {
             <section id="box-model">
                 <h2>6) Box Model</h2>
                 <div class="example-box">
-                    <p>Every HTML element is considered a box with the following structure:</p>
-                    
-                    <div style="text-align: center; margin: 2rem 0;">
-                        <div style="background: #e74c3c; padding: 20px; display: inline-block;">
-                            <strong style="color: white;">MARGIN</strong>
-                            <div style="background: #f39c12; padding: 20px; margin: 10px;">
-                                <strong style="color: white;">BORDER</strong>
-                                <div style="background: #2ecc71; padding: 20px; margin: 10px;">
-                                    <strong style="color: white;">PADDING</strong>
-                                    <div style="background: #3498db; padding: 20px; margin: 10px; color: white;">
-                                        <strong>CONTENT</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <p>Every HTML element is a rectangular <strong>box</strong>. Understanding that box is the foundation of spacing, sizing, and layout bugs. From the inside out: content → padding → border → margin.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-box-model.jpg" alt="CSS box model layers: content, padding, border, and margin with width and height arrows" loading="lazy">
+                        <div class="illustration-caption"><strong>Layers of space.</strong> Padding is inside the border; margin is outside. Backgrounds fill content + padding (and the border area depending on style).</div>
                     </div>
 
                     <h4>Order (Inside to Outside):</h4>
                     <ol>
-                        <li><strong>Content</strong> - The actual content (text, images)</li>
-                        <li><strong>Padding</strong> - Space around content, inside border</li>
-                        <li><strong>Border</strong> - Border around padding</li>
-                        <li><strong>Margin</strong> - Space outside border</li>
+                        <li><strong>Content</strong> — Text, images, or nested elements; sized by <code>width</code> / <code>height</code> (depending on <code>box-sizing</code>)</li>
+                        <li><strong>Padding</strong> — Inner breathing room between content and border; inherits the background</li>
+                        <li><strong>Border</strong> — Visible edge around the padding box</li>
+                        <li><strong>Margin</strong> — Outer gap that separates this box from siblings; transparent</li>
                     </ol>
+
+                    <div class="tip">
+                        <strong>💡 Debug tip:</strong> In DevTools, hover an element to see content (blue), padding (green), border (orange), and margin (orange/yellow) overlays.
+                    </div>
                 </div>
 
                 <h3>Margin</h3>
@@ -795,7 +822,12 @@ p::after {
             <section id="position">
                 <h2>9) Position Property</h2>
                 <div class="example-box">
-                    <p>Position allows you to place elements in various positions in the DOM.</p>
+                    <p>The <code>position</code> property controls how an element is placed in (or taken out of) normal document flow. Pair it with <code>top</code>, <code>right</code>, <code>bottom</code>, and <code>left</code> offsets — and often a positioned ancestor for absolute children.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-position.jpg" alt="Comparison of CSS position values: static, relative, absolute, fixed, and sticky" loading="lazy">
+                        <div class="illustration-caption"><strong>Five placement modes.</strong> Static = flow. Relative = nudge. Absolute = pin to ancestor. Fixed = pin to viewport. Sticky = switch between relative and fixed while scrolling.</div>
+                    </div>
                 </div>
 
                 <h3>position: static (Default)</h3>
@@ -1037,6 +1069,14 @@ p {
             <!-- RESPONSIVE -->
             <section id="responsive">
                 <h2>12) Responsive Web Design</h2>
+                <div class="example-box">
+                    <p>Responsive design makes one site usable across phone, tablet, and desktop. Start with a flexible layout (%, <code>fr</code>, Flexbox/Grid), a correct viewport meta tag, then refine with <strong>media queries</strong> at breakpoints.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-responsive.jpg" alt="Responsive layout adapting across phone, tablet, and desktop with media query breakpoints" loading="lazy">
+                        <div class="illustration-caption"><strong>One content, many viewports.</strong> Media queries change layout rules when the viewport crosses a breakpoint — they do not invent a second website.</div>
+                    </div>
+                </div>
 
                 <h3>Tool 1: Viewport Meta Tag</h3>
                 <div class="example-box">
@@ -1230,26 +1270,31 @@ body {
                 <h2>14) Flexbox Layout</h2>
                 <div class="example-box">
                     <h3>What is Flexbox?</h3>
-                    <p>CSS Flexbox is a <strong>one-dimensional</strong> layout pattern that makes it easy to design flexible and responsive layouts.</p>
+                    <p>CSS Flexbox is a <strong>one-dimensional</strong> layout model. You distribute space along a single main axis (row or column), then align items on the cross axis. Ideal for navbars, toolbars, card rows, and centering.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-flexbox.jpg" alt="Flexbox container with main axis justify-content and cross axis align-items labeled" loading="lazy">
+                        <div class="illustration-caption"><strong>Main vs cross.</strong> <code>justify-content</code> works along the main axis; <code>align-items</code> works along the cross axis. Flip <code>flex-direction</code> and the axes swap.</div>
+                    </div>
 
                     <h4>Benefits:</h4>
                     <ul>
-                        <li>✅ Flexible arrangement of items</li>
-                        <li>✅ Easy spacing and alignment</li>
-                        <li>✅ Control order of items</li>
-                        <li>✅ Bootstrap 4 & 5 built on Flexbox</li>
+                        <li>✅ Distribute free space with grow / shrink / basis</li>
+                        <li>✅ Align and space items without floats or absolute hacks</li>
+                        <li>✅ Reorder items visually with <code>order</code> (keep DOM order for accessibility)</li>
+                        <li>✅ Foundation of many UI kits (including Bootstrap’s flex utilities)</li>
                     </ul>
                 </div>
 
                 <h3>Terminology</h3>
                 <div class="example-box">
                     <ul>
-                        <li><strong>Flex Container</strong> - Parent element with <code>display: flex</code></li>
-                        <li><strong>Flex Items</strong> - Direct children of flex container</li>
-                        <li><strong>Main Axis</strong> - Primary direction (default: left to right)</li>
-                        <li><strong>Cross Axis</strong> - Perpendicular to main axis (default: top to bottom)</li>
-                        <li><strong>Main Size</strong> - Width along main axis</li>
-                        <li><strong>Cross Size</strong> - Height along cross axis</li>
+                        <li><strong>Flex Container</strong> — Parent with <code>display: flex</code> or <code>inline-flex</code></li>
+                        <li><strong>Flex Items</strong> — Direct children of that container</li>
+                        <li><strong>Main Axis</strong> — Direction set by <code>flex-direction</code> (default: left → right)</li>
+                        <li><strong>Cross Axis</strong> — Perpendicular to the main axis</li>
+                        <li><strong>Main Size</strong> — Size along the main axis</li>
+                        <li><strong>Cross Size</strong> — Size along the cross axis</li>
                     </ul>
                 </div>
 
@@ -1400,7 +1445,12 @@ flex: 2 1 200px;</code></pre>
                 <h2>15) CSS Grid Layout</h2>
                 <div class="example-box">
                     <h3>What is CSS Grid?</h3>
-                    <p>CSS Grid is a <strong>two-dimensional</strong> layout system for creating complex grid-based layouts.</p>
+                    <p>CSS Grid is a <strong>two-dimensional</strong> layout system. You define rows and columns (tracks), place items into cells, and control gaps. Use Grid for page shells, dashboards, and any layout that needs alignment in both directions at once.</p>
+
+                    <div class="illustration">
+                        <img src="/images/css/css-grid.jpg" alt="CSS Grid with labeled tracks, cells, gaps, and a spanning item compared to one-dimensional Flexbox" loading="lazy">
+                        <div class="illustration-caption"><strong>Tracks + cells + gaps.</strong> Grid owns the 2D map; Flexbox owns the 1D line. Many UIs combine both — Grid for the page, Flex for components inside cells.</div>
+                    </div>
 
                     <h4>Basic Usage:</h4>
                     <pre><code>.container {

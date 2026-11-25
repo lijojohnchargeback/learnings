@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete GCP Security Guide - IAM, KMS, Secret Manager, SCC, Cloud Armor">
+    <title>GCP Security - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔒 GCP Security</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">👤 Identity</div>
+            <div class="sidebar-links">
+                <a href="#overview" class="sidebar-link">Security Overview</a>
+                <a href="#iam" class="sidebar-link">IAM Basics</a>
+                <a href="#iam-flow" class="sidebar-link">IAM Flow</a>
+                <a href="#service-accounts" class="sidebar-link">Service Accounts</a>
+                <a href="#workload-identity" class="sidebar-link">Workload Identity</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🏛️ Governance</div>
+            <div class="sidebar-links">
+                <a href="#org-policies" class="sidebar-link">Organization Policies</a>
+                <a href="#resource-manager" class="sidebar-link">Resource Manager</a>
+                <a href="#shared-responsibility" class="sidebar-link">Shared Responsibility</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔑 Secrets &amp; Keys</div>
+            <div class="sidebar-links">
+                <a href="#secret-manager" class="sidebar-link">Secret Manager</a>
+                <a href="#kms" class="sidebar-link">Cloud KMS / HSM</a>
+                <a href="#certificates" class="sidebar-link">Certificate Manager</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🛡️ Detection &amp; Defense</div>
+            <div class="sidebar-links">
+                <a href="#scc" class="sidebar-link">Security Command Center</a>
+                <a href="#vpc-sc" class="sidebar-link">VPC Service Controls</a>
+                <a href="#armor" class="sidebar-link">Cloud Armor</a>
+                <a href="#binary-auth" class="sidebar-link">Binary Authorization</a>
+                <a href="#audit-logs" class="sidebar-link">Audit Logs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">✅ Practice</div>
+            <div class="sidebar-links">
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
+                <a href="#summary" class="sidebar-link">Summary</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🔒 GCP Security</h1>
+            <p>Complete Guide to IAM, Encryption, Detection &amp; Best Practices</p>
+        </header>
+
+        <section id="overview">
+            <h2>🎯 Security Overview</h2>
+
+            <figure class="topic-hero">
+                <img src="/images/gcp/gcp-security.jpg" alt="Abstract security visualization representing GCP identity and protection controls" loading="lazy" />
+                <figcaption>Security on GCP is layered: identity, network, encryption, detection, and governance. Miss one layer and the others cannot save you.</figcaption>
+            </figure>
+
+            <p class="topic-lede">GCP security is not a single product. It is <span class="highlight">IAM</span> for who can do what, network controls for who can talk to what, encryption for data at rest and in transit, and detection products for when something slips. AWS veterans will recognize the shapes — IAM, KMS, Secrets Manager, WAF, GuardDuty-like findings — but the binding model and org-policy toolkit are distinctly Google Cloud.</p>
+
+            <div class="stat-strip">
+                <div class="stat-chip"><strong>IAM</strong><span>Who × can do × what</span></div>
+                <div class="stat-chip"><strong>Org policy</strong><span>Guardrails</span></div>
+                <div class="stat-chip"><strong>CMEK</strong><span>Customer keys</span></div>
+                <div class="stat-chip"><strong>SCC</strong><span>Central findings</span></div>
+            </div>
+
+            <div class="use-when">
+                <div class="use-card yes">
+                    <h4>Security baseline</h4>
+                    <ul>
+                        <li>MFA / security keys for humans</li>
+                        <li>Least-privilege roles; no primitive roles in prod</li>
+                        <li>No long-lived SA JSON keys when WI/WIF works</li>
+                        <li>Org policies restricting public IPs and public buckets</li>
+                    </ul>
+                </div>
+                <div class="use-card no">
+                    <h4>Smell tests</h4>
+                    <ul>
+                        <li><code>roles/owner</code> on folders for convenience</li>
+                        <li>Shared “deploy” SA across all apps</li>
+                        <li>Secrets in source control or disk images</li>
+                        <li>Audit logs disabled or never reviewed</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="iam">
+            <h2>👤 IAM Basics</h2>
+
+            <p>GCP IAM answers: <strong>who</strong> (principal) can do <strong>what</strong> (role / permissions) on <strong>which resource</strong> (binding), optionally <strong>under what conditions</strong>.</p>
+
+            <table>
+                <tr><th>Concept</th><th>Meaning</th><th>AWS rough analogue</th></tr>
+                <tr>
+                    <td><strong>Principal</strong></td>
+                    <td>User, group, service account, domain, workforce/workforce federation identities</td>
+                    <td>IAM user/role principal</td>
+                </tr>
+                <tr>
+                    <td><strong>Role</strong></td>
+                    <td>Bundle of permissions (basic, predefined, custom)</td>
+                    <td>Managed / custom policies attached as permissions sets</td>
+                </tr>
+                <tr>
+                    <td><strong>Binding</strong></td>
+                    <td>Role ↔ members on a resource</td>
+                    <td>Policy statement attachment</td>
+                </tr>
+                <tr>
+                    <td><strong>Condition</strong></td>
+                    <td>CEL expression limiting when binding applies</td>
+                    <td>IAM condition keys</td>
+                </tr>
+                <tr>
+                    <td><strong>Policy</strong></td>
+                    <td>Collection of bindings on a resource</td>
+                    <td>Resource-based / identity policies (different structure)</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>Role types</h3>
+                <ul>
+                    <li><strong>Basic (primitive):</strong> Owner, Editor, Viewer — too coarse for production app access.</li>
+                    <li><strong>Predefined:</strong> curated jobs like <code>roles/run.developer</code>, <code>roles/storage.objectViewer</code>.</li>
+                    <li><strong>Custom:</strong> least privilege when predefined is still too wide.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 Inheritance:</strong> Bindings on org/folder/project inherit downward. A folder-level Editor is Editor on every child project — treat high-tree grants as radioactive.
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h3>IAM Conditions (examples)</h3>
+                <ul>
+                    <li>Allow access only from specific IP ranges.</li>
+                    <li>Allow a role only during a change window.</li>
+                    <li>Limit to resources with certain tags / attributes where supported.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="iam-flow">
+            <h2>🔄 IAM Flow Illustration</h2>
+
+            <div class="illustration">
+                <img src="/images/gcp/gcp-iam-flow.jpg" alt="Flow from principal through IAM policy bindings to Google Cloud API authorization decision">
+                <div class="illustration-caption">Principal presents credentials → Resource Manager finds applicable policies → roles expand to permissions → allow or deny the API call.</div>
+            </div>
+
+            <div class="example-box">
+                <h3>Walk an API call</h3>
+                <ol>
+                    <li>A Cloud Run service uses its runtime service account.</li>
+                    <li>It calls <code>storage.objects.get</code> on a bucket.</li>
+                    <li>IAM collects bindings from org → folder → project → bucket.</li>
+                    <li>If any binding grants a role containing that permission (and conditions pass), the call succeeds.</li>
+                    <li>Cloud Audit Logs records the access (when data access logs are enabled for the service).</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="service-accounts">
+            <h2>🤖 Service Accounts</h2>
+
+            <p><span class="highlight">Service accounts</span> are non-human identities for applications and VMs. Each should represent one workload or function.</p>
+
+            <div class="example-box">
+                <h3>Hard rules</h3>
+                <ul>
+                    <li>One SA per application / environment — never a company-wide “god” SA.</li>
+                    <li>Prefer attached SA on GCE/GKE/Cloud Run over downloaded JSON keys.</li>
+                    <li>If keys are unavoidable, rotate, restrict with org policy, and monitor key usage.</li>
+                    <li>Disable automatic reliance on the default Compute Engine SA in new projects when you can.</li>
+                    <li>Grant roles on the resources needed, not <code>roles/editor</code> on the project.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 AWS parallel:</strong> Instance profiles / task roles ≈ attaching a service account to a runtime. Long-lived access keys ≈ SA JSON keys (both are smellful).
+                </div>
+            </div>
+        </section>
+
+        <section id="workload-identity">
+            <h2>🔗 Workload Identity</h2>
+
+            <table>
+                <tr><th>Flavor</th><th>Purpose</th></tr>
+                <tr>
+                    <td><strong>Workload Identity (GKE)</strong></td>
+                    <td>Map Kubernetes service accounts to IAM service accounts — no node JSON keys</td>
+                </tr>
+                <tr>
+                    <td><strong>Workload Identity Federation</strong></td>
+                    <td>Exchange external IdP tokens (AWS, Azure AD, GitHub OIDC, etc.) for short-lived GCP credentials</td>
+                </tr>
+            </table>
+
+            <p>Federation kills the “CI pipeline stores a GCP key forever” anti-pattern. GitHub Actions → WIF → deploy to Cloud Run is a modern default.</p>
+        </section>
+
+        <section id="org-policies">
+            <h2>🏛️ Organization Policies</h2>
+
+            <p>Organization Policy Service sets <strong>guardrails</strong> inherited down the resource hierarchy — independent of who has IAM roles.</p>
+
+            <div class="example-box">
+                <h3>High-value constraints</h3>
+                <ul>
+                    <li>Restrict resource locations (data residency).</li>
+                    <li>Disable service account key creation.</li>
+                    <li>Restrict public IP creation on VMs.</li>
+                    <li>Enforce uniform bucket-level access / prevent public buckets.</li>
+                    <li>Require OS Login; disable legacy metadata SSH keys.</li>
+                    <li>Domain-restricted sharing for Cloud Storage / BigQuery.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 Think:</strong> IAM says what a principal <em>may</em> do. Org policy says what the organization <em>allows to exist</em>, even for Owners.
+                </div>
+            </div>
+        </section>
+
+        <section id="resource-manager">
+            <h2>📁 Resource Manager</h2>
+
+            <p>Resource Manager APIs govern organizations, folders, projects, and liens. Security teams use them to:</p>
+            <ul>
+                <li>Structure blast-radius boundaries (prod vs nonprod folders).</li>
+                <li>Apply IAM and org policies at the right altitude.</li>
+                <li>Prevent accidental project deletion with liens.</li>
+                <li>Inventory projects for shadow IT.</li>
+            </ul>
+        </section>
+
+        <section id="shared-responsibility">
+            <h2>🤝 Shared Responsibility</h2>
+
+            <div class="example-box">
+                <h3>You still own</h3>
+                <ul>
+                    <li>Identity lifecycle, MFA, and access reviews.</li>
+                    <li>Firewall rules, public exposure, and Shared VPC hygiene.</li>
+                    <li>Encryption settings (CMEK), secret storage, and key rotation policies.</li>
+                    <li>Patching guest OS on GCE (unless using managed runtimes).</li>
+                    <li>Application vulnerabilities and dependency risk.</li>
+                    <li>Log retention, monitoring, and incident response playbooks.</li>
+                </ul>
+                <p>Google owns physical security, hypervisor, and the managed control planes. “We are on GCP” is never the control narrative in an audit.</p>
+            </div>
+        </section>
+
+        <section id="secret-manager">
+            <h2>🔐 Secret Manager</h2>
+
+            <p>Store API keys, passwords, and certificates as versioned secrets with IAM on each secret.</p>
+            <ul>
+                <li>Pin or alias versions (<code>latest</code> carefully in prod).</li>
+                <li>Rotate by adding versions; update consumers; disable old versions.</li>
+                <li>Audit access; prefer CMEK for sensitive secrets.</li>
+                <li>AWS Secrets Manager analogue (Parameter Store-ish overlap too).</li>
+            </ul>
+        </section>
+
+        <section id="kms">
+            <h2>🗝️ Cloud KMS &amp; Cloud HSM</h2>
+
+            <table>
+                <tr><th>Option</th><th>Detail</th></tr>
+                <tr>
+                    <td><strong>Cloud KMS</strong></td>
+                    <td>Hosted key management; symmetric/asymmetric keys; CMEK integrations across GCS, BigQuery, PD, etc.</td>
+                </tr>
+                <tr>
+                    <td><strong>Cloud HSM</strong></td>
+                    <td>FIPS 140-2 Level 3 HSM-backed keys for higher assurance</td>
+                </tr>
+                <tr>
+                    <td><strong>EKM</strong></td>
+                    <td>External key manager patterns for keys outside Google</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>CMEK practice</h3>
+                <ul>
+                    <li>Separate key rings per environment; limit <code>cryptoKeyEncrypterDecrypter</code>.</li>
+                    <li>Turn on key rotation schedules where supported.</li>
+                    <li>Remember: destroying keys can destroy data access — governance required.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="certificates">
+            <h2>📜 Certificate Manager</h2>
+
+            <p>Manage SSL/TLS certificates for load balancers at scale: Google-managed certs, DNS authorizations, and maps for many hostnames.</p>
+            <ul>
+                <li>Prefer Google-managed certs when DNS can be validated automatically.</li>
+                <li>Use Certificate Manager maps instead of per-proxy classic cert sprawl.</li>
+            </ul>
+        </section>
+
+        <section id="scc">
+            <h2>📡 Security Command Center</h2>
+
+            <p><span class="highlight">Security Command Center (SCC)</span> centralizes security findings across assets: misconfigurations, vulnerabilities, threats.</p>
+            <ul>
+                <li>Standard / Premium tiers unlock deeper detectors and compliance reporting.</li>
+                <li>Integrate findings into ticketing / SIEM via Pub/Sub exports.</li>
+                <li>Closest portfolio analogue to Security Hub + bits of GuardDuty/Inspector findings aggregation.</li>
+            </ul>
+        </section>
+
+        <section id="vpc-sc">
+            <h2>🧱 VPC Service Controls</h2>
+
+            <p>VPC Service Controls create <strong>security perimeters</strong> around Google-managed services (GCS, BigQuery, etc.) to mitigate data exfiltration — even by principals who have IAM permission but are outside the perimeter context.</p>
+            <ul>
+                <li>Essential for sensitive data platforms on GCP.</li>
+                <li>Requires careful dry-run mode — easy to break legitimate analytics pipelines.</li>
+                <li>Complements, does not replace, IAM.</li>
+            </ul>
+        </section>
+
+        <section id="armor">
+            <h2>🛡️ Cloud Armor</h2>
+
+            <p>Edge WAF / Layer 7 filtering on HTTP(S) load balancers: IP rules, preconfigured WAF signatures, rate limiting, bot management, adaptive protection.</p>
+            <ul>
+                <li>Deploy in preview → log → enforce.</li>
+                <li>Pair with global LB for internet-facing apps.</li>
+                <li>AWS WAF / Shield conceptual overlap.</li>
+            </ul>
+        </section>
+
+        <section id="binary-auth">
+            <h2>📦 Binary Authorization</h2>
+
+            <p>Enforce that only trusted, signed container images deploy to GKE (and supported Cloud Run configurations).</p>
+            <ul>
+                <li>Attestors sign images after CI policy checks.</li>
+                <li>Breakglass procedures for incidents — document them.</li>
+                <li>Pairs with Artifact Analysis / vulnerability scanning.</li>
+            </ul>
+        </section>
+
+        <section id="audit-logs">
+            <h2>📝 Audit Logs</h2>
+
+            <table>
+                <tr><th>Type</th><th>Contents</th><th>Notes</th></tr>
+                <tr>
+                    <td><strong>Admin Activity</strong></td>
+                    <td>Config changes</td>
+                    <td>On by default; retain carefully</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Access</strong></td>
+                    <td>Reads/writes of user data</td>
+                    <td>Enable where compliance needs; can be high volume</td>
+                </tr>
+                <tr>
+                    <td><strong>System Event</strong></td>
+                    <td>Google-generated system events</td>
+                    <td>Infrastructure happenings</td>
+                </tr>
+                <tr>
+                    <td><strong>Policy Denied</strong></td>
+                    <td>VPC SC / policy denials</td>
+                    <td>Gold for perimeter debugging</td>
+                </tr>
+            </table>
+
+            <div class="tip">
+                <strong>💡 Forensics tip:</strong> Export audit logs to a dedicated logging project/bucket with immutable retention. Don’t keep your only copy in the same project an attacker can edit.
+            </div>
+        </section>
+
+        <section id="best-practices">
+            <h2>✅ Best Practices</h2>
+
+            <div class="example-box">
+                <h3>Identity</h3>
+                <ul>
+                    <li>Google groups for humans; bind groups to roles, not individuals, when possible.</li>
+                    <li>Security keys / phishing-resistant MFA for admins.</li>
+                    <li>Regular access reviews; remove Editor/Owner sprawl.</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>Workload</h3>
+                <ul>
+                    <li>Workload Identity / WIF everywhere practical.</li>
+                    <li>Secret Manager + CMEK for sensitive material.</li>
+                    <li>Binary Authorization on production GKE.</li>
+                    <li>Private networking + Cloud Armor on public HTTP.</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>Governance</h3>
+                <ul>
+                    <li>Org policies before the first public bucket incident.</li>
+                    <li>SCC Premium (or equivalent tooling) with owned SLAs on findings.</li>
+                    <li>VPC SC for regulated data domains.</li>
+                    <li>Separate prod/nonprod; separate break-glass accounts.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="summary">
+            <h2>📋 Summary</h2>
+
+            <div class="info-box premium">
+                <h3>Exam &amp; interview quick reference</h3>
+                <ul>
+                    <li><strong>IAM:</strong> principal + role + resource (+ condition)</li>
+                    <li><strong>Avoid primitive roles</strong> in production app paths</li>
+                    <li><strong>Service accounts</strong> per workload; prefer no JSON keys</li>
+                    <li><strong>Workload Identity / WIF</strong> over static keys</li>
+                    <li><strong>Org policies</strong> = hard guardrails</li>
+                    <li><strong>Secret Manager + Cloud KMS</strong> for secrets/keys</li>
+                    <li><strong>SCC</strong> for centralized findings</li>
+                    <li><strong>VPC SC</strong> against exfiltration from managed services</li>
+                    <li><strong>Cloud Armor</strong> on HTTP(S) LB</li>
+                    <li><strong>Binary Authorization</strong> for deploy-time trust</li>
+                    <li><strong>AWS IAM ↔ GCP IAM</strong> (policy languages differ)</li>
+                </ul>
+            </div>
+
+            <div class="stat-strip">
+                <div class="stat-chip"><strong>Prevent</strong><span>IAM + org policy</span></div>
+                <div class="stat-chip"><strong>Protect</strong><span>VPC + Armor + CMEK</span></div>
+                <div class="stat-chip"><strong>Detect</strong><span>SCC + audit logs</span></div>
+                <div class="stat-chip"><strong>Respond</strong><span>Playbooks + sinks</span></div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

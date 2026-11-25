@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Concurrency - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🧵 Concurrency</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Choose Wisely</div>
+            <div class="sidebar-links">
+                <a href="#choose" class="sidebar-link">Threads vs Processes</a>
+                <a href="#gil-recap" class="sidebar-link">GIL Recap</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Threading</div>
+            <div class="sidebar-links">
+                <a href="#threading" class="sidebar-link">threading</a>
+                <a href="#locks" class="sidebar-link">Locks &amp; Safety</a>
+                <a href="#thread-pool" class="sidebar-link">ThreadPoolExecutor</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Processes</div>
+            <div class="sidebar-links">
+                <a href="#multiprocessing" class="sidebar-link">multiprocessing</a>
+                <a href="#process-pool" class="sidebar-link">ProcessPoolExecutor</a>
+                <a href="#shared" class="sidebar-link">Sharing State</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Production</div>
+            <div class="sidebar-links">
+                <a href="#queues" class="sidebar-link">Queues</a>
+                <a href="#patterns" class="sidebar-link">Patterns</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🧵 Python Concurrency</h1>
+            <p>Threading, multiprocessing, pools, and when to use each — beyond asyncio</p>
+        </header>
+
+        <section id="choose">
+            <h2>🧭 Threads vs Processes vs Async</h2>
+            <table>
+                <tr><th>Tool</th><th>Best for</th><th>Parallel CPU?</th></tr>
+                <tr><td><strong>threading</strong></td><td>I/O-bound, blocking libs</td><td>❌ (GIL)</td></tr>
+                <tr><td><strong>asyncio</strong></td><td>Many sockets / HTTP calls</td><td>❌ (single thread)</td></tr>
+                <tr><td><strong>multiprocessing</strong></td><td>CPU-bound Python</td><td>✅</td></tr>
+                <tr><td><strong>Process pool + async</strong></td><td>Mixed I/O + CPU</td><td>✅ for CPU part</td></tr>
+            </table>
+
+            <div class="info-box">
+                <p>If the library is blocking (e.g. classic <code>requests</code>, many DB drivers), use threads or run it in an executor from asyncio. If the work is pure Python math/loops, use processes.</p>
+            </div>
+        </section>
+
+        <section id="gil-recap">
+            <h2>🔒 GIL Recap</h2>
+            <p>Only one thread executes Python bytecode at a time. During I/O waits (and in many C extensions), the GIL is released — so threads still overlap waiting time.</p>
+            <div class="code-block"># I/O overlap works with threads
+import threading, urllib.request
+
+urls = ["https://example.com"] * 10
+
+def fetch(url):
+    with urllib.request.urlopen(url, timeout=10) as r:
+        return len(r.read())
+
+threads = [threading.Thread(target=fetch, args=(u,)) for u in urls]
+for t in threads: t.start()
+for t in threads: t.join()</div>
+        </section>
+
+        <section id="threading">
+            <h2>🧵 threading Module</h2>
+            <div class="code-block">import threading
+import time
+
+def worker(name: str, delay: float) -&gt; None:
+    time.sleep(delay)
+    print(f"{name} done")
+
+t = threading.Thread(target=worker, args=("A", 1.0), daemon=True)
+t.start()
+t.join(timeout=2)
+
+# Thread subclass
+class Job(threading.Thread):
+    def __init__(self, n):
+        super().__init__()
+        self.n = n
+        self.result = None
+
+    def run(self):
+        self.result = sum(range(self.n))
+
+job = Job(1_000_000)
+job.start()
+job.join()
+print(job.result)</div>
+        </section>
+
+        <section id="locks">
+            <h2>🔐 Locks &amp; Thread Safety</h2>
+            <p>Shared mutable state needs synchronization. Prefer queues over hand-rolled locks when possible.</p>
+
+            <div class="code-block">import threading
+
+counter = 0
+lock = threading.Lock()
+
+def inc(n):
+    global counter
+    for _ in range(n):
+        with lock:
+            counter += 1
+
+threads = [threading.Thread(target=inc, args=(100_000,)) for _ in range(4)]
+for t in threads: t.start()
+for t in threads: t.join()
+print(counter)  # 400000
+
+# Other primitives:
+# threading.RLock()       — re-entrant lock
+# threading.Event()       — signal one-time/flag
+# threading.Condition()   — wait/notify
+# threading.Semaphore(n)  — limit concurrency
+# threading.local()       — per-thread storage</div>
+        </section>
+
+        <section id="thread-pool">
+            <h2>🏊 ThreadPoolExecutor</h2>
+            <div class="code-block">from concurrent.futures import ThreadPoolExecutor, as_completed
+import urllib.request
+
+def fetch_len(url: str) -&gt; int:
+    with urllib.request.urlopen(url, timeout=10) as r:
+        return len(r.read())
+
+urls = ["https://example.com", "https://httpbin.org/get"]
+
+with ThreadPoolExecutor(max_workers=8) as pool:
+    futures = {pool.submit(fetch_len, u): u for u in urls}
+    for fut in as_completed(futures):
+        print(futures[fut], fut.result())
+
+# map preserves input order
+with ThreadPoolExecutor() as pool:
+    lengths = list(pool.map(fetch_len, urls))</div>
+        </section>
+
+        <section id="multiprocessing">
+            <h2>⚙️ multiprocessing</h2>
+            <p>Each process has its own Python interpreter and GIL — true multi-core parallelism. Startup is heavier; arguments must be picklable.</p>
+
+            <div class="code-block">from multiprocessing import Process, Queue
+
+def compute(n, out: Queue):
+    out.put(sum(i * i for i in range(n)))
+
+if __name__ == "__main__":
+    q = Queue()
+    procs = [Process(target=compute, args=(5_000_000, q)) for _ in range(4)]
+    for p in procs: p.start()
+    for p in procs: p.join()
+    print([q.get() for _ in procs])</div>
+
+            <div class="info-box">
+                <strong>⚠️ Windows:</strong> Guard entry points with <code>if __name__ == "__main__":</code> so child processes don’t re-import and spawn forever.
+            </div>
+        </section>
+
+        <section id="process-pool">
+            <h2>🏊 ProcessPoolExecutor</h2>
+            <div class="code-block">from concurrent.futures import ProcessPoolExecutor
+
+def cpu_heavy(n: int) -&gt; int:
+    return sum(i * i for i in range(n))
+
+if __name__ == "__main__":
+    data = [3_000_000, 3_000_000, 3_000_000, 3_000_000]
+    with ProcessPoolExecutor() as pool:
+        print(list(pool.map(cpu_heavy, data)))</div>
+        </section>
+
+        <section id="shared">
+            <h2>🤝 Sharing State Between Processes</h2>
+            <div class="code-block">from multiprocessing import Process, Value, Array, Manager
+
+def bump(counter: Value):
+    with counter.get_lock():
+        counter.value += 1
+
+if __name__ == "__main__":
+    counter = Value("i", 0)
+    procs = [Process(target=bump, args=(counter,)) for _ in range(8)]
+    for p in procs: p.start()
+    for p in procs: p.join()
+    print(counter.value)
+
+    # Manager — flexible but slower (proxy objects over pipes)
+    with Manager() as m:
+        shared = m.dict(count=0)
+        # pass shared to workers...</div>
+        </section>
+
+        <section id="queues">
+            <h2>📬 Queues (Producer / Consumer)</h2>
+            <div class="code-block">from queue import Queue
+import threading
+
+q: Queue[str] = Queue(maxsize=100)
+
+def producer():
+    for i in range(20):
+        q.put(f"job-{i}")
+    q.put(None)  # sentinel
+
+def consumer():
+    while True:
+        item = q.get()
+        if item is None:
+            q.task_done()
+            break
+        print("processing", item)
+        q.task_done()
+
+threading.Thread(target=producer).start()
+threading.Thread(target=consumer).start()
+q.join()
+
+# Cross-process: multiprocessing.Queue
+# Distributed: Redis / RabbitMQ / SQS for multi-machine workers</div>
+        </section>
+
+        <section id="patterns">
+            <h2>🧩 Production Patterns</h2>
+            <table>
+                <tr><th>Pattern</th><th>Use when</th></tr>
+                <tr><td>Thread pool around blocking I/O</td><td>Legacy sync HTTP/DB clients inside async apps</td></tr>
+                <tr><td>Process pool for CPU</td><td>Image processing, parsing, ML feature compute</td></tr>
+                <tr><td>Job queue (Celery / RQ / Arq)</td><td>Background work, retries, horizontal scale</td></tr>
+                <tr><td>asyncio + <code>to_thread</code></td><td>Occasional blocking call in async service</td></tr>
+            </table>
+
+            <div class="code-block">import asyncio
+
+async def mixed():
+    # Python 3.9+
+    result = await asyncio.to_thread(blocking_db_call, user_id)
+    return result
+
+# Rules of thumb
+# 1. Don't share mutable state across threads without locks/queues
+# 2. Prefer message-passing over shared memory
+# 3. Cap pool sizes — unbounded threads will melt your machine
+# 4. Measure: time.perf_counter, cProfile, py-spy</div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

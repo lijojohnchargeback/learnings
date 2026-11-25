@@ -78,18 +78,23 @@ export const categories = [
         name: 'Python',
         icon: '🐍',
         color: '#3776ab',
-        description: 'Python from basics to web frameworks, APIs, databases, and testing',
+        description: 'Python from basics to internals, advanced patterns, concurrency, typing, and backends',
         topics: [
             { id: 'python-basics', title: 'Python Basics', file: 'Python/python-basics.html' },
             { id: 'python-data-structures', title: 'Python Data Structures', file: 'Python/python-data-structures.html' },
             { id: 'python-functions-modules', title: 'Python Functions & Modules', file: 'Python/python-functions-modules.html' },
             { id: 'python-oop', title: 'Python OOP', file: 'Python/python-oop.html' },
+            { id: 'python-how-it-works', title: 'How Python Works', file: 'Python/python-how-it-works.html' },
+            { id: 'python-advanced', title: 'Advanced Python', file: 'Python/python-advanced.html' },
+            { id: 'python-typing', title: 'Python Type Hints', file: 'Python/python-typing.html' },
             { id: 'python-web-frameworks', title: 'Python Web Frameworks', file: 'Python/python-web-frameworks.html' },
             { id: 'python-async', title: 'Python Async', file: 'Python/python-async.html' },
+            { id: 'python-concurrency', title: 'Python Concurrency', file: 'Python/python-concurrency.html' },
             { id: 'python-apis', title: 'Python REST APIs', file: 'Python/python-apis.html' },
             { id: 'python-databases', title: 'Python Databases', file: 'Python/python-databases.html' },
             { id: 'python-environment', title: 'Python Environment & Tooling', file: 'Python/python-environment.html' },
-            { id: 'python-testing', title: 'Python Testing', file: 'Python/python-testing.html' }
+            { id: 'python-testing', title: 'Python Testing', file: 'Python/python-testing.html' },
+            { id: 'python-performance', title: 'Python Performance', file: 'Python/python-performance.html' }
         ]
     },
     {
@@ -149,6 +154,20 @@ export const categories = [
             { id: 'aws-security', title: 'Security', file: 'AWS/aws-security.html' }
         ]
     },
+    {
+        id: 'gcp',
+        name: 'GCP',
+        icon: '☁️',
+        color: '#4285f4',
+        description: 'Google Cloud Platform — compute, storage, networking, and security',
+        topics: [
+            { id: 'gcp-overview', title: 'GCP Overview', file: 'GCP/gcp-overview.html' },
+            { id: 'gcp-compute', title: 'Compute Services', file: 'GCP/gcp-compute.html' },
+            { id: 'gcp-storage', title: 'Storage Services', file: 'GCP/gcp-storage.html' },
+            { id: 'gcp-networking', title: 'Networking', file: 'GCP/gcp-networking.html' },
+            { id: 'gcp-security', title: 'Security', file: 'GCP/gcp-security.html' }
+        ]
+    },
     // SE path: Domains — AI & ML, then Production AI path
     {
         id: 'ai-ml',
@@ -168,7 +187,6 @@ export const categories = [
         color: '#7c3aed',
         description: 'AI Engineer → Production AI Engineer: software, ML, LLMs, RAG, agents, MCP, voice, cloud, LLMOps, and enterprise architecture',
         topics: [
-            { id: 'pai-software-engineering', title: 'Software Engineering Intro', file: 'Production AI/software-engineering.html' },
             { id: 'pai-ml-fundamentals', title: 'AI / ML Fundamentals', file: 'Production AI/ml-fundamentals.html' },
             { id: 'pai-deep-learning', title: 'Deep Learning & Transformers', file: 'Production AI/deep-learning.html' },
             { id: 'pai-generative-ai', title: 'Generative AI & LLM Engineering', file: 'Production AI/generative-ai.html' },

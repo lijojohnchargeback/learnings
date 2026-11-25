@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete GCP Networking Guide - VPC, Load Balancing, Cloud DNS, Interconnect">
+    <title>GCP Networking - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🌐 GCP Networking</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#vpc" class="sidebar-link">VPC Fundamentals</a>
+                <a href="#subnets" class="sidebar-link">Subnets</a>
+                <a href="#firewall" class="sidebar-link">Firewall Rules</a>
+                <a href="#vpc-layout" class="sidebar-link">VPC Layout</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔄 Connectivity</div>
+            <div class="sidebar-links">
+                <a href="#nat" class="sidebar-link">Cloud NAT</a>
+                <a href="#router" class="sidebar-link">Cloud Router</a>
+                <a href="#private-access" class="sidebar-link">Private Google Access</a>
+                <a href="#peering" class="sidebar-link">Peering / Shared VPC / PSC</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚖️ Load Balancing &amp; DNS</div>
+            <div class="sidebar-links">
+                <a href="#load-balancing" class="sidebar-link">Cloud Load Balancing</a>
+                <a href="#dns" class="sidebar-link">Cloud DNS</a>
+                <a href="#cdn" class="sidebar-link">Cloud CDN</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🔗 Hybrid &amp; Edge</div>
+            <div class="sidebar-links">
+                <a href="#hybrid" class="sidebar-link">Interconnect &amp; VPN</a>
+                <a href="#armor" class="sidebar-link">Cloud Armor</a>
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🌐 GCP Networking</h1>
+            <p>Complete Guide to VPC, Load Balancing, Cloud DNS, Hybrid Connectivity &amp; More</p>
+        </header>
+
+        <section id="vpc">
+            <h2>☁️ VPC Fundamentals</h2>
+
+            <figure class="topic-hero">
+                <img src="/images/gcp/gcp-networking.jpg" alt="Network topology visualization for Google Cloud networking" loading="lazy" />
+                <figcaption>A VPC is your private SD-WAN inside Google Cloud: subnets, routes, and firewalls define who can talk to whom.</figcaption>
+            </figure>
+
+            <p class="topic-lede">A <span class="highlight">Virtual Private Cloud (VPC)</span> on GCP is a global software-defined network. Unlike AWS, where a VPC is regional, a GCP VPC spans all regions; you create <strong>regional subnets</strong> inside it. That single difference reshapes how you draw diagrams and share networks across teams.</p>
+
+            <div class="stat-strip">
+                <div class="stat-chip"><strong>Global</strong><span>VPC scope</span></div>
+                <div class="stat-chip"><strong>Regional</strong><span>Subnet scope</span></div>
+                <div class="stat-chip"><strong>Stateful</strong><span>Firewall rules</span></div>
+                <div class="stat-chip"><strong>Anycast</strong><span>Global HTTP(S) LB</span></div>
+            </div>
+
+            <div class="example-box">
+                <h3>Core VPC objects</h3>
+                <ul>
+                    <li><strong>VPC network</strong> — global container for subnets and routes.</li>
+                    <li><strong>Subnet</strong> — regional IP range (primary + optional secondary ranges for GKE/alias IPs).</li>
+                    <li><strong>Routes</strong> — system-generated + custom; define packet next hops.</li>
+                    <li><strong>Firewall rules</strong> — allow/deny based on tags, service accounts, or ranges.</li>
+                    <li><strong>Peering / Shared VPC / PSC</strong> — connect networks and managed services privately.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 AWS parallel:</strong> VPC ≈ VPC, but AWS VPC is regional. AWS AZ subnets ≈ GCP regional subnets spanning the region’s zones. Security groups ≈ firewall rules targeting tags/SAs (not identical).
+                </div>
+            </div>
+
+            <div class="use-when">
+                <div class="use-card yes">
+                    <h4>Design defaults that work</h4>
+                    <ul>
+                        <li>One Shared VPC host for many service projects (enterprises)</li>
+                        <li>Private VMs + Cloud NAT for egress</li>
+                        <li>Global HTTP(S) LB for public HTTPS apps</li>
+                    </ul>
+                </div>
+                <div class="use-card no">
+                    <h4>Avoid</h4>
+                    <ul>
+                        <li>Flat <code>0.0.0.0/0</code> allow on SSH/RDP</li>
+                        <li>Public IPs on every VM “for convenience”</li>
+                        <li>Overlapping CIDRs before peering needs appear</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="subnets">
+            <h2>🗺️ Subnets (Regional)</h2>
+
+            <p>Subnets are <strong>regional</strong>: resources in any zone of that region can use the subnet. You can enable <strong>private Google access</strong> so VMs without public IPs reach Google APIs.</p>
+
+            <table>
+                <tr><th>Topic</th><th>Detail</th></tr>
+                <tr>
+                    <td><strong>Primary range</strong></td>
+                    <td>VM primary NICs / primary pod routing as designed</td>
+                </tr>
+                <tr>
+                    <td><strong>Secondary ranges</strong></td>
+                    <td>Alias IPs — critical for GKE pods/services</td>
+                </tr>
+                <tr>
+                    <td><strong>Auto vs custom mode</strong></td>
+                    <td>Auto creates subnets per region; custom is preferred for production</td>
+                </tr>
+                <tr>
+                    <td><strong>Expansion</strong></td>
+                    <td>You can expand subnet ranges carefully; plan CIDRs early</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>CIDR planning tips</h3>
+                <ul>
+                    <li>Leave headroom for GKE secondary ranges.</li>
+                    <li>Avoid ranges that collide with on-prem or partner networks.</li>
+                    <li>Document allocations in a central IPAM sheet or product.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="firewall">
+            <h2>🔥 Firewall Rules</h2>
+
+            <p>VPC firewall rules are <strong>stateful</strong> allow/deny rules evaluated on ingress/egress. Targets can be all instances, network tags, or service accounts.</p>
+
+            <div class="example-box">
+                <h3>Practical patterns</h3>
+                <ul>
+                    <li>Prefer <strong>service account targets</strong> for identity-aware microsegmentation.</li>
+                    <li>Use tags for coarse roles (<code>web</code>, <code>data</code>) when SAs are heavy-handed.</li>
+                    <li>Implicit deny ingress; default egress allow — tighten egress when threats require it.</li>
+                    <li>Priority numbers matter (lower number = higher priority).</li>
+                    <li>Enable VPC Flow Logs on subnets that need forensics.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 vs Security Groups / NACLs:</strong> GCP firewall rules cover much of what AWS SGs do. Hierarchical Firewall Policies add org-level guardrails similar in spirit to centralized control.
+                </div>
+            </div>
+        </section>
+
+        <section id="vpc-layout">
+            <h2>📐 VPC Layout Illustration</h2>
+
+            <div class="illustration">
+                <img src="/images/gcp/gcp-vpc-layout.jpg" alt="Example GCP VPC layout with regional subnets, Cloud NAT, load balancer, and hybrid interconnect">
+                <div class="illustration-caption">Public HTTPS hits a global LB; backends live in private subnets; NAT handles egress; Interconnect/VPN reaches on-prem.</div>
+            </div>
+
+            <div class="example-box">
+                <h3>Reference layout</h3>
+                <ol>
+                    <li>Global external HTTP(S) load balancer + Cloud Armor.</li>
+                    <li>Backends: Cloud Run / GKE / MIGs in private subnets across zones.</li>
+                    <li>Cloud SQL / Memorystore on private IP via PSC or private services access.</li>
+                    <li>Cloud NAT + Cloud Router for controlled egress.</li>
+                    <li>Cloud VPN or Interconnect for hybrid.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="nat">
+            <h2>🚪 Cloud NAT</h2>
+
+            <p><span class="highlight">Cloud NAT</span> lets private VMs and private GKE nodes initiate outbound connections without public IPs. Pair with Cloud Router.</p>
+            <ul>
+                <li>Choose automatic or manual NAT IP allocation; watch port exhaustion under high concurrency.</li>
+                <li>Logs help debug who talked outbound.</li>
+                <li>AWS NAT Gateway analogue (mechanics differ).</li>
+            </ul>
+        </section>
+
+        <section id="router">
+            <h2>🛰️ Cloud Router</h2>
+
+            <p>Cloud Router exchanges BGP routes for Cloud NAT, Cloud VPN, and Cloud Interconnect. It is the control-plane piece that keeps hybrid and dynamic NAT topologies alive.</p>
+            <ul>
+                <li>Advertise custom IP ranges carefully.</li>
+                <li>Use dual routers / dual tunnels for HA VPN designs.</li>
+            </ul>
+        </section>
+
+        <section id="private-access">
+            <h2>🔒 Private Google Access &amp; Private Services</h2>
+
+            <div class="example-box">
+                <h3>Options you’ll actually use</h3>
+                <ul>
+                    <li><strong>Private Google Access</strong> — VMs without public IPs reach <code>googleapis.com</code> / Restricted Google APIs.</li>
+                    <li><strong>Private Google Access for on-prem</strong> — via hybrid connectivity + DNS.</li>
+                    <li><strong>Private services access</strong> — allocated peering range for managed services (classic Cloud SQL private IP).</li>
+                    <li><strong>Private Service Connect (PSC)</strong> — consumer endpoints to producer services without VPC peering sprawl; preferred modern pattern.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="peering">
+            <h2>🤝 VPC Peering, Shared VPC &amp; PSC</h2>
+
+            <table>
+                <tr><th>Pattern</th><th>What it does</th><th>When</th></tr>
+                <tr>
+                    <td><strong>VPC Network Peering</strong></td>
+                    <td>Connect two VPC networks (no transitive peering)</td>
+                    <td>Simple project-to-project private reachability</td>
+                </tr>
+                <tr>
+                    <td><strong>Shared VPC</strong></td>
+                    <td>Host project owns network; service projects attach</td>
+                    <td>Central networking team + many app teams</td>
+                </tr>
+                <tr>
+                    <td><strong>Private Service Connect</strong></td>
+                    <td>Private endpoints to services / published APIs</td>
+                    <td>Consume SaaS/managed services privately at scale</td>
+                </tr>
+            </table>
+
+            <div class="tip">
+                <strong>💡 Enterprise default:</strong> Shared VPC for internal east-west; PSC for managed service consumption; minimize mesh peering.
+            </div>
+        </section>
+
+        <section id="load-balancing">
+            <h2>⚖️ Cloud Load Balancing</h2>
+
+            <p>GCP’s load balancing portfolio is a major differentiator: <span class="highlight">global external HTTP(S)</span> uses Anycast to front backends in one or many regions.</p>
+
+            <table>
+                <tr><th>Type</th><th>Scope</th><th>Use</th></tr>
+                <tr>
+                    <td><strong>Global external HTTP(S)</strong></td>
+                    <td>Global</td>
+                    <td>Web/API, URL maps, SSL, CDN, Armor</td>
+                </tr>
+                <tr>
+                    <td><strong>Regional external HTTP(S)</strong></td>
+                    <td>Regional</td>
+                    <td>Region-scoped HTTP needs / proxy</td>
+                </tr>
+                <tr>
+                    <td><strong>TCP/UDP external passthrough</strong></td>
+                    <td>Regional / global variants</td>
+                    <td>Non-HTTP, gaming, custom TCP</td>
+                </tr>
+                <tr>
+                    <td><strong>Internal HTTP(S) / passthrough</strong></td>
+                    <td>Regional</td>
+                    <td>East-west microservices, internal VIPs</td>
+                </tr>
+                <tr>
+                    <td><strong>Proxy Network LB</strong></td>
+                    <td>Regional / global options</td>
+                    <td>TLS/TCP proxy use cases</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>Building blocks</h3>
+                <ul>
+                    <li>Forwarding rules, target proxies, URL maps.</li>
+                    <li>Backend services + health checks + NEGs / MIGs / serverless NEGs.</li>
+                    <li>Certificate Manager or classic SSL certs on HTTPS proxies.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 AWS mapping:</strong> ALB+CloudFront+sometimes Global Accelerator often collapse toward global HTTP(S) LB + Cloud CDN on GCP.
+                </div>
+            </div>
+        </section>
+
+        <section id="dns">
+            <h2>🧭 Cloud DNS</h2>
+
+            <p>Managed authoritative DNS for public and private zones. Supports split views, peering of private zones, and routing policies.</p>
+            <ul>
+                <li>Public zones for internet names (Route 53 public analogue).</li>
+                <li>Private zones visible inside specified VPCs.</li>
+                <li>Use DNS peering / forwarding for hybrid name resolution.</li>
+            </ul>
+        </section>
+
+        <section id="cdn">
+            <h2>🌍 Cloud CDN (Brief)</h2>
+
+            <p>Enable Cloud CDN on backend services behind the global external HTTP(S) load balancer to cache at the edge. Prefer versioned static assets; invalidate carefully. See the Storage guide for object-origin patterns.</p>
+        </section>
+
+        <section id="hybrid">
+            <h2>🔗 Hybrid Connectivity</h2>
+
+            <table>
+                <tr><th>Option</th><th>Characteristics</th><th>When</th></tr>
+                <tr>
+                    <td><strong>Cloud VPN (HA VPN)</strong></td>
+                    <td>IPsec over internet; HA with dual tunnels</td>
+                    <td>Quick hybrid, moderate bandwidth</td>
+                </tr>
+                <tr>
+                    <td><strong>Dedicated Interconnect</strong></td>
+                    <td>Physical circuits into Google</td>
+                    <td>High bandwidth, consistent latency</td>
+                </tr>
+                <tr>
+                    <td><strong>Partner Interconnect</strong></td>
+                    <td>Via service provider</td>
+                    <td>When dedicated colo is impractical</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>Hybrid checklist</h3>
+                <ul>
+                    <li>Non-overlapping CIDRs.</li>
+                    <li>Redundant tunnels/circuits in separate failure domains.</li>
+                    <li>Cloud Router BGP timers and advertisements understood by both sides.</li>
+                    <li>DNS resolution strategy agreed (forwarding vs conditional).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="armor">
+            <h2>🛡️ Cloud Armor</h2>
+
+            <p><span class="highlight">Cloud Armor</span> attaches security policies to HTTP(S) load balancers: IP allow/deny, WAF rules, bot management, adaptive protection / DDoS-related controls.</p>
+            <ul>
+                <li>AWS WAF + Shield-like capabilities in one policy surface (not a perfect 1:1).</li>
+                <li>Start with preview/logging before enforce mode on production traffic.</li>
+                <li>Combine with Identity-Aware Proxy when you need user identity at the edge for internal apps.</li>
+            </ul>
+        </section>
+
+        <section id="best-practices">
+            <h2>✅ Best Practices</h2>
+
+            <div class="example-box">
+                <h3>Do this by default</h3>
+                <ul>
+                    <li>Custom-mode VPC; planned CIDRs; Shared VPC for multi-team orgs.</li>
+                    <li>No public IPs on backends; LB + NAT only where needed.</li>
+                    <li>Firewall by service account; Hierarchical policies for org deny lists.</li>
+                    <li>PSC for private service consumption.</li>
+                    <li>Flow logs + Packet Mirroring selectively for incident response.</li>
+                    <li>Global HTTP(S) LB for public web; don’t reinvent multi-region Anycast.</li>
+                </ul>
+            </div>
+
+            <div class="info-box premium">
+                <h3>Exam &amp; interview quick reference</h3>
+                <ul>
+                    <li><strong>VPC is global; subnets are regional</strong></li>
+                    <li><strong>Firewall rules</strong> — stateful; tags or service accounts</li>
+                    <li><strong>Cloud NAT</strong> — egress without public IPs</li>
+                    <li><strong>Shared VPC</strong> — host + service projects</li>
+                    <li><strong>PSC</strong> — modern private service endpoints</li>
+                    <li><strong>Global HTTP(S) LB</strong> — Anycast frontend</li>
+                    <li><strong>Cloud Armor</strong> — WAF on HTTP(S) LB</li>
+                    <li><strong>HA VPN / Interconnect</strong> — hybrid paths</li>
+                    <li><strong>AWS VPC ↔ GCP VPC</strong> (scope differs)</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

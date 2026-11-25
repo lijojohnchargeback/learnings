@@ -46,11 +46,69 @@
             <div class="sidebar-links">
                 <a href="#meta" class="sidebar-link">Meta Tags</a>
                 <a href="#entities" class="sidebar-link">Entities</a>
+                <a href="#difference" class="sidebar-link">HTML vs HTML5</a>
+                <a href="#programming" class="sidebar-link">Programming</a>
+                <a href="#reference" class="sidebar-link">Quick Reference</a>
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
             </div>
         </div>
     </aside>
     
     <div class="container">
+        <style>
+            .illustration {
+                text-align: center;
+                margin: 2.5rem 0;
+                padding: 1.5rem;
+                background: linear-gradient(135deg, #fff7ed 0%, #f8fafc 100%);
+                border-radius: 20px;
+                border: 1px solid #fed7aa;
+            }
+            .illustration img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(234, 88, 12, 0.1);
+            }
+            .illustration-caption {
+                margin-top: 0.85rem;
+                font-size: 0.9rem;
+                color: #64748b;
+                font-weight: 500;
+                text-align: left;
+            }
+            .grid-2, .grid-3 {
+                display: grid;
+                gap: 1.25rem;
+                margin: 1.75rem 0;
+            }
+            .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+            .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+            .feature-card {
+                background: #fff;
+                padding: 1.5rem 1.6rem;
+                border-radius: 16px;
+                border: 1px solid #e2e8f0;
+                border-top: 4px solid #ea580c;
+            }
+            .feature-card h4 { margin-top: 0; }
+            .card-blue { border-top-color: #3b82f6; }
+            .card-green { border-top-color: #10b981; }
+            .card-purple { border-top-color: #8b5cf6; }
+            .card-orange { border-top-color: #f59e0b; }
+            .card-teal { border-top-color: #14b8a6; }
+            .wrong-box, .right-box {
+                padding: 1.25rem 1.4rem;
+                border-radius: 14px;
+                border: 1px solid #e2e8f0;
+                font-size: 0.95rem;
+            }
+            .wrong-box { background: #fef2f2; border-color: #fecaca; }
+            .right-box { background: #f0fdf4; border-color: #bbf7d0; }
+        </style>
+
         <header>
             <h1>📚 HTML Complete Guide</h1>
             <p>HyperText Markup Language - The Foundation of the Web</p>
@@ -62,25 +120,58 @@
                 <h2>A) Introduction</h2>
                 <div class="example-box">
                     <h3>What is HTML?</h3>
-                    <p><strong>HTML (HyperText Markup Language)</strong> is the standard markup language for creating web pages. It defines the structure and content of web documents.</p>
+                    <p><strong>HTML (HyperText Markup Language)</strong> is the standard markup language for creating web pages. It does not style or animate anything by itself — it defines the <em>structure and meaning</em> of content so browsers, search engines, and assistive tech can understand the page.</p>
+
+                    <div class="illustration">
+                        <img src="/images/html/html-hero.jpg" alt="How a web page is built: HTML for structure, CSS for style, JavaScript for behavior, combining into a finished browser page" loading="lazy">
+                        <div class="illustration-caption"><strong>Think in layers.</strong> HTML builds the skeleton, CSS paints and lays it out, JavaScript adds behavior. Most real pages use all three.</div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="feature-card card-orange">
+                            <h4>HyperText</h4>
+                            <p>Text that links to other text. The <code>&lt;a&gt;</code> element is what turns the web into a web — pages connected by links.</p>
+                        </div>
+                        <div class="feature-card card-blue">
+                            <h4>Markup</h4>
+                            <p>Tags wrap content to describe what it is: a heading, a paragraph, a list, an image, a form field — not how it should look.</p>
+                        </div>
+                        <div class="feature-card card-teal">
+                            <h4>Language</h4>
+                            <p>A shared vocabulary browsers agree on. Valid HTML is predictable: parsers, SEO tools, and screen readers can all consume it.</p>
+                        </div>
+                    </div>
                     
                     <h4>Key Points:</h4>
                     <ul>
                         <li>HTML stands for <strong>HyperText Markup Language</strong></li>
-                        <li>It defines the structure of web content</li>
-                        <li>HTML is the standard markup language for Web pages</li>
-                        <li>Current major versions: HTML 4.01 and HTML 5.0</li>
+                        <li>Browsers parse HTML into a <strong>DOM tree</strong> (Document Object Model)</li>
+                        <li>Elements are written with opening/closing tags: <code>&lt;p&gt;...&lt;/p&gt;</code> (some are void: <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code>)</li>
+                        <li>Attributes add extra info: <code>&lt;img src="photo.jpg" alt="Sunset"&gt;</code></li>
+                        <li>Current living standard is <strong>HTML5</strong> (maintained by WHATWG); treat HTML 4.01 as legacy</li>
                     </ul>
+
+                    <h4>How a page reaches the screen</h4>
+                    <ol>
+                        <li>Browser requests a URL and receives an HTML document</li>
+                        <li>Parser builds the DOM from tags and text</li>
+                        <li>Linked CSS builds the CSSOM; styles are computed</li>
+                        <li>Layout + paint produce pixels; JS can update the DOM afterward</li>
+                    </ol>
 
                     <div class="comparison">
                         <div class="comparison-item">
                             <h4>HTML 4.01</h4>
-                            <p>Released in 1999, older standard with limited multimedia support</p>
+                            <p>Released in 1999. Relied on plugins for media, heavy use of presentational tags (<code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>), and complex DOCTYPE strings. Still encountered in old docs — do not start new projects here.</p>
                         </div>
                         <div class="comparison-item">
-                            <h4>HTML 5</h4>
-                            <p>Modern standard with native audio, video, graphics, and improved semantics</p>
+                            <h4>HTML5 (modern)</h4>
+                            <p>Native <code>&lt;audio&gt;</code>/<code>&lt;video&gt;</code>, semantic landmarks, forms APIs, <code>&lt;canvas&gt;</code>, SVG, and a simple <code>&lt;!DOCTYPE html&gt;</code>. This is the default for every new site.</p>
                         </div>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 Mental model:</strong> Write HTML for meaning first (accessibility + SEO), then style with CSS. Avoid using <code>&lt;div&gt;</code> when a semantic tag fits.
                     </div>
                 </div>
             </section>
@@ -89,9 +180,25 @@
             <section id="basic">
                 <h2>B) Basic HTML Structure</h2>
 
+                <div class="illustration">
+                    <img src="/images/html/html-document-tree.jpg" alt="HTML document tree: DOCTYPE, html root, head with title meta link style, and body with h1 p img a" loading="lazy">
+                    <div class="illustration-caption"><strong>Every page is a tree.</strong> <code>&lt;html&gt;</code> is the root. <code>&lt;head&gt;</code> holds metadata the user rarely sees. <code>&lt;body&gt;</code> holds everything visible.</div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="feature-card card-blue">
+                        <h4>Required skeleton</h4>
+                        <p><code>DOCTYPE</code> → <code>html</code> → <code>head</code> (with <code>title</code>) → <code>body</code>. Missing pieces still “work” in browsers, but tools and validators will complain.</p>
+                    </div>
+                    <div class="feature-card card-purple">
+                        <h4>lang attribute</h4>
+                        <p>Always set <code>&lt;html lang="en"&gt;</code> (or your language). Screen readers use it for pronunciation; search engines use it for indexing.</p>
+                    </div>
+                </div>
+
                 <h3>1. DOCTYPE Declaration</h3>
                 <div class="example-box">
-                    <p>All HTML documents must start with a <code>&lt;!DOCTYPE&gt;</code> declaration. It informs the browser about the document type.</p>
+                    <p>All HTML documents must start with a <code>&lt;!DOCTYPE&gt;</code> declaration. It informs the browser about the document type and puts the parser in standards mode (not quirks mode).</p>
                     
                     <h4>HTML5 DOCTYPE (Simple):</h4>
                     <pre><code>&lt;!DOCTYPE html&gt;</code></pre>
@@ -532,14 +639,44 @@ line breaks
             <section id="forms">
                 <h2>D) Forms and Input Elements</h2>
 
+                <p>Forms collect user data and send it to a server (or handle it with JavaScript). A solid form always pairs a visible <code>&lt;label&gt;</code> with each control, chooses the right <code>type</code>, and validates before submit.</p>
+
+                <div class="illustration">
+                    <img src="/images/html/html-forms.jpg" alt="Anatomy of an HTML form showing form, label, input types, select, textarea, checkbox, radio, and submit button" loading="lazy">
+                    <div class="illustration-caption"><strong>Label everything.</strong> Clicking a label focuses its control. That is better UX and required for accessibility.</div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="feature-card card-orange">
+                        <h4>action + method</h4>
+                        <p><code>action</code> is the URL that receives data. <code>method="get"</code> puts values in the query string; <code>method="post"</code> sends them in the body.</p>
+                    </div>
+                    <div class="feature-card card-blue">
+                        <h4>name attribute</h4>
+                        <p>Only named controls are submitted. <code>name="email"</code> becomes the field key on the server.</p>
+                    </div>
+                    <div class="feature-card card-green">
+                        <h4>Built-in validation</h4>
+                        <p>Use <code>required</code>, <code>type="email"</code>, <code>min</code>/<code>max</code>, <code>pattern</code>, and <code>minlength</code> before writing custom JS checks.</p>
+                    </div>
+                </div>
+
                 <h3>&lt;form&gt; - Form Container</h3>
                 <div class="example-box">
-                    <p>The <code>&lt;form&gt;</code> tag creates an HTML form for user input.</p>
+                    <p>The <code>&lt;form&gt;</code> tag creates an HTML form for user input. Nest inputs, selects, textareas, and buttons inside it.</p>
+                    <pre><code>&lt;form action="/subscribe" method="post"&gt;
+  &lt;label for="email"&gt;Email&lt;/label&gt;
+  &lt;input id="email" name="email" type="email" required&gt;
+  &lt;button type="submit"&gt;Subscribe&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                    <div class="tip">
+                        <strong>💡 Tip:</strong> Prefer <code>&lt;button type="submit"&gt;</code> over <code>&lt;input type="submit"&gt;</code> — buttons can contain richer content and are easier to style.
+                    </div>
                 </div>
 
                 <h3>&lt;input&gt; - Input Field</h3>
                 <div class="example-box">
-                    <p>The most versatile form element with many types:</p>
+                    <p>The most versatile form element with many types. Pick the type that matches the data — mobile keyboards and browsers validate differently for each:</p>
                     
                     <div class="demo">
                         <div class="demo-title">All Input Types Demo</div>
@@ -717,6 +854,13 @@ line breaks
             <!-- IMAGES -->
             <section id="images">
                 <h2>E) Images and Graphics</h2>
+                <p>Images make pages visual, but they are also a common source of broken layouts, slow loads, and accessibility bugs. Always provide meaningful <code>alt</code> text, set dimensions when you can, and pick the right element for the job.</p>
+
+                <div class="illustration">
+                    <img src="/images/html/html-images-media.jpg" alt="HTML images and media: img with src and alt, picture with multiple sources for devices, and video/audio with controls" loading="lazy">
+                    <div class="illustration-caption"><strong>One size does not fit all.</strong> Use <code>&lt;img&gt;</code> for a single asset, <code>&lt;picture&gt;</code> when art direction or formats change by viewport, and SVG for crisp icons.</div>
+                </div>
+
                 <div class="example-box">
                     <h3>Image-Related Elements</h3>
                     <table>
@@ -729,7 +873,7 @@ line breaks
                         <tbody>
                             <tr>
                                 <td><code>&lt;img&gt;</code></td>
-                                <td>Embeds an image</td>
+                                <td>Embeds an image (void element — no closing tag)</td>
                             </tr>
                             <tr>
                                 <td><code>&lt;map&gt;</code></td>
@@ -745,7 +889,7 @@ line breaks
                             </tr>
                             <tr>
                                 <td><code>&lt;figure&gt;</code></td>
-                                <td>Specifies self-contained content</td>
+                                <td>Self-contained content (image, diagram, code) with optional caption</td>
                             </tr>
                             <tr>
                                 <td><code>&lt;figcaption&gt;</code></td>
@@ -753,26 +897,63 @@ line breaks
                             </tr>
                             <tr>
                                 <td><code>&lt;picture&gt;</code></td>
-                                <td>Container for multiple image resources</td>
+                                <td>Container for multiple image resources / art direction</td>
                             </tr>
                             <tr>
                                 <td><code>&lt;svg&gt;</code></td>
-                                <td>Container for SVG graphics</td>
+                                <td>Container for SVG vector graphics</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <h4>Example Structure:</h4>
+                    <h3>Essential &lt;img&gt; attributes</h3>
+                    <ul>
+                        <li><code>src</code> — URL of the image (required)</li>
+                        <li><code>alt</code> — text alternative (required for accessibility; empty <code>alt=""</code> only for decorative images)</li>
+                        <li><code>width</code> / <code>height</code> — intrinsic size hints that reduce layout shift</li>
+                        <li><code>loading="lazy"</code> — defer offscreen images</li>
+                        <li><code>decoding="async"</code> — decode without blocking the main thread</li>
+                    </ul>
+
+                    <h4>Figure + caption:</h4>
                     <pre><code>&lt;figure&gt;
-    &lt;img src="image.jpg" alt="Description"&gt;
-    &lt;figcaption&gt;Image Caption&lt;/figcaption&gt;
+    &lt;img src="sunset.jpg" alt="Orange sunset over the ocean" width="800" height="450" loading="lazy"&gt;
+    &lt;figcaption&gt;Golden hour at the coast — June 2025&lt;/figcaption&gt;
 &lt;/figure&gt;</code></pre>
+
+                    <h4>Responsive with &lt;picture&gt;:</h4>
+                    <pre><code>&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" srcset="hero-mobile.webp" type="image/webp"&gt;
+  &lt;source media="(min-width: 601px)" srcset="hero-desktop.webp" type="image/webp"&gt;
+  &lt;img src="hero-desktop.jpg" alt="Product hero" width="1200" height="600"&gt;
+&lt;/picture&gt;</code></pre>
+
+                    <div class="grid-2">
+                        <div class="wrong-box">
+                            <strong>Avoid</strong>
+                            <ul>
+                                <li>Missing or keyword-stuffed <code>alt</code></li>
+                                <li>Huge PNGs for photos (prefer WebP/AVIF/JPEG)</li>
+                                <li>Using images of text when real text works</li>
+                            </ul>
+                        </div>
+                        <div class="right-box">
+                            <strong>Prefer</strong>
+                            <ul>
+                                <li>Descriptive <code>alt</code> that conveys meaning</li>
+                                <li>Modern formats + <code>srcset</code>/<code>picture</code></li>
+                                <li>SVG for logos and icons</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- AUDIO VIDEO -->
             <section id="media">
                 <h2>F) Audio & Video</h2>
+                <p>HTML5 replaced plugin-based media (Flash, etc.) with native <code>&lt;audio&gt;</code> and <code>&lt;video&gt;</code>. Provide multiple <code>&lt;source&gt;</code> formats when you need broad compatibility, and always include fallback text.</p>
+
                 <div class="example-box">
                     <h3>Media Elements (HTML5)</h3>
                     <table>
@@ -797,23 +978,57 @@ line breaks
                             </tr>
                             <tr>
                                 <td><code>&lt;track&gt;</code></td>
-                                <td>Text tracks (subtitles) for &lt;audio&gt; and &lt;video&gt;</td>
+                                <td>Text tracks (subtitles/captions) for &lt;audio&gt; and &lt;video&gt;</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <h4>Example:</h4>
-                    <pre><code>&lt;video controls width="640"&gt;
+                    <div class="grid-2">
+                        <div class="feature-card card-blue">
+                            <h4>Useful attributes</h4>
+                            <ul>
+                                <li><code>controls</code> — show play/pause UI</li>
+                                <li><code>autoplay</code> — usually needs <code>muted</code></li>
+                                <li><code>loop</code>, <code>muted</code>, <code>preload</code></li>
+                                <li><code>poster</code> — preview frame for video</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card card-teal">
+                            <h4>Accessibility</h4>
+                            <ul>
+                                <li>Add <code>&lt;track kind="captions"&gt;</code> for spoken content</li>
+                                <li>Do not autoplay with sound</li>
+                                <li>Provide a transcript when possible</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4>Video example:</h4>
+                    <pre><code>&lt;video controls width="640" poster="thumb.jpg"&gt;
     &lt;source src="movie.mp4" type="video/mp4"&gt;
-    &lt;source src="movie.ogg" type="video/ogg"&gt;
-    Your browser doesn't support video.
+    &lt;source src="movie.webm" type="video/webm"&gt;
+    &lt;track kind="captions" src="captions-en.vtt" srclang="en" label="English" default&gt;
+    Your browser doesn't support video. &lt;a href="movie.mp4"&gt;Download instead&lt;/a&gt;.
 &lt;/video&gt;</code></pre>
+
+                    <h4>Audio example:</h4>
+                    <pre><code>&lt;audio controls preload="metadata"&gt;
+  &lt;source src="podcast.mp3" type="audio/mpeg"&gt;
+  &lt;source src="podcast.ogg" type="audio/ogg"&gt;
+&lt;/audio&gt;</code></pre>
                 </div>
             </section>
 
             <!-- LINKS -->
             <section id="links">
                 <h2>G) Links and Navigation</h2>
+                <p>Hyperlinks are the original “app” of the web. The <code>&lt;a&gt;</code> element creates clickable navigation; <code>&lt;link&gt;</code> (in <code>&lt;head&gt;</code>) connects stylesheets and other resources; <code>&lt;nav&gt;</code> marks major navigation regions for assistive tech.</p>
+
+                <div class="illustration">
+                    <img src="/images/html/html-links.jpg" alt="How links connect the web: internal, external, mailto, tel, and nav landmark with multiple anchors" loading="lazy">
+                    <div class="illustration-caption"><strong>Same element, many jobs.</strong> <code>href</code> can point to a page, a hash on the same page, an email, a phone number, or a downloadable file.</div>
+                </div>
+
                 <div class="example-box">
                     <h3>Link-Related Elements</h3>
                     <table>
@@ -826,25 +1041,43 @@ line breaks
                         <tbody>
                             <tr>
                                 <td><code>&lt;a&gt;</code></td>
-                                <td>Defines a hyperlink</td>
+                                <td>Defines a hyperlink (needs <code>href</code> to be a real link)</td>
                             </tr>
                             <tr>
                                 <td><code>&lt;link&gt;</code></td>
-                                <td>Links to external resources (CSS, icons, etc.)</td>
+                                <td>Links to external resources (CSS, icons, prefetch) — lives in <code>&lt;head&gt;</code></td>
                             </tr>
                             <tr>
                                 <td><code>&lt;nav&gt;</code></td>
-                                <td>Defines navigation links section</td>
+                                <td>Defines a navigation landmark for groups of links</td>
                             </tr>
                         </tbody>
                     </table>
 
+                    <h3>Common patterns</h3>
+                    <pre><code>&lt;!-- Same page --&gt;
+&lt;a href="#forms"&gt;Jump to Forms&lt;/a&gt;
+
+&lt;!-- New tab (always add rel for security) --&gt;
+&lt;a href="https://example.com" target="_blank" rel="noopener noreferrer"&gt;Docs&lt;/a&gt;
+
+&lt;!-- Contact --&gt;
+&lt;a href="mailto:hello@example.com"&gt;Email us&lt;/a&gt;
+&lt;a href="tel:+15551234567"&gt;Call us&lt;/a&gt;
+
+&lt;!-- Download --&gt;
+&lt;a href="/files/guide.pdf" download&gt;Download PDF&lt;/a&gt;</code></pre>
+
                     <div class="demo">
                         <div class="demo-title">Demo - Links</div>
-                        <p><a href="#top">Internal Link (to top)</a></p>
-                        <p><a href="https://www.example.com" target="_blank">External Link (new tab)</a></p>
+                        <p><a href="#introduction">Internal Link (to Introduction)</a></p>
+                        <p><a href="https://www.example.com" target="_blank" rel="noopener noreferrer">External Link (new tab)</a></p>
                         <p><a href="mailto:example@email.com">Email Link</a></p>
                         <p><a href="tel:+1234567890">Phone Link</a></p>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 Tip:</strong> Link text should make sense out of context. Prefer “HTML forms guide” over “click here”.
                     </div>
                 </div>
             </section>
@@ -852,6 +1085,13 @@ line breaks
             <!-- LISTS -->
             <section id="lists">
                 <h2>H) Lists</h2>
+                <p>Lists group related items. Use unordered lists for collections without rank, ordered lists for sequences, and description lists for term/definition pairs (glossaries, metadata).</p>
+
+                <div class="illustration">
+                    <img src="/images/html/html-lists-tables.jpg" alt="HTML lists and tables: ul ol dl on the left, and a captioned table with thead tbody tfoot on the right" loading="lazy">
+                    <div class="illustration-caption"><strong>Structure before style.</strong> Lists and tables carry meaning for screen readers — do not fake them with spaced text or CSS grids of plain divs when real list/table markup fits.</div>
+                </div>
+
                 <div class="example-box">
                     <h3>List Elements</h3>
                     <table>
@@ -926,6 +1166,8 @@ line breaks
             <!-- TABLES -->
             <section id="tables">
                 <h2>I) Tables</h2>
+                <p>Use tables for <strong>tabular data</strong> (schedules, comparisons, reports) — not for page layout. Modern CSS (Flexbox/Grid) handles layout; tables keep row/column relationships clear for users and assistive tech.</p>
+
                 <div class="example-box">
                     <h3>Table Elements</h3>
                     <table>
@@ -1023,18 +1265,38 @@ line breaks
                 <h2>J) Semantic Elements</h2>
                 <div class="example-box">
                     <h3>What are Semantic Elements?</h3>
-                    <p>A semantic element clearly describes its meaning to both the browser and the developer.</p>
+                    <p>A semantic element clearly describes its meaning to both the browser and the developer. Screen readers announce landmarks; search engines understand content roles; CSS and JS become easier because structure is intentional.</p>
+
+                    <div class="illustration">
+                        <img src="/images/html/html-semantic-layout.jpg" alt="Semantic HTML page layout with header, nav, main containing article and aside, and footer regions labeled" loading="lazy">
+                        <div class="illustration-caption"><strong>Landmarks map the page.</strong> One <code>&lt;main&gt;</code> per document. <code>&lt;header&gt;</code>/<code>&lt;footer&gt;</code> can wrap the whole page or a single section/article.</div>
+                    </div>
                     
                     <div class="comparison">
                         <div class="comparison-item">
                             <h4>❌ Non-Semantic Elements</h4>
                             <p><code>&lt;div&gt;</code> and <code>&lt;span&gt;</code></p>
-                            <p>Tell nothing about their content</p>
+                            <p>Tell nothing about their content — fine as last-resort wrappers for styling</p>
                         </div>
                         <div class="comparison-item">
                             <h4>✅ Semantic Elements</h4>
                             <p><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code></p>
-                            <p>Clearly define their content</p>
+                            <p>Clearly define their content and create accessibility landmarks</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="feature-card card-teal">
+                            <h4>&lt;article&gt;</h4>
+                            <p>Standalone content that could be syndicated — a blog post, news story, or product card.</p>
+                        </div>
+                        <div class="feature-card card-blue">
+                            <h4>&lt;section&gt;</h4>
+                            <p>Thematic grouping with a heading. Prefer over anonymous divs when the block has a clear topic.</p>
+                        </div>
+                        <div class="feature-card card-purple">
+                            <h4>&lt;aside&gt;</h4>
+                            <p>Tangentially related content: sidebars, pull quotes, related links — not the primary story.</p>
                         </div>
                     </div>
 

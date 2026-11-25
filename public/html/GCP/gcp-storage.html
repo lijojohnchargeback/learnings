@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete GCP Storage Guide - Persistent Disk, Filestore, Cloud Storage, CDN">
+    <title>GCP Storage Services - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">💾 GCP Storage</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📦 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#storage-types" class="sidebar-link">Storage Types</a>
+                <a href="#decision" class="sidebar-link">Decision Guide</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">💿 Block</div>
+            <div class="sidebar-links">
+                <a href="#persistent-disk" class="sidebar-link">Persistent Disk</a>
+                <a href="#hyperdisk" class="sidebar-link">Hyperdisk</a>
+                <a href="#local-ssd" class="sidebar-link">Local SSD</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📁 File</div>
+            <div class="sidebar-links">
+                <a href="#filestore" class="sidebar-link">Filestore</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗄️ Object</div>
+            <div class="sidebar-links">
+                <a href="#gcs" class="sidebar-link">Cloud Storage</a>
+                <a href="#classes" class="sidebar-link">Storage Classes</a>
+                <a href="#versioning" class="sidebar-link">Versioning &amp; Lifecycle</a>
+                <a href="#access" class="sidebar-link">IAM, ACLs &amp; Signed URLs</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🌐 Delivery &amp; Transfer</div>
+            <div class="sidebar-links">
+                <a href="#cdn" class="sidebar-link">Cloud CDN</a>
+                <a href="#transfer" class="sidebar-link">Transfer Service</a>
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>💾 GCP Storage Services</h1>
+            <p>Complete Guide to Persistent Disk, Filestore, Cloud Storage, CDN &amp; More</p>
+        </header>
+
+        <section id="storage-types">
+            <h2>📦 Storage Types</h2>
+
+            <figure class="topic-hero">
+                <img src="/images/gcp/gcp-storage.jpg" alt="Storage hardware representing block, file, and object storage on GCP" loading="lazy" />
+                <figcaption>Block disks attach to VMs, file shares mount over NFS, and object buckets hold durable blobs for apps and data lakes.</figcaption>
+            </figure>
+
+            <p class="topic-lede">Storage underpins every cloud architecture. GCP offers three primary models: <span class="highlight">block</span>, <span class="highlight">file</span>, and <span class="highlight">object</span>. Pick by access pattern — random disk I/O, shared POSIX filesystem, or HTTP-addressable objects — not by which service launched first.</p>
+
+            <div class="illustration">
+                <img src="/images/gcp/gcp-storage-types.jpg" alt="Comparison of GCP block, file, and object storage types">
+                <div class="illustration-caption">Block for boot/data disks, Filestore for shared NFS, Cloud Storage for objects and lakes.</div>
+            </div>
+
+            <div class="stat-strip">
+                <div class="stat-chip"><strong>3</strong><span>Primary storage models</span></div>
+                <div class="stat-chip"><strong>4</strong><span>GCS storage classes</span></div>
+                <div class="stat-chip"><strong>11 9s</strong><span>GCS durability design</span></div>
+                <div class="stat-chip"><strong>S3↔GCS</strong><span>Mental model</span></div>
+            </div>
+
+            <table>
+                <tr><th>Type</th><th>Description</th><th>GCP services</th><th>AWS analogue</th></tr>
+                <tr>
+                    <td><strong>Block</strong></td>
+                    <td>Raw volumes attached to VMs / nodes</td>
+                    <td>Persistent Disk, Hyperdisk, Local SSD</td>
+                    <td>EBS, Instance Store</td>
+                </tr>
+                <tr>
+                    <td><strong>File</strong></td>
+                    <td>Shared filesystem (NFS)</td>
+                    <td>Filestore</td>
+                    <td>EFS / FSx</td>
+                </tr>
+                <tr>
+                    <td><strong>Object</strong></td>
+                    <td>Objects + metadata via API</td>
+                    <td>Cloud Storage</td>
+                    <td>S3</td>
+                </tr>
+            </table>
+
+            <div class="use-when">
+                <div class="use-card yes">
+                    <h4>Choose quickly</h4>
+                    <ul>
+                        <li>Boot disk / DB data dir on one VM → <strong>PD / Hyperdisk</strong></li>
+                        <li>Many VMs need same POSIX files → <strong>Filestore</strong></li>
+                        <li>Images, backups, lake files, static site → <strong>Cloud Storage</strong></li>
+                    </ul>
+                </div>
+                <div class="use-card no">
+                    <h4>Common mistakes</h4>
+                    <ul>
+                        <li>Using GCS like a disk (high-churn random writes)</li>
+                        <li>Storing critical state only on Local SSD</li>
+                        <li>Public buckets left open after a demo</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="decision">
+            <h2>🧭 Decision Guide</h2>
+
+            <div class="example-box">
+                <h3>Questions to ask</h3>
+                <ol>
+                    <li>Does the app need a block device (<code>/dev/sdX</code>)? → PD/Hyperdisk/Local SSD.</li>
+                    <li>Do multiple instances need a shared directory tree? → Filestore.</li>
+                    <li>Is access via HTTPS/API with eventual-ish large-object semantics OK? → Cloud Storage.</li>
+                    <li>Is latency measured in microseconds for scratch space? → Local SSD (accept ephemerality).</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="persistent-disk">
+            <h2>💿 Persistent Disk</h2>
+
+            <p><span class="highlight">Persistent Disk (PD)</span> is durable network block storage for Compute Engine and GKE. Disks outlive VM terminate/stop (unless deleted with the instance).</p>
+
+            <table>
+                <tr><th>Type</th><th>Profile</th><th>Typical use</th></tr>
+                <tr>
+                    <td><strong>pd-standard</strong></td>
+                    <td>HDD-backed, cheaper</td>
+                    <td>Bulk cold data, sequential workloads</td>
+                </tr>
+                <tr>
+                    <td><strong>pd-balanced</strong></td>
+                    <td>Cost/performance SSD balance</td>
+                    <td>Most general boot + data disks</td>
+                </tr>
+                <tr>
+                    <td><strong>pd-ssd</strong></td>
+                    <td>Higher IOPS/throughput</td>
+                    <td>Databases, I/O heavy apps</td>
+                </tr>
+                <tr>
+                    <td><strong>pd-extreme</strong></td>
+                    <td>Provisioned high performance (where offered)</td>
+                    <td>Demanding enterprise DBs</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>Operational facts</h3>
+                <ul>
+                    <li><strong>Zonal vs regional:</strong> regional PD replicates across two zones for HA of the disk itself.</li>
+                    <li><strong>Snapshots:</strong> incremental, stored in Cloud Storage under the hood; schedule and test restores.</li>
+                    <li><strong>Resize:</strong> grow disks online; plan filesystem growth (ext4/xfs tools).</li>
+                    <li><strong>Encryption:</strong> encrypted at rest by default; CMEK optional via Cloud KMS.</li>
+                    <li><strong>Attach limits:</strong> know per-VM disk count and IOPS caps for your machine type.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 AWS parallel:</strong> EBS gp3/io2 ≈ pd-balanced/pd-ssd/extreme territory; EBS snapshots ≈ PD snapshots.
+                </div>
+            </div>
+        </section>
+
+        <section id="hyperdisk">
+            <h2>🚀 Hyperdisk</h2>
+
+            <p><span class="highlight">Hyperdisk</span> is Google’s next-generation block storage with more flexible provisioning of IOPS and throughput on supported machine series.</p>
+            <ul>
+                <li>Choose Hyperdisk variants ( Balancer, Extreme, Throughput, ML, etc. as catalogued) based on workload.</li>
+                <li>Decouple capacity from performance more cleanly than classic PD tiers.</li>
+                <li>Confirm machine-type compatibility before designing around Hyperdisk.</li>
+            </ul>
+            <div class="tip">
+                <strong>💡 Migration path:</strong> New high-I/O designs should evaluate Hyperdisk first; existing PD remains fully valid.
+            </div>
+        </section>
+
+        <section id="local-ssd">
+            <h2>⚡ Local SSD</h2>
+
+            <p>Local SSDs are physically attached to the host — extremely high IOPS and low latency, but <strong>ephemeral</strong>.</p>
+            <ul>
+                <li>Data is lost on stop, terminate, or host maintenance migration (unless using features that preserve in narrow cases — design as ephemeral).</li>
+                <li>Ideal for caches, scratch, well-replicated databases (e.g. local scratch with replication).</li>
+                <li>AWS Instance Store analogue.</li>
+            </ul>
+
+            <div class="use-when">
+                <div class="use-card yes">
+                    <h4>Use Local SSD when</h4>
+                    <ul>
+                        <li>Scratch space for ETL / ML feature materialization</li>
+                        <li>Distributed DB that replicates its own data</li>
+                        <li>Cache tiers you can rebuild</li>
+                    </ul>
+                </div>
+                <div class="use-card no">
+                    <h4>Never use alone when</h4>
+                    <ul>
+                        <li>It is the only copy of customer data</li>
+                        <li>You cannot tolerate rebuild after preemption</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="filestore">
+            <h2>📁 Filestore</h2>
+
+            <p><span class="highlight">Filestore</span> provides managed NFS file shares for GCE, GKE, and on-prem clients over VPN/Interconnect.</p>
+
+            <table>
+                <tr><th>Topic</th><th>Detail</th></tr>
+                <tr>
+                    <td><strong>Protocol</strong></td>
+                    <td>NFSv3 / NFSv4.1 (tier dependent)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tiers</strong></td>
+                    <td>Basic, Enterprise, High Scale — capacity &amp; performance bands</td>
+                </tr>
+                <tr>
+                    <td><strong>Use cases</strong></td>
+                    <td>Lift-and-shift apps needing shared files, CMS, home dirs, HPC shared data</td>
+                </tr>
+                <tr>
+                    <td><strong>AWS analogue</strong></td>
+                    <td>EFS (Linux NFS); FSx covers other protocols GCP Filestore does not</td>
+                </tr>
+            </table>
+
+            <div class="tip">
+                <strong>💡 Design tip:</strong> If you only need object semantics, prefer Cloud Storage — cheaper and simpler than operating a file share.
+            </div>
+        </section>
+
+        <section id="gcs">
+            <h2>🗄️ Cloud Storage (GCS)</h2>
+
+            <p><span class="highlight">Cloud Storage</span> is GCP’s object store: buckets hold objects addressed by key. It underpins static assets, backups, data lakes, BigQuery external tables, and many pipeline landings.</p>
+
+            <div class="split-visual">
+                <img src="/images/gcp/gcp-data-center.jpg" alt="Data center racks storing durable object data" loading="lazy" />
+                <div class="split-copy">
+                    <span class="kicker">Object storage mindset</span>
+                    <h3>Blobs with metadata, not a filesystem</h3>
+                    <p>There are no true directories — only key prefixes. List operations and rename patterns differ from POSIX. Design keys for listing locality and lifecycle rules.</p>
+                    <p>Durability is extreme by design; availability depends on location type (regional vs dual/multi-region) and your access path (CDN, signed URLs, Private Google Access).</p>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h3>Bucket location choices</h3>
+                <ul>
+                    <li><strong>Region</strong> — lowest latency to compute in that region; good default for apps.</li>
+                    <li><strong>Dual-region</strong> — geo-redundant within a geo pair for higher availability.</li>
+                    <li><strong>Multi-region</strong> — broader geo redundancy for content serving across a continent.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 AWS parallel:</strong> S3 ≈ Cloud Storage. Bucket policies ≈ IAM + bucket IAM. Storage classes ≈ GCS classes. CloudFront ≈ Cloud CDN.
+                </div>
+            </div>
+        </section>
+
+        <section id="classes">
+            <h2>🌡️ Storage Classes</h2>
+
+            <table>
+                <tr><th>Class</th><th>Access pattern</th><th>Notes</th></tr>
+                <tr>
+                    <td><strong>Standard</strong></td>
+                    <td>Frequent</td>
+                    <td>Hot data, websites, streaming ingest</td>
+                </tr>
+                <tr>
+                    <td><strong>Nearline</strong></td>
+                    <td>~monthly</td>
+                    <td>Backups, lightly touched analytics</td>
+                </tr>
+                <tr>
+                    <td><strong>Coldline</strong></td>
+                    <td>~quarterly</td>
+                    <td>Disaster recovery, colder archives</td>
+                </tr>
+                <tr>
+                    <td><strong>Archive</strong></td>
+                    <td>yearly / rare</td>
+                    <td>Lowest storage price; higher retrieval cost/latency</td>
+                </tr>
+            </table>
+
+            <p>Autoclass can automatically move objects between classes based on observed access — useful when patterns are unknown. Always model retrieval fees before bulk-restoring cold data.</p>
+        </section>
+
+        <section id="versioning">
+            <h2>🕘 Versioning &amp; Lifecycle</h2>
+
+            <div class="example-box">
+                <h3>Object versioning</h3>
+                <p>Enable versioning to retain noncurrent versions on overwrite/delete. Pair with lifecycle rules or you will pay for forever-growing version piles.</p>
+            </div>
+
+            <div class="example-box">
+                <h3>Lifecycle examples</h3>
+                <ul>
+                    <li>Transition to Nearline after 30 days, Coldline after 90, Archive after 365.</li>
+                    <li>Delete noncurrent versions older than N days.</li>
+                    <li>Expire incomplete multipart uploads.</li>
+                    <li>Abort abandoned resumable uploads.</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>Soft delete / retention</h3>
+                <ul>
+                    <li>Bucket soft-delete windows recover accidentally deleted objects.</li>
+                    <li>Retention policies and Bucket Lock support compliance holds (know legal implications — locks can be irreversible).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="access">
+            <h2>🔐 IAM, ACLs &amp; Signed URLs</h2>
+
+            <table>
+                <tr><th>Mechanism</th><th>Use</th><th>Guidance</th></tr>
+                <tr>
+                    <td><strong>Uniform bucket-level IAM</strong></td>
+                    <td>All objects inherit bucket IAM</td>
+                    <td><strong>Prefer for new buckets</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Fine-grained ACLs</strong></td>
+                    <td>Per-object ACLs</td>
+                    <td>Legacy; harder to audit</td>
+                </tr>
+                <tr>
+                    <td><strong>Signed URLs</strong></td>
+                    <td>Time-limited access without Google account</td>
+                    <td>Uploads/downloads for end users</td>
+                </tr>
+                <tr>
+                    <td><strong>Signed Policy Documents</strong></td>
+                    <td>Constrained browser uploads</td>
+                    <td>Limit size/prefix/content-type</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>Security checklist</h3>
+                <ul>
+                    <li>Prevent public <code>allUsers</code> grants unless the bucket is intentionally public static content.</li>
+                    <li>Use org policies to restrict public access.</li>
+                    <li>Encrypt with CMEK when required; default Google-managed encryption otherwise.</li>
+                    <li>Log data access for sensitive buckets.</li>
+                    <li>Prefer Uniform access + IAM Conditions over sprawling ACLs.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="cdn">
+            <h2>🌐 Cloud CDN</h2>
+
+            <p><span class="highlight">Cloud CDN</span> caches HTTP(S) content at Google’s edge, typically in front of Cloud Storage backends or compute backends via the global external HTTP(S) load balancer.</p>
+            <ul>
+                <li>Configure cache modes, TTLs, and negative caching carefully.</li>
+                <li>Invalidate sparingly — prefer versioned object names (<code>app.abc123.js</code>).</li>
+                <li>Media CDN exists for large streaming / video-scale catalogs.</li>
+                <li>AWS CloudFront analogue.</li>
+            </ul>
+        </section>
+
+        <section id="transfer">
+            <h2>🚚 Transfer Service</h2>
+
+            <p>Move data into Cloud Storage without writing one-off copy scripts:</p>
+            <ul>
+                <li><strong>Storage Transfer Service</strong> — from S3, HTTP/HTTPS, or another GCS bucket on schedules.</li>
+                <li><strong>Transfer Appliance</strong> — physical appliance for multi-hundred-TB / PB offline migration.</li>
+                <li><strong>gsutil / gcloud storage</strong> — ad hoc and scripted copies; use parallel composite uploads wisely.</li>
+            </ul>
+            <div class="tip">
+                <strong>💡 Migration tip:</strong> Validate checksums, plan bandwidth, and freeze writes or use sync strategies so cutover does not lose late mutations.
+            </div>
+        </section>
+
+        <section id="best-practices">
+            <h2>✅ Best Practices</h2>
+
+            <div class="example-box">
+                <h3>Architecture</h3>
+                <ul>
+                    <li>Colocate buckets with compute to cut egress and latency.</li>
+                    <li>Use lifecycle + Autoclass deliberately; monitor class transition costs.</li>
+                    <li>Version keys for static assets; put Cloud CDN in front.</li>
+                    <li>Separate buckets by sensitivity and environment (prod logs ≠ public assets).</li>
+                    <li>For databases, snapshot PD/Hyperdisk; don’t pretend GCS is a block device.</li>
+                </ul>
+            </div>
+
+            <div class="info-box premium">
+                <h3>Exam &amp; interview quick reference</h3>
+                <ul>
+                    <li><strong>S3 ↔ Cloud Storage</strong></li>
+                    <li><strong>EBS ↔ Persistent Disk / Hyperdisk</strong></li>
+                    <li><strong>Instance Store ↔ Local SSD</strong></li>
+                    <li><strong>EFS ↔ Filestore</strong></li>
+                    <li><strong>Prefer uniform bucket IAM</strong></li>
+                    <li><strong>Standard / Nearline / Coldline / Archive</strong> classes</li>
+                    <li><strong>Signed URLs</strong> for temporary access</li>
+                    <li><strong>Cloud CDN</strong> on global HTTP(S) LB</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

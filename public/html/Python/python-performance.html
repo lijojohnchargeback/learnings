@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Performance - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">⚡ Performance</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Measure First</div>
+            <div class="sidebar-links">
+                <a href="#mindset" class="sidebar-link">Mindset</a>
+                <a href="#timing" class="sidebar-link">Timing</a>
+                <a href="#cprofile" class="sidebar-link">cProfile</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Memory</div>
+            <div class="sidebar-links">
+                <a href="#memory" class="sidebar-link">tracemalloc</a>
+                <a href="#structures" class="sidebar-link">Cheaper Structures</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Speed Ups</div>
+            <div class="sidebar-links">
+                <a href="#fast-python" class="sidebar-link">Faster Python</a>
+                <a href="#numpy" class="sidebar-link">NumPy &amp; C Ext</a>
+                <a href="#caching" class="sidebar-link">Caching</a>
+                <a href="#checklist" class="sidebar-link">Checklist</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>⚡ Python Performance &amp; Profiling</h1>
+            <p>Measure, find hotspots, then optimize — timing, cProfile, memory, and practical speedups</p>
+        </header>
+
+        <section id="mindset">
+            <h2>🎯 Measure First</h2>
+            <p>Premature optimization wastes time. For backends, latency usually comes from <strong>I/O, N+1 queries, and serialization</strong> — not from a slow <code>for</code> loop.</p>
+            <ol>
+                <li>Define the SLA (p50 / p99 latency, throughput)</li>
+                <li>Reproduce with realistic data</li>
+                <li>Profile CPU and memory separately</li>
+                <li>Fix the top hotspot; re-measure</li>
+            </ol>
+        </section>
+
+        <section id="timing">
+            <h2>⏱️ Timing</h2>
+            <div class="code-block">import time
+from time import perf_counter
+
+start = perf_counter()
+# ... work ...
+print(f"took {perf_counter() - start:.4f}s")
+
+# Micro-benchmarks
+# python -m timeit "sum(range(1000))"
+
+import timeit
+print(timeit.timeit("sum(range(1000))", number=10_000))</div>
+        </section>
+
+        <section id="cprofile">
+            <h2>📊 cProfile</h2>
+            <div class="code-block"># CLI
+# python -m cProfile -o out.prof app.py
+# python -m cProfile -s cumtime app.py
+
+import cProfile
+import pstats
+from pstats import SortKey
+
+def main():
+    ...
+
+cProfile.run("main()", "out.prof")
+stats = pstats.Stats("out.prof")
+stats.strip_dirs().sort_stats(SortKey.CUMULATIVE).print_stats(20)
+
+# Visualize (optional tools): snakeviz, tuna, py-spy
+# pip install snakeviz
+# snakeviz out.prof
+# py-spy top --pid &lt;pid&gt;     # sampling profiler, low overhead</div>
+
+            <div class="info-box">
+                <strong>💡 Read profiles by cumulative time</strong> to find who calls expensive work, and by <em>tottime</em> to find who burns CPU itself.
+            </div>
+        </section>
+
+        <section id="memory">
+            <h2>🧠 Memory Profiling with tracemalloc</h2>
+            <div class="code-block">import tracemalloc
+
+tracemalloc.start()
+# ... allocate ...
+snapshot = tracemalloc.take_snapshot()
+top = snapshot.statistics("lineno")
+for stat in top[:10]:
+    print(stat)
+
+# Compare two snapshots to find leaks / growth
+# snap1 = tracemalloc.take_snapshot()
+# ...
+# snap2 = tracemalloc.take_snapshot()
+# for stat in snap2.compare_to(snap1, "lineno")[:10]:
+#     print(stat)</div>
+        </section>
+
+        <section id="structures">
+            <h2>📦 Cheaper Data Structures</h2>
+            <table>
+                <tr><th>Need</th><th>Prefer</th></tr>
+                <tr><td>Many tiny objects</td><td><code>__slots__</code>, <code>NamedTuple</code>, dataclass(slots=True)</td></tr>
+                <tr><td>Membership tests</td><td><code>set</code> / <code>dict</code> (O(1) avg)</td></tr>
+                <tr><td>Array of numbers</td><td><code>array</code> module or NumPy — not <code>list[int]</code></td></tr>
+                <tr><td>Counting</td><td><code>collections.Counter</code></td></tr>
+                <tr><td>Fast appends left/right</td><td><code>collections.deque</code></td></tr>
+                <tr><td>Streaming</td><td>generators — don’t materialize huge lists</td></tr>
+            </table>
+
+            <div class="code-block">from collections import deque, Counter
+
+dq = deque(maxlen=1000)  # sliding window
+dq.append(1)
+
+counts = Counter("abracadabra")
+print(counts.most_common(3))</div>
+        </section>
+
+        <section id="fast-python">
+            <h2>🚀 Faster Pure Python</h2>
+            <div class="code-block"># Local variables are faster than globals
+def sum_squares(n):
+    total = 0
+    for i in range(n):   # range is C-backed
+        total += i * i
+    return total
+
+# List/dict/set comprehensions beat manual loops for building collections
+squares = [i * i for i in range(1000)]
+
+# str.join beats repeated += for many pieces
+s = "".join(parts)
+
+# Avoid:
+# - repeated attribute lookup in tight loops (bind to local)
+# - huge temporary lists when a generator + sum works
+# - catching exceptions in ultra-hot paths when a check is cheap and clear</div>
+        </section>
+
+        <section id="numpy">
+            <h2>🧮 NumPy, C Extensions &amp; Friends</h2>
+            <p>Move hot numeric loops out of pure Python. Libraries that release the GIL can also use multiple threads.</p>
+            <div class="code-block">import numpy as np
+
+xs = np.arange(1_000_000)
+print((xs * xs).sum())  # vectorized — runs in C
+
+# Other options:
+# - Cython / mypyc / rust (PyO3) for custom extensions
+# - PyPy for long-running pure-Python services
+# - orjson / ujson for faster JSON
+# - uvloop for faster asyncio event loop (Unix)</div>
+        </section>
+
+        <section id="caching">
+            <h2>💾 Caching</h2>
+            <div class="code-block">from functools import lru_cache
+import hashlib
+
+@lru_cache(maxsize=1024)
+def expensive(key: str) -&gt; str:
+    return hashlib.sha256(key.encode()).hexdigest()
+
+# Process-local cache only — for multi-worker apps use Redis/Memcached
+# Cache keys must include every input that affects the result
+# Set TTLs for data that can go stale</div>
+        </section>
+
+        <section id="checklist">
+            <h2>✅ Backend Performance Checklist</h2>
+            <ul>
+                <li>Fix N+1 DB queries (eager load / joins / <code>selectinload</code>)</li>
+                <li>Add indexes that match real filters</li>
+                <li>Paginate list endpoints; stream large downloads</li>
+                <li>Cache expensive reads (HTTP cache headers + Redis)</li>
+                <li>Use connection pools (DB, HTTP)</li>
+                <li>Prefer async or thread pools for concurrent I/O</li>
+                <li>Profile before micro-optimizing Python loops</li>
+                <li>Compress responses / use efficient serializers when payloads are large</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Bottom line:</strong> Correctness and clarity first. Profile with real traffic shape. Optimize the top 1–2 hotspots, then stop.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

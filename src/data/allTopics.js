@@ -223,7 +223,7 @@ export const allTopicsData = {
     python: {
         id: 'python',
         name: 'Python',
-        description: 'Python from basics to web frameworks, APIs, databases, and testing',
+        description: 'Python from basics to internals, advanced patterns, concurrency, typing, and backends',
         color: '#3776ab',
         icon: 'Code2',
         gradient: 'linear-gradient(135deg, #3776ab 0%, #ffd43b 100%)',
@@ -269,6 +269,36 @@ export const allTopicsData = {
                 estimatedTime: '6 hours'
             },
             {
+                id: 'python-how-it-works',
+                name: 'How Python Works',
+                description: 'CPython, bytecode, GIL, memory model, GC, and the import system',
+                difficulty: 'advanced',
+                htmlFile: '/html/Python/python-how-it-works.html',
+                icon: '🔧',
+                tags: ['python', 'internals', 'cpython', 'gil', 'advanced'],
+                estimatedTime: '8 hours'
+            },
+            {
+                id: 'python-advanced',
+                name: 'Advanced Python',
+                description: 'Generators, descriptors, metaclasses, protocols, and power-user patterns',
+                difficulty: 'advanced',
+                htmlFile: '/html/Python/python-advanced.html',
+                icon: '🚀',
+                tags: ['python', 'generators', 'descriptors', 'metaclasses', 'advanced'],
+                estimatedTime: '7 hours'
+            },
+            {
+                id: 'python-typing',
+                name: 'Python Type Hints',
+                description: 'Annotations, generics, protocols, Pydantic, mypy, and pyright',
+                difficulty: 'intermediate',
+                htmlFile: '/html/Python/python-typing.html',
+                icon: '📝',
+                tags: ['python', 'typing', 'mypy', 'pydantic'],
+                estimatedTime: '5 hours'
+            },
+            {
                 id: 'python-web-frameworks',
                 name: 'Python Web Frameworks',
                 description: 'Flask, FastAPI, and Django for backend web development',
@@ -287,6 +317,16 @@ export const allTopicsData = {
                 icon: '⚡',
                 tags: ['python', 'async', 'asyncio', 'concurrency'],
                 estimatedTime: '5 hours'
+            },
+            {
+                id: 'python-concurrency',
+                name: 'Python Concurrency',
+                description: 'Threading, multiprocessing, pools, locks, and when to use each',
+                difficulty: 'advanced',
+                htmlFile: '/html/Python/python-concurrency.html',
+                icon: '🧵',
+                tags: ['python', 'threading', 'multiprocessing', 'concurrency', 'advanced'],
+                estimatedTime: '6 hours'
             },
             {
                 id: 'python-apis',
@@ -326,6 +366,16 @@ export const allTopicsData = {
                 htmlFile: '/html/Python/python-testing.html',
                 icon: '🧪',
                 tags: ['python', 'testing', 'pytest', 'tdd'],
+                estimatedTime: '5 hours'
+            },
+            {
+                id: 'python-performance',
+                name: 'Python Performance',
+                description: 'Profiling, memory, caching, and practical backend speedups',
+                difficulty: 'advanced',
+                htmlFile: '/html/Python/python-performance.html',
+                icon: '⚡',
+                tags: ['python', 'performance', 'profiling', 'optimization', 'advanced'],
                 estimatedTime: '5 hours'
             }
         ]
@@ -496,6 +546,56 @@ export const allTopicsData = {
                 htmlFile: '/html/AWS/aws-security.html',
                 icon: '🔒',
                 tags: ['aws', 'security', 'iam'],
+                estimatedTime: '6 hours'
+            },
+            {
+                id: 'gcp-overview',
+                name: 'GCP Overview',
+                description: 'Introduction to Google Cloud Platform',
+                difficulty: 'beginner',
+                htmlFile: '/html/GCP/gcp-overview.html',
+                icon: '☁️',
+                tags: ['gcp', 'cloud', 'overview'],
+                estimatedTime: '4 hours'
+            },
+            {
+                id: 'gcp-compute',
+                name: 'GCP Compute',
+                description: 'Compute Engine, Cloud Run, GKE, and Cloud Functions',
+                difficulty: 'intermediate',
+                htmlFile: '/html/GCP/gcp-compute.html',
+                icon: '💻',
+                tags: ['gcp', 'compute', 'gke', 'cloud-run'],
+                estimatedTime: '6 hours'
+            },
+            {
+                id: 'gcp-storage',
+                name: 'GCP Storage',
+                description: 'Persistent Disk, Filestore, and Cloud Storage',
+                difficulty: 'intermediate',
+                htmlFile: '/html/GCP/gcp-storage.html',
+                icon: '💾',
+                tags: ['gcp', 'storage', 'gcs'],
+                estimatedTime: '5 hours'
+            },
+            {
+                id: 'gcp-networking',
+                name: 'GCP Networking',
+                description: 'VPC, Cloud Load Balancing, and hybrid connectivity',
+                difficulty: 'advanced',
+                htmlFile: '/html/GCP/gcp-networking.html',
+                icon: '🌐',
+                tags: ['gcp', 'vpc', 'networking'],
+                estimatedTime: '7 hours'
+            },
+            {
+                id: 'gcp-security',
+                name: 'GCP Security',
+                description: 'IAM, Secret Manager, KMS, and security best practices',
+                difficulty: 'advanced',
+                htmlFile: '/html/GCP/gcp-security.html',
+                icon: '🔒',
+                tags: ['gcp', 'security', 'iam'],
                 estimatedTime: '6 hours'
             }
         ]

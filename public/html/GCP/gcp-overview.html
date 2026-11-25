@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete GCP Overview - Google Cloud Platform Guide">
+    <meta name="keywords" content="GCP, Google Cloud, Compute Engine, Cloud Storage, BigQuery, GKE, Vertex AI, IAM">
+    <meta name="author" content="GCP Documentation">
+    <title>GCP Complete Overview - Google Cloud Platform</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">☁️ GCP Overview</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#intro" class="sidebar-link">Introduction</a>
+                <a href="#infrastructure" class="sidebar-link">Global Infrastructure</a>
+                <a href="#hierarchy" class="sidebar-link">Resource Hierarchy</a>
+                <a href="#shared-responsibility" class="sidebar-link">Shared Responsibility</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🗺️ Service Map</div>
+            <div class="sidebar-links">
+                <a href="#core-map" class="sidebar-link">Core Service Map</a>
+                <a href="#compute" class="sidebar-link">Compute Snapshot</a>
+                <a href="#storage" class="sidebar-link">Storage Snapshot</a>
+                <a href="#networking" class="sidebar-link">Networking Snapshot</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">💾 Data & AI</div>
+            <div class="sidebar-links">
+                <a href="#databases" class="sidebar-link">Databases</a>
+                <a href="#bigquery" class="sidebar-link">BigQuery & Analytics</a>
+                <a href="#ai-ml" class="sidebar-link">AI / ML (Vertex AI)</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚙️ Platform</div>
+            <div class="sidebar-links">
+                <a href="#serverless" class="sidebar-link">Serverless</a>
+                <a href="#devops" class="sidebar-link">DevOps</a>
+                <a href="#monitoring" class="sidebar-link">Monitoring</a>
+                <a href="#cost" class="sidebar-link">Cost & Pricing</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🛠️ Practice</div>
+            <div class="sidebar-links">
+                <a href="#getting-started" class="sidebar-link">Getting Started</a>
+                <a href="#best-practices" class="sidebar-link">Best Practices</a>
+                <a href="#aws-mapping" class="sidebar-link">AWS ↔ GCP Mapping</a>
+                <a href="#summary" class="sidebar-link">Summary</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <div class="aws-logo">☁️</div>
+            <h1>GCP Complete Overview</h1>
+            <p>Google Cloud Platform — Compute, Data, AI &amp; Global Infrastructure</p>
+        </header>
+
+        <div class="content">
+
+            <section id="intro">
+                <h2>1) Introduction to GCP</h2>
+
+                <figure class="topic-hero">
+                    <img src="/images/gcp/gcp-hero.jpg" alt="Global cloud network glowing over Earth at night" loading="lazy" />
+                    <figcaption>Google Cloud is a global utility: you rent compute, storage, networking, and AI from Google’s data centers instead of buying servers.</figcaption>
+                </figure>
+
+                <p class="topic-lede">Google Cloud Platform (<span class="highlight">GCP</span>) is a collection of on-demand building blocks. Instead of buying racks, power, and cooling, you request a virtual machine, an object bucket, a Kubernetes cluster, or a BigQuery dataset and pay for what you use. The platform grew out of Google’s internal infrastructure — the same networking, Borg-derived orchestration, and data systems that power Search, YouTube, and Gmail — and is now used by startups, governments, and enterprises for web apps, analytics, and machine learning.</p>
+
+                <div class="illustration">
+                    <img src="/images/gcp/gcp-architecture-overview.jpg" alt="Typical GCP request path from users through Cloud DNS and Cloud CDN to a load balancer, then Cloud Run or GKE, then Cloud Storage, Cloud SQL, and BigQuery">
+                    <div class="illustration-caption">One typical web app, named as real services. IAM decides who can call each hop. The VPC keeps compute and data off the public internet when you design it that way.</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Walk the request, hop by hop</h3>
+                    <p>The diagram above is the mental model for the rest of this page. A user never “talks to GCP.” They talk to a name, then to an edge, then to a balancer, then to code, then to data.</p>
+                    <ol>
+                        <li><strong>Users</strong> — a browser, mobile app, or API client issues HTTPS to a hostname such as <code>app.example.com</code>.</li>
+                        <li><strong>Cloud DNS</strong> — authoritative DNS. It answers with a Cloud CDN or global load-balancer address. Health-based routing and geo policies are available when you need them.</li>
+                        <li><strong>Cloud CDN</strong> — edge cache. Static assets (JS, images, video) should be answered near the user. Dynamic API calls can still enter Google’s network early via the global HTTP(S) load balancer.</li>
+                        <li><strong>Cloud Load Balancing</strong> — global Anycast front end. It terminates TLS, matches host/path rules, and spreads traffic across healthy backends in one or many regions.</li>
+                        <li><strong>Compute</strong> — the code. That might be Compute Engine VMs, GKE pods, Cloud Run services, Cloud Functions, or App Engine. Same job, different ops burden.</li>
+                        <li><strong>Data</strong> — Cloud Storage for objects, Cloud SQL / Spanner for relational rows, Firestore or Bigtable for document/wide-column, BigQuery for analytics. Pick by access pattern, not by habit.</li>
+                    </ol>
+                    <p>Two invisible layers wrap every hop: <strong>IAM</strong> (who is allowed to call the service) and a <strong>VPC</strong> (which packets can reach private subnets and Private Google Access). If those two are wrong, the pretty architecture still leaks or locks you out.</p>
+                </div>
+
+                <div class="stat-strip">
+                    <div class="stat-chip"><strong>100+</strong><span>Cloud products</span></div>
+                    <div class="stat-chip"><strong>40+</strong><span>Geographic regions</span></div>
+                    <div class="stat-chip"><strong>120+</strong><span>Zones</span></div>
+                    <div class="stat-chip"><strong>~11%</strong><span>Cloud market share</span></div>
+                </div>
+
+                <div class="split-visual">
+                    <img src="/images/gcp/gcp-data-center.jpg" alt="Modern data center with lit server racks" loading="lazy" />
+                    <div class="split-copy">
+                        <span class="kicker">How to think about GCP</span>
+                        <h3>A toolkit built on Google’s network</h3>
+                        <p>Every GCP service solves one job: run code, store files, move packets, encrypt secrets, or train models. You compose those jobs into an architecture. A typical web app uses Cloud DNS, Cloud CDN / global HTTP(S) LB, Cloud Storage, Cloud Run or GKE, Cloud SQL or Firestore, and IAM.</p>
+                        <p>GCP’s differentiators show up early: a software-defined global network with Anycast load balancing, BigQuery as a default analytics engine, and Vertex AI as a unified ML surface. The rest of this page is organized the way architects think: infrastructure first, then hierarchy and identity, then compute/storage/data, then delivery and operations.</p>
+                    </div>
+                </div>
+
+                <div class="use-when">
+                    <div class="use-card yes">
+                        <h4>Choose GCP when you need</h4>
+                        <ul>
+                            <li>Global HTTP(S) load balancing without stitching regional balancers</li>
+                            <li>Analytics and ML (BigQuery, Vertex AI, Dataflow)</li>
+                            <li>Managed Kubernetes (GKE) as a first-class product</li>
+                            <li>Strong data analytics + Google Workspace / identity integrations</li>
+                        </ul>
+                    </div>
+                    <div class="use-card no">
+                        <h4>Think twice when</h4>
+                        <ul>
+                            <li>A single small VPS would be simpler and cheaper</li>
+                            <li>You cannot invest in IAM, billing accounts, and project hygiene</li>
+                            <li>Compliance forces a cloud or region you do not have</li>
+                            <li>The team has no operations capacity yet</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>What is GCP?</h3>
+                    <p><strong>Google Cloud Platform</strong> is Google’s public cloud: IaaS, PaaS, serverless, data, and AI services exposed through the Cloud Console, <code>gcloud</code> CLI, client libraries, and Terraform.</p>
+                    <h4>Key facts</h4>
+                    <ul>
+                        <li>☁️ <strong>Roots:</strong> Public services from ~2008 (App Engine); Compute Engine GA in 2013</li>
+                        <li>📦 <strong>Products:</strong> 100+ services spanning compute, storage, networking, data, and AI</li>
+                        <li>🌍 <strong>Reach:</strong> 40+ regions, 120+ zones, plus edge POPs for CDN and media</li>
+                        <li>🏆 <strong>Strengths:</strong> Data analytics, ML, Kubernetes, global networking</li>
+                        <li>💼 <strong>Used by:</strong> Spotify, Twitter/X (historically), Snap, Shopify, and many enterprises</li>
+                        <li>🔒 <strong>Compliance:</strong> Broad portfolio (ISO, SOC, HIPAA, PCI, FedRAMP where applicable)</li>
+                    </ul>
+                    <div class="tip">
+                        <strong>💡 GCP vs “Google”:</strong> Gmail and Drive are Google Workspace. GCP is the developer/ops cloud: projects, billing accounts, VPCs, and APIs. They share Google identity patterns, but your production workloads live in GCP projects.
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>AWS comparison callout</h3>
+                    <p>If you know AWS, map the mental model — then learn the differences that matter:</p>
+                    <ul>
+                        <li><strong>Account ≈ Project</strong> for day-to-day resource isolation (with Org/Folders above).</li>
+                        <li><strong>EC2 ≈ Compute Engine</strong>, <strong>S3 ≈ Cloud Storage</strong>, <strong>IAM ≈ IAM</strong> (policy language differs).</li>
+                        <li><strong>Lambda ≈ Cloud Functions</strong>; long-running containers often land on <strong>Cloud Run</strong> (closer to a mix of Lambda + Fargate for HTTP).</li>
+                        <li><strong>EKS ≈ GKE</strong>; GKE Autopilot reduces node management further.</li>
+                        <li><strong>Regional ALBs + CloudFront</strong> often collapse into <strong>global external HTTP(S) LB + Cloud CDN</strong> on GCP.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="infrastructure">
+                <h2>2) Global Infrastructure</h2>
+
+                <div class="illustration">
+                    <img src="/images/gcp/gcp-global-infra.jpg" alt="Google Cloud regions, zones, and edge points of presence around the world">
+                    <div class="illustration-caption">Regions hold zones. Zones are isolated failure domains. Edge locations terminate CDN and media traffic closer to users.</div>
+                </div>
+
+                <p class="topic-lede">GCP’s physical footprint is organized as <span class="highlight">regions</span>, <span class="highlight">zones</span>, and <span class="highlight">edge points of presence</span>. Understanding this hierarchy is the foundation of high availability and latency design.</p>
+
+                <div class="example-box">
+                    <h3>Regions</h3>
+                    <p>A <strong>region</strong> is a geographic area (for example <code>us-central1</code>, <code>europe-west1</code>, <code>asia-south1</code>). Pick regions for:</p>
+                    <ul>
+                        <li><strong>Latency</strong> — put compute near users and data near compute.</li>
+                        <li><strong>Data residency</strong> — legal requirements for where data may live.</li>
+                        <li><strong>Service availability</strong> — not every product launches in every region on day one.</li>
+                        <li><strong>Price</strong> — some regions are cheaper for the same SKU.</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h3>Zones</h3>
+                    <p>A <strong>zone</strong> is an isolated deployment area inside a region (<code>us-central1-a</code>, <code>us-central1-b</code>, …). Zones have independent power, cooling, and networking failure domains.</p>
+                    <ul>
+                        <li>Spread Managed Instance Groups and GKE node pools across zones.</li>
+                        <li>Regional Persistent Disks and multi-zone MIGs survive a single-zone outage.</li>
+                        <li>Zonal resources (many VMs, zonal disks) die with their zone — design accordingly.</li>
+                    </ul>
+                    <div class="tip">
+                        <strong>💡 Common mistake:</strong> Deploying everything in one zone “because it’s cheaper to think about,” then discovering a maintenance event takes the whole app offline.
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Edge / Points of Presence</h3>
+                    <p>Google’s edge network terminates Cloud CDN, Media CDN, and global load-balancing Anycast IPs. Users hit the nearest edge; traffic then rides Google’s backbone toward your backends. That is why a single global external HTTP(S) load balancer can front backends in multiple regions without you operating a separate CDN product for basic cases.</p>
+                </div>
+
+                <table>
+                    <tr><th>Concept</th><th>GCP</th><th>AWS analogue</th><th>Design tip</th></tr>
+                    <tr>
+                        <td><strong>Region</strong></td>
+                        <td><code>us-central1</code></td>
+                        <td><code>us-east-1</code></td>
+                        <td>Choose for latency + residency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zone</strong></td>
+                        <td><code>us-central1-a</code></td>
+                        <td>Availability Zone</td>
+                        <td>Spread stateful + stateless tiers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-region</strong></td>
+                        <td>e.g. dual-region buckets, Spanner multi-region</td>
+                        <td>Multi-region replication</td>
+                        <td>Pay for durability / RPO goals</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Edge</strong></td>
+                        <td>CDN / Anycast LB POPs</td>
+                        <td>CloudFront / Global Accelerator</td>
+                        <td>Cache static; terminate TLS early</td>
+                    </tr>
+                </table>
+
+                <div class="use-when">
+                    <div class="use-card yes">
+                        <h4>Use multi-zone when</h4>
+                        <ul>
+                            <li>You need zone-level HA for VMs or GKE</li>
+                            <li>RTO cannot wait for a full rebuild</li>
+                            <li>Load balancers can health-check across zones</li>
+                        </ul>
+                    </div>
+                    <div class="use-card no">
+                        <h4>Multi-region only when</h4>
+                        <ul>
+                            <li>You truly need cross-region failover or global data</li>
+                            <li>You accept higher cost and consistency tradeoffs</li>
+                            <li>You have tested failover — not just drawn it</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hierarchy">
+                <h2>3) Resource Hierarchy</h2>
+
+                <p class="topic-lede">GCP organizes resources in a tree: <span class="highlight">Organization → Folders → Projects → Resources</span>. Billing attaches via billing accounts. Get this wrong and IAM, quotas, and cost allocation become chaos.</p>
+
+                <div class="example-box">
+                    <h3>Organization</h3>
+                    <p>The Organization resource is the root, usually tied to a Cloud Identity / Google Workspace domain. Organization Policy Service sets guardrails (allowed regions, disable public IPs, restrict SA key creation).</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>Folders</h3>
+                    <p>Folders group projects by business unit, environment, or compliance boundary. IAM bindings and org policies inherit downward. Typical pattern: <code>Company / Engineering / prod</code> and <code>Company / Engineering / nonprod</code>.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>Projects</h3>
+                    <p>A <strong>project</strong> is the primary unit of isolation, quota, and enablement. APIs are enabled per project. Most resources (VMs, buckets, datasets) live in a project. Think of a project as closer to an AWS account than to an AWS “project tag.”</p>
+                    <ul>
+                        <li>One app / one environment per project is a common enterprise pattern.</li>
+                        <li>Shared VPC host projects own the network; service projects attach.</li>
+                        <li>Project IDs are globally unique strings; project numbers are numeric IDs used by APIs.</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h3>Billing accounts</h3>
+                    <p>Billing accounts pay for one or more projects. Use labels and folders for chargeback. Budgets and anomaly alerts live at the billing-account or project level. Never put production spend on a personal credit card without budgets.</p>
+                    <div class="tip">
+                        <strong>💡 Inherited IAM:</strong> A role granted on the org or folder applies to all child projects unless you carefully constrain with conditions. Audit inheritance before granting <code>roles/owner</code> high in the tree.
+                    </div>
+                </div>
+
+                <table>
+                    <tr><th>Level</th><th>Purpose</th><th>Typical owners</th></tr>
+                    <tr>
+                        <td><strong>Organization</strong></td>
+                        <td>Root policies, domain binding</td>
+                        <td>Cloud admins / security</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Folder</strong></td>
+                        <td>Delegation, environment grouping</td>
+                        <td>Platform / BU leads</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project</strong></td>
+                        <td>APIs, quotas, resources</td>
+                        <td>App / platform teams</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Billing account</strong></td>
+                        <td>Payment, budgets</td>
+                        <td>FinOps / finance</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="shared-responsibility">
+                <h2>4) Shared Responsibility</h2>
+
+                <p>Google secures the cloud: data centers, hardware, hypervisor, and the managed service control plane. You secure <em>in</em> the cloud. The line moves with the service model.</p>
+
+                <div class="example-box">
+                    <h3>Where the line sits</h3>
+                    <ul>
+                        <li><strong>IaaS (Compute Engine, VPC, Persistent Disk):</strong> you patch the OS (unless using container-optimized / managed images carefully), configure firewall rules, encrypt disks, and rotate keys. Google keeps the building and hypervisor healthy.</li>
+                        <li><strong>PaaS / containers (GKE standard nodes, Cloud SQL):</strong> Google patches much of the platform. You still design schemas, IAM, backups, network placement, and (on GKE standard) node security.</li>
+                        <li><strong>Serverless (Cloud Run, Cloud Functions, BigQuery, Cloud Storage):</strong> you do not SSH anywhere. You still own identity, encryption settings, bucket IAM, and the data you store.</li>
+                    </ul>
+                    <div class="tip">
+                        <strong>💡 Production fails here:</strong> “GCP is secure” is not a control. MFA on privileged users, no public buckets by accident, firewall rules that are not <code>0.0.0.0/0</code> on SSH, CMEK where required, and audit logs you actually read — those are controls.
+                    </div>
+                </div>
+            </section>
+
+            <section id="core-map">
+                <h2>5) Core Service Map</h2>
+
+                <p class="topic-lede">Memorize categories, not every SKU. Most architectures reuse the same dozen products.</p>
+
+                <table>
+                    <tr><th>Category</th><th>Flagship services</th><th>You use them to…</th></tr>
+                    <tr>
+                        <td><strong>Compute</strong></td>
+                        <td>Compute Engine, GKE, Cloud Run, Cloud Functions, App Engine, Batch</td>
+                        <td>Run code</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage</strong></td>
+                        <td>Persistent Disk, Hyperdisk, Filestore, Cloud Storage</td>
+                        <td>Persist disks, files, objects</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Networking</strong></td>
+                        <td>VPC, Cloud LB, Cloud DNS, Cloud CDN, Cloud NAT, Interconnect</td>
+                        <td>Connect and protect traffic</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Databases</strong></td>
+                        <td>Cloud SQL, Spanner, Firestore, Bigtable, Memorystore</td>
+                        <td>Store structured / semi-structured data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Analytics</strong></td>
+                        <td>BigQuery, Dataflow, Dataproc, Pub/Sub, Looker</td>
+                        <td>Ingest, transform, warehouse, BI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI / ML</strong></td>
+                        <td>Vertex AI, Gemini APIs, Vision/Speech/Translation</td>
+                        <td>Train, deploy, and call models</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Security</strong></td>
+                        <td>IAM, Secret Manager, KMS, SCC, Cloud Armor, VPC SC</td>
+                        <td>Identity, encryption, detection</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ops</strong></td>
+                        <td>Cloud Monitoring, Logging, Trace, Error Reporting, Cloud Build</td>
+                        <td>Observe and deliver</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="compute">
+                <h2>6) Compute Snapshot</h2>
+
+                <div class="illustration">
+                    <img src="/images/gcp/gcp-compute.jpg" alt="Processor and circuit board representing GCP compute services" loading="lazy" />
+                    <div class="illustration-caption">From VMs to functions: pick by how long work lives and how much of the stack you want to own.</div>
+                </div>
+
+                <p>GCP compute spans IaaS through fully managed serverless:</p>
+                <ul>
+                    <li><strong>Compute Engine</strong> — VMs with custom machine types, MIGs, GPUs. Closest to EC2.</li>
+                    <li><strong>Google Kubernetes Engine (GKE)</strong> — managed Kubernetes; Autopilot mode manages nodes for you.</li>
+                    <li><strong>Cloud Run</strong> — container-based serverless HTTP/async services. Scale to zero. Often the default for new APIs.</li>
+                    <li><strong>Cloud Functions (2nd gen)</strong> — event-driven functions built on Cloud Run under the hood.</li>
+                    <li><strong>App Engine</strong> — PaaS with standard and flexible environments; still strong for certain Google-centric stacks.</li>
+                    <li><strong>Batch</strong> — managed batch/HPC-style job scheduling on Compute Engine capacity.</li>
+                </ul>
+
+                <div class="use-when">
+                    <div class="use-card yes">
+                        <h4>Default picks</h4>
+                        <ul>
+                            <li>HTTP microservice → <strong>Cloud Run</strong></li>
+                            <li>Event glue / webhooks → <strong>Cloud Functions</strong></li>
+                            <li>K8s platform / multi-service mesh → <strong>GKE</strong></li>
+                            <li>Custom OS / GPU / long-lived → <strong>Compute Engine</strong></li>
+                        </ul>
+                    </div>
+                    <div class="use-card no">
+                        <h4>Common mistakes</h4>
+                        <ul>
+                            <li>Choosing GKE before the team can operate Kubernetes</li>
+                            <li>Leaving idle VMs without committed use discounts or autoscaling</li>
+                            <li>Forcing everything into Functions when Cloud Run fits better</li>
+                        </ul>
+                    </div>
+                </div>
+                <p>Deep dive: <em>Compute Services</em> guide in this category.</p>
+            </section>
+
+            <section id="storage">
+                <h2>7) Storage Snapshot</h2>
+
+                <div class="illustration">
+                    <img src="/images/gcp/gcp-storage.jpg" alt="Storage media representing GCP block, file, and object storage" loading="lazy" />
+                    <div class="illustration-caption">Block for disks, file for shared POSIX, object for durable blobs and data lakes.</div>
+                </div>
+
+                <table>
+                    <tr><th>Type</th><th>GCP service</th><th>AWS analogue</th><th>When</th></tr>
+                    <tr>
+                        <td><strong>Block</strong></td>
+                        <td>Persistent Disk, Hyperdisk, Local SSD</td>
+                        <td>EBS, Instance Store</td>
+                        <td>VM / GKE disks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>File</strong></td>
+                        <td>Filestore</td>
+                        <td>EFS / FSx</td>
+                        <td>Shared NFS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Object</strong></td>
+                        <td>Cloud Storage</td>
+                        <td>S3</td>
+                        <td>Assets, backups, lakes</td>
+                    </tr>
+                </table>
+
+                <div class="example-box">
+                    <h3>Cloud Storage classes (quick)</h3>
+                    <p><strong>Standard</strong>, <strong>Nearline</strong>, <strong>Coldline</strong>, and <strong>Archive</strong> trade retrieval cost and minimum storage duration. Use lifecycle rules to age objects automatically. Prefer uniform bucket-level IAM over legacy ACLs for new buckets.</p>
+                </div>
+                <p>Deep dive: <em>Storage Services</em> guide in this category.</p>
+            </section>
+
+            <section id="networking">
+                <h2>8) Networking Snapshot</h2>
+
+                <div class="illustration">
+                    <img src="/images/gcp/gcp-networking.jpg" alt="Network topology visualization for Google Cloud VPC and load balancing" loading="lazy" />
+                    <div class="illustration-caption">VPCs are global; subnets are regional. Firewall rules and Cloud Armor sit on the path to backends.</div>
+                </div>
+
+                <ul>
+                    <li><strong>VPC</strong> — global private network; subnets are regional (unlike AWS AZ-scoped subnets).</li>
+                    <li><strong>Firewall rules</strong> — stateful allow/deny at VPC level (think security groups + more).</li>
+                    <li><strong>Cloud Load Balancing</strong> — global and regional HTTP(S), TCP/UDP, internal passthrough and proxy.</li>
+                    <li><strong>Cloud NAT / Cloud Router</strong> — egress without public IPs; dynamic routing for hybrid.</li>
+                    <li><strong>Private Google Access / PSC</strong> — reach Google APIs and services without public IPs.</li>
+                    <li><strong>Cloud Interconnect / Cloud VPN</strong> — hybrid connectivity.</li>
+                    <li><strong>Cloud Armor</strong> — WAF / DDoS policies on HTTP(S) LBs (Shield-ish + WAF-ish).</li>
+                </ul>
+                <p>Deep dive: <em>Networking</em> guide in this category.</p>
+            </section>
+
+            <section id="databases">
+                <h2>9) Databases</h2>
+
+                <p class="topic-lede">Pick databases by consistency needs, scale shape, and operational appetite — not by which logo is trending.</p>
+
+                <table>
+                    <tr><th>Service</th><th>Model</th><th>Best for</th><th>Watch-outs</th></tr>
+                    <tr>
+                        <td><strong>Cloud SQL</strong></td>
+                        <td>Managed MySQL / PostgreSQL / SQL Server</td>
+                        <td>Familiar relational apps</td>
+                        <td>Vertical scale limits; plan HA + backups</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spanner</strong></td>
+                        <td>Globally distributed relational</td>
+                        <td>Horizontal SQL with strong consistency</td>
+                        <td>Cost; schema design matters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Firestore</strong></td>
+                        <td>Document (Native / Datastore mode)</td>
+                        <td>Mobile/web apps, real-time sync</td>
+                        <td>Query limitations; composite indexes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bigtable</strong></td>
+                        <td>Wide-column NoSQL</td>
+                        <td>High throughput time-series / analytics ops</td>
+                        <td>Row-key design is everything</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memorystore</strong></td>
+                        <td>Redis / Memcached</td>
+                        <td>Cache, sessions, low-latency state</td>
+                        <td>Not a system of record</td>
+                    </tr>
+                </table>
+
+                <div class="example-box">
+                    <h3>AWS mapping (databases)</h3>
+                    <ul>
+                        <li>RDS / Aurora → Cloud SQL (Aurora-like global SQL → often Spanner)</li>
+                        <li>DynamoDB → Firestore (document) or Bigtable (wide-column / massive throughput)</li>
+                        <li>ElastiCache → Memorystore</li>
+                    </ul>
+                </div>
+
+                <div class="use-when">
+                    <div class="use-card yes">
+                        <h4>Start with Cloud SQL when</h4>
+                        <ul>
+                            <li>You already have Postgres/MySQL schemas</li>
+                            <li>Traffic fits a managed primary + replicas</li>
+                            <li>Team knows relational ops</li>
+                        </ul>
+                    </div>
+                    <div class="use-card no">
+                        <h4>Reach for Spanner when</h4>
+                        <ul>
+                            <li>You need multi-region strong consistency</li>
+                            <li>Horizontal write scale is a hard requirement</li>
+                            <li>You accept Spanner’s pricing and constraints</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bigquery">
+                <h2>10) BigQuery &amp; Analytics</h2>
+
+                <p><span class="highlight">BigQuery</span> is GCP’s serverless data warehouse: SQL over columnar storage, separated compute (slots) and storage, with streaming inserts, scheduled queries, BI Engine, and tight links to Looker, Dataflow, and Vertex AI.</p>
+
+                <div class="example-box">
+                    <h3>Analytics building blocks</h3>
+                    <ul>
+                        <li><strong>Pub/Sub</strong> — durable messaging / event ingestion (SQS + SNS-ish, with streaming DNA).</li>
+                        <li><strong>Dataflow</strong> — managed Apache Beam (batch + stream).</li>
+                        <li><strong>Dataproc</strong> — managed Spark / Hadoop when you need that ecosystem.</li>
+                        <li><strong>BigQuery</strong> — warehouse / lakehouse SQL.</li>
+                        <li><strong>Looker / Looker Studio</strong> — BI and governed metrics.</li>
+                    </ul>
+                    <div class="tip">
+                        <strong>💡 Cost tip:</strong> BigQuery charges for bytes scanned (on-demand) or slots (capacity). Partition and cluster tables. Avoid <code>SELECT *</code> on multi-TB fact tables in dashboards.
+                    </div>
+                </div>
+            </section>
+
+            <section id="ai-ml">
+                <h2>11) AI / ML — Vertex AI</h2>
+
+                <p><span class="highlight">Vertex AI</span> is the unified ML platform: datasets, training (custom and AutoML), Feature Store, Model Registry, prediction endpoints, pipelines, and generative AI (Gemini and model garden) under one governance model.</p>
+
+                <div class="example-box">
+                    <h3>What teams actually use</h3>
+                    <ul>
+                        <li><strong>Gemini / generative APIs</strong> — for assistants, summarization, code, multimodal.</li>
+                        <li><strong>Vertex Prediction</strong> — host custom containers or frameworks.</li>
+                        <li><strong>Vertex Pipelines</strong> — Kubeflow-style MLOps.</li>
+                        <li><strong>Specialized APIs</strong> — Vision, Speech-to-Text, Translation, Natural Language when a turnkey API beats a custom model.</li>
+                    </ul>
+                    <p>Compared with AWS: SageMaker ≈ much of Vertex training/hosting; Bedrock-like generative access appears via Vertex Model Garden / Gemini APIs.</p>
+                </div>
+            </section>
+
+            <section id="serverless">
+                <h2>12) Serverless Overview</h2>
+
+                <div class="illustration">
+                    <img src="/images/gcp/gcp-serverless-flow.jpg" alt="Request flow into Cloud Run and Cloud Functions with scale-to-zero">
+                    <div class="illustration-caption">Event or HTTP arrives → managed execution environment starts or reuses an instance → responds → scales to zero when idle.</div>
+                </div>
+
+                <table>
+                    <tr><th>Service</th><th>Unit of deploy</th><th>Trigger style</th><th>Notes</th></tr>
+                    <tr>
+                        <td><strong>Cloud Run</strong></td>
+                        <td>Container image</td>
+                        <td>HTTPS, Pub/Sub, Eventarc, jobs</td>
+                        <td>Preferred general serverless</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Functions 2nd gen</strong></td>
+                        <td>Source / function</td>
+                        <td>Events + HTTP</td>
+                        <td>Built on Cloud Run</td>
+                    </tr>
+                    <tr>
+                        <td><strong>App Engine</strong></td>
+                        <td>App versions</td>
+                        <td>HTTP</td>
+                        <td>Still valid PaaS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Workflows</strong></td>
+                        <td>YAML/JSON workflow</td>
+                        <td>API / scheduler / events</td>
+                        <td>Orchestration without servers</td>
+                    </tr>
+                </table>
+
+                <div class="use-when">
+                    <div class="use-card yes">
+                        <h4>Prefer serverless when</h4>
+                        <ul>
+                            <li>Traffic is spiky or idle most of the day</li>
+                            <li>Work is event-shaped (upload, queue, cron, webhook)</li>
+                            <li>The team is small and does not want node pools</li>
+                        </ul>
+                    </div>
+                    <div class="use-card no">
+                        <h4>Stay on GCE / GKE when</h4>
+                        <ul>
+                            <li>You need GPUs, sidecars, or complex networking</li>
+                            <li>Processes must stay warm with large memory for hours</li>
+                            <li>Utilization is high enough that reserved VMs win on cost</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="devops">
+                <h2>13) DevOps — Build, Deploy, Artifacts</h2>
+
+                <ul>
+                    <li><strong>Cloud Build</strong> — CI pipelines as code (build, test, push images). Analogy: CodeBuild + bits of CodePipeline.</li>
+                    <li><strong>Artifact Registry</strong> — container images, language packages, and more (successor to Container Registry).</li>
+                    <li><strong>Cloud Deploy</strong> — managed continuous delivery to GKE, Cloud Run, and Anthos targets with release promotions.</li>
+                    <li><strong>Infrastructure as Code</strong> — official Terraform providers; Config Connector / infra from Kubernetes; Deployment Manager legacy.</li>
+                </ul>
+
+                <div class="example-box">
+                    <h3>Minimal delivery path</h3>
+                    <ol>
+                        <li>Commit to Git (GitHub, GitLab, Cloud Source Repositories).</li>
+                        <li>Cloud Build builds and pushes to Artifact Registry.</li>
+                        <li>Cloud Deploy (or Cloud Build deploy step) rolls out to Cloud Run / GKE.</li>
+                        <li>Cloud Monitoring alerts on SLOs; Error Reporting catches crashes.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="monitoring">
+                <h2>14) Monitoring &amp; Observability</h2>
+
+                <table>
+                    <tr><th>Product</th><th>Job</th><th>AWS analogue</th></tr>
+                    <tr>
+                        <td><strong>Cloud Monitoring</strong></td>
+                        <td>Metrics, dashboards, alerting</td>
+                        <td>CloudWatch Metrics/Alarms</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Logging</strong></td>
+                        <td>Log collection, sinks, queries</td>
+                        <td>CloudWatch Logs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Trace</strong></td>
+                        <td>Distributed latency tracing</td>
+                        <td>X-Ray</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error Reporting</strong></td>
+                        <td>Crash aggregation</td>
+                        <td>Often custom / third-party</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Profiler</strong></td>
+                        <td>Continuous CPU/heap profiles</td>
+                        <td>CodeGuru Profiler-ish</td>
+                    </tr>
+                </table>
+
+                <div class="tip">
+                    <strong>💡 Ops tip:</strong> Export critical logs to a separate project/bucket with immutable retention for incident forensics. Turn on audit logs for Admin Activity everywhere; Data Access logs where compliance needs them.
+                </div>
+            </section>
+
+            <section id="cost">
+                <h2>15) Cost &amp; Pricing Models</h2>
+
+                <p>GCP pricing mixes pay-as-you-go, committed use discounts (CUDs), sustained use discounts (on some GCE), spot/preemptible VMs, and flat or capacity pricing (BigQuery editions/slots).</p>
+
+                <div class="example-box">
+                    <h3>Levers that actually move the bill</h3>
+                    <ul>
+                        <li><strong>Rightsizing</strong> — custom machine types; don’t buy 16 vCPU for a 2-vCPU app.</li>
+                        <li><strong>Committed use</strong> — 1- or 3-year CUDs for steady GCE/GKE baselines.</li>
+                        <li><strong>Spot VMs</strong> — fault-tolerant batch and stateless MIGs.</li>
+                        <li><strong>Egress awareness</strong> — internet and cross-region egress add up; design data locality.</li>
+                        <li><strong>BigQuery hygiene</strong> — partition/cluster; prefer capacity for steady warehouses.</li>
+                        <li><strong>Labels + budgets</strong> — every resource labeled; budget alerts before the CFO calls.</li>
+                    </ul>
+                </div>
+
+                <div class="stat-strip">
+                    <div class="stat-chip"><strong>CUDs</strong><span>Steady compute savings</span></div>
+                    <div class="stat-chip"><strong>Spot</strong><span>Batch / flexible</span></div>
+                    <div class="stat-chip"><strong>Labels</strong><span>Chargeback basis</span></div>
+                    <div class="stat-chip"><strong>Budgets</strong><span>Early warning</span></div>
+                </div>
+            </section>
+
+            <section id="getting-started">
+                <h2>16) Getting Started Practically</h2>
+
+                <div class="example-box">
+                    <h3>First week checklist</h3>
+                    <ol>
+                        <li>Create (or join) a Cloud Identity / Google account tied to a billing account.</li>
+                        <li>Create a nonprod project; enable only the APIs you need (Compute, Storage, Run, Logging).</li>
+                        <li>Install <code>gcloud</code>; run <code>gcloud auth login</code> and <code>gcloud config set project …</code>.</li>
+                        <li>Deploy a hello-world to <strong>Cloud Run</strong> from a container or source.</li>
+                        <li>Put a private bucket in the same region; grant the Cloud Run SA <code>roles/storage.objectViewer</code> only.</li>
+                        <li>Create a budget alert at 50% / 90% of a small monthly cap.</li>
+                        <li>Turn on Essential Contacts and ensure Admin Activity audit logs flow to a sink you control.</li>
+                    </ol>
+                </div>
+
+                <div class="example-box">
+                    <h3>Useful <code>gcloud</code> mental model</h3>
+                    <ul>
+                        <li><code>gcloud services enable …</code> — APIs are per project; forgotten enables cause mysterious 403s.</li>
+                        <li><code>gcloud iam …</code> / Console IAM — bindings, not AWS-style JSON identity policies.</li>
+                        <li><code>gcloud run deploy</code> — fastest path from container to HTTPS URL.</li>
+                        <li><code>gcloud compute …</code> — VMs, MIGs, disks, firewalls.</li>
+                        <li>Prefer Terraform for anything that must survive beyond a demo.</li>
+                    </ul>
+                    <div class="tip">
+                        <strong>💡 Identity tip:</strong> Use Google groups for humans and dedicated service accounts for workloads. Never share a personal user as the runtime identity for production.
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>Three starter architectures</h3>
+                    <ul>
+                        <li><strong>Static + API:</strong> Cloud Storage + Cloud CDN for frontend; Cloud Run for API; Cloud SQL private IP via PSC connector.</li>
+                        <li><strong>Event pipeline:</strong> GCS land → Pub/Sub → Dataflow → BigQuery; alerting via Cloud Monitoring.</li>
+                        <li><strong>Platform:</strong> Shared VPC host; GKE Autopilot service projects; Artifact Registry; Cloud Deploy promotions prod←staging.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2>17) Best Practices</h2>
+
+                <div class="example-box">
+                    <h3>Architecture</h3>
+                    <ul>
+                        <li>Prefer regional HA (multi-zone) before jumping to multi-region.</li>
+                        <li>Start at the highest compute abstraction that fits (Cloud Run → GKE → GCE).</li>
+                        <li>Keep secrets in Secret Manager; never in images or env vars checked into git.</li>
+                        <li>Use least-privilege IAM; prefer service accounts per workload over shared “god” SAs.</li>
+                        <li>Enable VPC Flow Logs and Cloud Audit Logs for production projects.</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h3>Organization hygiene</h3>
+                    <ul>
+                        <li>Separate prod / nonprod projects (and preferably folders).</li>
+                        <li>Enforce org policies: restrict public IPs, constrain resource locations, disable SA key creation when possible.</li>
+                        <li>Centralize networking with Shared VPC if many teams ship services.</li>
+                        <li>Require MFA / security keys for privileged Google identities.</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h3>Common mistakes</h3>
+                    <ul>
+                        <li>One giant project for everything — blast radius and IAM hell.</li>
+                        <li>Public Cloud Storage buckets “just for testing” that never get locked down.</li>
+                        <li>Long-lived service account JSON keys on laptops.</li>
+                        <li>No budgets — surprise bills from egress, BigQuery scans, or forgotten GPUs.</li>
+                        <li>Copying an AWS diagram literally without adapting to global VPC / global LB strengths.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="aws-mapping">
+                <h2>18) AWS ↔ GCP Service Mapping</h2>
+
+                <p>Use this as a translation dictionary, not a proof that services are identical. Semantics differ (IAM languages, networking defaults, load balancing).</p>
+
+                <table>
+                    <tr><th>AWS</th><th>GCP</th><th>Notes</th></tr>
+                    <tr><td>EC2</td><td>Compute Engine</td><td>Custom machine types are a GCP strength</td></tr>
+                    <tr><td>EBS</td><td>Persistent Disk / Hyperdisk</td><td>Snapshots → PD snapshots</td></tr>
+                    <tr><td>S3</td><td>Cloud Storage</td><td>Classes ≈ storage classes; IAM differs</td></tr>
+                    <tr><td>EFS</td><td>Filestore</td><td>NFS managed file</td></tr>
+                    <tr><td>Lambda</td><td>Cloud Functions / Cloud Run</td><td>Run often wins for containers/HTTP</td></tr>
+                    <tr><td>Fargate</td><td>Cloud Run / GKE Autopilot</td><td>Different packing models</td></tr>
+                    <tr><td>ECS</td><td>Cloud Run or GKE</td><td>No perfect 1:1</td></tr>
+                    <tr><td>EKS</td><td>GKE</td><td>Autopilot ≈ more managed nodes</td></tr>
+                    <tr><td>ELB / ALB / NLB</td><td>Cloud Load Balancing</td><td>Global HTTP(S) is distinctive</td></tr>
+                    <tr><td>CloudFront</td><td>Cloud CDN / Media CDN</td><td>Often paired with global LB</td></tr>
+                    <tr><td>Route 53</td><td>Cloud DNS</td><td>DNS + policies</td></tr>
+                    <tr><td>VPC</td><td>VPC</td><td>GCP VPC is global; subnets regional</td></tr>
+                    <tr><td>IAM</td><td>IAM</td><td>Roles/bindings vs JSON policies</td></tr>
+                    <tr><td>Secrets Manager</td><td>Secret Manager</td><td>Versioned secrets</td></tr>
+                    <tr><td>KMS</td><td>Cloud KMS / Cloud HSM</td><td>CMEK patterns similar</td></tr>
+                    <tr><td>RDS</td><td>Cloud SQL</td><td>Engine parity varies</td></tr>
+                    <tr><td>DynamoDB</td><td>Firestore / Bigtable</td><td>Pick by access pattern</td></tr>
+                    <tr><td>Redshift</td><td>BigQuery</td><td>Serverless warehouse mindset</td></tr>
+                    <tr><td>SQS / SNS</td><td>Pub/Sub</td><td>Unified messaging fabric</td></tr>
+                    <tr><td>CloudWatch</td><td>Cloud Monitoring + Logging</td><td>Split products</td></tr>
+                    <tr><td>CodeBuild</td><td>Cloud Build</td><td>Buildpacks + Docker</td></tr>
+                    <tr><td>ECR</td><td>Artifact Registry</td><td>Images + packages</td></tr>
+                    <tr><td>WAF / Shield</td><td>Cloud Armor</td><td>On HTTP(S) LBs</td></tr>
+                    <tr><td>SageMaker</td><td>Vertex AI</td><td>Unified ML platform</td></tr>
+                </table>
+            </section>
+
+            <section id="summary">
+                <h2>19) Summary</h2>
+
+                <div class="example-box">
+                    <h3>Takeaways</h3>
+                    <ul>
+                        <li>GCP is a full public cloud with distinctive strength in <strong>global networking</strong>, <strong>Kubernetes</strong>, <strong>analytics</strong>, and <strong>AI</strong>.</li>
+                        <li>Learn the hierarchy: org → folder → project → resources, with billing accounts attached.</li>
+                        <li>Compose architectures from VPC + IAM + compute + data; start managed (Cloud Run, Cloud SQL, Cloud Storage, BigQuery).</li>
+                        <li>Use the AWS mapping as a bridge, then re-learn defaults (global VPC, global LB, IAM bindings).</li>
+                        <li>Shared responsibility never disappears — identity, data, and configuration remain yours.</li>
+                    </ul>
+                </div>
+
+                <div class="stat-strip">
+                    <div class="stat-chip"><strong>Next</strong><span>Compute Services</span></div>
+                    <div class="stat-chip"><strong>Then</strong><span>Storage</span></div>
+                    <div class="stat-chip"><strong>Then</strong><span>Networking</span></div>
+                    <div class="stat-chip"><strong>Then</strong><span>Security</span></div>
+                </div>
+
+                <div class="info-box premium">
+                    <h3>Interview / exam quick reference</h3>
+                    <ul>
+                        <li><strong>Project</strong> — primary quota and IAM boundary</li>
+                        <li><strong>Zone</strong> — failure domain inside a region</li>
+                        <li><strong>Global VPC / regional subnet</strong> — GCP networking default</li>
+                        <li><strong>Cloud Run</strong> — container serverless default for HTTP</li>
+                        <li><strong>BigQuery</strong> — serverless warehouse; watch bytes scanned</li>
+                        <li><strong>GKE Autopilot</strong> — managed nodes for Kubernetes</li>
+                        <li><strong>Artifact Registry</strong> — images and packages</li>
+                        <li><strong>Cloud Armor</strong> — WAF on global HTTP(S) LB</li>
+                        <li><strong>Org policy</strong> — guardrails at org/folder/project</li>
+                        <li><strong>CMEK</strong> — customer-managed keys via Cloud KMS</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

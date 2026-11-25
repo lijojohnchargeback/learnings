@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Python - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🚀 Advanced Python</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Iteration</div>
+            <div class="sidebar-links">
+                <a href="#iterators" class="sidebar-link">Iterators</a>
+                <a href="#generators" class="sidebar-link">Generators</a>
+                <a href="#yield-from" class="sidebar-link">yield from</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Object Model</div>
+            <div class="sidebar-links">
+                <a href="#descriptors" class="sidebar-link">Descriptors</a>
+                <a href="#slots" class="sidebar-link">__slots__</a>
+                <a href="#metaclasses" class="sidebar-link">Metaclasses</a>
+                <a href="#protocols" class="sidebar-link">Protocols</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Power Tools</div>
+            <div class="sidebar-links">
+                <a href="#context" class="sidebar-link">Context Managers</a>
+                <a href="#functools" class="sidebar-link">functools</a>
+                <a href="#dataclasses-adv" class="sidebar-link">Dataclasses++</a>
+                <a href="#patterns" class="sidebar-link">Useful Patterns</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>🚀 Advanced Python</h1>
+            <p>Iterators, generators, descriptors, metaclasses, protocols, and patterns used in real backends</p>
+        </header>
+
+        <section id="iterators">
+            <h2>🔁 Iterators &amp; the Iterator Protocol</h2>
+            <p>Anything usable in a <code>for</code> loop follows the iterator protocol: <code>__iter__</code> returns an iterator; the iterator’s <code>__next__</code> yields values until <code>StopIteration</code>.</p>
+
+            <div class="code-block">class Countdown:
+    def __init__(self, start):
+        self.current = start
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.current &lt;= 0:
+            raise StopIteration
+        self.current -= 1
+        return self.current + 1
+
+for n in Countdown(3):
+    print(n)  # 3, 2, 1
+
+# Built-ins: iter(obj), next(it, default)
+it = iter([10, 20])
+print(next(it), next(it), next(it, None))  # 10 20 None</div>
+        </section>
+
+        <section id="generators">
+            <h2>⚡ Generators</h2>
+            <p>A generator function uses <code>yield</code>. Calling it returns a generator object — lazy, memory-efficient iteration.</p>
+
+            <div class="code-block">def read_lines(path):
+    with open(path) as f:
+        for line in f:
+            yield line.rstrip("\n")
+
+# Generator expressions
+squares = (x * x for x in range(1_000_000))
+print(sum(squares))
+
+# Generators can receive values with send()
+def running_avg():
+    total = 0.0
+    count = 0
+    avg = None
+    while True:
+        value = yield avg
+        total += value
+        count += 1
+        avg = total / count
+
+avg = running_avg()
+next(avg)              # prime
+print(avg.send(10))    # 10.0
+print(avg.send(20))    # 15.0</div>
+
+            <div class="info-box">
+                <strong>💡 Backend tip:</strong> Stream large DB/API results with generators instead of loading everything into a list.
+            </div>
+        </section>
+
+        <section id="yield-from">
+            <h2>🔗 <code>yield from</code></h2>
+            <div class="code-block">def flatten(nested):
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)
+        else:
+            yield item
+
+print(list(flatten([1, [2, [3, 4]], 5])))  # [1, 2, 3, 4, 5]
+
+def subgen():
+    yield 1
+    yield 2
+
+def main_gen():
+    yield "start"
+    yield from subgen()
+    yield "end"</div>
+        </section>
+
+        <section id="descriptors">
+            <h2>🧲 Descriptors</h2>
+            <p>Descriptors are objects that customize attribute access via <code>__get__</code>, <code>__set__</code>, and <code>__delete__</code>. Properties, classmethods, and staticmethods are built on them.</p>
+
+            <div class="code-block">class Typed:
+    def __init__(self, name, expected_type):
+        self.name = name
+        self.expected_type = expected_type
+
+    def __get__(self, obj, owner):
+        if obj is None:
+            return self
+        return obj.__dict__.get(self.name)
+
+    def __set__(self, obj, value):
+        if not isinstance(value, self.expected_type):
+            raise TypeError(f"{self.name} must be {self.expected_type}")
+        obj.__dict__[self.name] = value
+
+class User:
+    age = Typed("age", int)
+
+    def __init__(self, age):
+        self.age = age
+
+u = User(30)
+# u.age = "old"  # TypeError
+
+# Equivalent sugar:
+class User2:
+    def __init__(self, age):
+        self.age = age
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        if value &lt; 0:
+            raise ValueError("age must be &gt;= 0")
+        self._age = value</div>
+        </section>
+
+        <section id="slots">
+            <h2>📦 <code>__slots__</code></h2>
+            <p>Declare fixed attributes to skip the per-instance <code>__dict__</code> — less memory, slightly faster attribute access. Useful for millions of small objects.</p>
+
+            <div class="code-block">class Point:
+    __slots__ = ("x", "y")
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+p = Point(1, 2)
+# p.z = 3  # AttributeError — no __dict__</div>
+        </section>
+
+        <section id="metaclasses">
+            <h2>🧬 Metaclasses</h2>
+            <p>A class’s class is its metaclass (usually <code>type</code>). Metaclasses customize class creation — validation, registration, ORMs.</p>
+
+            <div class="code-block">class RegistryMeta(type):
+    registry = {}
+
+    def __new__(mcls, name, bases, namespace):
+        cls = super().__new__(mcls, name, bases, namespace)
+        if name != "Plugin":
+            mcls.registry[name] = cls
+        return cls
+
+class Plugin(metaclass=RegistryMeta):
+    pass
+
+class AuthPlugin(Plugin):
+    pass
+
+class CachePlugin(Plugin):
+    pass
+
+print(RegistryMeta.registry.keys())  # dict_keys(['AuthPlugin', 'CachePlugin'])
+
+# Prefer simpler tools first: decorators, __init_subclass__, protocols.
+class Model:
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        print(f"Registered model: {cls.__name__}")
+
+class User(Model):
+    pass  # prints Registered model: User</div>
+
+            <div class="info-box">
+                <strong>💡 Rule of thumb:</strong> Reach for <code>__init_subclass__</code> or a decorator before writing a metaclass.
+            </div>
+        </section>
+
+        <section id="protocols">
+            <h2>📐 Protocols (Structural Typing)</h2>
+            <p>Python 3.8+ <code>typing.Protocol</code> lets you type “duck typing” — if it has the methods, it matches.</p>
+
+            <div class="code-block">from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class Closeable(Protocol):
+    def close(self) -&gt; None: ...
+
+class FileHandle:
+    def close(self) -&gt; None:
+        print("closed")
+
+def shutdown(resource: Closeable) -&gt; None:
+    resource.close()
+
+shutdown(FileHandle())
+print(isinstance(FileHandle(), Closeable))  # True with @runtime_checkable</div>
+        </section>
+
+        <section id="context">
+            <h2>🚪 Context Managers Deep Dive</h2>
+            <div class="code-block">from contextlib import contextmanager, ExitStack
+
+class DbTransaction:
+    def __enter__(self):
+        self.conn = get_connection()
+        self.conn.begin()
+        return self.conn
+
+    def __exit__(self, exc_type, exc, tb):
+        if exc_type:
+            self.conn.rollback()
+        else:
+            self.conn.commit()
+        self.conn.close()
+        return False  # don't swallow exceptions
+
+@contextmanager
+def timed(label):
+    import time
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        print(f"{label}: {time.perf_counter() - start:.3f}s")
+
+# Manage many resources dynamically
+def copy_many(paths):
+    with ExitStack() as stack:
+        files = [stack.enter_context(open(p)) for p in paths]
+        return [f.read() for f in files]</div>
+        </section>
+
+        <section id="functools">
+            <h2>🧰 functools Essentials</h2>
+            <div class="code-block">from functools import lru_cache, partial, wraps, reduce
+
+@lru_cache(maxsize=256)
+def fib(n):
+    return n if n &lt; 2 else fib(n - 1) + fib(n - 2)
+
+def multiply(a, b):
+    return a * b
+
+double = partial(multiply, b=2)
+
+def log_calls(fn):
+    @wraps(fn)  # preserve __name__, __doc__
+    def wrapper(*args, **kwargs):
+        print(f"calling {fn.__name__}")
+        return fn(*args, **kwargs)
+    return wrapper
+
+print(reduce(lambda acc, x: acc + x, [1, 2, 3], 0))  # 6</div>
+        </section>
+
+        <section id="dataclasses-adv">
+            <h2>✨ Dataclasses++</h2>
+            <div class="code-block">from dataclasses import dataclass, field, asdict
+from typing import ClassVar
+
+@dataclass(slots=True, kw_only=True, order=True)
+class Event:
+    priority: int
+    name: str
+    payload: dict = field(default_factory=dict, compare=False)
+    version: ClassVar[int] = 1
+
+e = Event(priority=1, name="user.created")
+print(asdict(e))
+# {'priority': 1, 'name': 'user.created', 'payload': {}}</div>
+        </section>
+
+        <section id="patterns">
+            <h2>🧩 Useful Patterns</h2>
+            <div class="code-block"># 1. Dependency injection via constructors (testable backends)
+class UserService:
+    def __init__(self, repo, mailer):
+        self.repo = repo
+        self.mailer = mailer
+
+    def register(self, email):
+        user = self.repo.create(email)
+        self.mailer.send(email, "Welcome!")
+        return user
+
+# 2. Strategy via callables / Protocol
+def process(items, transform):
+    return [transform(x) for x in items]
+
+# 3. Singleton module pattern (Pythonic)
+# config.py holds module-level state; import once, shared cache in sys.modules
+
+# 4. EAFP over LBYL
+# try: value = mapping[key]
+# except KeyError: ...
+# rather than checking key in mapping first when racing / nested checks hurt</div>
+
+            <table>
+                <tr><th>Reach for…</th><th>When…</th></tr>
+                <tr><td>Generator</td><td>Streaming / lazy pipelines</td></tr>
+                <tr><td>Descriptor / property</td><td>Validated attributes</td></tr>
+                <tr><td><code>__init_subclass__</code></td><td>Simple registries</td></tr>
+                <tr><td>Protocol</td><td>Duck-typed interfaces</td></tr>
+                <tr><td>Context manager</td><td>Setup/teardown (files, locks, txns)</td></tr>
+                <tr><td>Metaclass</td><td>Framework magic — last resort</td></tr>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

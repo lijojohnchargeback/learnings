@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete GCP Compute Guide - Compute Engine, Cloud Run, GKE, Cloud Functions">
+    <title>GCP Compute Services - Complete Guide</title>
+    <link rel="stylesheet" href="/css/docs.css">
+</head>
+<body>
+
+    <div class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">☁️ GCP Compute</div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">📚 Fundamentals</div>
+            <div class="sidebar-links">
+                <a href="#compute-overview" class="sidebar-link">Compute Overview</a>
+                <a href="#spectrum" class="sidebar-link">Compute Spectrum</a>
+                <a href="#decision" class="sidebar-link">Decision Guide</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🖥️ Compute Engine</div>
+            <div class="sidebar-links">
+                <a href="#gce" class="sidebar-link">Introduction</a>
+                <a href="#machine-families" class="sidebar-link">Machine Families</a>
+                <a href="#disks" class="sidebar-link">Disks</a>
+                <a href="#mig" class="sidebar-link">MIG &amp; Autoscaling</a>
+                <a href="#lb-with-gce" class="sidebar-link">Load Balancing</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">⚡ Serverless</div>
+            <div class="sidebar-links">
+                <a href="#cloud-run" class="sidebar-link">Cloud Run</a>
+                <a href="#cloud-functions" class="sidebar-link">Cloud Functions</a>
+                <a href="#serverless-flow" class="sidebar-link">Serverless Flow</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🐳 Containers &amp; PaaS</div>
+            <div class="sidebar-links">
+                <a href="#gke" class="sidebar-link">GKE</a>
+                <a href="#app-engine" class="sidebar-link">App Engine</a>
+                <a href="#batch" class="sidebar-link">Batch</a>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🛠️ Practice</div>
+            <div class="sidebar-links">
+                <a href="#ops-cost" class="sidebar-link">Ops &amp; Cost</a>
+                <a href="#summary" class="sidebar-link">Summary</a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="container">
+        <header>
+            <h1>☁️ GCP Compute Services</h1>
+            <p>Complete Guide to Compute Engine, Cloud Run, GKE, Cloud Functions &amp; More</p>
+        </header>
+
+        <section id="compute-overview">
+            <h2>📚 GCP Compute Overview</h2>
+
+            <figure class="topic-hero">
+                <img src="/images/gcp/gcp-compute.jpg" alt="Close-up of a processor on a circuit board — the hardware behind every GCP compute service" loading="lazy" />
+                <figcaption>Every Cloud Run request, GKE pod, and Compute Engine VM ultimately runs on Google-owned hardware. You rent capacity; you do not buy racks.</figcaption>
+            </figure>
+
+            <p class="topic-lede">GCP Compute is the set of services that <span class="highlight">run your code</span>. The same workload — a web API, a nightly ETL job, a GPU training run — can land on a virtual machine, a Kubernetes pod, a serverless container, or an event-driven function. The hard skill is matching <strong>how long the work lives</strong>, <strong>how much of the stack you want to own</strong>, and <strong>what hardware you actually need</strong>.</p>
+
+            <div class="stat-strip">
+                <div class="stat-chip"><strong>6+</strong><span>Core compute families</span></div>
+                <div class="stat-chip"><strong>Custom</strong><span>Machine types (GCE)</span></div>
+                <div class="stat-chip"><strong>60 min</strong><span>Cloud Functions max (2nd gen)</span></div>
+                <div class="stat-chip"><strong>Scale-to-0</strong><span>Cloud Run default</span></div>
+            </div>
+
+            <div class="split-visual">
+                <img src="/images/gcp/gcp-data-center.jpg" alt="Lit server racks in a modern data center" loading="lazy" />
+                <div class="split-copy">
+                    <span class="kicker">How to think about compute</span>
+                    <h3>Rent time on someone else's CPU</h3>
+                    <p>Compute Engine is a lease on a virtual machine: you pick the image, machine type, VPC subnet, and firewall tags. Cloud Run is a lease on request-driven container instances. GKE sits in between — you ship workloads to a Kubernetes control plane Google operates (and optionally nodes Google operates in Autopilot).</p>
+                    <p>Architects usually start at the highest abstraction that still works, then drop down when they hit a hard constraint: GPUs, custom kernels, Windows, sticky in-memory sessions, or daemonsets that need host networking.</p>
+                </div>
+            </div>
+
+            <div class="use-when">
+                <div class="use-card yes">
+                    <h4>Start here when</h4>
+                    <ul>
+                        <li>HTTP service in a container → <strong>Cloud Run</strong></li>
+                        <li>Event glue (GCS, Pub/Sub) → <strong>Cloud Functions</strong></li>
+                        <li>Kubernetes APIs / multi-service platform → <strong>GKE</strong></li>
+                        <li>Custom OS, GPU, or long-lived process → <strong>Compute Engine</strong></li>
+                    </ul>
+                </div>
+                <div class="use-card no">
+                    <h4>A common mistake</h4>
+                    <ul>
+                        <li>Choosing GKE before the team can operate Kubernetes</li>
+                        <li>Running always-on APIs on oversized VMs with no MIG</li>
+                        <li>Stuffing a multi-hour batch job into Cloud Functions</li>
+                        <li>Leaving idle GPUs and unattached disks billed overnight</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h3>AWS comparison</h3>
+                <ul>
+                    <li><strong>EC2 ↔ Compute Engine</strong> — VMs; GCP custom machine types let you dial vCPU/RAM finely.</li>
+                    <li><strong>Lambda ↔ Cloud Functions</strong> — event functions; long HTTP containers often prefer <strong>Cloud Run</strong> (Fargate-adjacent).</li>
+                    <li><strong>EKS ↔ GKE</strong> — managed Kubernetes; Autopilot reduces node toil further.</li>
+                    <li><strong>Elastic Beanstalk ↔ App Engine</strong> — PaaS with opinions.</li>
+                    <li><strong>AWS Batch ↔ Batch</strong> — managed batch scheduling.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="spectrum">
+            <h2>🎚️ Compute Spectrum</h2>
+
+            <div class="illustration">
+                <img src="/images/gcp/gcp-compute-spectrum.jpg" alt="GCP compute spectrum from Compute Engine VMs through GKE to Cloud Run and Cloud Functions">
+                <div class="illustration-caption">Move right when you can give up OS and capacity planning. Move left when you need a custom kernel, GPU, or a process that must stay warm for hours.</div>
+            </div>
+
+            <table>
+                <tr><th>Level</th><th>Abstraction</th><th>Services</th><th>You manage</th></tr>
+                <tr>
+                    <td><strong>IaaS</strong></td>
+                    <td>Virtual machines</td>
+                    <td>Compute Engine</td>
+                    <td>OS, patches, runtime, scaling config</td>
+                </tr>
+                <tr>
+                    <td><strong>CaaS / K8s</strong></td>
+                    <td>Containers + orchestration</td>
+                    <td>GKE Standard / Autopilot</td>
+                    <td>Workloads, charts; nodes vary by mode</td>
+                </tr>
+                <tr>
+                    <td><strong>PaaS</strong></td>
+                    <td>App deployment</td>
+                    <td>App Engine</td>
+                    <td>App code &amp; config</td>
+                </tr>
+                <tr>
+                    <td><strong>Serverless containers</strong></td>
+                    <td>Request-driven containers</td>
+                    <td>Cloud Run (services &amp; jobs)</td>
+                    <td>Container image &amp; concurrency</td>
+                </tr>
+                <tr>
+                    <td><strong>FaaS</strong></td>
+                    <td>Functions</td>
+                    <td>Cloud Functions 2nd gen</td>
+                    <td>Function code &amp; triggers</td>
+                </tr>
+                <tr>
+                    <td><strong>Batch</strong></td>
+                    <td>Job scheduling</td>
+                    <td>Batch</td>
+                    <td>Job definitions; capacity policies</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="decision">
+            <h2>🧭 Decision Guide</h2>
+
+            <div class="example-box">
+                <h3>Ask these questions in order</h3>
+                <ol>
+                    <li><strong>Is it HTTP and packageable as a container?</strong> Prefer Cloud Run.</li>
+                    <li><strong>Is it a short event handler with a simple runtime?</strong> Cloud Functions is fine (often still Cloud Run underneath).</li>
+                    <li><strong>Do you need Kubernetes primitives</strong> (CRDs, DaemonSets, complex service mesh)? GKE.</li>
+                    <li><strong>Do you need the OS, GPU drivers, or Windows?</strong> Compute Engine (or GKE with GPU node pools).</li>
+                    <li><strong>Is it embarrassingly parallel batch?</strong> Batch or Cloud Run jobs; Spot VMs for cost.</li>
+                </ol>
+            </div>
+
+            <table>
+                <tr><th>Workload</th><th>Prefer</th><th>Avoid</th></tr>
+                <tr>
+                    <td>Spiky public API</td>
+                    <td>Cloud Run</td>
+                    <td>Single fat VM</td>
+                </tr>
+                <tr>
+                    <td>GCS finalize → thumbnail</td>
+                    <td>Cloud Functions / Run</td>
+                    <td>Always-on VM waiting</td>
+                </tr>
+                <tr>
+                    <td>Multi-team microservices platform</td>
+                    <td>GKE</td>
+                    <td>One giant App Engine monolith without need</td>
+                </tr>
+                <tr>
+                    <td>Windows .NET Framework legacy</td>
+                    <td>Compute Engine</td>
+                    <td>Cloud Functions</td>
+                </tr>
+                <tr>
+                    <td>ML training with A100/H100</td>
+                    <td>GCE / GKE GPU</td>
+                    <td>Cloud Functions</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="gce">
+            <h2>🖥️ Compute Engine</h2>
+
+            <p><span class="highlight">Compute Engine</span> provides virtual machines on Google’s infrastructure. You choose machine type, boot disk image (public OS images, custom images, or Container-Optimized OS), network tags, service account, and whether the VM is preemptible/Spot.</p>
+
+            <div class="example-box">
+                <h3>Core concepts</h3>
+                <ul>
+                    <li><strong>Instances</strong> — individual VMs (zonal).</li>
+                    <li><strong>Images</strong> — boot disk templates; use image families for rolling golden images.</li>
+                    <li><strong>Instance templates</strong> — reusable blueprints for MIGs.</li>
+                    <li><strong>Network tags</strong> — apply firewall rules without hard-coding IPs.</li>
+                    <li><strong>Metadata / startup scripts</strong> — bootstrap config (prefer OS Login + IaC over snowflake VMs).</li>
+                    <li><strong>Sole-tenant nodes</strong> — dedicated hardware for compliance isolation.</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>Pricing modes</h3>
+                <ul>
+                    <li><strong>On-demand</strong> — flexible, highest unit price.</li>
+                    <li><strong>Spot / preemptible</strong> — deep discount; can be reclaimed with notice.</li>
+                    <li><strong>Committed use discounts</strong> — 1- or 3-year commitments for steady baselines.</li>
+                    <li><strong>Sustained use</strong> — automatic discounts for long-running GCE usage in some cases (know current billing docs).</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 EC2 parallel:</strong> Spot ≈ Spot/preemptible; Reserved Instances / Savings Plans ≈ CUDs (mechanics differ — read the commitment terms).
+                </div>
+            </div>
+        </section>
+
+        <section id="machine-families">
+            <h2>🧩 Machine Families</h2>
+
+            <table>
+                <tr><th>Family</th><th>Shape</th><th>Typical use</th></tr>
+                <tr>
+                    <td><strong>N / N2 / N2D / N4</strong></td>
+                    <td>General purpose</td>
+                    <td>Web, app servers, mixed workloads</td>
+                </tr>
+                <tr>
+                    <td><strong>E2</strong></td>
+                    <td>Cost-optimized general</td>
+                    <td>Dev, low-cost production</td>
+                </tr>
+                <tr>
+                    <td><strong>C / C2 / C3 / C4</strong></td>
+                    <td>Compute optimized</td>
+                    <td>CPU-bound HPC, gaming, high performance</td>
+                </tr>
+                <tr>
+                    <td><strong>M / M1 / M3</strong></td>
+                    <td>Memory optimized</td>
+                    <td>In-memory DBs, large caches</td>
+                </tr>
+                <tr>
+                    <td><strong>A / G / accelerator</strong></td>
+                    <td>GPU / TPU attached</td>
+                    <td>ML training/inference, rendering</td>
+                </tr>
+                <tr>
+                    <td><strong>Custom</strong></td>
+                    <td>You pick vCPU/RAM ratios</td>
+                    <td>Rightsize when standard shapes waste RAM or CPU</td>
+                </tr>
+            </table>
+
+            <div class="tip">
+                <strong>💡 Practical tip:</strong> Start with a general-purpose shape, measure with Cloud Monitoring, then custom-size or move family. Don’t guess a 64-vCPU box on day one.
+            </div>
+        </section>
+
+        <section id="disks">
+            <h2>💾 Disks for Compute</h2>
+
+            <table>
+                <tr><th>Type</th><th>Persistence</th><th>Notes</th></tr>
+                <tr>
+                    <td><strong>Persistent Disk (pd-balanced, pd-ssd, pd-standard)</strong></td>
+                    <td>Survives VM stop</td>
+                    <td>Network-attached; snapshotable; zonal or regional</td>
+                </tr>
+                <tr>
+                    <td><strong>Hyperdisk</strong></td>
+                    <td>Survives VM stop</td>
+                    <td>Next-gen block; tunable IOPS/throughput on supported shapes</td>
+                </tr>
+                <tr>
+                    <td><strong>Local SSD</strong></td>
+                    <td>Ephemeral</td>
+                    <td>Extremely fast; data lost on stop/migrate — like Instance Store</td>
+                </tr>
+            </table>
+
+            <ul>
+                <li>Encrypt by default; use CMEK when policy requires customer-managed keys.</li>
+                <li>Regional PD for HA of stateful single-VM designs (still prefer app-level replication when possible).</li>
+                <li>Snapshots are incremental; schedule them; test restores.</li>
+            </ul>
+        </section>
+
+        <section id="mig">
+            <h2>📈 Managed Instance Groups &amp; Autoscaling</h2>
+
+            <p>A <span class="highlight">Managed Instance Group (MIG)</span> maintains a fleet of VMs from an instance template: auto-healing, rolling updates, and autoscaling.</p>
+
+            <div class="example-box">
+                <h3>Why MIGs matter</h3>
+                <ul>
+                    <li><strong>Autohealing</strong> — recreate unhealthy VMs based on health checks.</li>
+                    <li><strong>Autoscaling</strong> — CPU, load-balancing serving capacity, custom metrics, schedules.</li>
+                    <li><strong>Rolling updates</strong> — surge/unavailable controls for safe rollouts.</li>
+                    <li><strong>Regional MIGs</strong> — spread across zones for HA.</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 AWS parallel:</strong> Auto Scaling Group + Launch Template ≈ MIG + instance template.
+                </div>
+            </div>
+
+            <div class="use-when">
+                <div class="use-card yes">
+                    <h4>Use MIGs when</h4>
+                    <ul>
+                        <li>Stateless web/app tiers on VMs</li>
+                        <li>You need zone redundancy</li>
+                        <li>You want automated rollouts</li>
+                    </ul>
+                </div>
+                <div class="use-card no">
+                    <h4>Skip MIGs when</h4>
+                    <ul>
+                        <li>Single stateful snowflake (prefer redesign)</li>
+                        <li>Workload belongs on Cloud Run/GKE instead</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="lb-with-gce">
+            <h2>⚖️ Load Balancing with Compute</h2>
+
+            <p>Compute Engine backends commonly sit behind <strong>Cloud Load Balancing</strong>:</p>
+            <ul>
+                <li><strong>Global external HTTP(S)</strong> — Anycast VIP, URL maps, SSL certs, Cloud CDN/Armor optional.</li>
+                <li><strong>Regional external / internal</strong> — TCP/UDP passthrough or HTTP proxy for private services.</li>
+                <li><strong>Backend services</strong> — attach MIGs, NEGs (for GKE/Cloud Run), health checks, session affinity.</li>
+            </ul>
+            <p>Unlike stitching many regional ALBs + CloudFront, a single global HTTP(S) LB often covers multi-region frontend design. Details live in the Networking guide.</p>
+        </section>
+
+        <section id="cloud-run">
+            <h2>🏃 Cloud Run</h2>
+
+            <p><span class="highlight">Cloud Run</span> runs stateless containers on a fully managed platform. Scale to zero. Pay when requests (or job tasks) run. Supports services (request-driven) and jobs (run-to-completion).</p>
+
+            <div class="example-box">
+                <h3>Key knobs</h3>
+                <ul>
+                    <li><strong>Concurrency</strong> — how many requests per instance (tune for CPU-bound vs IO-bound).</li>
+                    <li><strong>CPU allocation</strong> — CPU always allocated vs only during requests.</li>
+                    <li><strong>Min / max instances</strong> — fight cold starts; cap cost.</li>
+                    <li><strong>VPC connectors / Direct VPC egress</strong> — reach private IPs / Cloud SQL.</li>
+                    <li><strong>Service identity</strong> — dedicated runtime service account (least privilege).</li>
+                    <li><strong>Ingress</strong> — all / internal / internal-and-cloud-load-balancing.</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>When Cloud Run shines</h3>
+                <ul>
+                    <li>APIs and webhooks with uneven traffic</li>
+                    <li>Sidecar-free microservices that already build Docker images</li>
+                    <li>Background jobs via Cloud Run jobs + Scheduler / Eventarc</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 vs Lambda/Fargate:</strong> If you think “container + HTTP + scale to zero,” Cloud Run is often the first GCP answer — more than Cloud Functions.
+                </div>
+            </div>
+        </section>
+
+        <section id="cloud-functions">
+            <h2>⚡ Cloud Functions (2nd gen)</h2>
+
+            <p>Cloud Functions 2nd gen deploys functions backed by Cloud Run. Triggers include HTTP, Pub/Sub, Cloud Storage, Firestore, and Eventarc sources.</p>
+
+            <table>
+                <tr><th>Topic</th><th>Detail</th></tr>
+                <tr>
+                    <td><strong>Timeouts</strong></td>
+                    <td>Up to 60 minutes on 2nd gen (far beyond classic 1st gen limits)</td>
+                </tr>
+                <tr>
+                    <td><strong>Runtimes</strong></td>
+                    <td>Node, Python, Go, Java, .NET, Ruby, PHP (check current list)</td>
+                </tr>
+                <tr>
+                    <td><strong>Networking</strong></td>
+                    <td>Same VPC patterns as Cloud Run</td>
+                </tr>
+                <tr>
+                    <td><strong>Use when</strong></td>
+                    <td>Small event handlers; team wants function DX over Dockerfile</td>
+                </tr>
+                <tr>
+                    <td><strong>Prefer Run when</strong></td>
+                    <td>Custom container, sidecars-ish needs, or non-function packaging</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="serverless-flow">
+            <h2>🔄 Serverless Flow</h2>
+
+            <div class="illustration">
+                <img src="/images/gcp/gcp-serverless-flow.jpg" alt="Event or HTTP request flowing into Cloud Run or Cloud Functions and scaling to zero">
+                <div class="illustration-caption">Trigger → authenticated invoke → instance assign/scale → handler → response/logs → scale toward zero.</div>
+            </div>
+
+            <div class="example-box">
+                <h3>Operational checklist</h3>
+                <ol>
+                    <li>Use a dedicated service account; never the default compute SA for prod.</li>
+                    <li>Ship structured logs; correlate with Cloud Trace.</li>
+                    <li>Set max instances to protect downstream databases.</li>
+                    <li>Store secrets in Secret Manager; mount or access at runtime.</li>
+                    <li>Load-test cold starts if SLOs are tight; set min instances only when needed.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="gke">
+            <h2>☸️ Google Kubernetes Engine (GKE)</h2>
+
+            <p><span class="highlight">GKE</span> is Google’s managed Kubernetes. The control plane is Google’s responsibility. Node management depends on mode.</p>
+
+            <table>
+                <tr><th>Mode</th><th>Nodes</th><th>Best for</th></tr>
+                <tr>
+                    <td><strong>Standard</strong></td>
+                    <td>You manage node pools</td>
+                    <td>Custom machine types, daemons, GPUs, fine control</td>
+                </tr>
+                <tr>
+                    <td><strong>Autopilot</strong></td>
+                    <td>Google manages nodes</td>
+                    <td>Most microservices; pay per pod requests</td>
+                </tr>
+            </table>
+
+            <div class="example-box">
+                <h3>GKE building blocks</h3>
+                <ul>
+                    <li>Clusters (zonal/regional), node pools, release channels.</li>
+                    <li>Workload Identity — map K8s SAs to IAM service accounts (prefer over JSON keys).</li>
+                    <li>Binary Authorization — only signed images deploy.</li>
+                    <li>GKE Gateway / Ingress — integrate with Cloud Load Balancing.</li>
+                    <li>Anthos / multi-cluster patterns for hybrid (advanced).</li>
+                </ul>
+                <div class="tip">
+                    <strong>💡 Don’t choose GKE for a single containerized API</strong> unless you already run Kubernetes. Cloud Run is less ops.
+                </div>
+            </div>
+        </section>
+
+        <section id="app-engine">
+            <h2>🧱 App Engine</h2>
+
+            <p>App Engine is GCP’s original PaaS: <strong>Standard</strong> (sandboxed runtimes, rapid scale) and <strong>Flexible</strong> (containers on GCE under the hood).</p>
+            <ul>
+                <li>Great for teams standardized on <code>app.yaml</code> workflows.</li>
+                <li>Newer greenfield HTTP services often pick Cloud Run instead for portability.</li>
+                <li>Still excellent when you want App Engine’s traffic splitting, versions, and runtime constraints.</li>
+            </ul>
+        </section>
+
+        <section id="batch">
+            <h2>📦 Batch</h2>
+
+            <p><span class="highlight">Batch</span> schedules and runs batch jobs on Compute Engine resources (including Spot) without you writing a custom scheduler.</p>
+            <ul>
+                <li>Define job resource requirements, parallel tasks, and retry policies.</li>
+                <li>Ideal for genomics-style pipelines, renders, large transforms.</li>
+                <li>AWS Batch analogue — same problem space.</li>
+            </ul>
+        </section>
+
+        <section id="ops-cost">
+            <h2>💸 Ops &amp; Cost</h2>
+
+            <div class="example-box">
+                <h3>Practices that save money and outages</h3>
+                <ul>
+                    <li>Prefer Cloud Run/GKE Autopilot when utilization is spiky.</li>
+                    <li>Put steady VM baselines on CUDs; put flexible capacity on Spot.</li>
+                    <li>Delete orphan disks, IPs, and idle load balancers.</li>
+                    <li>Use committed GPUs only with measured utilization.</li>
+                    <li>Align region with data — egress is a silent killer.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="summary">
+            <h2>✅ Summary</h2>
+
+            <div class="info-box premium">
+                <h3>Exam &amp; interview quick reference</h3>
+                <ul>
+                    <li><strong>Default HTTP container:</strong> Cloud Run</li>
+                    <li><strong>Event function DX:</strong> Cloud Functions 2nd gen</li>
+                    <li><strong>Kubernetes:</strong> GKE (Autopilot unless you need node control)</li>
+                    <li><strong>VMs + HA:</strong> Regional MIG + global/regional LB</li>
+                    <li><strong>Ephemeral fast disk:</strong> Local SSD</li>
+                    <li><strong>Persistent boot/data:</strong> PD / Hyperdisk</li>
+                    <li><strong>EC2 ↔ GCE, Lambda ↔ Functions/Run, EKS ↔ GKE</strong></li>
+                    <li><strong>Workload Identity</strong> over SA keys on GKE</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

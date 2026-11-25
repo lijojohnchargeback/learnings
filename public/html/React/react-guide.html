@@ -76,20 +76,96 @@
     </aside>
     
     <div class="container">
+        <style>
+            .illustration {
+                text-align: center;
+                margin: 2.5rem 0;
+                padding: 1.5rem;
+                background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
+                border-radius: 20px;
+                border: 1px solid #c7d2fe;
+            }
+            .illustration img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(99, 102, 241, 0.12);
+            }
+            .illustration-caption {
+                margin-top: 0.85rem;
+                font-size: 0.9rem;
+                color: #64748b;
+                font-weight: 500;
+                text-align: left;
+            }
+            .grid-2, .grid-3 {
+                display: grid;
+                gap: 1.25rem;
+                margin: 1.75rem 0;
+            }
+            .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+            .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+            .feature-card {
+                background: #fff;
+                padding: 1.5rem 1.6rem;
+                border-radius: 16px;
+                border: 1px solid #e2e8f0;
+                border-top: 4px solid #6366f1;
+            }
+            .feature-card h4 { margin-top: 0; margin-bottom: 0.5rem; }
+            .feature-card p { margin: 0; color: #475569; font-size: 0.95rem; }
+            .card-blue { border-top-color: #3b82f6; }
+            .card-green { border-top-color: #10b981; }
+            .card-purple { border-top-color: #8b5cf6; }
+            .card-orange { border-top-color: #f59e0b; }
+            .card-teal { border-top-color: #14b8a6; }
+            .card-indigo { border-top-color: #6366f1; }
+        </style>
+
         <header>
             <h1>⚛️ React</h1>
-            <p>Complete Guide to React - Basics, Hooks & Advanced Concepts</p>
+            <p>Complete Guide to React — Basics, Hooks, Architecture &amp; Advanced Concepts</p>
         </header>
 
         <section id="introduction">
             <h2>⚛️ The React Architecture</h2>
             
-            <p>React is more than a library; it's a <strong>declarative UI engine</strong> that abstracts away the complexity of state synchronization and manual DOM manipulation. For a senior engineer, React is a tool for building <strong>predictable, component-driven interfaces</strong>.</p>
+            <p>React is more than a library; it's a <strong>declarative UI engine</strong> that abstracts away the complexity of state synchronization and manual DOM manipulation. You describe what the UI should look like for a given state; React figures out the minimal set of DOM updates to get there.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-architecture.jpg" alt="React architecture: app components describe UI, React reconciles a Virtual DOM, browser updates the real DOM" loading="lazy">
+                <div class="illustration-caption"><strong>Describe state → React updates the DOM.</strong> Your components return a description of the UI. React diffs that description against the previous tree and applies only the necessary browser updates.</div>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-indigo">
+                    <h4>What React is</h4>
+                    <p>A library for building UIs from composable components. It owns the View layer — rendering and state-driven updates.</p>
+                </div>
+                <div class="feature-card card-blue">
+                    <h4>What React owns</h4>
+                    <p>Component tree, reconciliation, hooks, and (with React DOM / Native) painting to a host environment.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>What React is not</h4>
+                    <p>A full framework. Routing, data fetching, and global store are ecosystem choices (Next.js, React Router, TanStack Query, Zustand, etc.).</p>
+                </div>
+            </div>
             
             <div class="info-box premium">
                 <h3>The Paradigm Shift: Declarative vs Imperative</h3>
                 <p>In traditional jQuery (Imperative), you tell the browser <em>how</em> to change (e.g., "Find the button, add a class, change text"). In React (Declarative), you tell the browser <em>what</em> the UI should look like for a given state, and React handles the state-to-view transformation efficiently.</p>
             </div>
+
+            <h3>Core mental model</h3>
+            <ol>
+                <li><strong>UI = f(state)</strong> — the same state always produces the same UI description.</li>
+                <li><strong>Components are functions (or classes)</strong> that return elements, not imperative DOM scripts.</li>
+                <li><strong>Data flows down</strong> — parents pass props; children notify parents via callbacks.</li>
+                <li><strong>State changes trigger re-renders</strong> — React re-runs components and reconciles the result.</li>
+            </ol>
 
             <div class="info-box">
                 <h3>Why React Wins</h3>
@@ -97,6 +173,7 @@
                     <li>🧱 <strong>Component Atomic Design:</strong> Build complex systems from small, testable, and reusable atoms.</li>
                     <li>🔄 <strong>One-Way Data Flow:</strong> Predictable state management where data only flows downwards (Parents to Children).</li>
                     <li>🚀 <strong>Ecosystem Maturity:</strong> From Next.js for SSR to React Native for mobile, the knowledge is cross-platform.</li>
+                    <li>🧪 <strong>Testability:</strong> Pure render functions and hooks make unit and integration testing straightforward.</li>
                 </ul>
             </div>
         </section>
@@ -104,94 +181,159 @@
         <section id="features">
             <h2>✨ Key Features</h2>
 
+            <p>These are the pillars that make React feel different from older jQuery-style UI code — and from heavier MVC frameworks.</p>
+
+            <div class="grid-3">
+                <div class="feature-card card-indigo">
+                    <h4>Virtual DOM</h4>
+                    <p>Diff in memory, patch the real DOM sparingly — fewer expensive browser operations.</p>
+                </div>
+                <div class="feature-card card-blue">
+                    <h4>Unidirectional flow</h4>
+                    <p>Props down, events up. Easier to reason about than two-way binding sprawl.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Components</h4>
+                    <p>Reusable, composable units. Build screens from atoms instead of page scripts.</p>
+                </div>
+            </div>
+
             <table>
                 <tr><th>Feature</th><th>Description</th></tr>
                 <tr>
                     <td><strong>Virtual DOM</strong></td>
-                    <td>Uses VirtualDOM instead of RealDOM (RealDOM manipulations are expensive)</td>
+                    <td>Uses Virtual DOM instead of mutating Real DOM directly (Real DOM ops are expensive)</td>
                 </tr>
                 <tr>
                     <td><strong>Server-Side Rendering</strong></td>
-                    <td>Supports SSR for better performance and SEO</td>
+                    <td>Supports SSR (via frameworks like Next.js) for performance and SEO</td>
                 </tr>
                 <tr>
                     <td><strong>Unidirectional Data Flow</strong></td>
-                    <td>Data flows from parent to child (Efficiency, Better control, Easier debugging)</td>
+                    <td>Data flows from parent to child — better control and easier debugging</td>
                 </tr>
                 <tr>
                     <td><strong>Declarative Programming</strong></td>
-                    <td>Tell what UI should look like, React handles the rest</td>
+                    <td>Describe what the UI should look like; React handles the updates</td>
                 </tr>
                 <tr>
                     <td><strong>Component-Based</strong></td>
-                    <td>Reusable/composable UI components</td>
+                    <td>Reusable and composable UI building blocks</td>
+                </tr>
+                <tr>
+                    <td><strong>Hooks</strong></td>
+                    <td>Stateful logic and side effects in function components without classes</td>
                 </tr>
             </table>
 
             <h3>Advantages</h3>
             <ul>
-                <li>✓ Component-based approach</li>
+                <li>✓ Component-based approach and strong composition model</li>
                 <li>✓ Declarative programming (tell what UI should look like)</li>
-                <li>✓ DOM updates handled gracefully</li>
-                <li>✓ Increased application performance</li>
-                <li>✓ Easy to integrate</li>
-                <li>✓ Reusable code</li>
-                <li>✓ Helps build rich UI</li>
-                <li>✓ Rich ecosystem</li>
+                <li>✓ DOM updates handled via reconciliation</li>
+                <li>✓ Huge ecosystem (Next.js, React Native, testing libs)</li>
+                <li>✓ Easy to integrate into existing apps gradually</li>
+                <li>✓ Reusable code via components and custom hooks</li>
             </ul>
 
-            <h3>Disadvantages</h3>
+            <h3>Trade-offs</h3>
             <ul>
-                <li>✗ Only a library (handles only View in MVC)</li>
-                <li>✗ Library size is relatively large</li>
-                <li>✗ Difficult to understand for novices</li>
+                <li>✗ Only a library for the View — you choose routing, data, and store</li>
+                <li>✗ Build tooling and concepts (JSX, hooks) have a learning curve</li>
+                <li>✗ Misused re-renders can hurt performance without profiling</li>
             </ul>
         </section>
 
         <section id="jsx">
             <h2>📝 JSX (JavaScript XML)</h2>
 
-            <p>JSX is an <span class="highlight">extension to JavaScript</span> that allows us to write HTML elements in JavaScript and place them in the DOM without using <code>createElement()</code> or <code>appendChild()</code>.</p>
+            <p>JSX is an <span class="highlight">extension to JavaScript</span> that lets you write markup-like syntax that compiles into React element trees. It is not HTML in the browser — it is sugar over <code>React.createElement()</code> (or the modern JSX transform).</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-jsx-pipeline.jpg" alt="JSX compilation pipeline from JSX syntax through Babel transform to React.createElement and the real DOM" loading="lazy">
+                <div class="illustration-caption"><strong>JSX never runs in the browser as-is.</strong> Babel (or your bundler) turns <code>&lt;Button /&gt;</code> into createElement calls, which become React elements, which React turns into host DOM nodes.</div>
+            </div>
 
             <h3>What is JSX?</h3>
             <ul>
-                <li>JSX converts HTML tags into React elements</li>
+                <li>JSX converts HTML-like tags into React elements (plain objects)</li>
                 <li>Provides syntactic sugar for <code>React.createElement()</code></li>
-                <li>Gives expressiveness of JavaScript with HTML-like template syntax</li>
-                <li>JSX files don't render directly - uses transformers like Babel</li>
+                <li>Gives the expressiveness of JavaScript with template-like syntax</li>
+                <li>Must be transformed at build time — browsers do not understand JSX natively</li>
             </ul>
 
             <div class="code-block">// Without JSX
 React.createElement('div', null, 'Hello World')
 
 // With JSX
-&lt;div&gt;Hello World&lt;/div&gt;</div>
+&lt;div&gt;Hello World&lt;/div&gt;
+
+// Expressions inside curly braces
+&lt;h1&gt;Hello, {user.name}&lt;/h1&gt;
+&lt;button disabled={isLoading}&gt;Save&lt;/button&gt;</div>
+
+            <div class="grid-2">
+                <div class="feature-card card-orange">
+                    <h4>JSX rules that trip people up</h4>
+                    <p>One root node (or a Fragment). Use <code>className</code> not <code>class</code>. Use <code>htmlFor</code> not <code>for</code>. Self-close void tags: <code>&lt;img /&gt;</code>.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>JSX is just JavaScript</h4>
+                    <p>You can assign elements to variables, return them from functions, and store them in arrays. Conditionals and maps live in JS — not a separate template language.</p>
+                </div>
+            </div>
 
             <div class="info-box">
-                <strong>💡 Note:</strong> JSX makes your code elegant and simple. Browsers don't understand JSX directly - it must be transformed to JavaScript using tools like Babel.
+                <strong>💡 Note:</strong> With the automatic JSX runtime (React 17+), you often don't need to <code>import React</code> just for JSX — but you still import hooks and APIs you use.
             </div>
         </section>
 
         <section id="components">
             <h2>🧩 Components</h2>
 
-            <p>A <strong>component</strong> is a small unit of design that can be reused or nested in other components.</p>
+            <p>A <strong>component</strong> is a reusable unit of UI — a function (or class) that returns a description of what to render. Apps are trees of nested components, each owning a clear responsibility.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-components.jpg" alt="React component tree showing App nesting Navbar, Dashboard, Footer, with Dashboard containing Sidebar, ChartCard, and UserList" loading="lazy">
+                <div class="illustration-caption"><strong>Compose, don't copy.</strong> Break screens into focused pieces: layout shells, feature cards, and leaf widgets. Nest them until each piece has one job.</div>
+            </div>
 
             <h3>Types of Components</h3>
 
             <h4>1. Functional Components</h4>
-            <p>JavaScript functions that return HTML (JSX).</p>
-            <div class="code-block">const Welcome = (props) => {
-  return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;;
+            <p>JavaScript functions that accept props and return JSX. This is the modern default.</p>
+            <div class="code-block">const Welcome = ({ name }) => {
+  return &lt;h1&gt;Hello, {name}&lt;/h1&gt;;
+};
+
+// Composition: components as children
+function Card({ title, children }) {
+  return (
+    &lt;section className="card"&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      {children}
+    &lt;/section&gt;
+  );
 }</div>
 
             <h4>2. Class-Based Components</h4>
-            <p>ES6 classes that extend React.Component.</p>
+            <p>ES6 classes that extend <code>React.Component</code>. Still needed for error boundaries; otherwise prefer functions + hooks.</p>
             <div class="code-block">class Welcome extends React.Component {
   render() {
     return &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;;
   }
 }</div>
+
+            <div class="grid-2">
+                <div class="feature-card card-green">
+                    <h4>Design tip</h4>
+                    <p>Prefer many small presentational components over one mega component. Lift state only as high as shared consumers need it.</p>
+                </div>
+                <div class="feature-card card-blue">
+                    <h4>Naming</h4>
+                    <p>PascalCase for components (<code>UserAvatar</code>). Keep props explicit. Avoid dumping an entire domain object when three fields suffice.</p>
+                </div>
+            </div>
 
             <h3>Functional vs Class Components</h3>
             <table>
@@ -230,13 +372,20 @@ React.createElement('div', null, 'Hello World')
 
             <h3>When to Use Class Components</h3>
             <ul>
-                <li>When you need lifecycle hooks (before Hooks were introduced)</li>
-                <li>Error boundaries (still require class components)</li>
+                <li>Error boundaries (still require class components today)</li>
+                <li>Maintaining legacy code that hasn't migrated to hooks</li>
             </ul>
         </section>
 
         <section id="props-state">
             <h2>🔄 Props & State</h2>
+
+            <p>Two kinds of data drive a React UI: <strong>props</strong> (inputs from outside) and <strong>state</strong> (memory owned by the component). Mixing them up is the most common source of confusing bugs for beginners.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-props-state.jpg" alt="Comparison of React props flowing down from parent versus state owned inside a component with setState re-render cycle" loading="lazy">
+                <div class="illustration-caption"><strong>Props in, state inside.</strong> Parents configure children with props. A component that needs to remember something across renders owns that value as state and updates it with a setter.</div>
+            </div>
 
             <h3>Props (Properties)</h3>
             <p>"Props" is a special keyword in React for <span class="highlight">passing data from parent to child</span> component.</p>
@@ -244,12 +393,24 @@ React.createElement('div', null, 'Hello World')
             <h4>Key Characteristics:</h4>
             <ul>
                 <li><strong>Immutable:</strong> Cannot be changed by the child component</li>
-                <li><strong>Read-only:</strong> Component configuration</li>
-                <li><strong>How components communicate:</strong> Props are how components talk to each other</li>
+                <li><strong>Read-only:</strong> Treat props as configuration for this render</li>
+                <li><strong>Communication:</strong> Data and callbacks both travel through props</li>
+                <li><strong>Children:</strong> Special prop for nested JSX passed between tags</li>
             </ul>
 
+            <div class="code-block">function Parent() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;Child
+      label="Clicks"
+      count={count}
+      onIncrement={() => setCount(c => c + 1)}
+    /&gt;
+  );
+}</div>
+
             <h3>State</h3>
-            <p>State is a data structure that holds information that may <span class="highlight">change over the lifetime</span> of the component.</p>
+            <p>State is a data structure that holds information that may <span class="highlight">change over the lifetime</span> of the component. Updating state schedules a re-render of that component and its descendants.</p>
 
             <h3>Props vs State</h3>
             <table>
@@ -307,20 +468,36 @@ this.setState(prevState => ({
         <section id="virtual-dom">
             <h2>🌳 Virtual DOM & Reconciliation</h2>
 
-            <p>The Virtual DOM (VDOM) is React's "draft" version of the actual DOM. It allows React to perform calculations in JavaScript memory, which is orders of magnitude faster than communicating with the browser's DOM engine.</p>
+            <p>The Virtual DOM (VDOM) is React's lightweight description of the UI — plain JS objects, not browser nodes. React compares the previous tree to the next tree in memory, then applies only the necessary patches to the real DOM.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-virtual-dom.jpg" alt="Virtual DOM reconciliation: old tree, new tree with a changed node, diff step, then minimal real DOM updates" loading="lazy">
+                <div class="illustration-caption"><strong>Diff in memory, patch in the browser.</strong> Changing one label does not rebuild the whole page — React finds the mismatch and updates that host node.</div>
+            </div>
+
+            <div class="grid-2">
+                <div class="feature-card card-teal">
+                    <h4>Why Virtual DOM helps</h4>
+                    <p>Reading/writing the real DOM is expensive. Batching calculations in JS and committing once keeps interactions snappy.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>What it is not</h4>
+                    <p>Not magic speed for free. Unnecessary re-renders still cost CPU. Keys, memoization, and clean state design still matter.</p>
+                </div>
+            </div>
 
             <div class="info-box premium">
                 <h3>Senior Technical Deep Dive: The Reconciliation Algorithm</h3>
                 <p>Directly comparing two DOM trees has an <strong>O(n³)</strong> complexity. React uses a <strong>Heuristic O(n) Algorithm</strong> based on two assumptions:</p>
                 <ol>
-                    <li>Two elements of different types will produce different trees.</li>
+                    <li>Two elements of different types will produce different trees (React tears down and rebuilds).</li>
                     <li>The developer can hint at which child elements may be stable across different renders with a <code>key</code> prop.</li>
                 </ol>
             </div>
 
             <div class="info-box">
                 <h3>React Fiber: The Engine Behind the UI</h3>
-                <p><strong>React Fiber</strong> is the re-implementation of React's core algorithm. It allows React to <strong>pause, abort, or reuse work</strong>. This enables "Concurrent Features" like <strong>Time Slicing</strong> (preventing long renders from blocking the main thread) and <strong>Suspense</strong>.</p>
+                <p><strong>React Fiber</strong> is the re-implementation of React's core algorithm. It allows React to <strong>pause, abort, or reuse work</strong>. This enables Concurrent Features like <strong>time slicing</strong> (preventing long renders from blocking the main thread), <strong>Suspense</strong>, and prioritized updates (e.g. typing stays responsive while a heavy list updates).</p>
             </div>
         </section>
 
@@ -394,26 +571,50 @@ this.setState(prevState => ({
         <section id="lists-keys">
             <h2>📋 Lists & Keys</h2>
 
+            <p>When you render a collection, React needs a stable identity for each sibling so it can reuse DOM nodes correctly when the list reorders, inserts, or deletes.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-lists-keys.jpg" alt="Comparison of using index as key versus stable id keys when inserting items into a React list" loading="lazy">
+                <div class="illustration-caption"><strong>Keys are identity, not decoration.</strong> Index keys shift when you insert at the top — React remounts the wrong items. Stable IDs keep component state and DOM attached to the right row.</div>
+            </div>
+
             <h3>Rendering Lists</h3>
-            <div class="code-block">const numbers = [1, 2, 3, 4, 5];
-const listItems = numbers.map((number) =>
-  &lt;li key={number.toString()}&gt;{number}&lt;/li&gt;
+            <div class="code-block">const users = [
+  { id: 'u1', name: 'Ada' },
+  { id: 'u2', name: 'Grace' },
+];
+
+const listItems = users.map((user) =>
+  &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
 );</div>
 
             <h3>Importance of Keys</h3>
             <ul>
                 <li><strong>Stable Identity:</strong> Keys help React identify which items changed, added, or removed</li>
-                <li><strong>Efficient Updates:</strong> Keys play a crucial role in efficiently updating the UI</li>
-                <li><strong>Performance:</strong> Help React optimize rendering</li>
+                <li><strong>Efficient Updates:</strong> Correct keys avoid remounting inputs and losing focus/state</li>
+                <li><strong>Performance:</strong> Reconciliation can move nodes instead of recreating them</li>
             </ul>
 
+            <div class="grid-2">
+                <div class="feature-card card-green">
+                    <h4>Good keys</h4>
+                    <p>Database IDs, UUIDs, or any unique stable field from your data model.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Acceptable index keys</h4>
+                    <p>Only for static lists that never reorder, filter, or insert — otherwise prefer real IDs.</p>
+                </div>
+            </div>
+
             <div class="warning-box">
-                <strong>⚠️ Warning:</strong> Do NOT use index as key! If you add or remove items, indices will change, causing issues.
+                <strong>⚠️ Warning:</strong> Do NOT use index as key for dynamic lists. If you add or remove items, indices shift and React may reuse the wrong component instance (wrong local state, wrong focus).
             </div>
         </section>
 
         <section id="forms">
             <h2>📝 Forms</h2>
+
+            <p>In React, form inputs are usually <strong>controlled</strong>: the displayed value lives in React state, and every keystroke updates that state. Uncontrolled inputs let the DOM own the value and are read via refs when needed.</p>
 
             <h3>Controlled vs Uncontrolled Components</h3>
             <table>
@@ -427,30 +628,72 @@ const listItems = numbers.map((number) =>
                     <td>Use refs to access value</td>
                 </tr>
                 <tr>
-                    <td>Recommended approach</td>
-                    <td>Quick and dirty</td>
+                    <td>Easy validation, formatting, disable submit</td>
+                    <td>Less re-renders; fine for simple one-shot reads</td>
+                </tr>
+                <tr>
+                    <td>Recommended default</td>
+                    <td>File inputs, integrating non-React widgets</td>
                 </tr>
             </table>
 
             <h3>Controlled Component Example</h3>
-            <div class="code-block">const [value, setValue] = useState('');
+            <div class="code-block">const [email, setEmail] = useState('');
+const [error, setError] = useState('');
 
-&lt;input 
-  value={value} 
-  onChange={(e) => setValue(e.target.value)} 
-/&gt;</div>
+function onSubmit(e) {
+  e.preventDefault();
+  if (!email.includes('@')) {
+    setError('Enter a valid email');
+    return;
+  }
+  submitForm({ email });
+}
+
+&lt;form onSubmit={onSubmit}&gt;
+  &lt;input
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  /&gt;
+  {error &amp;&amp; &lt;p&gt;{error}&lt;/p&gt;}
+  &lt;button type="submit"&gt;Join&lt;/button&gt;
+&lt;/form&gt;</div>
 
             <h3>Uncontrolled Component Example</h3>
             <div class="code-block">const inputRef = useRef();
 
-&lt;input ref={inputRef} /&gt;
+&lt;input ref={inputRef} defaultValue="hello" /&gt;
 // Access value: inputRef.current.value</div>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> Prefer controlled inputs when you need live validation, character counters, or dependent fields. Reach for libs (React Hook Form, Formik) when forms grow large.
+            </div>
         </section>
 
         <section id="lifecycle">
             <h2>🔄 Lifecycle Methods (Class Components)</h2>
 
-            <p>Lifecycle methods are special methods in class components that run at specific points in a component's life.</p>
+            <p>Lifecycle methods are special methods in class components that run at specific points in a component's life: creation, updates, and removal. In function components, the same ideas map mainly to <code>useEffect</code> (and related hooks).</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-lifecycle.jpg" alt="React component lifecycle phases: Mounting, Updating, and Unmounting with their key methods" loading="lazy">
+                <div class="illustration-caption"><strong>Three phases.</strong> Mount once, update whenever props/state change, unmount with cleanup. Know which phase fits fetch, subscriptions, and teardown.</div>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card card-green">
+                    <h4>Mounting</h4>
+                    <p>Constructor → render → <code>componentDidMount</code>. Ideal for first fetch and subscriptions.</p>
+                </div>
+                <div class="feature-card card-orange">
+                    <h4>Updating</h4>
+                    <p>Prop/state change → optional <code>shouldComponentUpdate</code> → render → <code>componentDidUpdate</code>.</p>
+                </div>
+                <div class="feature-card card-purple">
+                    <h4>Unmounting</h4>
+                    <p><code>componentWillUnmount</code> — cancel timers, abort fetches, remove listeners.</p>
+                </div>
+            </div>
         </section>
 
         <section id="mounting">
@@ -514,13 +757,35 @@ ComponentA componentDidMount</div>
         <section id="hooks-intro">
             <h2>🪝 React Hooks: Functional Power</h2>
 
-            <p>Introduced in <strong>React 16.8</strong>, Hooks allow functional components to "hook into" React state and lifecycle features, effectively making class components optional for most use cases.</p>
+            <p>Introduced in <strong>React 16.8</strong>, Hooks let function components tap into state, lifecycle-like effects, context, refs, and memoization — making class components optional for almost every case.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-hooks.jpg" alt="React Hooks mental model showing a linked list of useState, useEffect, and useRef in fixed call order" loading="lazy">
+                <div class="illustration-caption"><strong>Hooks are a linked list per component.</strong> Call them in the same order every render. That is why the Rules of Hooks ban hooks inside loops and conditionals.</div>
+            </div>
+
+            <h3>Rules of Hooks</h3>
+            <ol>
+                <li>Only call Hooks at the <strong>top level</strong> of a React function (not inside <code>if</code>, loops, or nested functions).</li>
+                <li>Only call Hooks from <strong>React function components</strong> or <strong>custom Hooks</strong>.</li>
+            </ol>
 
             <div class="info-box premium">
                 <h3>How React Tracks Hooks Internally</h3>
                 <p>React doesn't use magic; it uses a <strong>Linked List</strong>. Each time a Hook is called, it's added to a list for that component instance. On the next render, React traverses this list to find the previous state.</p>
                 <br>
-                <strong>⚠️ Why Order Matters:</strong> This is why Hooks <strong>cannot</strong> be called inside loops or conditions. If the order of calls changes between renders, React will lose track of which state belongs to which Hook.</p>
+                <strong>⚠️ Why Order Matters:</strong> This is why Hooks <strong>cannot</strong> be called inside loops or conditions. If the order of calls changes between renders, React will lose track of which state belongs to which Hook.
+            </div>
+
+            <div class="grid-2">
+                <div class="feature-card card-indigo">
+                    <h4>Built-in Hooks</h4>
+                    <p><code>useState</code>, <code>useEffect</code>, <code>useContext</code>, <code>useReducer</code>, <code>useMemo</code>, <code>useCallback</code>, <code>useRef</code>, plus concurrent helpers like <code>useTransition</code>.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>Custom Hooks</h4>
+                    <p>Extract reusable logic into <code>useSomething()</code> functions. They compose other hooks and share behavior without HOCs or render props.</p>
+                </div>
             </div>
 
             <div class="info-box">
@@ -584,7 +849,7 @@ setUser(prevUser => ({
         <section id="useeffect">
             <h2>⚡ useEffect Hook</h2>
 
-            <p>The <code>useEffect</code> hook is the Swiss Army Knife of functional components. It's often misunderstood as a lifecycle method replacement, but its true purpose is <strong>Synchronization</strong>.</p>
+            <p>The <code>useEffect</code> hook is the Swiss Army Knife of functional components. It's often misunderstood as a lifecycle method replacement, but its true purpose is <strong>Synchronization</strong> with systems outside React.</p>
 
             <div class="info-box premium">
                 <h3>The Mental Model: Synchronizing with External Systems</h3>
@@ -593,16 +858,48 @@ setUser(prevUser => ({
                 <strong>Senior Tip: Avoid the "God Effect"</strong>. Don't put unrelated logic in a single <code>useEffect</code>. Use multiple effects to separate concerns, making them easier to debug and optimize.
             </div>
 
+            <h3>Dependency array cheat sheet</h3>
+            <table>
+                <tr><th>Deps</th><th>When it runs</th><th>Typical use</th></tr>
+                <tr>
+                    <td><code>[]</code></td>
+                    <td>After mount (and cleanup on unmount)</td>
+                    <td>Subscribe once, load initial data</td>
+                </tr>
+                <tr>
+                    <td><code>[a, b]</code></td>
+                    <td>After mount + whenever <code>a</code> or <code>b</code> changes</td>
+                    <td>Re-fetch when filters change</td>
+                </tr>
+                <tr>
+                    <td><em>omitted</em></td>
+                    <td>After <strong>every</strong> render</td>
+                    <td>Rare — usually a bug</td>
+                </tr>
+            </table>
+
+            <div class="code-block">useEffect(() => {
+  let cancelled = false;
+
+  async function load() {
+    const data = await fetchUser(userId);
+    if (!cancelled) setUser(data);
+  }
+  load();
+
+  return () => { cancelled = true; };
+}, [userId]);</div>
+
             <div class="info-box">
                 <h3>Senior Perspective: Race Conditions</h3>
                 <p>When fetching data inside <code>useEffect</code>, always handle <strong>Race Conditions</strong>. If a user triggers a request and then quickly navigates away or triggers another, you might update state with "stale" data. Use a <code>boolean</code> flag or an <code>AbortController</code> in the cleanup function to cancel pending updates.</p>
             </div>
-            <h3>ComponentWillUnmount Equivalent</h3>
+            <h3>Cleanup (componentWillUnmount equivalent)</h3>
             <div class="code-block">useEffect(() => {
   // Setup
   window.addEventListener('resize', handleResize);
   
-  // Cleanup (runs on unmount)
+  // Cleanup (runs on unmount / before re-run)
   return () => {
     window.removeEventListener('resize', handleResize);
   };
@@ -616,7 +913,27 @@ setUser(prevUser => ({
         <section id="usecontext">
             <h2>🌐 useContext Hook</h2>
 
-            <p>Context API is React's native solution for <strong>Prop Drilling</strong>—passing data through intermediate elements that don't need it.</p>
+            <p>Context API is React's native solution for <strong>Prop Drilling</strong> — passing data through intermediate elements that don't need it.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-context.jpg" alt="Prop drilling through nested components versus Context Provider delivering theme directly to deep consumers" loading="lazy">
+                <div class="illustration-caption"><strong>Skip the middlemen.</strong> Providers publish a value; any descendant can subscribe with <code>useContext</code> without threading props through every layer.</div>
+            </div>
+
+            <div class="code-block">const ThemeContext = createContext('light');
+
+function App() {
+  return (
+    &lt;ThemeContext.Provider value="dark"&gt;
+      &lt;Toolbar /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+function ThemedButton() {
+  const theme = useContext(ThemeContext);
+  return &lt;button className={theme}&gt;Save&lt;/button&gt;;
+}</div>
 
             <div class="info-box premium">
                 <h3>Architectural Choice: Context API vs. Redux</h3>
@@ -736,7 +1053,7 @@ countRef.current += 1;</div>
             <h3>Why Fragments?</h3>
             <ul>
                 <li>Avoid unnecessary div wrappers</li>
-                <li>Better CSS performance</li>
+                <li>Better CSS / flex / grid layouts (no phantom wrappers)</li>
                 <li>Cleaner DOM structure</li>
             </ul>
 
@@ -753,7 +1070,35 @@ countRef.current += 1;</div>
 &lt;/&gt;</div>
 
             <div class="info-box">
-                <strong>💡 Note:</strong> The only attribute you can pass to Fragment is <code>key</code> (when mapping).
+                <strong>💡 Note:</strong> The only attribute you can pass to Fragment is <code>key</code> (when mapping). Use the long form when you need <code>key</code>.
+            </div>
+        </section>
+
+        <section id="pure-components">
+            <h2>🧊 Pure Components</h2>
+
+            <p>A <strong>pure component</strong> re-renders only when its props (or state) actually change. In class form that is <code>React.PureComponent</code>; in function form it is <code>React.memo</code>.</p>
+
+            <div class="grid-2">
+                <div class="feature-card card-indigo">
+                    <h4>React.PureComponent</h4>
+                    <p>Class base with a shallow <code>shouldComponentUpdate</code>. Skips render when props/state are shallow-equal.</p>
+                </div>
+                <div class="feature-card card-teal">
+                    <h4>React.memo</h4>
+                    <p>Wrap a function component. Same shallow prop compare. Optionally pass a custom compare function.</p>
+                </div>
+            </div>
+
+            <div class="code-block">const Item = React.memo(function Item({ title, onSelect }) {
+  return &lt;button onClick={onSelect}&gt;{title}&lt;/button&gt;;
+});
+
+// Pair with useCallback so onSelect identity stays stable
+const onSelect = useCallback(() => select(id), [id]);</div>
+
+            <div class="warning-box">
+                <strong>⚠️ Caveat:</strong> Shallow compare fails for new object/array/function props created inline every render. Stabilize with <code>useMemo</code> / <code>useCallback</code>, or don't memoize yet — profile first.
             </div>
         </section>
 
@@ -777,7 +1122,12 @@ countRef.current += 1;</div>
         <section id="lazy-loading">
             <h2>📦 Code Splitting & Dynamic Imports</h2>
 
-            <p>Modern SPAs can become massive. <strong>Code Splitting</strong> allows you to split your bundle into smaller chunks, loading them only when the user actually needs them.</p>
+            <p>Modern SPAs can become massive. <strong>Code Splitting</strong> splits your bundle into smaller chunks and loads them only when the user actually needs that route or feature.</p>
+
+            <div class="illustration">
+                <img src="/images/react/react-lazy-loading.jpg" alt="Monolith JS bundle split into main and route chunks loaded with React.lazy and Suspense spinner" loading="lazy">
+                <div class="illustration-caption"><strong>Ship less on first paint.</strong> Keep the shell small; lazy-load dashboards, settings, and heavy editors behind routes or user actions.</div>
+            </div>
 
             <div class="code-block">// Dynamic Import with React.lazy
 const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
@@ -789,6 +1139,17 @@ function MyComponent() {
     &lt;/React.Suspense&gt;
   );
 }</div>
+
+            <div class="grid-2">
+                <div class="feature-card card-blue">
+                    <h4>Where to split</h4>
+                    <p>Route boundaries, admin panels, charts/editors, rarely used modals — anything large and not needed for first paint.</p>
+                </div>
+                <div class="feature-card card-green">
+                    <h4>Fallback UX</h4>
+                    <p><code>Suspense</code> shows a spinner or skeleton while the chunk downloads. Match the layout to avoid content jump.</p>
+                </div>
+            </div>
 
             <div class="info-box premium">
                 <h3>Why it Matters for Core Web Vitals</h3>
